@@ -10,10 +10,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-//	Deletes a vehicle model (model manifest).
-//
-// If the vehicle model is successfully deleted, Amazon Web Services IoT FleetWise
-// sends back an HTTP 200 response with an empty body.
+// Deletes a vehicle model (model manifest).
 func (c *Client) DeleteModelManifest(ctx context.Context, params *DeleteModelManifestInput, optFns ...func(*Options)) (*DeleteModelManifestOutput, error) {
 	if params == nil {
 		params = &DeleteModelManifestInput{}
@@ -100,6 +97,9 @@ func (c *Client) addOperationDeleteModelManifestMiddlewares(stack *middleware.St
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -116,6 +116,9 @@ func (c *Client) addOperationDeleteModelManifestMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteModelManifestValidationMiddleware(stack); err != nil {
@@ -137,6 +140,18 @@ func (c *Client) addOperationDeleteModelManifestMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

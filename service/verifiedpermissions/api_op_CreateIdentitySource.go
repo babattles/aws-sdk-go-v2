@@ -35,7 +35,7 @@ import (
 //     MyCorp::User::us-east-1_EXAMPLE|a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 .
 //
 //   - OpenID Connect (OIDC) provider: Namespace::[Entity
-//     type]::[principalIdClaim]|[user principal attribute] , for example
+//     type]::[entityIdPrefix]|[user principal attribute] , for example
 //     MyCorp::User::MyOIDCProvider|a1b2c3d4-5678-90ab-cdef-EXAMPLE22222 .
 //
 // Verified Permissions is [eventually consistent] . It can take a few seconds for a new or changed
@@ -172,6 +172,9 @@ func (c *Client) addOperationCreateIdentitySourceMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -188,6 +191,9 @@ func (c *Client) addOperationCreateIdentitySourceMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateIdentitySourceMiddleware(stack, options); err != nil {
@@ -212,6 +218,18 @@ func (c *Client) addOperationCreateIdentitySourceMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

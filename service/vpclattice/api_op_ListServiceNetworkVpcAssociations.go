@@ -11,9 +11,9 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Lists the service network and VPC associations. You can filter the list either
-// by VPC or service network. You must provide either the service network
-// identifier or the VPC identifier.
+// Lists the associations between a service network and a VPC. You can filter the
+// list either by VPC or service network. You must provide either the ID of the
+// service network identifier or the ID of the VPC.
 func (c *Client) ListServiceNetworkVpcAssociations(ctx context.Context, params *ListServiceNetworkVpcAssociationsInput, optFns ...func(*Options)) (*ListServiceNetworkVpcAssociationsOutput, error) {
 	if params == nil {
 		params = &ListServiceNetworkVpcAssociationsInput{}
@@ -37,10 +37,10 @@ type ListServiceNetworkVpcAssociationsInput struct {
 	// A pagination token for the next page of results.
 	NextToken *string
 
-	// The ID or Amazon Resource Name (ARN) of the service network.
+	// The ID or ARN of the service network.
 	ServiceNetworkIdentifier *string
 
-	// The ID or Amazon Resource Name (ARN) of the VPC.
+	// The ID or ARN of the VPC.
 	VpcIdentifier *string
 
 	noSmithyDocumentSerde
@@ -106,6 +106,9 @@ func (c *Client) addOperationListServiceNetworkVpcAssociationsMiddlewares(stack 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -124,6 +127,9 @@ func (c *Client) addOperationListServiceNetworkVpcAssociationsMiddlewares(stack 
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListServiceNetworkVpcAssociations(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -140,6 +146,18 @@ func (c *Client) addOperationListServiceNetworkVpcAssociationsMiddlewares(stack 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

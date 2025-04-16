@@ -51,8 +51,9 @@ type UpdateContactAttributesInput struct {
 	// You can have up to 32,768 UTF-8 bytes across all attributes for a contact.
 	// Attribute keys can include only alphanumeric, dash, and underscore characters.
 	//
-	// When the attributes for a contact exceed 32 KB, the contact is routed down the
-	// Error branch of the flow. As a mitigation, consider the following options:
+	// In the [Set contact attributes] block, when the attributes for a contact exceed 32 KB, the contact is
+	// routed down the Error branch of the flow. As a mitigation, consider the
+	// following options:
 	//
 	//   - Remove unnecessary attributes by setting their values to empty.
 	//
@@ -63,6 +64,7 @@ type UpdateContactAttributesInput struct {
 	//   Connect Administrator Guide.
 	//
 	// [Flow block: Set contact attributes]: https://docs.aws.amazon.com/connect/latest/adminguide/set-contact-attributes.html
+	// [Set contact attributes]: https://docs.aws.amazon.com/connect/latest/adminguide/set-contact-attributes.html
 	//
 	// This member is required.
 	Attributes map[string]string
@@ -134,6 +136,9 @@ func (c *Client) addOperationUpdateContactAttributesMiddlewares(stack *middlewar
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -150,6 +155,9 @@ func (c *Client) addOperationUpdateContactAttributesMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateContactAttributesValidationMiddleware(stack); err != nil {
@@ -171,6 +179,18 @@ func (c *Client) addOperationUpdateContactAttributesMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -119,14 +119,16 @@ type DescribeReservedCacheNodesOfferingsInput struct {
 	//
 	//   - All current generation instance types are created in Amazon VPC by default.
 	//
-	//   - Redis OSS append-only files (AOF) are not supported for T1 or T2 instances.
+	//   - Valkey or Redis OSS append-only files (AOF) are not supported for T1 or T2
+	//   instances.
 	//
-	//   - Redis OSS Multi-AZ with automatic failover is not supported on T1 instances.
+	//   - Valkey or Redis OSS Multi-AZ with automatic failover is not supported on T1
+	//   instances.
 	//
-	//   - Redis OSS configuration variables appendonly and appendfsync are not
-	//   supported on Redis OSS version 2.8.22 and later.
+	//   - The configuration variables appendonly and appendfsync are not supported on
+	//   Valkey, or on Redis OSS version 2.8.22 and later.
 	//
-	// [Supported Node Types]: https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion
+	// [Supported Node Types]: https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion
 	CacheNodeType *string
 
 	// Duration filter value, specified in years or seconds. Use this parameter to
@@ -229,6 +231,9 @@ func (c *Client) addOperationDescribeReservedCacheNodesOfferingsMiddlewares(stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -247,6 +252,9 @@ func (c *Client) addOperationDescribeReservedCacheNodesOfferingsMiddlewares(stac
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeReservedCacheNodesOfferings(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -263,6 +271,18 @@ func (c *Client) addOperationDescribeReservedCacheNodesOfferingsMiddlewares(stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

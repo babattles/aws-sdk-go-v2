@@ -88,6 +88,17 @@ type Canary struct {
 	// The name of the canary.
 	Name *string
 
+	// Specifies whether to also delete the Lambda functions and layers used by this
+	// canary when the canary is deleted. If it is AUTOMATIC , the Lambda functions and
+	// layers will be deleted when the canary is deleted.
+	//
+	// If the value of this parameter is OFF , then the value of the DeleteLambda
+	// parameter of the [DeleteCanary]operation determines whether the Lambda functions and layers
+	// will be deleted.
+	//
+	// [DeleteCanary]: https://docs.aws.amazon.com/AmazonSynthetics/latest/APIReference/API_DeleteCanary.html
+	ProvisionedResourceCleanup ProvisionedResourceCleanupSetting
+
 	// A structure that contains information about a canary run.
 	RunConfig *CanaryRunConfigOutput
 
@@ -135,6 +146,18 @@ type Canary struct {
 // running the script. If the script is stored in an S3 bucket, the bucket name,
 // key, and version are also included. If the script was passed into the canary
 // directly, the script code is contained in the value of Zipfile .
+//
+// If you are uploading your canary scripts with an Amazon S3 bucket, your zip
+// file should include your script in a certain folder structure.
+//
+//   - For Node.js canaries, the folder structure must be
+//     nodejs/node_modules/myCanaryFilename.js For more information, see [Packaging your Node.js canary files]
+//
+//   - For Python canaries, the folder structure must be python/myCanaryFilename.p
+//     or python/myFolder/myCanaryFilename.py For more information, see [Packaging your Python canary files]
+//
+// [Packaging your Node.js canary files]: https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_WritingCanary_Nodejs.html#CloudWatch_Synthetics_Canaries_package
+// [Packaging your Python canary files]: https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_WritingCanary_Python.html#CloudWatch_Synthetics_Canaries_WritingCanary_Python_package
 type CanaryCodeInput struct {
 
 	// The entry point to use for the source code when running the canary. For
@@ -506,7 +529,9 @@ type VisualReferenceInput struct {
 	// future visual monitoring with this canary. Valid values are nextrun to use the
 	// screenshots from the next run after this update is made, lastrun to use the
 	// screenshots from the most recent run before this update was made, or the value
-	// of Id in the [CanaryRun] from any past run of this canary.
+	// of Id in the [CanaryRun] from a run of this a canary in the past 31 days. If you specify
+	// the Id of a canary run older than 31 days, the operation returns a 400
+	// validation exception error..
 	//
 	// [CanaryRun]: https://docs.aws.amazon.com/AmazonSynthetics/latest/APIReference/API_CanaryRun.html
 	//
@@ -548,6 +573,10 @@ type VisualReferenceOutput struct {
 // [Running a Canary in a VPC]: https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_VPC.html
 type VpcConfigInput struct {
 
+	// Set this to true to allow outbound IPv6 traffic on VPC canaries that are
+	// connected to dual-stack subnets. The default is false
+	Ipv6AllowedForDualStack *bool
+
 	// The IDs of the security groups for this canary.
 	SecurityGroupIds []string
 
@@ -563,6 +592,10 @@ type VpcConfigInput struct {
 //
 // [Running a Canary in a VPC]: https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_VPC.html
 type VpcConfigOutput struct {
+
+	// Indicates whether this canary allows outbound IPv6 traffic if it is connected
+	// to dual-stack subnets.
+	Ipv6AllowedForDualStack *bool
 
 	// The IDs of the security groups for this canary.
 	SecurityGroupIds []string

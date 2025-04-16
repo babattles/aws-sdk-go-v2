@@ -26,12 +26,16 @@ func (c *Client) SparseJsonLists(ctx context.Context, params *SparseJsonListsInp
 }
 
 type SparseJsonListsInput struct {
+	SparseShortList []*int16
+
 	SparseStringList []*string
 
 	noSmithyDocumentSerde
 }
 
 type SparseJsonListsOutput struct {
+	SparseShortList []*int16
+
 	SparseStringList []*string
 
 	// Metadata pertaining to the operation's result.
@@ -83,6 +87,9 @@ func (c *Client) addOperationSparseJsonListsMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -101,6 +108,9 @@ func (c *Client) addOperationSparseJsonListsMiddlewares(stack *middleware.Stack,
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opSparseJsonLists(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -117,6 +127,18 @@ func (c *Client) addOperationSparseJsonListsMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

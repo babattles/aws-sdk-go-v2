@@ -97,6 +97,13 @@ type CreateUserSettingsInput struct {
 	// The tags to add to the user settings resource. A tag is a key-value pair.
 	Tags []types.Tag
 
+	// The configuration of the toolbar. This allows administrators to select the
+	// toolbar type and visual mode, set maximum display resolution for sessions, and
+	// choose which items are visible to end users during their sessions. If
+	// administrators do not modify these settings, end users retain control over their
+	// toolbar preferences.
+	ToolbarConfiguration *types.ToolbarConfiguration
+
 	noSmithyDocumentSerde
 }
 
@@ -156,6 +163,9 @@ func (c *Client) addOperationCreateUserSettingsMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -172,6 +182,9 @@ func (c *Client) addOperationCreateUserSettingsMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateUserSettingsMiddleware(stack, options); err != nil {
@@ -196,6 +209,18 @@ func (c *Client) addOperationCreateUserSettingsMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

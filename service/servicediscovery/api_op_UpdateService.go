@@ -52,7 +52,8 @@ type UpdateServiceInput struct {
 	// This member is required.
 	Id *string
 
-	// A complex type that contains the new settings for the service.
+	// A complex type that contains the new settings for the service. You can specify
+	// a maximum of 30 attributes (key-value pairs).
 	//
 	// This member is required.
 	Service *types.ServiceChange
@@ -117,6 +118,9 @@ func (c *Client) addOperationUpdateServiceMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -133,6 +137,9 @@ func (c *Client) addOperationUpdateServiceMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateServiceValidationMiddleware(stack); err != nil {
@@ -154,6 +161,18 @@ func (c *Client) addOperationUpdateServiceMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

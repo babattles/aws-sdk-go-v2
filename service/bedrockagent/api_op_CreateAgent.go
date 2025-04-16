@@ -34,8 +34,12 @@ import (
 //     advanced prompts, include a promptOverrideConfiguration object. For more
 //     information, see [Advanced prompts].
 //
-//   - If you agent fails to be created, the response returns a list of
+//   - If your agent fails to be created, the response returns a list of
 //     failureReasons alongside a list of recommendedActions for you to troubleshoot.
+//
+//   - The agent instructions will not be honored if your agent has only one
+//     knowledge base, uses default prompts, has no action group, and user input is
+//     disabled.
 //
 // [Advanced prompts]: https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts.html
 // [Configure memory]: https://docs.aws.amazon.com/bedrock/latest/userguide/agents-configure-memory.html
@@ -61,6 +65,9 @@ type CreateAgentInput struct {
 	// This member is required.
 	AgentName *string
 
+	// The agent's collaboration role.
+	AgentCollaboration types.AgentCollaboration
+
 	// The Amazon Resource Name (ARN) of the IAM role with permissions to invoke API
 	// operations on the agent.
 	AgentResourceRoleArn *string
@@ -72,13 +79,44 @@ type CreateAgentInput struct {
 	// [Ensuring idempotency]: https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html
 	ClientToken *string
 
+	//  Contains details of the custom orchestration configured for the agent.
+	CustomOrchestration *types.CustomOrchestration
+
 	// The Amazon Resource Name (ARN) of the KMS key with which to encrypt the agent.
 	CustomerEncryptionKeyArn *string
 
 	// A description of the agent.
 	Description *string
 
-	// The foundation model to be used for orchestration by the agent you create.
+	// The identifier for the model that you want to be used for orchestration by the
+	// agent you create.
+	//
+	// The modelId to provide depends on the type of model or throughput that you use:
+	//
+	//   - If you use a base model, specify the model ID or its ARN. For a list of
+	//   model IDs for base models, see [Amazon Bedrock base model IDs (on-demand throughput)]in the Amazon Bedrock User Guide.
+	//
+	//   - If you use an inference profile, specify the inference profile ID or its
+	//   ARN. For a list of inference profile IDs, see [Supported Regions and models for cross-region inference]in the Amazon Bedrock User
+	//   Guide.
+	//
+	//   - If you use a provisioned model, specify the ARN of the Provisioned
+	//   Throughput. For more information, see [Run inference using a Provisioned Throughput]in the Amazon Bedrock User Guide.
+	//
+	//   - If you use a custom model, first purchase Provisioned Throughput for it.
+	//   Then specify the ARN of the resulting provisioned model. For more information,
+	//   see [Use a custom model in Amazon Bedrock]in the Amazon Bedrock User Guide.
+	//
+	//   - If you use an [imported model], specify the ARN of the imported model. You can get the
+	//   model ARN from a successful call to [CreateModelImportJob]or from the Imported models page in the
+	//   Amazon Bedrock console.
+	//
+	// [Run inference using a Provisioned Throughput]: https://docs.aws.amazon.com/bedrock/latest/userguide/prov-thru-use.html
+	// [Use a custom model in Amazon Bedrock]: https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-use.html
+	// [imported model]: https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-import-model.html
+	// [CreateModelImportJob]: https://docs.aws.amazon.com/bedrock/latest/APIReference/API_CreateModelImportJob.html
+	// [Supported Regions and models for cross-region inference]: https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference-support.html
+	// [Amazon Bedrock base model IDs (on-demand throughput)]: https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids.html#model-ids-arns
 	FoundationModel *string
 
 	// The unique Guardrail configuration assigned to the agent when it is created.
@@ -98,6 +136,10 @@ type CreateAgentInput struct {
 
 	//  Contains the details of the memory configured for the agent.
 	MemoryConfiguration *types.MemoryConfiguration
+
+	//  Specifies the type of orchestration strategy for the agent. This is set to
+	// DEFAULT orchestration type, by default.
+	OrchestrationType types.OrchestrationType
 
 	// Contains configurations to override prompts in different parts of an agent
 	// sequence. For more information, see [Advanced prompts].
@@ -167,6 +209,9 @@ func (c *Client) addOperationCreateAgentMiddlewares(stack *middleware.Stack, opt
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -183,6 +228,9 @@ func (c *Client) addOperationCreateAgentMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateAgentMiddleware(stack, options); err != nil {
@@ -207,6 +255,18 @@ func (c *Client) addOperationCreateAgentMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

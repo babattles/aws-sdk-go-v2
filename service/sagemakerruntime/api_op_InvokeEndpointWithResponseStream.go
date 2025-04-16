@@ -109,6 +109,15 @@ type InvokeEndpointWithResponseStreamInput struct {
 	// An identifier that you assign to your request.
 	InferenceId *string
 
+	// The ID of a stateful session to handle your request.
+	//
+	// You can't create a stateful session by using the
+	// InvokeEndpointWithResponseStream action. Instead, you can create one by using
+	// the InvokeEndpointaction. In your request, you specify NEW_SESSION for the SessionId request
+	// parameter. The response to that request provides the session ID for the
+	// NewSessionId response parameter.
+	SessionId *string
+
 	// If the endpoint hosts multiple containers and is configured to use direct
 	// invocation, this parameter specifies the host name of the container to invoke.
 	TargetContainerHostname *string
@@ -215,6 +224,9 @@ func (c *Client) addOperationInvokeEndpointWithResponseStreamMiddlewares(stack *
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -225,6 +237,9 @@ func (c *Client) addOperationInvokeEndpointWithResponseStreamMiddlewares(stack *
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpInvokeEndpointWithResponseStreamValidationMiddleware(stack); err != nil {
@@ -246,6 +261,18 @@ func (c *Client) addOperationInvokeEndpointWithResponseStreamMiddlewares(stack *
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

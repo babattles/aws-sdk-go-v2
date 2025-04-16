@@ -53,6 +53,9 @@ type CreateEnvironmentInput struct {
 	// This member is required.
 	ProjectIdentifier *string
 
+	// The deployment order of the environment.
+	DeploymentOrder *int32
+
 	// The description of the Amazon DataZone environment.
 	Description *string
 
@@ -64,6 +67,9 @@ type CreateEnvironmentInput struct {
 
 	// The ID of the blueprint with which the environment is being created.
 	EnvironmentBlueprintIdentifier *string
+
+	// The configuration ID of the environment.
+	EnvironmentConfigurationId *string
 
 	// The glossary terms that can be used in this Amazon DataZone environment.
 	GlossaryTerms []string
@@ -124,6 +130,9 @@ type CreateEnvironmentOutput struct {
 
 	// The ID of the blueprint with which this Amazon DataZone environment was created.
 	EnvironmentBlueprintId *string
+
+	// The configuration ID of the environment.
+	EnvironmentConfigurationId *string
 
 	// The ID of the environment profile with which this Amazon DataZone environment
 	// was created.
@@ -202,6 +211,9 @@ func (c *Client) addOperationCreateEnvironmentMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -218,6 +230,9 @@ func (c *Client) addOperationCreateEnvironmentMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateEnvironmentValidationMiddleware(stack); err != nil {
@@ -239,6 +254,18 @@ func (c *Client) addOperationCreateEnvironmentMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

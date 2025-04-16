@@ -216,12 +216,10 @@ type ComputeConfig struct {
 	// DMS Serverless replication can be provisioned. A single DCU is 2GB of RAM, with
 	// 1 DCU as the minimum value allowed. The list of valid DCU values includes 1, 2,
 	// 4, 8, 16, 32, 64, 128, 192, 256, and 384. So, the minimum DCU value that you can
-	// specify for DMS Serverless is 1. You don't have to specify a value for the
-	// MinCapacityUnits parameter. If you don't set this value, DMS scans the current
-	// activity of available source tables to identify an optimum setting for this
-	// parameter. If there is no current source activity or DMS can't otherwise
-	// identify a more appropriate value, it sets this parameter to the minimum DCU
-	// value allowed, 1.
+	// specify for DMS Serverless is 1. If you don't set this value, DMS sets this
+	// parameter to the minimum DCU value allowed, 1. If there is no current source
+	// activity, DMS scales down your replication until it reaches the value specified
+	// in MinCapacityUnits .
 	MinCapacityUnits *int32
 
 	// Specifies whether the DMS Serverless replication is a Multi-AZ deployment. You
@@ -367,6 +365,120 @@ type DatabaseShortInfoResponse struct {
 	noSmithyDocumentSerde
 }
 
+// This object provides information about a DMS data migration.
+type DataMigration struct {
+
+	// The Amazon Resource Name (ARN) that identifies this replication.
+	DataMigrationArn *string
+
+	// The CIDR blocks of the endpoints for the data migration.
+	DataMigrationCidrBlocks []string
+
+	// The UTC time when DMS created the data migration.
+	DataMigrationCreateTime *time.Time
+
+	// The UTC time when data migration ended.
+	DataMigrationEndTime *time.Time
+
+	// The user-friendly name for the data migration.
+	DataMigrationName *string
+
+	// Specifies CloudWatch settings and selection rules for the data migration.
+	DataMigrationSettings *DataMigrationSettings
+
+	// The UTC time when DMS started the data migration.
+	DataMigrationStartTime *time.Time
+
+	// Provides information about the data migration's run, including start and stop
+	// time, latency, and data migration progress.
+	DataMigrationStatistics *DataMigrationStatistics
+
+	// The current status of the data migration.
+	DataMigrationStatus *string
+
+	// Specifies whether the data migration is full-load only, change data capture
+	// (CDC) only, or full-load and CDC.
+	DataMigrationType MigrationTypeValue
+
+	// Information about the data migration's most recent error or failure.
+	LastFailureMessage *string
+
+	// The Amazon Resource Name (ARN) of the data migration's associated migration
+	// project.
+	MigrationProjectArn *string
+
+	// The IP addresses of the endpoints for the data migration.
+	PublicIpAddresses []string
+
+	// The IAM role that the data migration uses to access Amazon Web Services
+	// resources.
+	ServiceAccessRoleArn *string
+
+	// Specifies information about the data migration's source data provider.
+	SourceDataSettings []SourceDataSetting
+
+	// The reason the data migration last stopped.
+	StopReason *string
+
+	// Specifies information about the data migration's target data provider.
+	TargetDataSettings []TargetDataSetting
+
+	noSmithyDocumentSerde
+}
+
+// Options for configuring a data migration, including whether to enable
+// CloudWatch logs, and the selection rules to use to include or exclude database
+// objects from the migration.
+type DataMigrationSettings struct {
+
+	// Whether to enable CloudWatch logging for the data migration.
+	CloudwatchLogsEnabled *bool
+
+	// The number of parallel jobs that trigger parallel threads to unload the tables
+	// from the source, and then load them to the target.
+	NumberOfJobs *int32
+
+	// A JSON-formatted string that defines what objects to include and exclude from
+	// the migration.
+	SelectionRules *string
+
+	noSmithyDocumentSerde
+}
+
+// Information about the data migration run, including start and stop time,
+// latency, and migration progress.
+type DataMigrationStatistics struct {
+
+	// The current latency of the change data capture (CDC) operation.
+	CDCLatency int32
+
+	// The elapsed duration of the data migration run.
+	ElapsedTimeMillis int64
+
+	// The data migration's progress in the full-load migration phase.
+	FullLoadPercentage int32
+
+	// The time when the migration started.
+	StartTime *time.Time
+
+	// The time when the migration stopped or failed.
+	StopTime *time.Time
+
+	// The number of tables that DMS failed to process.
+	TablesErrored int32
+
+	// The number of tables loaded in the current data migration run.
+	TablesLoaded int32
+
+	// The data migration's table loading progress.
+	TablesLoading int32
+
+	// The number of tables that are waiting for processing.
+	TablesQueued int32
+
+	noSmithyDocumentSerde
+}
+
 // Provides information that defines a data provider.
 type DataProvider struct {
 
@@ -388,8 +500,8 @@ type DataProvider struct {
 
 	// The type of database engine for the data provider. Valid values include "aurora"
 	// , "aurora-postgresql" , "mysql" , "oracle" , "postgres" , "sqlserver" , redshift
-	// , mariadb , mongodb , and docdb . A value of "aurora" represents Amazon Aurora
-	// MySQL-Compatible Edition.
+	// , mariadb , mongodb , db2 , db2-zos and docdb . A value of "aurora" represents
+	// Amazon Aurora MySQL-Compatible Edition.
 	Engine *string
 
 	// The settings in JSON format for a data provider.
@@ -440,6 +552,8 @@ type DataProviderDescriptorDefinition struct {
 // The following types satisfy this interface:
 //
 //	DataProviderSettingsMemberDocDbSettings
+//	DataProviderSettingsMemberIbmDb2LuwSettings
+//	DataProviderSettingsMemberIbmDb2zOsSettings
 //	DataProviderSettingsMemberMariaDbSettings
 //	DataProviderSettingsMemberMicrosoftSqlServerSettings
 //	DataProviderSettingsMemberMongoDbSettings
@@ -459,6 +573,24 @@ type DataProviderSettingsMemberDocDbSettings struct {
 }
 
 func (*DataProviderSettingsMemberDocDbSettings) isDataProviderSettings() {}
+
+// Provides information that defines an IBM DB2 LUW data provider.
+type DataProviderSettingsMemberIbmDb2LuwSettings struct {
+	Value IbmDb2LuwDataProviderSettings
+
+	noSmithyDocumentSerde
+}
+
+func (*DataProviderSettingsMemberIbmDb2LuwSettings) isDataProviderSettings() {}
+
+// Provides information that defines an IBM DB2 for z/OS data provider.
+type DataProviderSettingsMemberIbmDb2zOsSettings struct {
+	Value IbmDb2zOsDataProviderSettings
+
+	noSmithyDocumentSerde
+}
+
+func (*DataProviderSettingsMemberIbmDb2zOsSettings) isDataProviderSettings() {}
 
 // Provides information that defines a MariaDB data provider.
 type DataProviderSettingsMemberMariaDbSettings struct {
@@ -1218,6 +1350,28 @@ type GcpMySQLSettings struct {
 	noSmithyDocumentSerde
 }
 
+// Provides information about an IBM DB2 LUW data provider.
+type IbmDb2LuwDataProviderSettings struct {
+
+	// The Amazon Resource Name (ARN) of the certificate used for SSL connection.
+	CertificateArn *string
+
+	// The database name on the DB2 LUW data provider.
+	DatabaseName *string
+
+	// The port value for the DB2 LUW data provider.
+	Port *int32
+
+	// The name of the DB2 LUW server.
+	ServerName *string
+
+	// The SSL mode used to connect to the DB2 LUW data provider. The default value is
+	// none . Valid Values: none and verify-ca .
+	SslMode DmsSslModeValue
+
+	noSmithyDocumentSerde
+}
+
 // Provides information that defines an IBM Db2 LUW endpoint.
 type IBMDb2Settings struct {
 
@@ -1284,6 +1438,28 @@ type IBMDb2Settings struct {
 	// files on the local disk on the DMS replication instance. The default value is
 	// 1024 (1 MB).
 	WriteBufferSize *int32
+
+	noSmithyDocumentSerde
+}
+
+// Provides information about an IBM DB2 for z/OS data provider.
+type IbmDb2zOsDataProviderSettings struct {
+
+	// The Amazon Resource Name (ARN) of the certificate used for SSL connection.
+	CertificateArn *string
+
+	// The database name on the DB2 for z/OS data provider.
+	DatabaseName *string
+
+	// The port value for the DB2 for z/OS data provider.
+	Port *int32
+
+	// The name of the DB2 for z/OS server.
+	ServerName *string
+
+	// The SSL mode used to connect to the DB2 for z/OS data provider. The default
+	// value is none . Valid Values: none and verify-ca .
+	SslMode DmsSslModeValue
 
 	noSmithyDocumentSerde
 }
@@ -1461,6 +1637,29 @@ type KafkaSettings struct {
 	// specifies "kafka-default-topic" as the migration topic.
 	Topic *string
 
+	// Specifies using the large integer value with Kafka.
+	UseLargeIntegerValue *bool
+
+	noSmithyDocumentSerde
+}
+
+// Specifies the settings required for kerberos authentication when creating the
+// replication instance.
+type KerberosAuthenticationSettings struct {
+
+	// Specifies the Amazon Resource Name (ARN) of the IAM role that grants Amazon Web
+	// Services DMS access to the secret containing key cache file for the kerberos
+	// authentication.
+	KeyCacheSecretIamArn *string
+
+	// Specifies the ID of the secret that stores the key cache file required for
+	// kerberos authentication.
+	KeyCacheSecretId *string
+
+	// Specifies the contents of krb5 configuration file required for kerberos
+	// authentication.
+	Krb5FileContents *string
+
 	noSmithyDocumentSerde
 }
 
@@ -1517,6 +1716,9 @@ type KinesisSettings struct {
 
 	// The Amazon Resource Name (ARN) for the Amazon Kinesis Data Streams endpoint.
 	StreamArn *string
+
+	// Specifies using the large integer value with Kinesis.
+	UseLargeIntegerValue *bool
 
 	noSmithyDocumentSerde
 }
@@ -1604,6 +1806,9 @@ type MicrosoftSqlServerDataProviderSettings struct {
 
 // Provides information that defines a Microsoft SQL Server endpoint.
 type MicrosoftSQLServerSettings struct {
+
+	// Specifies the authentication method to be used with Microsoft SQL Server.
+	AuthenticationMethod SqlServerAuthenticationMethod
 
 	// The maximum size of the packets (in bytes) used to transfer data using BCP.
 	BcpPacketSize *int32
@@ -2153,9 +2358,9 @@ type OracleSettings struct {
 	// from the outset.
 	ArchivedLogDestId *int32
 
-	// When this field is set to Y , DMS only accesses the archived redo logs. If the
-	// archived redo logs are stored on Automatic Storage Management (ASM) only, the
-	// DMS user account needs to be granted ASM privileges.
+	// When this field is set to True , DMS only accesses the archived redo logs. If
+	// the archived redo logs are stored on Automatic Storage Management (ASM) only,
+	// the DMS user account needs to be granted ASM privileges.
 	ArchivedLogsOnly *bool
 
 	// For an Oracle source endpoint, your Oracle Automatic Storage Management (ASM)
@@ -2182,6 +2387,9 @@ type OracleSettings struct {
 	//
 	// [Configuration for change data capture (CDC) on an Oracle source database]: https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Source.Oracle.html#dms/latest/userguide/CHAP_Source.Oracle.html#CHAP_Source.Oracle.CDC.Configuration
 	AsmUser *string
+
+	// Specifies the authentication method to be used with Oracle.
+	AuthenticationMethod OracleAuthenticationMethod
 
 	// Specifies whether the length of a character column is in bytes or in
 	// characters. To indicate that the character column length is in characters, set
@@ -2252,8 +2460,7 @@ type OracleSettings struct {
 	//
 	// You can specify an integer value between 0 (the default) and 240 (the maximum).
 	//
-	// This parameter is only valid in DMS version 3.5.0 and later. DMS supports a
-	// window of up to 9.5 hours including the value for OpenTransactionWindow .
+	// This parameter is only valid in DMS version 3.5.0 and later.
 	OpenTransactionWindow *int32
 
 	// Set this string attribute to the required value in order to use the Binary
@@ -2391,26 +2598,26 @@ type OracleSettings struct {
 	// use any specified prefix replacement to access all online redo logs.
 	UseAlternateFolderForOnline *bool
 
-	// Set this attribute to Y to capture change data using the Binary Reader utility.
-	// Set UseLogminerReader to N to set this attribute to Y. To use Binary Reader
-	// with Amazon RDS for Oracle as the source, you set additional attributes. For
-	// more information about using this setting with Oracle Automatic Storage
-	// Management (ASM), see [Using Oracle LogMiner or DMS Binary Reader for CDC].
+	// Set this attribute to True to capture change data using the Binary Reader
+	// utility. Set UseLogminerReader to False to set this attribute to True. To use
+	// Binary Reader with Amazon RDS for Oracle as the source, you set additional
+	// attributes. For more information about using this setting with Oracle Automatic
+	// Storage Management (ASM), see [Using Oracle LogMiner or DMS Binary Reader for CDC].
 	//
 	// [Using Oracle LogMiner or DMS Binary Reader for CDC]: https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Source.Oracle.html#CHAP_Source.Oracle.CDC
 	UseBFile *bool
 
-	// Set this attribute to Y to have DMS use a direct path full load. Specify this
-	// value to use the direct path protocol in the Oracle Call Interface (OCI). By
-	// using this OCI protocol, you can bulk-load Oracle target tables during a full
+	// Set this attribute to True to have DMS use a direct path full load. Specify
+	// this value to use the direct path protocol in the Oracle Call Interface (OCI).
+	// By using this OCI protocol, you can bulk-load Oracle target tables during a full
 	// load.
 	UseDirectPathFullLoad *bool
 
-	// Set this attribute to Y to capture change data using the Oracle LogMiner
-	// utility (the default). Set this attribute to N if you want to access the redo
-	// logs as a binary file. When you set UseLogminerReader to N, also set UseBfile
-	// to Y. For more information on this setting and using Oracle ASM, see [Using Oracle LogMiner or DMS Binary Reader for CDC]in the DMS
-	// User Guide.
+	// Set this attribute to True to capture change data using the Oracle LogMiner
+	// utility (the default). Set this attribute to False if you want to access the
+	// redo logs as a binary file. When you set UseLogminerReader to False, also set
+	// UseBfile to True. For more information on this setting and using Oracle ASM, see [Using Oracle LogMiner or DMS Binary Reader for CDC]
+	// in the DMS User Guide.
 	//
 	// [Using Oracle LogMiner or DMS Binary Reader for CDC]: https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Source.Oracle.html#CHAP_Source.Oracle.CDC
 	UseLogminerReader *bool
@@ -2551,6 +2758,8 @@ type PostgreSQLSettings struct {
 	// To capture DDL events, DMS creates various artifacts in the PostgreSQL database
 	// when the task starts. You can later remove these artifacts.
 	//
+	// The default value is true .
+	//
 	// If this value is set to N , you don't have to create tables or triggers on the
 	// source database.
 	CaptureDdls *bool
@@ -2565,8 +2774,19 @@ type PostgreSQLSettings struct {
 
 	// The schema in which the operational DDL database artifacts are created.
 	//
+	// The default value is public .
+	//
 	// Example: ddlArtifactsSchema=xyzddlschema;
 	DdlArtifactsSchema *string
+
+	// Disables the Unicode source filter with PostgreSQL, for values passed into the
+	// Selection rule filter on Source Endpoint column values. By default DMS performs
+	// source filter comparisons using a Unicode string which can cause look ups to
+	// ignore the indexes in the text columns and slow down migrations.
+	//
+	// Unicode support should only be disabled when using a selection rule filter is
+	// on a text column in the Source database that is indexed.
+	DisableUnicodeSourceFilter *bool
 
 	// Sets the client statement timeout for the PostgreSQL instance, in seconds. The
 	// default value is 60 seconds.
@@ -2577,6 +2797,8 @@ type PostgreSQLSettings struct {
 	// When set to true , this value causes a task to fail if the actual size of a LOB
 	// column is greater than the specified LobMaxSize .
 	//
+	// The default value is false .
+	//
 	// If task is set to Limited LOB mode and this option is set to true, the task
 	// fails instead of truncating the LOB data.
 	FailTasksOnLobTruncation *bool
@@ -2585,27 +2807,41 @@ type PostgreSQLSettings struct {
 	// doing this, it prevents idle logical replication slots from holding onto old WAL
 	// logs, which can result in storage full situations on the source. This heartbeat
 	// keeps restart_lsn moving and prevents storage full scenarios.
+	//
+	// The default value is false .
 	HeartbeatEnable *bool
 
 	// Sets the WAL heartbeat frequency (in minutes).
+	//
+	// The default value is 5 minutes.
 	HeartbeatFrequency *int32
 
 	// Sets the schema in which the heartbeat artifacts are created.
+	//
+	// The default value is public .
 	HeartbeatSchema *string
 
 	// When true, lets PostgreSQL migrate the boolean type as boolean. By default,
 	// PostgreSQL migrates booleans as varchar(5) . You must set this setting on both
 	// the source and target endpoints for it to take effect.
+	//
+	// The default value is false .
 	MapBooleanAsBoolean *bool
 
 	// When true, DMS migrates JSONB values as CLOB.
+	//
+	// The default value is false .
 	MapJsonbAsClob *bool
 
-	// When true, DMS migrates LONG values as VARCHAR.
+	// Sets what datatype to map LONG values as.
+	//
+	// The default value is wstring .
 	MapLongVarcharAs LongVarcharMappingType
 
 	// Specifies the maximum size (in KB) of any .csv file used to transfer data to
 	// PostgreSQL.
+	//
+	// The default value is 32,768 KB (32 MB).
 	//
 	// Example: maxFileSize=512
 	MaxFileSize *int32
@@ -2614,6 +2850,8 @@ type PostgreSQLSettings struct {
 	Password *string
 
 	// Specifies the plugin to use to create a replication slot.
+	//
+	// The default value is pglogical .
 	PluginName PluginNameValue
 
 	// Endpoint TCP port. The default is 5432.
@@ -2678,6 +2916,84 @@ type PostgreSQLSettings struct {
 
 	// Endpoint connection user name.
 	Username *string
+
+	noSmithyDocumentSerde
+}
+
+// The results returned in describe-replications to display the results of the
+// premigration assessment from the replication configuration.
+type PremigrationAssessmentStatus struct {
+
+	// The progress values reported by the AssessmentProgress response element.
+	AssessmentProgress *ReplicationTaskAssessmentRunProgress
+
+	// A configurable setting you can set to true (the defualt setting) or false . Use
+	// this setting to to stop the replication from starting automatically if the
+	// assessment fails. This can help you evaluate the issue that is preventing the
+	// replication from running successfully.
+	FailOnAssessmentFailure bool
+
+	// The last message generated by an individual assessment failure.
+	LastFailureMessage *string
+
+	// The Amazon Resource Name (ARN) of this assessment run.
+	PremigrationAssessmentRunArn *string
+
+	// The date which the assessment run was created.
+	PremigrationAssessmentRunCreationDate *time.Time
+
+	// The supported values are SSE_KMS and SSE_S3 . If these values are not provided,
+	// then the files are not encrypted at rest. For more information, see [Creating Amazon Web Services KMS keys to encrypt Amazon S3 target objects].
+	//
+	// [Creating Amazon Web Services KMS keys to encrypt Amazon S3 target objects]: https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Target.S3.html#CHAP_Target.S3.KMSKeys
+	ResultEncryptionMode *string
+
+	// The ARN of a custom KMS encryption key that you specify when you set
+	// ResultEncryptionMode to SSE_KMS .
+	ResultKmsKeyArn *string
+
+	// The Amazon S3 bucket that Database Migration Service Serverless created to
+	// store the results of this assessment run.
+	ResultLocationBucket *string
+
+	// The folder within an Amazon S3 bucket where you want Database Migration Service
+	// to store the results of this assessment run.
+	ResultLocationFolder *string
+
+	// The object containing the result statistics for a completed assessment run.
+	ResultStatistic *ReplicationTaskAssessmentRunResultStatistic
+
+	// This describes the assessment run status. The status can be one of the
+	// following values:
+	//
+	//   - cancelling : The assessment run was canceled.
+	//
+	//   - deleting : The assessment run was deleted.
+	//
+	//   - failed : At least one individual assessment completed with a failed status.
+	//
+	//   - error-provisioning : An internal error occurred while resources were
+	//   provisioned (during the provisioning status).
+	//
+	//   - error-executing An internal error occurred while individual assessments ran
+	//   (during the running status).
+	//
+	//   - invalid state : The assessment run is in an unknown state.
+	//
+	//   - passed : All individual assessments have completed and none have a failed
+	//   status.
+	//
+	//   - provisioning : The resources required to run individual assessments are
+	//   being provisioned.
+	//
+	//   - running : Individual assessments are being run.
+	//
+	//   - starting : The assessment run is starting, but resources are not yet being
+	//   provisioned for individual assessments.
+	//
+	//   - warning : At least one individual assessment completed with a warning
+	//   status.
+	Status *string
 
 	noSmithyDocumentSerde
 }
@@ -3172,6 +3488,9 @@ type Replication struct {
 	// Error and other information about why a serverless replication failed.
 	FailureMessages []string
 
+	// The status output of premigration assessment in describe-replications.
+	PremigrationAssessmentStatuses []PremigrationAssessmentStatus
+
 	// Information about provisioning resources for an DMS serverless replication.
 	ProvisionData *ProvisionData
 
@@ -3209,7 +3528,7 @@ type Replication struct {
 	// uses for its data source.
 	SourceEndpointArn *string
 
-	// The replication type.
+	// The type of replication to start.
 	StartReplicationType *string
 
 	// The current status of the serverless replication.
@@ -3333,6 +3652,10 @@ type ReplicationInstance struct {
 
 	// The time the replication instance was created.
 	InstanceCreateTime *time.Time
+
+	// Specifies the settings required for kerberos authentication when replicating an
+	// instance.
+	KerberosAuthenticationSettings *KerberosAuthenticationSettings
 
 	// An KMS key identifier that is used to encrypt the data on the replication
 	// instance.
@@ -3702,13 +4025,16 @@ type ReplicationTask struct {
 	// The reason the replication task was stopped. This response parameter can return
 	// one of the following values:
 	//
-	//   - "Stop Reason NORMAL"
+	//   - "Stop Reason NORMAL" – The task completed successfully with no additional
+	//   information returned.
 	//
 	//   - "Stop Reason RECOVERABLE_ERROR"
 	//
 	//   - "Stop Reason FATAL_ERROR"
 	//
-	//   - "Stop Reason FULL_LOAD_ONLY_FINISHED"
+	//   - "Stop Reason FULL_LOAD_ONLY_FINISHED" – The task completed the full load
+	//   phase. DMS applied cached changes if you set StopTaskCachedChangesApplied to
+	//   true .
 	//
 	//   - "Stop Reason STOPPED_AFTER_FULL_LOAD" – Full load completed, with cached
 	//   changes not applied
@@ -3805,6 +4131,10 @@ type ReplicationTaskAssessmentRun struct {
 	// Unique name of the assessment run.
 	AssessmentRunName *string
 
+	// Indicates that the following PreflightAssessmentRun is the latest for the
+	// ReplicationTask. The status is either true or false.
+	IsLatestTaskAssessmentRun bool
+
 	// Last message generated by an individual assessment failure.
 	LastFailureMessage *string
 
@@ -3830,6 +4160,11 @@ type ReplicationTaskAssessmentRun struct {
 	// Folder in an Amazon S3 bucket where DMS stores the results of this assessment
 	// run.
 	ResultLocationFolder *string
+
+	//  Result statistics for a completed assessment run, showing aggregated
+	// statistics of IndividualAssessments for how many assessments were passed,
+	// failed, or encountered issues such as errors or warnings.
+	ResultStatistic *ReplicationTaskAssessmentRunResultStatistic
 
 	// ARN of the service role used to start the assessment run using the
 	// StartReplicationTaskAssessmentRun operation. The role must allow the
@@ -3866,6 +4201,10 @@ type ReplicationTaskAssessmentRun struct {
 	//
 	//   - "starting" – The assessment run is starting, but resources are not yet being
 	//   provisioned for individual assessments.
+	//
+	//   - "warning" – At least one individual assessment completed with a warning
+	//   status or all individual assessments were skipped (completed with a skipped
+	//   status).
 	Status *string
 
 	noSmithyDocumentSerde
@@ -3879,6 +4218,35 @@ type ReplicationTaskAssessmentRunProgress struct {
 
 	// The number of individual assessments that are specified to run.
 	IndividualAssessmentCount int32
+
+	noSmithyDocumentSerde
+}
+
+// The object containing the result statistics for a completed assessment run.
+type ReplicationTaskAssessmentRunResultStatistic struct {
+
+	//  The number of individual assessments that were cancelled during the assessment
+	// run.
+	Cancelled int32
+
+	// The number of individual assessments that encountered a critical error and
+	// could not complete properly.
+	Error int32
+
+	// The number of individual assessments that failed to meet the criteria defined
+	// in the assessment run.
+	Failed int32
+
+	// The number of individual assessments that successfully passed all checks in the
+	// assessment run.
+	Passed int32
+
+	// The number of individual assessments that were skipped during the assessment
+	// run.
+	Skipped int32
+
+	// Indicates that the recent completed AssessmentRun triggered a warning.
+	Warning int32
 
 	noSmithyDocumentSerde
 }
@@ -3914,6 +4282,8 @@ type ReplicationTaskIndividualAssessment struct {
 	//   - "passed"
 	//
 	//   - "pending"
+	//
+	//   - "skipped"
 	//
 	//   - "running"
 	Status *string
@@ -4526,6 +4896,25 @@ type ServerShortInfoResponse struct {
 	noSmithyDocumentSerde
 }
 
+// Defines settings for a source data provider for a data migration.
+type SourceDataSetting struct {
+
+	// The change data capture (CDC) start position for the source data provider.
+	CDCStartPosition *string
+
+	// The change data capture (CDC) start time for the source data provider.
+	CDCStartTime *time.Time
+
+	// The change data capture (CDC) stop time for the source data provider.
+	CDCStopTime *time.Time
+
+	// The name of the replication slot on the source data provider. This attribute is
+	// only valid for a PostgreSQL or Aurora PostgreSQL source.
+	SlotName *string
+
+	noSmithyDocumentSerde
+}
+
 // Provides information about the source database to analyze and provide target
 // recommendations according to the specified requirements.
 type StartRecommendationsRequestEntry struct {
@@ -4789,6 +5178,17 @@ type Tag struct {
 	// '/', '=', '+', '-' (Java regular expressions:
 	// "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-]*)$").
 	Value *string
+
+	noSmithyDocumentSerde
+}
+
+// Defines settings for a target data provider for a data migration.
+type TargetDataSetting struct {
+
+	// This setting determines how DMS handles the target tables before starting a
+	// data migration, either by leaving them untouched, dropping and recreating them,
+	// or truncating the existing data in the target tables.
+	TablePreparationMode TablePreparationMode
 
 	noSmithyDocumentSerde
 }

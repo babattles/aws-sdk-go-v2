@@ -37,7 +37,7 @@ func (c *Client) CreateLocationObjectStorage(ctx context.Context, params *Create
 type CreateLocationObjectStorageInput struct {
 
 	// Specifies the Amazon Resource Names (ARNs) of the DataSync agents that can
-	// securely connect with your location.
+	// connect with your object storage system.
 	//
 	// This member is required.
 	AgentArns []string
@@ -47,9 +47,8 @@ type CreateLocationObjectStorageInput struct {
 	// This member is required.
 	BucketName *string
 
-	// Specifies the domain name or IP address of the object storage server. A
-	// DataSync agent uses this hostname to mount the object storage server in a
-	// network.
+	// Specifies the domain name or IP version 4 (IPv4) address of the object storage
+	// server that your DataSync agent connects to.
 	//
 	// This member is required.
 	ServerHostname *string
@@ -160,6 +159,9 @@ func (c *Client) addOperationCreateLocationObjectStorageMiddlewares(stack *middl
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -176,6 +178,9 @@ func (c *Client) addOperationCreateLocationObjectStorageMiddlewares(stack *middl
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateLocationObjectStorageValidationMiddleware(stack); err != nil {
@@ -197,6 +202,18 @@ func (c *Client) addOperationCreateLocationObjectStorageMiddlewares(stack *middl
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

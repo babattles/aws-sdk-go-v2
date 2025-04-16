@@ -11,19 +11,19 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Modifies the settings for a replication group. This is limited to Redis OSS 7
-// and newer.
+// Modifies the settings for a replication group. This is limited to Valkey and
+// Redis OSS 7 and above.
 //
-// [Scaling for Amazon ElastiCache (Redis OSS) (cluster mode enabled)]
+// [Scaling for Valkey or Redis OSS (cluster mode enabled)]
 //   - in the ElastiCache User Guide
 //
 // [ModifyReplicationGroupShardConfiguration]
 //   - in the ElastiCache API Reference
 //
-// This operation is valid for Redis OSS only.
+// This operation is valid for Valkey or Redis OSS only.
 //
 // [ModifyReplicationGroupShardConfiguration]: https://docs.aws.amazon.com/AmazonElastiCache/latest/APIReference/API_ModifyReplicationGroupShardConfiguration.html
-// [Scaling for Amazon ElastiCache (Redis OSS) (cluster mode enabled)]: https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/scaling-redis-cluster-mode-enabled.html
+// [Scaling for Valkey or Redis OSS (cluster mode enabled)]: https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/scaling-redis-cluster-mode-enabled.html
 func (c *Client) ModifyReplicationGroup(ctx context.Context, params *ModifyReplicationGroupInput, optFns ...func(*Options)) (*ModifyReplicationGroupOutput, error) {
 	if params == nil {
 		params = &ModifyReplicationGroupInput{}
@@ -83,14 +83,14 @@ type ModifyReplicationGroupInput struct {
 	//
 	//   - DELETE - allowed only when transitioning to RBAC
 	//
-	// For more information, see [Authenticating Users with Redis OSS AUTH]
+	// For more information, see [Authenticating Users with AUTH]
 	//
-	// [Authenticating Users with Redis OSS AUTH]: http://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/auth.html
+	// [Authenticating Users with AUTH]: http://docs.aws.amazon.com/AmazonElastiCache/latest/dg/auth.html
 	AuthTokenUpdateStrategy types.AuthTokenUpdateStrategyType
 
-	//  If you are running Redis OSS engine version 6.0 or later, set this parameter
-	// to yes if you want to opt-in to the next auto minor version upgrade campaign.
-	// This parameter is disabled for previous versions.
+	//  If you are running Valkey or Redis OSS engine version 6.0 or later, set this
+	// parameter to yes if you want to opt-in to the next auto minor version upgrade
+	// campaign. This parameter is disabled for previous versions.
 	AutoMinorVersionUpgrade *bool
 
 	// Determines whether a read replica is automatically promoted to read/write
@@ -119,11 +119,16 @@ type ModifyReplicationGroupInput struct {
 	CacheSecurityGroupNames []string
 
 	// Enabled or Disabled. To modify cluster mode from Disabled to Enabled, you must
-	// first set the cluster mode to Compatible. Compatible mode allows your Redis OSS
-	// clients to connect using both cluster mode enabled and cluster mode disabled.
-	// After you migrate all Redis OSS clients to use cluster mode enabled, you can
-	// then complete cluster mode configuration and set the cluster mode to Enabled.
+	// first set the cluster mode to Compatible. Compatible mode allows your Valkey or
+	// Redis OSS clients to connect using both cluster mode enabled and cluster mode
+	// disabled. After you migrate all Valkey or Redis OSS clients to use cluster mode
+	// enabled, you can then complete cluster mode configuration and set the cluster
+	// mode to Enabled.
 	ClusterMode types.ClusterMode
+
+	// Modifies the engine listed in a replication group message. The options are
+	// redis, memcached or valkey.
+	Engine *string
 
 	// The upgraded version of the cache engine to be run on the clusters in the
 	// replication group.
@@ -133,12 +138,13 @@ type ModifyReplicationGroupInput struct {
 	// version, you must delete the existing replication group and create it anew with
 	// the earlier engine version.
 	//
-	// [Selecting a Cache Engine and Version]: https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SelectEngine.html#VersionManagement
+	// [Selecting a Cache Engine and Version]: https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/SelectEngine.html#VersionManagement
 	EngineVersion *string
 
 	// The network type you choose when modifying a cluster, either ipv4 | ipv6 . IPv6
-	// is supported for workloads using Redis OSS engine version 6.2 onward or
-	// Memcached engine version 1.6.6 on all instances built on the [Nitro system].
+	// is supported for workloads using Valkey 7.2 and above, Redis OSS engine version
+	// 6.2 to 7.1 and Memcached engine version 1.6.6 and above on all instances built
+	// on the [Nitro system].
 	//
 	// [Nitro system]: http://aws.amazon.com/ec2/nitro/
 	IpDiscovery types.IpDiscovery
@@ -227,8 +233,8 @@ type ModifyReplicationGroupInput struct {
 	SnapshotWindow *string
 
 	// The cluster ID that is used as the daily snapshot source for the replication
-	// group. This parameter cannot be set for Redis OSS (cluster mode enabled)
-	// replication groups.
+	// group. This parameter cannot be set for Valkey or Redis OSS (cluster mode
+	// enabled) replication groups.
 	SnapshottingClusterId *string
 
 	// A flag that enables in-transit encryption when set to true. If you are enabling
@@ -242,8 +248,8 @@ type ModifyReplicationGroupInput struct {
 	// You must set TransitEncryptionEnabled to true , for your existing cluster, and
 	// set TransitEncryptionMode to preferred in the same request to allow both
 	// encrypted and unencrypted connections at the same time. Once you migrate all
-	// your Redis OSS clients to use encrypted connections you can set the value to
-	// required to allow encrypted connections only.
+	// your Valkey or Redis OSS clients to use encrypted connections you can set the
+	// value to required to allow encrypted connections only.
 	//
 	// Setting TransitEncryptionMode to required is a two-step process that requires
 	// you to first set the TransitEncryptionMode to preferred , after that you can set
@@ -262,7 +268,8 @@ type ModifyReplicationGroupInput struct {
 
 type ModifyReplicationGroupOutput struct {
 
-	// Contains all of the attributes of a specific Redis OSS replication group.
+	// Contains all of the attributes of a specific Valkey or Redis OSS replication
+	// group.
 	ReplicationGroup *types.ReplicationGroup
 
 	// Metadata pertaining to the operation's result.
@@ -314,6 +321,9 @@ func (c *Client) addOperationModifyReplicationGroupMiddlewares(stack *middleware
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -330,6 +340,9 @@ func (c *Client) addOperationModifyReplicationGroupMiddlewares(stack *middleware
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpModifyReplicationGroupValidationMiddleware(stack); err != nil {
@@ -351,6 +364,18 @@ func (c *Client) addOperationModifyReplicationGroupMiddlewares(stack *middleware
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

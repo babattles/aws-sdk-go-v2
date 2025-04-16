@@ -11,7 +11,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Retrieves the specified verified destiona numbers.
+// Retrieves the specified verified destination numbers.
 func (c *Client) DescribeVerifiedDestinationNumbers(ctx context.Context, params *DescribeVerifiedDestinationNumbersInput, optFns ...func(*Options)) (*DescribeVerifiedDestinationNumbersOutput, error) {
 	if params == nil {
 		params = &DescribeVerifiedDestinationNumbersInput{}
@@ -42,7 +42,7 @@ type DescribeVerifiedDestinationNumbersInput struct {
 	// supply a value for this field in the initial request.
 	NextToken *string
 
-	// An array of VerifiedDestinationNumberid to retreive.
+	// An array of VerifiedDestinationNumberid to retrieve.
 	VerifiedDestinationNumberIds []string
 
 	noSmithyDocumentSerde
@@ -108,6 +108,9 @@ func (c *Client) addOperationDescribeVerifiedDestinationNumbersMiddlewares(stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -124,6 +127,9 @@ func (c *Client) addOperationDescribeVerifiedDestinationNumbersMiddlewares(stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeVerifiedDestinationNumbersValidationMiddleware(stack); err != nil {
@@ -145,6 +151,18 @@ func (c *Client) addOperationDescribeVerifiedDestinationNumbersMiddlewares(stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

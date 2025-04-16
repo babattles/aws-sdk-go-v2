@@ -210,6 +210,7 @@ const (
 	EnvironmentLifecycleUpdating  EnvironmentLifecycle = "Updating"
 	EnvironmentLifecycleDeleting  EnvironmentLifecycle = "Deleting"
 	EnvironmentLifecycleFailed    EnvironmentLifecycle = "Failed"
+	EnvironmentLifecycleUnhealthy EnvironmentLifecycle = "UnHealthy"
 )
 
 // Values returns all known values for EnvironmentLifecycle. Note that this can be
@@ -223,6 +224,26 @@ func (EnvironmentLifecycle) Values() []EnvironmentLifecycle {
 		"Updating",
 		"Deleting",
 		"Failed",
+		"UnHealthy",
+	}
+}
+
+type NetworkType string
+
+// Enum values for NetworkType
+const (
+	NetworkTypeIpv4 NetworkType = "ipv4"
+	NetworkTypeDual NetworkType = "dual"
+)
+
+// Values returns all known values for NetworkType. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (NetworkType) Values() []NetworkType {
+	return []NetworkType{
+		"ipv4",
+		"dual",
 	}
 }
 

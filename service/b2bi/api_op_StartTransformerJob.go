@@ -12,7 +12,7 @@ import (
 )
 
 // Runs a job, using a transformer, to parse input EDI (electronic data
-// interchange) file into the output structures used by Amazon Web Services B2BI
+// interchange) file into the output structures used by Amazon Web Services B2B
 // Data Interchange.
 //
 // If you only want to transform EDI (electronic data interchange) documents, you
@@ -115,6 +115,9 @@ func (c *Client) addOperationStartTransformerJobMiddlewares(stack *middleware.St
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -131,6 +134,9 @@ func (c *Client) addOperationStartTransformerJobMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opStartTransformerJobMiddleware(stack, options); err != nil {
@@ -155,6 +161,18 @@ func (c *Client) addOperationStartTransformerJobMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

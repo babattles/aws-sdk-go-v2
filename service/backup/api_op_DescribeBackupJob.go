@@ -59,13 +59,12 @@ type DescribeBackupJobOutput struct {
 	BackupType *string
 
 	// An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for
-	// example, arn:aws:backup:us-east-1:123456789012:vault:aBackupVault .
+	// example, arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault .
 	BackupVaultArn *string
 
 	// The name of a logical container where backups are stored. Backup vaults are
 	// identified by names that are unique to the account used to create them and the
-	// Amazon Web Services Region where they are created. They consist of lowercase
-	// letters, numbers, and hyphens.
+	// Amazon Web Services Region where they are created.
 	BackupVaultName *string
 
 	// The size in bytes transferred to a backup vault at the time that the job status
@@ -102,13 +101,13 @@ type DescribeBackupJobOutput struct {
 	// example, arn:aws:iam::123456789012:role/S3Access .
 	IamRoleArn *string
 
-	// This is the date a backup job was initiated.
+	// The date a backup job was initiated.
 	InitiationDate *time.Time
 
 	// This returns the boolean value that a backup job is a parent (composite) job.
 	IsParent bool
 
-	// This is the job count for the specified message category.
+	// The job count for the specified message category.
 	//
 	// Example strings may include AccessDenied , SUCCESS , AGGREGATE_ALL , and
 	// INVALIDPARAMETERS . View [Monitoring] for a list of accepted MessageCategory strings.
@@ -135,8 +134,7 @@ type DescribeBackupJobOutput struct {
 	// on the resource type.
 	ResourceArn *string
 
-	// This is the non-unique name of the resource that belongs to the specified
-	// backup.
+	// The non-unique name of the resource that belongs to the specified backup.
 	ResourceName *string
 
 	// The type of Amazon Web Services resource to be backed up; for example, an
@@ -208,6 +206,9 @@ func (c *Client) addOperationDescribeBackupJobMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -224,6 +225,9 @@ func (c *Client) addOperationDescribeBackupJobMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeBackupJobValidationMiddleware(stack); err != nil {
@@ -245,6 +249,18 @@ func (c *Client) addOperationDescribeBackupJobMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

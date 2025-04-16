@@ -12,8 +12,7 @@ import (
 	"time"
 )
 
-// Updates an existing framework identified by its FrameworkName with the input
-// document in JSON format.
+// Updates the specified framework.
 func (c *Client) UpdateFramework(ctx context.Context, params *UpdateFrameworkInput, optFns ...func(*Options)) (*UpdateFrameworkOutput, error) {
 	if params == nil {
 		params = &UpdateFrameworkInput{}
@@ -38,8 +37,8 @@ type UpdateFrameworkInput struct {
 	// This member is required.
 	FrameworkName *string
 
-	// A list of the controls that make up the framework. Each control in the list has
-	// a name, input parameters, and scope.
+	// The controls that make up the framework. Each control in the list has a name,
+	// input parameters, and scope.
 	FrameworkControls []types.FrameworkControl
 
 	// An optional description of the framework with a maximum 1,024 characters.
@@ -119,6 +118,9 @@ func (c *Client) addOperationUpdateFrameworkMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -135,6 +137,9 @@ func (c *Client) addOperationUpdateFrameworkMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opUpdateFrameworkMiddleware(stack, options); err != nil {
@@ -159,6 +164,18 @@ func (c *Client) addOperationUpdateFrameworkMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

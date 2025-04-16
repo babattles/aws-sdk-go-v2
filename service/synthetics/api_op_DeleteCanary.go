@@ -12,24 +12,24 @@ import (
 
 // Permanently deletes the specified canary.
 //
-// If you specify DeleteLambda to true , CloudWatch Synthetics also deletes the
-// Lambda functions and layers that are used by the canary.
+// If the canary's ProvisionedResourceCleanup field is set to AUTOMATIC or you
+// specify DeleteLambda in this operation as true , CloudWatch Synthetics also
+// deletes the Lambda functions and layers that are used by the canary.
 //
 // Other resources used and created by the canary are not automatically deleted.
-// After you delete a canary that you do not intend to use again, you should also
-// delete the following:
+// After you delete a canary, you should also delete the following:
 //
 //   - The CloudWatch alarms created for this canary. These alarms have a name of
-//     Synthetics-SharpDrop-Alarm-MyCanaryName .
+//     Synthetics-Alarm-first-198-characters-of-canary-name-canaryId-alarm number
 //
 //   - Amazon S3 objects and buckets, such as the canary's artifact location.
 //
 //   - IAM roles created for the canary. If they were created in the console,
 //     these roles have the name
-//     role/service-role/CloudWatchSyntheticsRole-MyCanaryName .
+//     role/service-role/CloudWatchSyntheticsRole-First-21-Characters-of-CanaryName
 //
 //   - CloudWatch Logs log groups created for the canary. These logs groups have
-//     the name /aws/lambda/cwsyn-MyCanaryName .
+//     the name /aws/lambda/cwsyn-First-21-Characters-of-CanaryName
 //
 // Before you delete a canary, you might want to use GetCanary to display the
 // information about this canary. Make note of the information returned by this
@@ -60,7 +60,12 @@ type DeleteCanaryInput struct {
 	Name *string
 
 	// Specifies whether to also delete the Lambda functions and layers used by this
-	// canary. The default is false.
+	// canary. The default is false .
+	//
+	// Your setting for this parameter is used only if the canary doesn't have
+	// AUTOMATIC for its ProvisionedResourceCleanup field. If that field is set to
+	// AUTOMATIC , then the Lambda functions and layers will be deleted when this
+	// canary is deleted.
 	//
 	// Type: Boolean
 	DeleteLambda bool
@@ -118,6 +123,9 @@ func (c *Client) addOperationDeleteCanaryMiddlewares(stack *middleware.Stack, op
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -134,6 +142,9 @@ func (c *Client) addOperationDeleteCanaryMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteCanaryValidationMiddleware(stack); err != nil {
@@ -155,6 +166,18 @@ func (c *Client) addOperationDeleteCanaryMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

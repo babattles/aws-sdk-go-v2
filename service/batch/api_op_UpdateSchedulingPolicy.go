@@ -35,7 +35,7 @@ type UpdateSchedulingPolicyInput struct {
 	// This member is required.
 	Arn *string
 
-	// The fair share policy.
+	// The fair-share policy scheduling details.
 	FairsharePolicy *types.FairsharePolicy
 
 	noSmithyDocumentSerde
@@ -91,6 +91,9 @@ func (c *Client) addOperationUpdateSchedulingPolicyMiddlewares(stack *middleware
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -107,6 +110,9 @@ func (c *Client) addOperationUpdateSchedulingPolicyMiddlewares(stack *middleware
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateSchedulingPolicyValidationMiddleware(stack); err != nil {
@@ -128,6 +134,18 @@ func (c *Client) addOperationUpdateSchedulingPolicyMiddlewares(stack *middleware
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

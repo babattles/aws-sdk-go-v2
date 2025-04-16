@@ -48,6 +48,9 @@ type UpdateDomainInput struct {
 	// The name to be updated as part of the UpdateDomain action.
 	Name *string
 
+	// The service role of the domain.
+	ServiceRole *string
+
 	// The single sign-on option to be updated as part of the UpdateDomain action.
 	SingleSignOn *types.SingleSignOn
 
@@ -72,6 +75,12 @@ type UpdateDomainOutput struct {
 
 	// The name to be updated as part of the UpdateDomain action.
 	Name *string
+
+	// The ID of the root domain unit.
+	RootDomainUnitId *string
+
+	// The service role of the domain.
+	ServiceRole *string
 
 	// The single sign-on option of the Amazon DataZone domain.
 	SingleSignOn *types.SingleSignOn
@@ -125,6 +134,9 @@ func (c *Client) addOperationUpdateDomainMiddlewares(stack *middleware.Stack, op
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -141,6 +153,9 @@ func (c *Client) addOperationUpdateDomainMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opUpdateDomainMiddleware(stack, options); err != nil {
@@ -165,6 +180,18 @@ func (c *Client) addOperationUpdateDomainMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -35,7 +35,7 @@ type ListConnectorsInput struct {
 	ConnectorNamePrefix *string
 
 	// The maximum number of connectors to list in one response.
-	MaxResults int32
+	MaxResults *int32
 
 	// If the response of a ListConnectors operation is truncated, it will include a
 	// NextToken. Send this NextToken in a subsequent request to continue listing from
@@ -104,6 +104,9 @@ func (c *Client) addOperationListConnectorsMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -122,6 +125,9 @@ func (c *Client) addOperationListConnectorsMiddlewares(stack *middleware.Stack, 
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListConnectors(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -138,6 +144,18 @@ func (c *Client) addOperationListConnectorsMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -169,8 +187,8 @@ func NewListConnectorsPaginator(client ListConnectorsAPIClient, params *ListConn
 	}
 
 	options := ListConnectorsPaginatorOptions{}
-	if params.MaxResults != 0 {
-		options.Limit = params.MaxResults
+	if params.MaxResults != nil {
+		options.Limit = *params.MaxResults
 	}
 
 	for _, fn := range optFns {
@@ -200,7 +218,11 @@ func (p *ListConnectorsPaginator) NextPage(ctx context.Context, optFns ...func(*
 	params := *p.params
 	params.NextToken = p.nextToken
 
-	params.MaxResults = p.options.Limit
+	var limit *int32
+	if p.options.Limit > 0 {
+		limit = &p.options.Limit
+	}
+	params.MaxResults = limit
 
 	optFns = append([]func(*Options){
 		addIsPaginatorUserAgent,

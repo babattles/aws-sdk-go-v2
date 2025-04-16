@@ -91,6 +91,10 @@ type SendTextMessageInput struct {
 	// The body of the text message.
 	MessageBody *string
 
+	// Set to true to enable message feedback for the message. When a user receives
+	// the message you need to update the message status using PutMessageFeedback.
+	MessageFeedbackEnabled *bool
+
 	// The type of message. Valid values are for messages that are critical or
 	// time-sensitive and PROMOTIONAL for messages that aren't critical or
 	// time-sensitive.
@@ -98,6 +102,9 @@ type SendTextMessageInput struct {
 
 	// The origination identity of the message. This can be either the PhoneNumber,
 	// PhoneNumberId, PhoneNumberArn, SenderId, SenderIdArn, PoolId, or PoolArn.
+	//
+	// If you are using a shared AWS End User Messaging SMS and Voice resource then
+	// you must use the full Amazon Resource Name(ARN).
 	OriginationIdentity *string
 
 	// The unique identifier for the protect configuration.
@@ -165,6 +172,9 @@ func (c *Client) addOperationSendTextMessageMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -181,6 +191,9 @@ func (c *Client) addOperationSendTextMessageMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpSendTextMessageValidationMiddleware(stack); err != nil {
@@ -202,6 +215,18 @@ func (c *Client) addOperationSendTextMessageMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

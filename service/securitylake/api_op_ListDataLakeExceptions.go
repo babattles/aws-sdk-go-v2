@@ -30,10 +30,10 @@ func (c *Client) ListDataLakeExceptions(ctx context.Context, params *ListDataLak
 
 type ListDataLakeExceptionsInput struct {
 
-	// List the maximum number of failures in Security Lake.
+	// Lists the maximum number of failures in Security Lake.
 	MaxResults *int32
 
-	// List if there are more results available. The value of nextToken is a unique
+	// Lists if there are more results available. The value of nextToken is a unique
 	// pagination token for each page. Repeat the call using the returned token to
 	// retrieve the next page. Keep all other arguments unchanged.
 	//
@@ -49,10 +49,10 @@ type ListDataLakeExceptionsInput struct {
 
 type ListDataLakeExceptionsOutput struct {
 
-	// Lists the failures that cannot be retried in the current Region.
+	// Lists the failures that cannot be retried.
 	Exceptions []types.DataLakeException
 
-	// List if there are more results available. The value of nextToken is a unique
+	// Lists if there are more results available. The value of nextToken is a unique
 	// pagination token for each page. Repeat the call using the returned token to
 	// retrieve the next page. Keep all other arguments unchanged.
 	//
@@ -109,6 +109,9 @@ func (c *Client) addOperationListDataLakeExceptionsMiddlewares(stack *middleware
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -125,6 +128,9 @@ func (c *Client) addOperationListDataLakeExceptionsMiddlewares(stack *middleware
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListDataLakeExceptions(options.Region), middleware.Before); err != nil {
@@ -145,13 +151,25 @@ func (c *Client) addOperationListDataLakeExceptionsMiddlewares(stack *middleware
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
+		return err
+	}
 	return nil
 }
 
 // ListDataLakeExceptionsPaginatorOptions is the paginator options for
 // ListDataLakeExceptions
 type ListDataLakeExceptionsPaginatorOptions struct {
-	// List the maximum number of failures in Security Lake.
+	// Lists the maximum number of failures in Security Lake.
 	Limit int32
 
 	// Set to true if pagination should stop if the service returns a pagination token

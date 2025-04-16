@@ -11,7 +11,24 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Gets the logging configuration of a user pool.
+// Given a user pool ID, returns the logging configuration. User pools can export
+// message-delivery error and threat-protection activity logs to external Amazon
+// Web Services services. For more information, see [Exporting user pool logs].
+//
+// Amazon Cognito evaluates Identity and Access Management (IAM) policies in
+// requests for this API operation. For this operation, you must use IAM
+// credentials to authorize requests, and you must grant yourself the corresponding
+// IAM permission in a policy.
+//
+// # Learn more
+//
+// [Signing Amazon Web Services API Requests]
+//
+// [Using the Amazon Cognito user pools API and user pool endpoints]
+//
+// [Exporting user pool logs]: https://docs.aws.amazon.com/cognito/latest/developerguide/exporting-quotas-and-usage.html
+// [Using the Amazon Cognito user pools API and user pool endpoints]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html
+// [Signing Amazon Web Services API Requests]: https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html
 func (c *Client) GetLogDeliveryConfiguration(ctx context.Context, params *GetLogDeliveryConfigurationInput, optFns ...func(*Options)) (*GetLogDeliveryConfigurationOutput, error) {
 	if params == nil {
 		params = &GetLogDeliveryConfigurationInput{}
@@ -40,7 +57,8 @@ type GetLogDeliveryConfigurationInput struct {
 
 type GetLogDeliveryConfigurationOutput struct {
 
-	// The logging configuration of the requested user pool.
+	// The logging configuration of the requested user pool. Includes types of logs
+	// configured and their destinations.
 	LogDeliveryConfiguration *types.LogDeliveryConfigurationType
 
 	// Metadata pertaining to the operation's result.
@@ -92,6 +110,9 @@ func (c *Client) addOperationGetLogDeliveryConfigurationMiddlewares(stack *middl
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -108,6 +129,9 @@ func (c *Client) addOperationGetLogDeliveryConfigurationMiddlewares(stack *middl
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetLogDeliveryConfigurationValidationMiddleware(stack); err != nil {
@@ -129,6 +153,18 @@ func (c *Client) addOperationGetLogDeliveryConfigurationMiddlewares(stack *middl
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

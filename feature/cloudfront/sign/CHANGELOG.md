@@ -1,3 +1,79 @@
+# v1.8.11 (2025-02-27)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.8.10 (2025-02-18)
+
+* **Bug Fix**: Bump go version to 1.22
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.8.9 (2025-02-05)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.8.8 (2025-01-31)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.8.7 (2025-01-30)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.8.6 (2025-01-24)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+* **Dependency Update**: Upgrade to smithy-go v1.22.2.
+
+# v1.8.5 (2025-01-15)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.8.4 (2025-01-09)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.8.3 (2024-12-19)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.8.2 (2024-12-02)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.8.1 (2024-11-18)
+
+* **Dependency Update**: Update to smithy-go v1.22.1.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.8.0 (2024-11-06)
+
+* **Feature**: Add Expires field to CookieOptions.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.20 (2024-10-28)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.19 (2024-10-08)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.18 (2024-10-07)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.17 (2024-10-04)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.16 (2024-09-20)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.15 (2024-09-03)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
 # v1.7.14 (2024-08-15)
 
 * **Dependency Update**: Bump minimum Go version to 1.21.

@@ -509,6 +509,22 @@ type DefaultWorkspaceCreationProperties struct {
 	noSmithyDocumentSerde
 }
 
+// Describes the filter conditions for the WorkSpaces to return.
+type DescribeWorkspaceDirectoriesFilter struct {
+
+	// The name of the WorkSpaces to filter.
+	//
+	// This member is required.
+	Name DescribeWorkspaceDirectoriesFilterName
+
+	// The values for filtering WorkSpaces
+	//
+	// This member is required.
+	Values []string
+
+	noSmithyDocumentSerde
+}
+
 // Describes the filter conditions for WorkSpaces Pools to return.
 type DescribeWorkspacesPoolsFilter struct {
 
@@ -588,6 +604,47 @@ type FailedWorkspaceChangeRequest struct {
 
 	// The identifier of the WorkSpace.
 	WorkspaceId *string
+
+	noSmithyDocumentSerde
+}
+
+// Describes the Global Accelerator for directory
+type GlobalAcceleratorForDirectory struct {
+
+	// Indicates if Global Accelerator for directory is enabled or disabled.
+	//
+	// This member is required.
+	Mode AGAModeForDirectoryEnum
+
+	// Indicates the preferred protocol for Global Accelerator.
+	PreferredProtocol AGAPreferredProtocolForDirectory
+
+	noSmithyDocumentSerde
+}
+
+// Describes the Global Accelerator for WorkSpaces.
+type GlobalAcceleratorForWorkSpace struct {
+
+	// Indicates if Global Accelerator for WorkSpaces is enabled, disabled, or the
+	// same mode as the associated directory.
+	//
+	// This member is required.
+	Mode AGAModeForWorkSpaceEnum
+
+	// Indicates the preferred protocol for Global Accelerator.
+	PreferredProtocol AGAPreferredProtocolForWorkSpace
+
+	noSmithyDocumentSerde
+}
+
+// Specifies the configurations of the identity center.
+type IDCConfig struct {
+
+	// The Amazon Resource Name (ARN) of the application.
+	ApplicationArn *string
+
+	// The Amazon Resource Name (ARN) of the identity center instance.
+	InstanceArn *string
 
 	noSmithyDocumentSerde
 }
@@ -770,6 +827,18 @@ type IpRuleItem struct {
 
 	// The description.
 	RuleDesc *string
+
+	noSmithyDocumentSerde
+}
+
+// Specifies the configurations of the Microsoft Entra.
+type MicrosoftEntraConfig struct {
+
+	// The Amazon Resource Name (ARN) of the application config.
+	ApplicationConfigSecretArn *string
+
+	// The identifier of the tenant.
+	TenantId *string
 
 	noSmithyDocumentSerde
 }
@@ -1042,6 +1111,9 @@ type StorageConnector struct {
 // Describes the streaming properties.
 type StreamingProperties struct {
 
+	// Indicates the Global Accelerator properties.
+	GlobalAccelerator *GlobalAcceleratorForDirectory
+
 	// Indicates the storage connector used
 	StorageConnectors []StorageConnector
 
@@ -1291,6 +1363,10 @@ type WorkspaceAccessProperties struct {
 	// Indicates whether users can use Windows clients to access their WorkSpaces.
 	DeviceTypeWindows AccessPropertyValue
 
+	// Indicates whether users can access their WorkSpaces through a WorkSpaces Thin
+	// Client.
+	DeviceTypeWorkSpacesThinClient AccessPropertyValue
+
 	// Indicates whether users can use zero client devices to access their WorkSpaces.
 	DeviceTypeZeroClient AccessPropertyValue
 
@@ -1491,8 +1567,15 @@ type WorkspaceDirectory struct {
 	// The IP addresses of the DNS servers for the directory.
 	DnsIpAddresses []string
 
+	// Endpoint encryption mode that allows you to configure the specified directory
+	// between Standard TLS and FIPS 140-2 validated mode.
+	EndpointEncryptionMode EndpointEncryptionMode
+
 	// The error message returned.
 	ErrorMessage *string
+
+	// Specifies details about identity center configurations.
+	IDCConfig *IDCConfig
 
 	// The identifier of the IAM role. This is the role that allows Amazon WorkSpaces
 	// to make calls to other services, such as Amazon EC2, on your behalf.
@@ -1500,6 +1583,9 @@ type WorkspaceDirectory struct {
 
 	// The identifiers of the IP access control groups associated with the directory.
 	IpGroupIds []string
+
+	// Specifies details about Microsoft Entra configurations.
+	MicrosoftEntraConfig *MicrosoftEntraConfig
 
 	// The registration code for the directory. This is the code that users enter in
 	// their Amazon WorkSpaces client application to connect to the directory.
@@ -1617,6 +1703,9 @@ type WorkspaceProperties struct {
 	// [Amazon WorkSpaces Bundles]: http://aws.amazon.com/workspaces/details/#Amazon_WorkSpaces_Bundles
 	ComputeTypeName Compute
 
+	// Indicates the Global Accelerator properties.
+	GlobalAccelerator *GlobalAcceleratorForWorkSpace
+
 	// The name of the operating system.
 	OperatingSystemName OperatingSystemName
 
@@ -1624,7 +1713,8 @@ type WorkspaceProperties struct {
 	//
 	//   - Only available for WorkSpaces created with PCoIP bundles.
 	//
-	//   - The Protocols property is case sensitive. Ensure you use PCOIP or WSP .
+	//   - The Protocols property is case sensitive. Ensure you use PCOIP or DCV
+	//   (formerly WSP).
 	//
 	//   - Unavailable for Windows 7 WorkSpaces and WorkSpaces using GPU-based bundles
 	//   (Graphics, GraphicsPro, Graphics.g4dn, and GraphicsPro.g4dn).
@@ -1682,6 +1772,9 @@ type WorkspaceRequest struct {
 	// The user name of the user for the WorkSpace. This user name must exist in the
 	// Directory Service directory for the WorkSpace.
 	//
+	// The username is not case-sensitive, but we recommend matching the case in the
+	// Directory Service directory to avoid potential incompatibilities.
+	//
 	// The reserved keyword, [UNDEFINED] , is used when creating user-decoupled
 	// WorkSpaces.
 	//
@@ -1702,6 +1795,10 @@ type WorkspaceRequest struct {
 	VolumeEncryptionKey *string
 
 	// The name of the user-decoupled WorkSpace.
+	//
+	// WorkspaceName is required if UserName is [UNDEFINED] for user-decoupled
+	// WorkSpaces. WorkspaceName is not applicable if UserName is specified for
+	// user-assigned WorkSpaces.
 	WorkspaceName *string
 
 	// The WorkSpace properties.

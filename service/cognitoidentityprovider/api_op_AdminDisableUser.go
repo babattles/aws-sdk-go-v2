@@ -10,8 +10,8 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Deactivates a user and revokes all access tokens for the user. A deactivated
-// user can't sign in, but still appears in the responses to GetUser and ListUsers
+// Deactivates a user profile and revokes all access tokens for the user. A
+// deactivated user can't sign in, but still appears in the responses to ListUsers
 // API requests.
 //
 // Amazon Cognito evaluates Identity and Access Management (IAM) policies in
@@ -45,12 +45,12 @@ func (c *Client) AdminDisableUser(ctx context.Context, params *AdminDisableUserI
 // Represents the request to disable the user as an administrator.
 type AdminDisableUserInput struct {
 
-	// The user pool ID for the user pool where you want to disable the user.
+	// The ID of the user pool where you want to disable the user.
 	//
 	// This member is required.
 	UserPoolId *string
 
-	// The username of the user that you want to query or modify. The value of this
+	// The name of the user that you want to query or modify. The value of this
 	// parameter is typically your user's username, but it can be any of their alias
 	// attributes. If username isn't an alias attribute in your user pool, this value
 	// must be the sub of a local user or the username of a user from a third-party
@@ -114,6 +114,9 @@ func (c *Client) addOperationAdminDisableUserMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -130,6 +133,9 @@ func (c *Client) addOperationAdminDisableUserMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpAdminDisableUserValidationMiddleware(stack); err != nil {
@@ -151,6 +157,18 @@ func (c *Client) addOperationAdminDisableUserMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

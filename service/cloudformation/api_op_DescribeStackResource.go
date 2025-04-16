@@ -35,8 +35,6 @@ type DescribeStackResourceInput struct {
 
 	// The logical name of the resource as specified in the template.
 	//
-	// Default: There is no default value.
-	//
 	// This member is required.
 	LogicalResourceId *string
 
@@ -47,8 +45,6 @@ type DescribeStackResourceInput struct {
 	//   ID.
 	//
 	//   - Deleted stacks: You must specify the unique stack ID.
-	//
-	// Default: There is no default value.
 	//
 	// This member is required.
 	StackName *string
@@ -112,6 +108,9 @@ func (c *Client) addOperationDescribeStackResourceMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -128,6 +127,9 @@ func (c *Client) addOperationDescribeStackResourceMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeStackResourceValidationMiddleware(stack); err != nil {
@@ -149,6 +151,18 @@ func (c *Client) addOperationDescribeStackResourceMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

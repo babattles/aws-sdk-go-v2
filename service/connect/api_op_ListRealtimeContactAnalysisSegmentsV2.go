@@ -11,7 +11,11 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Provides a list of analysis segments for a real-time analysis session.
+// Provides a list of analysis segments for a real-time chat analysis session.
+// This API supports CHAT channels only.
+//
+// This API does not support VOICE. If you attempt to use it for VOICE, an
+// InvalidRequestException occurs.
 func (c *Client) ListRealtimeContactAnalysisSegmentsV2(ctx context.Context, params *ListRealtimeContactAnalysisSegmentsV2Input, optFns ...func(*Options)) (*ListRealtimeContactAnalysisSegmentsV2Output, error) {
 	if params == nil {
 		params = &ListRealtimeContactAnalysisSegmentsV2Input{}
@@ -66,7 +70,10 @@ type ListRealtimeContactAnalysisSegmentsV2Input struct {
 
 type ListRealtimeContactAnalysisSegmentsV2Output struct {
 
-	// The channel of the contact. Voice will not be returned.
+	// The channel of the contact.
+	//
+	// Only CHAT is supported. This API does not support VOICE . If you attempt to use
+	// it for the VOICE channel, an InvalidRequestException error occurs.
 	//
 	// This member is required.
 	Channel types.RealTimeContactAnalysisSupportedChannel
@@ -133,6 +140,9 @@ func (c *Client) addOperationListRealtimeContactAnalysisSegmentsV2Middlewares(st
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -149,6 +159,9 @@ func (c *Client) addOperationListRealtimeContactAnalysisSegmentsV2Middlewares(st
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListRealtimeContactAnalysisSegmentsV2ValidationMiddleware(stack); err != nil {
@@ -170,6 +183,18 @@ func (c *Client) addOperationListRealtimeContactAnalysisSegmentsV2Middlewares(st
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

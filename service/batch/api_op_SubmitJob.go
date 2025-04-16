@@ -19,8 +19,8 @@ import (
 // parameters in a resourceRequirements object that's included in the
 // containerOverrides parameter.
 //
-// Job queues with a scheduling policy are limited to 500 active fair share
-// identifiers at a time.
+// Job queues with a scheduling policy are limited to 500 active share identifiers
+// at a time.
 //
 // Jobs that run on Fargate resources can't be guaranteed to run for more than 14
 // days. This is because, after 14 days, Fargate resources might become unavailable
@@ -74,6 +74,9 @@ type SubmitJobInput struct {
 	// [Array Jobs]: https://docs.aws.amazon.com/batch/latest/userguide/array_jobs.html
 	ArrayProperties *types.ArrayProperties
 
+	// An object that contains overrides for the consumable resources of a job.
+	ConsumableResourcePropertiesOverride *types.ConsumableResourceProperties
+
 	// An object with properties that override the defaults for the job definition
 	// that specify the name of a container in the specified job definition and the
 	// overrides it should receive. You can override the default command for a
@@ -126,7 +129,7 @@ type SubmitJobInput struct {
 	RetryStrategy *types.RetryStrategy
 
 	// The scheduling priority for the job. This only affects jobs in job queues with
-	// a fair share policy. Jobs with a higher scheduling priority are scheduled before
+	// a fair-share policy. Jobs with a higher scheduling priority are scheduled before
 	// jobs with a lower scheduling priority. This overrides any scheduling priority in
 	// the job definition and works only within a single share identifier.
 	//
@@ -134,8 +137,8 @@ type SubmitJobInput struct {
 	SchedulingPriorityOverride *int32
 
 	// The share identifier for the job. Don't specify this parameter if the job queue
-	// doesn't have a scheduling policy. If the job queue has a scheduling policy, then
-	// this parameter must be specified.
+	// doesn't have a fair-share scheduling policy. If the job queue has a fair-share
+	// scheduling policy, then this parameter must be specified.
 	//
 	// This string is limited to 255 alphanumeric characters, and can be followed by
 	// an asterisk (*).
@@ -226,6 +229,9 @@ func (c *Client) addOperationSubmitJobMiddlewares(stack *middleware.Stack, optio
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -242,6 +248,9 @@ func (c *Client) addOperationSubmitJobMiddlewares(stack *middleware.Stack, optio
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpSubmitJobValidationMiddleware(stack); err != nil {
@@ -263,6 +272,18 @@ func (c *Client) addOperationSubmitJobMiddlewares(stack *middleware.Stack, optio
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

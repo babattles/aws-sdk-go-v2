@@ -64,6 +64,9 @@ type GetDomainOutput struct {
 	// The description of the Amazon DataZone domain.
 	Description *string
 
+	// The version of the domain.
+	DomainVersion types.DomainVersion
+
 	// The identifier of the Amazon Web Services Key Management Service (KMS) key that
 	// is used to encrypt the Amazon DataZone domain, metadata, and reporting data.
 	KmsKeyIdentifier *string
@@ -76,6 +79,12 @@ type GetDomainOutput struct {
 
 	// The URL of the data portal for this Amazon DataZone domain.
 	PortalUrl *string
+
+	// The ID of the root domain in Amazon Datazone.
+	RootDomainUnitId *string
+
+	// The service role of the domain.
+	ServiceRole *string
 
 	// The single sing-on option of the specified Amazon DataZone domain.
 	SingleSignOn *types.SingleSignOn
@@ -132,6 +141,9 @@ func (c *Client) addOperationGetDomainMiddlewares(stack *middleware.Stack, optio
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -148,6 +160,9 @@ func (c *Client) addOperationGetDomainMiddlewares(stack *middleware.Stack, optio
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetDomainValidationMiddleware(stack); err != nil {
@@ -169,6 +184,18 @@ func (c *Client) addOperationGetDomainMiddlewares(stack *middleware.Stack, optio
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

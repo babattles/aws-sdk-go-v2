@@ -36,7 +36,7 @@ type ListVehiclesInFleetInput struct {
 	// This member is required.
 	FleetId *string
 
-	//  The maximum number of items to return, between 1 and 100, inclusive.
+	// The maximum number of items to return, between 1 and 100, inclusive.
 	MaxResults *int32
 
 	// A pagination token for the next set of results.
@@ -109,6 +109,9 @@ func (c *Client) addOperationListVehiclesInFleetMiddlewares(stack *middleware.St
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -125,6 +128,9 @@ func (c *Client) addOperationListVehiclesInFleetMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListVehiclesInFleetValidationMiddleware(stack); err != nil {
@@ -148,13 +154,25 @@ func (c *Client) addOperationListVehiclesInFleetMiddlewares(stack *middleware.St
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
+		return err
+	}
 	return nil
 }
 
 // ListVehiclesInFleetPaginatorOptions is the paginator options for
 // ListVehiclesInFleet
 type ListVehiclesInFleetPaginatorOptions struct {
-	//  The maximum number of items to return, between 1 and 100, inclusive.
+	// The maximum number of items to return, between 1 and 100, inclusive.
 	Limit int32
 
 	// Set to true if pagination should stop if the service returns a pagination token

@@ -14,6 +14,10 @@ import (
 
 // Creates a connection. A connection defines the authorization type and
 // credentials to use for authorization with an API destination HTTP endpoint.
+//
+// For more information, see [Connections for endpoint targets] in the Amazon EventBridge User Guide.
+//
+// [Connections for endpoint targets]: https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-target-connection.html
 func (c *Client) CreateConnection(ctx context.Context, params *CreateConnectionInput, optFns ...func(*Options)) (*CreateConnectionOutput, error) {
 	if params == nil {
 		params = &CreateConnectionInput{}
@@ -31,8 +35,10 @@ func (c *Client) CreateConnection(ctx context.Context, params *CreateConnectionI
 
 type CreateConnectionInput struct {
 
-	// A CreateConnectionAuthRequestParameters object that contains the authorization
-	// parameters to use to authorize with the endpoint.
+	// The authorization parameters to use to authorize with the endpoint.
+	//
+	// You must include only authorization parameters for the AuthorizationType you
+	// specify.
 	//
 	// This member is required.
 	AuthParameters *types.CreateConnectionAuthRequestParameters
@@ -51,6 +57,13 @@ type CreateConnectionInput struct {
 
 	// A description for the connection to create.
 	Description *string
+
+	// For connections to private APIs, the parameters to use for invoking the API.
+	//
+	// For more information, see [Connecting to private APIs] in the Amazon EventBridge User Guide .
+	//
+	// [Connecting to private APIs]: https://docs.aws.amazon.com/eventbridge/latest/userguide/connection-private.html
+	InvocationConnectivityParameters *types.ConnectivityResourceParameters
 
 	noSmithyDocumentSerde
 }
@@ -118,6 +131,9 @@ func (c *Client) addOperationCreateConnectionMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -134,6 +150,9 @@ func (c *Client) addOperationCreateConnectionMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateConnectionValidationMiddleware(stack); err != nil {
@@ -155,6 +174,18 @@ func (c *Client) addOperationCreateConnectionMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

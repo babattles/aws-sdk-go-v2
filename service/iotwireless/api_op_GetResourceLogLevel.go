@@ -11,8 +11,8 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Fetches the log-level override, if any, for a given resource-ID and
-// resource-type. It can be used for a wireless device or a wireless gateway.
+// Fetches the log-level override, if any, for a given resource ID and resource
+// type..
 func (c *Client) GetResourceLogLevel(ctx context.Context, params *GetResourceLogLevelInput, optFns ...func(*Options)) (*GetResourceLogLevelOutput, error) {
 	if params == nil {
 		params = &GetResourceLogLevelInput{}
@@ -30,13 +30,14 @@ func (c *Client) GetResourceLogLevel(ctx context.Context, params *GetResourceLog
 
 type GetResourceLogLevelInput struct {
 
-	// The identifier of the resource. For a Wireless Device, it is the wireless
-	// device ID. For a wireless gateway, it is the wireless gateway ID.
+	// The unique identifier of the resource, which can be the wireless gateway ID,
+	// the wireless device ID, or the FUOTA task ID.
 	//
 	// This member is required.
 	ResourceIdentifier *string
 
-	// The type of the resource, which can be WirelessDevice or WirelessGateway .
+	// The type of resource, which can be WirelessDevice , WirelessGateway , or
+	// FuotaTask .
 	//
 	// This member is required.
 	ResourceType *string
@@ -100,6 +101,9 @@ func (c *Client) addOperationGetResourceLogLevelMiddlewares(stack *middleware.St
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -116,6 +120,9 @@ func (c *Client) addOperationGetResourceLogLevelMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetResourceLogLevelValidationMiddleware(stack); err != nil {
@@ -137,6 +144,18 @@ func (c *Client) addOperationGetResourceLogLevelMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

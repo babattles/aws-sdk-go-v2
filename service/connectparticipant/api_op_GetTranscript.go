@@ -15,6 +15,8 @@ import (
 // For information about accessing past chat contact transcripts for a persistent
 // chat, see [Enable persistent chat].
 //
+// For security recommendations, see [Amazon Connect Chat security best practices].
+//
 // If you have a process that consumes events in the transcript of an chat that
 // has ended, note that chat transcripts contain the following event content types
 // if the event has occurred during the chat session:
@@ -35,6 +37,7 @@ import (
 //
 // [Enable persistent chat]: https://docs.aws.amazon.com/connect/latest/adminguide/chat-persistence.html
 // [Signature Version 4 authentication]: https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html
+// [Amazon Connect Chat security best practices]: https://docs.aws.amazon.com/connect/latest/adminguide/security-best-practices.html#bp-security-chat
 func (c *Client) GetTranscript(ctx context.Context, params *GetTranscriptInput, optFns ...func(*Options)) (*GetTranscriptOutput, error) {
 	if params == nil {
 		params = &GetTranscriptInput{}
@@ -141,6 +144,9 @@ func (c *Client) addOperationGetTranscriptMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -157,6 +163,9 @@ func (c *Client) addOperationGetTranscriptMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetTranscriptValidationMiddleware(stack); err != nil {
@@ -178,6 +187,18 @@ func (c *Client) addOperationGetTranscriptMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

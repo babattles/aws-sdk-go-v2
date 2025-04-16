@@ -42,7 +42,7 @@ type CreateResiliencyPolicyInput struct {
 	// This member is required.
 	Policy map[string]types.FailurePolicy
 
-	// The name of the policy
+	// Name of the resiliency policy.
 	//
 	// This member is required.
 	PolicyName *string
@@ -62,7 +62,7 @@ type CreateResiliencyPolicyInput struct {
 	// resilience policy data can be stored.
 	DataLocationConstraint types.DataLocationConstraint
 
-	// The description for the policy.
+	// Description of the resiliency policy.
 	PolicyDescription *string
 
 	// Tags assigned to the resource. A tag is a label that you assign to an Amazon
@@ -129,6 +129,9 @@ func (c *Client) addOperationCreateResiliencyPolicyMiddlewares(stack *middleware
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -145,6 +148,9 @@ func (c *Client) addOperationCreateResiliencyPolicyMiddlewares(stack *middleware
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateResiliencyPolicyMiddleware(stack, options); err != nil {
@@ -169,6 +175,18 @@ func (c *Client) addOperationCreateResiliencyPolicyMiddlewares(stack *middleware
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

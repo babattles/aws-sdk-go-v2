@@ -31,7 +31,7 @@ import (
 // (lightsailctl) plugin to push container images to your Lightsail container
 // service. For more information, see [Pushing and managing container images on your Amazon Lightsail container services]in the Amazon Lightsail Developer Guide.
 //
-// [Pushing and managing container images on your Amazon Lightsail container services]: https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-pushing-container-images
+// [Pushing and managing container images on your Amazon Lightsail container services]: https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-pushing-container-images
 func (c *Client) CreateContainerServiceRegistryLogin(ctx context.Context, params *CreateContainerServiceRegistryLoginInput, optFns ...func(*Options)) (*CreateContainerServiceRegistryLoginOutput, error) {
 	if params == nil {
 		params = &CreateContainerServiceRegistryLoginInput{}
@@ -106,6 +106,9 @@ func (c *Client) addOperationCreateContainerServiceRegistryLoginMiddlewares(stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -124,6 +127,9 @@ func (c *Client) addOperationCreateContainerServiceRegistryLoginMiddlewares(stac
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateContainerServiceRegistryLogin(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -140,6 +146,18 @@ func (c *Client) addOperationCreateContainerServiceRegistryLoginMiddlewares(stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

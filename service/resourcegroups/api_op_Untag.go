@@ -34,8 +34,9 @@ func (c *Client) Untag(ctx context.Context, params *UntagInput, optFns ...func(*
 
 type UntagInput struct {
 
-	// The ARN of the resource group from which to remove tags. The command removed
-	// both the specified keys and any values associated with those keys.
+	// The Amazon resource name (ARN) of the resource group from which to remove tags.
+	// The command removed both the specified keys and any values associated with those
+	// keys.
 	//
 	// This member is required.
 	Arn *string
@@ -50,7 +51,8 @@ type UntagInput struct {
 
 type UntagOutput struct {
 
-	// The ARN of the resource group from which tags have been removed.
+	// The Amazon resource name (ARN) of the resource group from which tags have been
+	// removed.
 	Arn *string
 
 	// The keys of the tags that were removed.
@@ -105,6 +107,9 @@ func (c *Client) addOperationUntagMiddlewares(stack *middleware.Stack, options O
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -121,6 +126,9 @@ func (c *Client) addOperationUntagMiddlewares(stack *middleware.Stack, options O
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUntagValidationMiddleware(stack); err != nil {
@@ -142,6 +150,18 @@ func (c *Client) addOperationUntagMiddlewares(stack *middleware.Stack, options O
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

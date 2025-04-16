@@ -118,6 +118,26 @@ type CreateCanaryInput struct {
 	// this field, the default of 31 days is used. The valid range is 1 to 455 days.
 	FailureRetentionPeriodInDays *int32
 
+	// Specifies whether to also delete the Lambda functions and layers used by this
+	// canary when the canary is deleted. If you omit this parameter, the default of
+	// AUTOMATIC is used, which means that the Lambda functions and layers will be
+	// deleted when the canary is deleted.
+	//
+	// If the value of this parameter is OFF , then the value of the DeleteLambda
+	// parameter of the [DeleteCanary]operation determines whether the Lambda functions and layers
+	// will be deleted.
+	//
+	// [DeleteCanary]: https://docs.aws.amazon.com/AmazonSynthetics/latest/APIReference/API_DeleteCanary.html
+	ProvisionedResourceCleanup types.ProvisionedResourceCleanupSetting
+
+	// To have the tags that you apply to this canary also be applied to the Lambda
+	// function that the canary uses, specify this parameter with the value
+	// lambda-function .
+	//
+	// If you specify this parameter and don't specify any tags in the Tags parameter,
+	// the canary creation fails.
+	ResourcesToReplicateTags []types.ResourceToTag
+
 	// A structure that contains the configuration for individual canary runs, such as
 	// timeout value and environment variables.
 	//
@@ -136,6 +156,10 @@ type CreateCanaryInput struct {
 	// Tags can help you organize and categorize your resources. You can also use them
 	// to scope user permissions, by granting a user permission to access or change
 	// only the resources that have certain tag values.
+	//
+	// To have the tags that you apply to this canary also be applied to the Lambda
+	// function that the canary uses, specify this parameter with the value
+	// lambda-function .
 	Tags map[string]string
 
 	// If this canary is to test an endpoint in a VPC, this structure contains
@@ -202,6 +226,9 @@ func (c *Client) addOperationCreateCanaryMiddlewares(stack *middleware.Stack, op
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -218,6 +245,9 @@ func (c *Client) addOperationCreateCanaryMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateCanaryValidationMiddleware(stack); err != nil {
@@ -239,6 +269,18 @@ func (c *Client) addOperationCreateCanaryMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

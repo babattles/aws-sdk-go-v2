@@ -12,10 +12,9 @@ import (
 )
 
 // Allows you to purchase a reserved cache node offering. Reserved nodes are not
-// eligible for cancellation and are non-refundable. For more information, see [Managing Costs with Reserved Nodes]for
-// Redis OSS or [Managing Costs with Reserved Nodes]for Memcached.
+// eligible for cancellation and are non-refundable. For more information, see [Managing Costs with Reserved Nodes].
 //
-// [Managing Costs with Reserved Nodes]: https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/reserved-nodes.html
+// [Managing Costs with Reserved Nodes]: https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/reserved-nodes.html
 func (c *Client) PurchaseReservedCacheNodesOffering(ctx context.Context, params *PurchaseReservedCacheNodesOfferingInput, optFns ...func(*Options)) (*PurchaseReservedCacheNodesOfferingOutput, error) {
 	if params == nil {
 		params = &PurchaseReservedCacheNodesOfferingInput{}
@@ -116,6 +115,9 @@ func (c *Client) addOperationPurchaseReservedCacheNodesOfferingMiddlewares(stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -132,6 +134,9 @@ func (c *Client) addOperationPurchaseReservedCacheNodesOfferingMiddlewares(stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpPurchaseReservedCacheNodesOfferingValidationMiddleware(stack); err != nil {
@@ -153,6 +158,18 @@ func (c *Client) addOperationPurchaseReservedCacheNodesOfferingMiddlewares(stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

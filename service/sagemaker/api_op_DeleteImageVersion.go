@@ -10,7 +10,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Deletes a version of a SageMaker image. The container image the version
+// Deletes a version of a SageMaker AI image. The container image the version
 // represents isn't deleted.
 func (c *Client) DeleteImageVersion(ctx context.Context, params *DeleteImageVersionInput, optFns ...func(*Options)) (*DeleteImageVersionOutput, error) {
 	if params == nil {
@@ -93,6 +93,9 @@ func (c *Client) addOperationDeleteImageVersionMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -109,6 +112,9 @@ func (c *Client) addOperationDeleteImageVersionMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteImageVersionValidationMiddleware(stack); err != nil {
@@ -130,6 +136,18 @@ func (c *Client) addOperationDeleteImageVersionMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

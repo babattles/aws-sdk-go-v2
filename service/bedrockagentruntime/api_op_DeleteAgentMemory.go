@@ -41,6 +41,9 @@ type DeleteAgentMemoryInput struct {
 	// The unique identifier of the memory.
 	MemoryId *string
 
+	// The unique session identifier of the memory.
+	SessionId *string
+
 	noSmithyDocumentSerde
 }
 
@@ -94,6 +97,9 @@ func (c *Client) addOperationDeleteAgentMemoryMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -110,6 +116,9 @@ func (c *Client) addOperationDeleteAgentMemoryMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteAgentMemoryValidationMiddleware(stack); err != nil {
@@ -131,6 +140,18 @@ func (c *Client) addOperationDeleteAgentMemoryMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

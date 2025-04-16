@@ -1,12 +1,15 @@
 ListAccessPointsForObjectLambda
 	Initialize stack step
+		spanInitializeStart
 		S3Shared:ARNLookup
 		S3Control:BackfillInput
 		RegisterServiceMetadata
 		legacyEndpointContextSetter
 		SetLogger
 		OperationInputValidation
+		spanInitializeEnd
 	Serialize stack step
+		spanBuildRequestStart
 		stashOperationInput
 		ResolveEndpoint
 		setArnFieldName
@@ -17,10 +20,15 @@ ListAccessPointsForObjectLambda
 		stashOperationInput
 		ClientRequestID
 		ComputeContentLength
+		SetCredentialSourceMiddleware
 		UserAgent
 		AddTimeOffsetMiddleware
 		RecursionDetection
+		spanBuildRequestEnd
 	Finalize stack step
+		spanRetryLoop
+		Retry
+		RetryMetricsHeader
 		ResolveAuthScheme
 		GetIdentity
 		ResolveEndpointV2
@@ -29,8 +37,6 @@ ListAccessPointsForObjectLambda
 		EndpointHostPrefix
 		ComputePayloadHash
 		SigV4ContentSHA256Header
-		Retry
-		RetryMetricsHeader
 		setLegacyContextSigningOptions
 		Signing
 	Deserialize stack step

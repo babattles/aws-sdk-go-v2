@@ -62,6 +62,18 @@ func testSnapshot(stack *middleware.Stack, operation string) error {
 	}
 	return snapshotOK{}
 }
+func TestCheckSnapshot_AssociateAgentCollaborator(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.AssociateAgentCollaborator(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "AssociateAgentCollaborator")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_AssociateAgentKnowledgeBase(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.AssociateAgentKnowledgeBase(context.Background(), nil, func(o *Options) {
@@ -302,11 +314,35 @@ func TestCheckSnapshot_DeleteKnowledgeBase(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_DeleteKnowledgeBaseDocuments(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteKnowledgeBaseDocuments(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DeleteKnowledgeBaseDocuments")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_DeletePrompt(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.DeletePrompt(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "DeletePrompt")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_DisassociateAgentCollaborator(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DisassociateAgentCollaborator(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DisassociateAgentCollaborator")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -355,6 +391,18 @@ func TestCheckSnapshot_GetAgentAlias(t *testing.T) {
 	_, err := svc.GetAgentAlias(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "GetAgentAlias")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_GetAgentCollaborator(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetAgentCollaborator(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GetAgentCollaborator")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -458,11 +506,35 @@ func TestCheckSnapshot_GetKnowledgeBase(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_GetKnowledgeBaseDocuments(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetKnowledgeBaseDocuments(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GetKnowledgeBaseDocuments")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_GetPrompt(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.GetPrompt(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "GetPrompt")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_IngestKnowledgeBaseDocuments(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.IngestKnowledgeBaseDocuments(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "IngestKnowledgeBaseDocuments")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -487,6 +559,18 @@ func TestCheckSnapshot_ListAgentAliases(t *testing.T) {
 	_, err := svc.ListAgentAliases(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "ListAgentAliases")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_ListAgentCollaborators(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListAgentCollaborators(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListAgentCollaborators")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -590,6 +674,18 @@ func TestCheckSnapshot_ListIngestionJobs(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_ListKnowledgeBaseDocuments(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListKnowledgeBaseDocuments(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListKnowledgeBaseDocuments")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_ListKnowledgeBases(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ListKnowledgeBases(context.Background(), nil, func(o *Options) {
@@ -662,6 +758,18 @@ func TestCheckSnapshot_StartIngestionJob(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_StopIngestionJob(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.StopIngestionJob(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "StopIngestionJob")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_TagResource(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.TagResource(context.Background(), nil, func(o *Options) {
@@ -715,6 +823,18 @@ func TestCheckSnapshot_UpdateAgentAlias(t *testing.T) {
 	_, err := svc.UpdateAgentAlias(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "UpdateAgentAlias")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_UpdateAgentCollaborator(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateAgentCollaborator(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "UpdateAgentCollaborator")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -793,6 +913,30 @@ func TestCheckSnapshot_UpdatePrompt(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestCheckSnapshot_ValidateFlowDefinition(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ValidateFlowDefinition(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ValidateFlowDefinition")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+func TestUpdateSnapshot_AssociateAgentCollaborator(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.AssociateAgentCollaborator(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "AssociateAgentCollaborator")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_AssociateAgentKnowledgeBase(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.AssociateAgentKnowledgeBase(context.Background(), nil, func(o *Options) {
@@ -1033,11 +1177,35 @@ func TestUpdateSnapshot_DeleteKnowledgeBase(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_DeleteKnowledgeBaseDocuments(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteKnowledgeBaseDocuments(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DeleteKnowledgeBaseDocuments")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_DeletePrompt(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.DeletePrompt(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "DeletePrompt")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_DisassociateAgentCollaborator(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DisassociateAgentCollaborator(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DisassociateAgentCollaborator")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -1086,6 +1254,18 @@ func TestUpdateSnapshot_GetAgentAlias(t *testing.T) {
 	_, err := svc.GetAgentAlias(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "GetAgentAlias")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_GetAgentCollaborator(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetAgentCollaborator(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GetAgentCollaborator")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -1189,11 +1369,35 @@ func TestUpdateSnapshot_GetKnowledgeBase(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_GetKnowledgeBaseDocuments(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetKnowledgeBaseDocuments(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GetKnowledgeBaseDocuments")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_GetPrompt(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.GetPrompt(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "GetPrompt")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_IngestKnowledgeBaseDocuments(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.IngestKnowledgeBaseDocuments(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "IngestKnowledgeBaseDocuments")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -1218,6 +1422,18 @@ func TestUpdateSnapshot_ListAgentAliases(t *testing.T) {
 	_, err := svc.ListAgentAliases(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "ListAgentAliases")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_ListAgentCollaborators(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListAgentCollaborators(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListAgentCollaborators")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -1321,6 +1537,18 @@ func TestUpdateSnapshot_ListIngestionJobs(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_ListKnowledgeBaseDocuments(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListKnowledgeBaseDocuments(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListKnowledgeBaseDocuments")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_ListKnowledgeBases(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ListKnowledgeBases(context.Background(), nil, func(o *Options) {
@@ -1393,6 +1621,18 @@ func TestUpdateSnapshot_StartIngestionJob(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_StopIngestionJob(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.StopIngestionJob(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "StopIngestionJob")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_TagResource(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.TagResource(context.Background(), nil, func(o *Options) {
@@ -1446,6 +1686,18 @@ func TestUpdateSnapshot_UpdateAgentAlias(t *testing.T) {
 	_, err := svc.UpdateAgentAlias(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "UpdateAgentAlias")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_UpdateAgentCollaborator(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateAgentCollaborator(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "UpdateAgentCollaborator")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -1518,6 +1770,18 @@ func TestUpdateSnapshot_UpdatePrompt(t *testing.T) {
 	_, err := svc.UpdatePrompt(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "UpdatePrompt")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_ValidateFlowDefinition(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ValidateFlowDefinition(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ValidateFlowDefinition")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {

@@ -13,15 +13,14 @@ import (
 	smithytime "github.com/aws/smithy-go/time"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	smithywaiter "github.com/aws/smithy-go/waiter"
-	jmespath "github.com/jmespath/go-jmespath"
 	"time"
 )
 
 // Returns the inputs for the change set and a list of changes that CloudFormation
-// will make if you execute the change set. For more information, see [Updating Stacks Using Change Sets]in the
+// will make if you execute the change set. For more information, see [Update CloudFormation stacks using change sets]in the
 // CloudFormation User Guide.
 //
-// [Updating Stacks Using Change Sets]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-changesets.html
+// [Update CloudFormation stacks using change sets]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-changesets.html
 func (c *Client) DescribeChangeSet(ctx context.Context, params *DescribeChangeSetInput, optFns ...func(*Options)) (*DescribeChangeSetOutput, error) {
 	if params == nil {
 		params = &DescribeChangeSetInput{}
@@ -106,8 +105,8 @@ type DescribeChangeSetOutput struct {
 	// If there is no additional page, this value is null.
 	NextToken *string
 
-	// The ARNs of the Amazon Simple Notification Service (Amazon SNS) topics that
-	// will be associated with the stack if you execute the change set.
+	// The ARNs of the Amazon SNS topics that will be associated with the stack if you
+	// execute the change set.
 	NotificationARNs []string
 
 	// Determines what action will be taken if stack creation fails. When this
@@ -153,8 +152,8 @@ type DescribeChangeSetOutput struct {
 	// The name of the stack that's associated with the change set.
 	StackName *string
 
-	// The current status of the change set, such as CREATE_IN_PROGRESS ,
-	// CREATE_COMPLETE , or FAILED .
+	// The current status of the change set, such as CREATE_PENDING , CREATE_COMPLETE ,
+	// or FAILED .
 	Status types.ChangeSetStatus
 
 	// A description of the change set's status. For example, if your attempt to
@@ -213,6 +212,9 @@ func (c *Client) addOperationDescribeChangeSetMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -229,6 +231,9 @@ func (c *Client) addOperationDescribeChangeSetMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeChangeSetValidationMiddleware(stack); err != nil {
@@ -250,6 +255,18 @@ func (c *Client) addOperationDescribeChangeSetMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -417,35 +434,21 @@ func (w *ChangeSetCreateCompleteWaiter) WaitForOutput(ctx context.Context, param
 func changeSetCreateCompleteStateRetryable(ctx context.Context, input *DescribeChangeSetInput, output *DescribeChangeSetOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Status", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.Status
 		expectedValue := "CREATE_COMPLETE"
-		value, ok := pathValue.(types.ChangeSetStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.ChangeSetStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, nil
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Status", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.Status
 		expectedValue := "FAILED"
-		value, ok := pathValue.(types.ChangeSetStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.ChangeSetStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
@@ -462,6 +465,9 @@ func changeSetCreateCompleteStateRetryable(ctx context.Context, input *DescribeC
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 

@@ -21,7 +21,7 @@ import (
 // In the China (Ningxia) Region, you can copy images only within the same Region.
 //
 // In Amazon Web Services GovCloud (US), to copy images to and from other Regions,
-// contact Amazon Web Services Support.
+// contact Amazon Web ServicesSupport.
 //
 // For more information about sharing images, see [Share or Unshare a Custom WorkSpaces Image].
 //
@@ -31,7 +31,7 @@ import (
 //   - Sharing Bring Your Own License (BYOL) images across Amazon Web Services
 //     accounts isn't supported at this time in Amazon Web Services GovCloud (US). To
 //     share BYOL images across accounts in Amazon Web Services GovCloud (US), contact
-//     Amazon Web Services Support.
+//     Amazon Web ServicesSupport.
 //
 // [Share or Unshare a Custom WorkSpaces Image]: https://docs.aws.amazon.com/workspaces/latest/adminguide/share-custom-image.html
 func (c *Client) UpdateWorkspaceImagePermission(ctx context.Context, params *UpdateWorkspaceImagePermissionInput, optFns ...func(*Options)) (*UpdateWorkspaceImagePermissionOutput, error) {
@@ -124,6 +124,9 @@ func (c *Client) addOperationUpdateWorkspaceImagePermissionMiddlewares(stack *mi
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -140,6 +143,9 @@ func (c *Client) addOperationUpdateWorkspaceImagePermissionMiddlewares(stack *mi
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateWorkspaceImagePermissionValidationMiddleware(stack); err != nil {
@@ -161,6 +167,18 @@ func (c *Client) addOperationUpdateWorkspaceImagePermissionMiddlewares(stack *mi
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

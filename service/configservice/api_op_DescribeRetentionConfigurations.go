@@ -12,8 +12,8 @@ import (
 )
 
 // Returns the details of one or more retention configurations. If the retention
-// configuration name is not specified, this action returns the details for all the
-// retention configurations for that account.
+// configuration name is not specified, this operation returns the details for all
+// the retention configurations for that account.
 //
 // Currently, Config supports only one retention configuration per region in your
 // account.
@@ -107,6 +107,9 @@ func (c *Client) addOperationDescribeRetentionConfigurationsMiddlewares(stack *m
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -125,6 +128,9 @@ func (c *Client) addOperationDescribeRetentionConfigurationsMiddlewares(stack *m
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeRetentionConfigurations(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -141,6 +147,18 @@ func (c *Client) addOperationDescribeRetentionConfigurationsMiddlewares(stack *m
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -1,3 +1,162 @@
+# v1.29.1 (2025-04-03)
+
+* No change notes available for this release.
+
+# v1.29.0 (2025-03-27)
+
+* **Feature**: This release adds new action type of Create Listing Changeset for the Metadata Enforcement Rule feature.
+
+# v1.28.0 (2025-03-21)
+
+* **Feature**: Add support for overriding selection of default AWS IAM Identity Center instance as part of Amazon DataZone domain APIs.
+
+# v1.27.1 (2025-03-20)
+
+* No change notes available for this release.
+
+# v1.27.0 (2025-03-13)
+
+* **Feature**: This release adds support to update projects and environments
+
+# v1.26.1 (2025-03-04.2)
+
+* **Bug Fix**: Add assurance test for operation order.
+
+# v1.26.0 (2025-02-27)
+
+* **Feature**: Track credential providers via User-Agent Feature ids
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.25.10 (2025-02-18)
+
+* **Bug Fix**: Bump go version to 1.22
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.25.9 (2025-02-05)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.25.8 (2025-01-31)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.25.7 (2025-01-30)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.25.6 (2025-01-24)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+* **Dependency Update**: Upgrade to smithy-go v1.22.2.
+
+# v1.25.5 (2025-01-17)
+
+* **Bug Fix**: Fix bug where credentials weren't refreshed during retry loop.
+
+# v1.25.4 (2025-01-15)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.25.3 (2025-01-09)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.25.2 (2025-01-08)
+
+* No change notes available for this release.
+
+# v1.25.1 (2024-12-19)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.25.0 (2024-12-03.2)
+
+* **Feature**: Adds support for Connections, ProjectProfiles, and JobRuns APIs. Supports the new Lineage feature at GA. Adjusts optionality of a parameter for DataSource and SubscriptionTarget APIs which may adjust types in some clients.
+
+# v1.24.1 (2024-12-02)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.24.0 (2024-11-20)
+
+* **Feature**: This release supports Metadata Enforcement Rule feature for Create Subscription Request action.
+
+# v1.23.4 (2024-11-18)
+
+* **Dependency Update**: Update to smithy-go v1.22.1.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.23.3 (2024-11-07)
+
+* **Bug Fix**: Adds case-insensitive handling of error message fields in service responses
+
+# v1.23.2 (2024-11-06)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.23.1 (2024-10-28)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.23.0 (2024-10-18)
+
+* **Feature**: Adding the following project member designations: PROJECT_CATALOG_VIEWER, PROJECT_CATALOG_CONSUMER and PROJECT_CATALOG_STEWARD in the CreateProjectMembership API and PROJECT_CATALOG_STEWARD designation in the AddPolicyGrant API.
+
+# v1.22.2 (2024-10-08)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.22.1 (2024-10-07)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.22.0 (2024-10-04)
+
+* **Feature**: Add support for HTTP client metrics.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.21.4 (2024-10-03)
+
+* No change notes available for this release.
+
+# v1.21.3 (2024-09-27)
+
+* No change notes available for this release.
+
+# v1.21.2 (2024-09-25)
+
+* No change notes available for this release.
+
+# v1.21.1 (2024-09-23)
+
+* No change notes available for this release.
+
+# v1.21.0 (2024-09-20)
+
+* **Feature**: Add tracing and metrics support to service clients.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.20.2 (2024-09-17)
+
+* **Bug Fix**: **BREAKFIX**: Only generate AccountIDEndpointMode config for services that use it. This is a compiler break, but removes no actual functionality, as no services currently use the account ID in endpoint resolution.
+
+# v1.20.1 (2024-09-04)
+
+* No change notes available for this release.
+
+# v1.20.0 (2024-09-03)
+
+* **Feature**: Add support to let data publisher specify a subset of the data asset that a subscriber will have access to based on the asset filters provided, when accepting a subscription request.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.19.0 (2024-08-30)
+
+* **Feature**: Amazon DataZone now adds new governance capabilities of Domain Units for organization within your Data Domains, and Authorization Policies for tighter controls.
+
+# v1.18.0 (2024-08-28)
+
+* **Feature**: Update regex to include dot character to be consistent with IAM role creation in the authorized principal field for create and update subscription target.
+
 # v1.17.2 (2024-08-22)
 
 * No change notes available for this release.

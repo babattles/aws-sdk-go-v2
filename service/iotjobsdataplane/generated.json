@@ -10,6 +10,7 @@
         "api_client_test.go",
         "api_op_DescribeJobExecution.go",
         "api_op_GetPendingJobExecutions.go",
+        "api_op_StartCommandExecution.go",
         "api_op_StartNextPendingJobExecution.go",
         "api_op_UpdateJobExecution.go",
         "auth.go",
@@ -25,12 +26,13 @@
         "protocol_test.go",
         "serializers.go",
         "snapshot_test.go",
+        "sra_operation_order_test.go",
         "types/enums.go",
         "types/errors.go",
         "types/types.go",
         "validators.go"
     ],
-    "go": "1.15",
+    "go": "1.22",
     "module": "github.com/aws/aws-sdk-go-v2/service/iotjobsdataplane",
     "unstable": false
 }

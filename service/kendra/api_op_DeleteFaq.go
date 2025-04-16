@@ -10,7 +10,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Removes an FAQ from an index.
+// Removes a FAQ from an index.
 func (c *Client) DeleteFaq(ctx context.Context, params *DeleteFaqInput, optFns ...func(*Options)) (*DeleteFaqOutput, error) {
 	if params == nil {
 		params = &DeleteFaqInput{}
@@ -91,6 +91,9 @@ func (c *Client) addOperationDeleteFaqMiddlewares(stack *middleware.Stack, optio
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -107,6 +110,9 @@ func (c *Client) addOperationDeleteFaqMiddlewares(stack *middleware.Stack, optio
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteFaqValidationMiddleware(stack); err != nil {
@@ -128,6 +134,18 @@ func (c *Client) addOperationDeleteFaqMiddlewares(stack *middleware.Stack, optio
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

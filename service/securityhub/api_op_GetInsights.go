@@ -29,7 +29,7 @@ func (c *Client) GetInsights(ctx context.Context, params *GetInsightsInput, optF
 
 type GetInsightsInput struct {
 
-	// The ARNs of the insights to describe. If you do not provide any insight ARNs,
+	// The ARNs of the insights to describe. If you don't provide any insight ARNs,
 	// then GetInsights returns all of your custom insights. It does not return any
 	// managed insights.
 	InsightArns []string
@@ -106,6 +106,9 @@ func (c *Client) addOperationGetInsightsMiddlewares(stack *middleware.Stack, opt
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -124,6 +127,9 @@ func (c *Client) addOperationGetInsightsMiddlewares(stack *middleware.Stack, opt
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opGetInsights(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -140,6 +146,18 @@ func (c *Client) addOperationGetInsightsMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

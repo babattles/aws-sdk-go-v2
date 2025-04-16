@@ -22,7 +22,8 @@ import (
 // configurations.
 //
 // When you enable Security Lake, it starts ingesting security data after the
-// CreateAwsLogSource call. This includes ingesting security data from sources,
+// CreateAwsLogSource call and after you create subscribers using the
+// CreateSubscriber API. This includes ingesting security data from sources,
 // storing data, and making data accessible to subscribers. Security Lake also
 // enables all the existing settings and resources that it stores or maintains for
 // your Amazon Web Services account in the current Region, including security log
@@ -120,6 +121,9 @@ func (c *Client) addOperationCreateDataLakeMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -136,6 +140,9 @@ func (c *Client) addOperationCreateDataLakeMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateDataLakeValidationMiddleware(stack); err != nil {
@@ -157,6 +164,18 @@ func (c *Client) addOperationCreateDataLakeMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -75,8 +75,10 @@ type CreateSecurityProfileInput struct {
 	Permissions []string
 
 	// The list of resources that a security profile applies tag restrictions to in
-	// Amazon Connect. Following are acceptable ResourceNames: User | SecurityProfile
-	// | Queue | RoutingProfile
+	// Amazon Connect. For a list of Amazon Connect resources that you can tag, see [Add tags to resources in Amazon Connect]in
+	// the Amazon Connect Administrator Guide.
+	//
+	// [Add tags to resources in Amazon Connect]: https://docs.aws.amazon.com/connect/latest/adminguide/tagging.html
 	TagRestrictedResources []string
 
 	// The tags used to organize, track, or control access for this resource. For
@@ -143,6 +145,9 @@ func (c *Client) addOperationCreateSecurityProfileMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -159,6 +164,9 @@ func (c *Client) addOperationCreateSecurityProfileMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateSecurityProfileValidationMiddleware(stack); err != nil {
@@ -180,6 +188,18 @@ func (c *Client) addOperationCreateSecurityProfileMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -11,12 +11,12 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Modifies some configurations of the Network File System (NFS) transfer location
-// that you're using with DataSync.
+// Modifies the following configuration parameters of the Network File System
+// (NFS) transfer location that you're using with DataSync.
 //
-// For more information, see [Configuring transfers to or from an NFS file server].
+// For more information, see [Configuring transfers with an NFS file server].
 //
-// [Configuring transfers to or from an NFS file server]: https://docs.aws.amazon.com/datasync/latest/userguide/create-nfs-location.html
+// [Configuring transfers with an NFS file server]: https://docs.aws.amazon.com/datasync/latest/userguide/create-nfs-location.html
 func (c *Client) UpdateLocationNfs(ctx context.Context, params *UpdateLocationNfsInput, optFns ...func(*Options)) (*UpdateLocationNfsOutput, error) {
 	if params == nil {
 		params = &UpdateLocationNfsInput{}
@@ -43,8 +43,13 @@ type UpdateLocationNfsInput struct {
 	// Specifies how DataSync can access a location using the NFS protocol.
 	MountOptions *types.NfsMountOptions
 
-	// The DataSync agents that are connecting to a Network File System (NFS) location.
+	// The DataSync agents that can connect to your Network File System (NFS) file
+	// server.
 	OnPremConfig *types.OnPremConfig
+
+	// Specifies the DNS name or IP version 4 (IPv4) address of the NFS file server
+	// that your DataSync agent connects to.
+	ServerHostname *string
 
 	// Specifies the export path in your NFS file server that you want DataSync to
 	// mount.
@@ -108,6 +113,9 @@ func (c *Client) addOperationUpdateLocationNfsMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -124,6 +132,9 @@ func (c *Client) addOperationUpdateLocationNfsMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateLocationNfsValidationMiddleware(stack); err != nil {
@@ -145,6 +156,18 @@ func (c *Client) addOperationUpdateLocationNfsMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

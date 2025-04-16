@@ -35,13 +35,13 @@ type CreateGraphInput struct {
 	//
 	// The name must contain from 1 to 63 letters, numbers, or hyphens, and its first
 	// character must be a letter. It cannot end with a hyphen or contain two
-	// consecutive hyphens.
+	// consecutive hyphens. Only lowercase letters are allowed.
 	//
 	// This member is required.
 	GraphName *string
 
 	// The provisioned memory-optimized Neptune Capacity Units (m-NCUs) to use for the
-	// graph. Min = 128
+	// graph. Min = 16
 	//
 	// This member is required.
 	ProvisionedMemory *int32
@@ -95,7 +95,7 @@ type CreateGraphOutput struct {
 	//
 	// The name must contain from 1 to 63 letters, numbers, or hyphens, and its first
 	// character must be a letter. It cannot end with a hyphen or contain two
-	// consecutive hyphens.
+	// consecutive hyphens. Only lowercase letters are allowed.
 	//
 	// This member is required.
 	Name *string
@@ -119,7 +119,7 @@ type CreateGraphOutput struct {
 	// The provisioned memory-optimized Neptune Capacity Units (m-NCUs) to use for the
 	// graph.
 	//
-	// Min = 128
+	// Min = 16
 	ProvisionedMemory *int32
 
 	// Specifies whether or not the graph can be reachable over the internet. All
@@ -196,6 +196,9 @@ func (c *Client) addOperationCreateGraphMiddlewares(stack *middleware.Stack, opt
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -212,6 +215,9 @@ func (c *Client) addOperationCreateGraphMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateGraphValidationMiddleware(stack); err != nil {
@@ -233,6 +239,18 @@ func (c *Client) addOperationCreateGraphMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

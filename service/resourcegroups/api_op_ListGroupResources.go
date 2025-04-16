@@ -11,8 +11,8 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Returns a list of ARNs of the resources that are members of a specified
-// resource group.
+// Returns a list of Amazon resource names (ARNs) of the resources that are
+// members of a specified resource group.
 //
 // # Minimum permissions
 //
@@ -67,7 +67,7 @@ type ListGroupResourcesInput struct {
 	// query type (tag-based or Amazon CloudFront stack-based queries).
 	Filters []types.ResourceFilter
 
-	// The name or the ARN of the resource group
+	// The name or the Amazon resource name (ARN) of the resource group.
 	Group *string
 
 	//  Deprecated - don't use this parameter. Use the Group request field instead.
@@ -168,6 +168,9 @@ func (c *Client) addOperationListGroupResourcesMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -184,6 +187,9 @@ func (c *Client) addOperationListGroupResourcesMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListGroupResourcesValidationMiddleware(stack); err != nil {
@@ -205,6 +211,18 @@ func (c *Client) addOperationListGroupResourcesMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

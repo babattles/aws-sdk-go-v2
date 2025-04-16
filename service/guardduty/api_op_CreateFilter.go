@@ -33,8 +33,13 @@ func (c *Client) CreateFilter(ctx context.Context, params *CreateFilterInput, op
 
 type CreateFilterInput struct {
 
-	// The ID of the detector belonging to the GuardDuty account that you want to
-	// create a filter for.
+	// The detector ID associated with the GuardDuty account for which you want to
+	// create a filter.
+	//
+	// To find the detectorId in the current Region, see the Settings page in the
+	// GuardDuty console, or run the [ListDetectors]API.
+	//
+	// [ListDetectors]: https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html
 	//
 	// This member is required.
 	DetectorId *string
@@ -58,9 +63,11 @@ type CreateFilterInput struct {
 	//
 	//   - Medium: ["4", "5", "6"]
 	//
-	//   - High: ["7", "8", "9"]
+	//   - High: ["7", "8"]
 	//
-	// For more information, see [Severity levels for GuardDuty findings].
+	//   - Critical: ["9", "10"]
+	//
+	// For more information, see [Findings severity levels]in the Amazon GuardDuty User Guide.
 	//
 	//   - type
 	//
@@ -241,7 +248,7 @@ type CreateFilterInput struct {
 	//
 	//   - service.runtimeDetails.process.name
 	//
-	//   - service.runtimeDetails.process.name
+	//   - service.runtimeDetails.process.executablePath
 	//
 	//   - resource.lambdaDetails.functionName
 	//
@@ -251,8 +258,8 @@ type CreateFilterInput struct {
 	//
 	//   - resource.lambdaDetails.tags.value
 	//
+	// [Findings severity levels]: https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_findings-severity.html
 	// [FindingCriteria]: https://docs.aws.amazon.com/guardduty/latest/APIReference/API_FindingCriteria.html
-	// [Severity levels for GuardDuty findings]: https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_findings.html#guardduty_findings-severity
 	//
 	// This member is required.
 	FindingCriteria *types.FindingCriteria
@@ -343,6 +350,9 @@ func (c *Client) addOperationCreateFilterMiddlewares(stack *middleware.Stack, op
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -359,6 +369,9 @@ func (c *Client) addOperationCreateFilterMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateFilterMiddleware(stack, options); err != nil {
@@ -383,6 +396,18 @@ func (c *Client) addOperationCreateFilterMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

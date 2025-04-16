@@ -15,7 +15,14 @@ import (
 //
 // Requires permission to access the [CreateRoleAlias] action.
 //
+// The value of [credentialDurationSeconds]credentialDurationSeconds must be less than or equal to the
+// maximum session duration of the IAM role that the role alias references. For
+// more information, see [Modifying a role maximum session duration (Amazon Web Services API)]from the Amazon Web Services Identity and Access
+// Management User Guide.
+//
 // [CreateRoleAlias]: https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions
+// [Modifying a role maximum session duration (Amazon Web Services API)]: https://docs.aws.amazon.com/IAM/latest/UserGuide/roles-managingrole-editing-api.html#roles-modify_max-session-duration-api
+// [credentialDurationSeconds]: https://docs.aws.amazon.com/iot/latest/apireference/API_CreateRoleAlias.html#iot-CreateRoleAlias-request-credentialDurationSeconds
 func (c *Client) CreateRoleAlias(ctx context.Context, params *CreateRoleAliasInput, optFns ...func(*Options)) (*CreateRoleAliasOutput, error) {
 	if params == nil {
 		params = &CreateRoleAliasInput{}
@@ -121,6 +128,9 @@ func (c *Client) addOperationCreateRoleAliasMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -137,6 +147,9 @@ func (c *Client) addOperationCreateRoleAliasMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateRoleAliasValidationMiddleware(stack); err != nil {
@@ -158,6 +171,18 @@ func (c *Client) addOperationCreateRoleAliasMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

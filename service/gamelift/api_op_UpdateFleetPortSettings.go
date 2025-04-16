@@ -20,9 +20,6 @@ import (
 // InboundPermissionRevocations . Permissions to be removed must match existing
 // fleet permissions.
 //
-// For a container fleet, inbound permissions must specify port numbers that are
-// defined in the fleet's connection port settings.
-//
 // If successful, the fleet ID for the updated fleet is returned. For fleets with
 // remote locations, port setting updates can take time to propagate across all
 // locations. You can check the status of updates in each location by calling
@@ -126,6 +123,9 @@ func (c *Client) addOperationUpdateFleetPortSettingsMiddlewares(stack *middlewar
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -142,6 +142,9 @@ func (c *Client) addOperationUpdateFleetPortSettingsMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateFleetPortSettingsValidationMiddleware(stack); err != nil {
@@ -163,6 +166,18 @@ func (c *Client) addOperationUpdateFleetPortSettingsMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -81,7 +81,9 @@ type GetEnvironmentOutput struct {
 	// This member is required.
 	SecurityGroupIds []string
 
-	// The status of the runtime environment.
+	// The status of the runtime environment. If the Amazon Web Services Mainframe
+	// Modernization environment is missing a connection to the customer owned
+	// dependent resource, the status will be Unhealthy .
 	//
 	// This member is required.
 	Status types.EnvironmentLifecycle
@@ -114,6 +116,9 @@ type GetEnvironmentOutput struct {
 	// The Amazon Resource Name (ARN) for the load balancer used with the runtime
 	// environment.
 	LoadBalancerArn *string
+
+	// The network type supported by the runtime environment.
+	NetworkType types.NetworkType
 
 	// Indicates the pending maintenance scheduled on this environment.
 	PendingMaintenance *types.PendingMaintenance
@@ -184,6 +189,9 @@ func (c *Client) addOperationGetEnvironmentMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -200,6 +208,9 @@ func (c *Client) addOperationGetEnvironmentMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetEnvironmentValidationMiddleware(stack); err != nil {
@@ -221,6 +232,18 @@ func (c *Client) addOperationGetEnvironmentMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

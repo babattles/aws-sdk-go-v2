@@ -13,10 +13,6 @@ import (
 )
 
 // Modifies a zero-ETL integration with Amazon Redshift.
-//
-// Currently, you can only modify integrations that have Aurora MySQL source DB
-// clusters. Integrations with Aurora PostgreSQL and RDS sources currently don't
-// support modifying the integration.
 func (c *Client) ModifyIntegration(ctx context.Context, params *ModifyIntegrationInput, optFns ...func(*Options)) (*ModifyIntegrationOutput, error) {
 	if params == nil {
 		params = &ModifyIntegrationInput{}
@@ -39,9 +35,10 @@ type ModifyIntegrationInput struct {
 	// This member is required.
 	IntegrationIdentifier *string
 
-	// A new data filter for the integration. For more information, see [Data filtering for Aurora zero-ETL integrations with Amazon Redshift].
+	// A new data filter for the integration. For more information, see [Data filtering for Aurora zero-ETL integrations with Amazon Redshift] or [Data filtering for Amazon RDS zero-ETL integrations with Amazon Redshift].
 	//
 	// [Data filtering for Aurora zero-ETL integrations with Amazon Redshift]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Zero_ETL_Filtering.html
+	// [Data filtering for Amazon RDS zero-ETL integrations with Amazon Redshift]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/zero-etl.filtering.html
 	DataFilter *string
 
 	// A new description for the integration.
@@ -153,6 +150,9 @@ func (c *Client) addOperationModifyIntegrationMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -169,6 +169,9 @@ func (c *Client) addOperationModifyIntegrationMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpModifyIntegrationValidationMiddleware(stack); err != nil {
@@ -190,6 +193,18 @@ func (c *Client) addOperationModifyIntegrationMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

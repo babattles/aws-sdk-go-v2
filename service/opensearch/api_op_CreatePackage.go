@@ -48,8 +48,22 @@ type CreatePackageInput struct {
 	// This member is required.
 	PackageType types.PackageType
 
+	// The version of the Amazon OpenSearch Service engine for which is compatible
+	// with the package. This can only be specified for package type ZIP-PLUGIN
+	EngineVersion *string
+
+	//  The configuration parameters for the package being created.
+	PackageConfiguration *types.PackageConfiguration
+
 	// Description of the package.
 	PackageDescription *string
+
+	// The encryption parameters for the package being created.
+	PackageEncryptionOptions *types.PackageEncryptionOptions
+
+	//  The vending options for the package being created. They determine if the
+	// package can be vended to other users.
+	PackageVendingOptions *types.PackageVendingOptions
 
 	noSmithyDocumentSerde
 }
@@ -109,6 +123,9 @@ func (c *Client) addOperationCreatePackageMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -125,6 +142,9 @@ func (c *Client) addOperationCreatePackageMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreatePackageValidationMiddleware(stack); err != nil {
@@ -146,6 +166,18 @@ func (c *Client) addOperationCreatePackageMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -18,9 +18,9 @@ import (
 // A transaction times out if no calls use its transaction ID in three minutes. If
 // a transaction times out before it's committed, it's rolled back automatically.
 //
-// DDL statements inside a transaction cause an implicit commit. We recommend that
-// you run each DDL statement in a separate ExecuteStatement call with
-// continueAfterTimeout enabled.
+// For Aurora MySQL, DDL statements inside a transaction cause an implicit commit.
+// We recommend that you run each MySQL DDL statement in a separate
+// ExecuteStatement call with continueAfterTimeout enabled.
 func (c *Client) BeginTransaction(ctx context.Context, params *BeginTransactionInput, optFns ...func(*Options)) (*BeginTransactionOutput, error) {
 	if params == nil {
 		params = &BeginTransactionInput{}
@@ -115,6 +115,9 @@ func (c *Client) addOperationBeginTransactionMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -131,6 +134,9 @@ func (c *Client) addOperationBeginTransactionMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpBeginTransactionValidationMiddleware(stack); err != nil {
@@ -152,6 +158,18 @@ func (c *Client) addOperationBeginTransactionMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

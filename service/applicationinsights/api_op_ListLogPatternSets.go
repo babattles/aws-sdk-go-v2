@@ -33,7 +33,7 @@ type ListLogPatternSetsInput struct {
 	// This member is required.
 	ResourceGroupName *string
 
-	// The AWS account ID for the resource group owner.
+	// The Amazon Web Services account ID for the resource group owner.
 	AccountId *string
 
 	// The maximum number of results to return in a single call. To retrieve the
@@ -48,7 +48,7 @@ type ListLogPatternSetsInput struct {
 
 type ListLogPatternSetsOutput struct {
 
-	// The AWS account ID for the resource group owner.
+	// The Amazon Web Services account ID for the resource group owner.
 	AccountId *string
 
 	// The list of log pattern sets.
@@ -110,6 +110,9 @@ func (c *Client) addOperationListLogPatternSetsMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -126,6 +129,9 @@ func (c *Client) addOperationListLogPatternSetsMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListLogPatternSetsValidationMiddleware(stack); err != nil {
@@ -147,6 +153,18 @@ func (c *Client) addOperationListLogPatternSetsMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

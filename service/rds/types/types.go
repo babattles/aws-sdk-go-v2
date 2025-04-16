@@ -326,9 +326,29 @@ type CharacterSet struct {
 type CloudwatchLogsExportConfiguration struct {
 
 	// The list of log types to disable.
+	//
+	// The following values are valid for each DB engine:
+	//
+	//   - Aurora MySQL - audit | error | general | slowquery
+	//
+	//   - Aurora PostgreSQL - postgresql
+	//
+	//   - RDS for MySQL - error | general | slowquery
+	//
+	//   - RDS for PostgreSQL - postgresql | upgrade
 	DisableLogTypes []string
 
 	// The list of log types to enable.
+	//
+	// The following values are valid for each DB engine:
+	//
+	//   - Aurora MySQL - audit | error | general | slowquery
+	//
+	//   - Aurora PostgreSQL - postgresql
+	//
+	//   - RDS for MySQL - error | general | slowquery
+	//
+	//   - RDS for PostgreSQL - postgresql | upgrade
 	EnableLogTypes []string
 
 	noSmithyDocumentSerde
@@ -392,7 +412,6 @@ type ConnectionPoolConfiguration struct {
 	// The number of seconds for a proxy to wait for a connection to become available
 	// in the connection pool. This setting only applies when the proxy has opened its
 	// maximum number of connections and all connections are busy with client sessions.
-	// For an unlimited wait time, specify 0 .
 	//
 	// Default: 120
 	//
@@ -401,11 +420,16 @@ type ConnectionPoolConfiguration struct {
 	//   - Must be between 0 and 3600.
 	ConnectionBorrowTimeout *int32
 
-	// One or more SQL statements for the proxy to run when opening each new database
-	// connection. Typically used with SET statements to make sure that each
-	// connection has identical settings such as time zone and character set. For
-	// multiple statements, use semicolons as the separator. You can also include
-	// multiple variables in a single SET statement, such as SET x=1, y=2 .
+	// Add an initialization query, or modify the current one. You can specify one or
+	// more SQL statements for the proxy to run when opening each new database
+	// connection. The setting is typically used with SET statements to make sure that
+	// each connection has identical settings. Make sure that the query you add is
+	// valid. To include multiple variables in a single SET statement, use comma
+	// separators.
+	//
+	// For example: SET variable1=value1, variable2=value2
+	//
+	// For multiple statements, use semicolons as the separator.
 	//
 	// Default: no initialization query
 	InitQuery *string
@@ -563,10 +587,9 @@ type DBCluster struct {
 	// The status of the database activity stream.
 	ActivityStreamStatus ActivityStreamStatus
 
-	// For all database engines except Amazon Aurora, AllocatedStorage specifies the
-	// allocated storage size in gibibytes (GiB). For Aurora, AllocatedStorage always
-	// returns 1, because Aurora DB cluster storage size isn't fixed, but instead
-	// automatically adjusts as needed.
+	// AllocatedStorage specifies the allocated storage size in gibibytes (GiB). For
+	// Aurora, AllocatedStorage can vary because Aurora DB cluster storage size
+	// adjusts as needed.
 	AllocatedStorage *int32
 
 	// A list of the Amazon Web Services Identity and Access Management (IAM) roles
@@ -577,7 +600,7 @@ type DBCluster struct {
 
 	// Indicates whether minor version patches are applied automatically.
 	//
-	// This setting is only for non-Aurora Multi-AZ DB clusters.
+	// This setting is for Aurora DB clusters and Multi-AZ DB clusters.
 	AutoMinorVersionUpgrade *bool
 
 	// The time when a stopped DB cluster is restarted automatically.
@@ -623,11 +646,26 @@ type DBCluster struct {
 	// associated with.
 	CharacterSetName *string
 
-	// The ID of the clone group with which the DB cluster is associated.
+	// The ID of the clone group with which the DB cluster is associated. For newly
+	// created clusters, the ID is typically null.
+	//
+	// If you clone a DB cluster when the ID is null, the operation populates the ID
+	// value for the source cluster and the clone because both clusters become part of
+	// the same clone group. Even if you delete the clone cluster, the clone group ID
+	// remains for the lifetime of the source cluster to show that it was used in a
+	// cloning operation.
+	//
+	// For PITR, the clone group ID is inherited from the source cluster. For snapshot
+	// restore operations, the clone group ID isn't inherited from the source cluster.
 	CloneGroupId *string
 
 	// The time when the DB cluster was created, in Universal Coordinated Time (UTC).
 	ClusterCreateTime *time.Time
+
+	// The scalability mode of the Aurora DB cluster. When set to limitless , the
+	// cluster operates as an Aurora Limitless Database. When set to standard (the
+	// default), the cluster uses normal DB instance creation.
+	ClusterScalabilityType ClusterScalabilityType
 
 	// Indicates whether tags are copied from the DB cluster to snapshots of the DB
 	// cluster.
@@ -667,6 +705,9 @@ type DBCluster struct {
 
 	// Reserved for future use.
 	DBSystemId *string
+
+	// The mode of Database Insights that is enabled for the DB cluster.
+	DatabaseInsightsMode DatabaseInsightsMode
 
 	// The name of the initial database that was specified for the DB cluster when it
 	// was created, if one was provided. This same name is returned for the life of the
@@ -793,13 +834,13 @@ type DBCluster struct {
 	// The interval, in seconds, between points when Enhanced Monitoring metrics are
 	// collected for the DB cluster.
 	//
-	// This setting is only for non-Aurora Multi-AZ DB clusters.
+	// This setting is only for -Aurora DB clusters and Multi-AZ DB clusters.
 	MonitoringInterval *int32
 
 	// The ARN for the IAM role that permits RDS to send Enhanced Monitoring metrics
 	// to Amazon CloudWatch Logs.
 	//
-	// This setting is only for non-Aurora Multi-AZ DB clusters.
+	// This setting is only for Aurora DB clusters and Multi-AZ DB clusters.
 	MonitoringRoleArn *string
 
 	// Indicates whether the DB cluster has instances in multiple Availability Zones.
@@ -830,7 +871,7 @@ type DBCluster struct {
 
 	// Indicates whether Performance Insights is enabled for the DB cluster.
 	//
-	// This setting is only for non-Aurora Multi-AZ DB clusters.
+	// This setting is only for Aurora DB clusters and Multi-AZ DB clusters.
 	PerformanceInsightsEnabled *bool
 
 	// The Amazon Web Services KMS key identifier for encryption of Performance
@@ -839,12 +880,12 @@ type DBCluster struct {
 	// The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN,
 	// or alias name for the KMS key.
 	//
-	// This setting is only for non-Aurora Multi-AZ DB clusters.
+	// This setting is only for Aurora DB clusters and Multi-AZ DB clusters.
 	PerformanceInsightsKMSKeyId *string
 
 	// The number of days to retain Performance Insights data.
 	//
-	// This setting is only for non-Aurora Multi-AZ DB clusters.
+	// This setting is only for Aurora DB clusters and Multi-AZ DB clusters.
 	//
 	// Valid Values:
 	//
@@ -1486,6 +1527,14 @@ type DBEngineVersion struct {
 	// The major engine version of the CEV.
 	MajorEngineVersion *string
 
+	// Specifies any Aurora Serverless v2 properties or limits that differ between
+	// Aurora engine versions. You can test the values of this attribute when deciding
+	// which Aurora version to use in a new or upgraded DB cluster. You can also
+	// retrieve the version of an existing DB cluster and check whether that version
+	// supports certain Aurora Serverless v2 features before you attempt to use those
+	// features.
+	ServerlessV2FeaturesSupport *ServerlessV2FeaturesSupport
+
 	// The status of the DB engine version, either available or deprecated .
 	Status *string
 
@@ -1750,6 +1799,9 @@ type DBInstance struct {
 	// SID is also the name of the CDB. This setting is only valid for RDS Custom DB
 	// instances.
 	DBSystemId *string
+
+	// The mode of Database Insights that is enabled for the instance.
+	DatabaseInsightsMode DatabaseInsightsMode
 
 	// The port that the DB instance listens on. If the DB instance is part of a DB
 	// cluster, this can be a different port than the DB cluster port.
@@ -2271,7 +2323,19 @@ type DBParameterGroupStatus struct {
 	// The name of the DB parameter group.
 	DBParameterGroupName *string
 
-	// The status of parameter updates.
+	// The status of parameter updates. Valid values are:
+	//
+	//   - applying : The parameter group change is being applied to the database.
+	//
+	//   - failed-to-apply : The parameter group is in an invalid state.
+	//
+	//   - in-sync : The parameter group change is synchronized with the database.
+	//
+	//   - pending-database-upgrade : The parameter group change will be applied after
+	//   the DB instance is upgraded.
+	//
+	//   - pending-reboot : The parameter group change will be applied after the DB
+	//   instance reboots.
 	ParameterApplyStatus *string
 
 	noSmithyDocumentSerde
@@ -2655,23 +2719,27 @@ type DBSecurityGroupMembership struct {
 	noSmithyDocumentSerde
 }
 
+// Contains the details for an Amazon RDS DB shard group.
 type DBShardGroup struct {
 
-	// Specifies whether to create standby instances for the DB shard group. Valid
-	// values are the following:
+	// Specifies whether to create standby DB shard groups for the DB shard group.
+	// Valid values are the following:
 	//
-	//   - 0 - Creates a single, primary DB instance for each physical shard. This is
-	//   the default value, and the only one supported for the preview.
+	//   - 0 - Creates a DB shard group without a standby DB shard group. This is the
+	//   default value.
 	//
-	//   - 1 - Creates a primary DB instance and a standby instance in a different
-	//   Availability Zone (AZ) for each physical shard.
+	//   - 1 - Creates a DB shard group with a standby DB shard group in a different
+	//   Availability Zone (AZ).
 	//
-	//   - 2 - Creates a primary DB instance and two standby instances in different
-	//   AZs for each physical shard.
+	//   - 2 - Creates a DB shard group with two standby DB shard groups in two
+	//   different AZs.
 	ComputeRedundancy *int32
 
 	// The name of the primary DB cluster for the DB shard group.
 	DBClusterIdentifier *string
+
+	// The Amazon Resource Name (ARN) for the DB shard group.
+	DBShardGroupArn *string
 
 	// The name of the DB shard group.
 	DBShardGroupIdentifier *string
@@ -2708,6 +2776,15 @@ type DBShardGroup struct {
 
 	// The status of the DB shard group.
 	Status *string
+
+	// A list of tags.
+	//
+	// For more information, see [Tagging Amazon RDS resources] in the Amazon RDS User Guide or [Tagging Amazon Aurora and Amazon RDS resources] in the Amazon
+	// Aurora User Guide.
+	//
+	// [Tagging Amazon RDS resources]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html
+	// [Tagging Amazon Aurora and Amazon RDS resources]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Tagging.html
+	TagList []Tag
 
 	noSmithyDocumentSerde
 }
@@ -3408,6 +3485,10 @@ type GlobalCluster struct {
 	// The deletion protection setting for the new global database cluster.
 	DeletionProtection *bool
 
+	//  The writer endpoint for the new global database cluster. This endpoint always
+	// points to the writer DB instance in the current primary cluster.
+	Endpoint *string
+
 	// The Aurora database engine used by the global database cluster.
 	Engine *string
 
@@ -3445,6 +3526,15 @@ type GlobalCluster struct {
 
 	// The storage encryption setting for the global database cluster.
 	StorageEncrypted *bool
+
+	// A list of tags.
+	//
+	// For more information, see [Tagging Amazon RDS resources] in the Amazon RDS User Guide or [Tagging Amazon Aurora and Amazon RDS resources] in the Amazon
+	// Aurora User Guide.
+	//
+	// [Tagging Amazon RDS resources]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html
+	// [Tagging Amazon Aurora and Amazon RDS resources]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Tagging.html
+	TagList []Tag
 
 	noSmithyDocumentSerde
 }
@@ -4161,10 +4251,23 @@ type PendingMaintenanceAction struct {
 	//
 	// For more information about maintenance actions, see [Maintaining a DB instance].
 	//
-	// Valid Values: system-update | db-upgrade | hardware-maintenance |
-	// ca-certificate-rotation
+	// Valid Values:
 	//
+	//   - ca-certificate-rotation
+	//
+	//   - db-upgrade
+	//
+	//   - hardware-maintenance
+	//
+	//   - os-upgrade
+	//
+	//   - system-update
+	//
+	// For more information about these actions, see [Maintenance actions for Amazon Aurora] or [Maintenance actions for Amazon RDS].
+	//
+	// [Maintenance actions for Amazon RDS]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.Maintenance.html#maintenance-actions-rds
 	// [Maintaining a DB instance]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.Maintenance.html
+	// [Maintenance actions for Amazon Aurora]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_UpgradeDBInstance.Maintenance.html#maintenance-actions-aurora
 	Action *string
 
 	// The date of the maintenance window when the action is applied. The maintenance
@@ -4819,6 +4922,26 @@ type ScalingConfigurationInfo struct {
 	noSmithyDocumentSerde
 }
 
+// Specifies any Aurora Serverless v2 properties or limits that differ between
+// Aurora engine versions. You can test the values of this attribute when deciding
+// which Aurora version to use in a new or upgraded DB cluster. You can also
+// retrieve the version of an existing DB cluster and check whether that version
+// supports certain Aurora Serverless v2 features before you attempt to use those
+// features.
+type ServerlessV2FeaturesSupport struct {
+
+	//  Specifies the upper Aurora Serverless v2 capacity limit for a particular
+	// engine version. Depending on the engine version, the maximum capacity for an
+	// Aurora Serverless v2 cluster might be 256 or 128 .
+	MaxCapacity *float64
+
+	// If the minimum capacity is 0 ACUs, the engine version supports the automatic
+	// pause/resume feature of Aurora Serverless v2.
+	MinCapacity *float64
+
+	noSmithyDocumentSerde
+}
+
 // Contains the scaling configuration of an Aurora Serverless v2 DB cluster.
 //
 // For more information, see [Using Amazon Aurora Serverless v2] in the Amazon Aurora User Guide.
@@ -4828,15 +4951,24 @@ type ServerlessV2ScalingConfiguration struct {
 
 	// The maximum number of Aurora capacity units (ACUs) for a DB instance in an
 	// Aurora Serverless v2 cluster. You can specify ACU values in half-step
-	// increments, such as 40, 40.5, 41, and so on. The largest value that you can use
-	// is 128.
+	// increments, such as 32, 32.5, 33, and so on. The largest value that you can use
+	// is 256 for recent Aurora versions, or 128 for older versions.
 	MaxCapacity *float64
 
 	// The minimum number of Aurora capacity units (ACUs) for a DB instance in an
 	// Aurora Serverless v2 cluster. You can specify ACU values in half-step
-	// increments, such as 8, 8.5, 9, and so on. The smallest value that you can use is
-	// 0.5.
+	// increments, such as 8, 8.5, 9, and so on. For Aurora versions that support the
+	// Aurora Serverless v2 auto-pause feature, the smallest value that you can use is
+	// 0. For versions that don't support Aurora Serverless v2 auto-pause, the smallest
+	// value that you can use is 0.5.
 	MinCapacity *float64
+
+	// Specifies the number of seconds an Aurora Serverless v2 DB instance must be
+	// idle before Aurora attempts to automatically pause it.
+	//
+	// Specify a value between 300 seconds (five minutes) and 86,400 seconds (one
+	// day). The default is 300 seconds.
+	SecondsUntilAutoPause *int32
 
 	noSmithyDocumentSerde
 }
@@ -4850,15 +4982,28 @@ type ServerlessV2ScalingConfigurationInfo struct {
 
 	// The maximum number of Aurora capacity units (ACUs) for a DB instance in an
 	// Aurora Serverless v2 cluster. You can specify ACU values in half-step
-	// increments, such as 40, 40.5, 41, and so on. The largest value that you can use
-	// is 128.
+	// increments, such as 32, 32.5, 33, and so on. The largest value that you can use
+	// is 256 for recent Aurora versions, or 128 for older versions.
 	MaxCapacity *float64
 
 	// The minimum number of Aurora capacity units (ACUs) for a DB instance in an
 	// Aurora Serverless v2 cluster. You can specify ACU values in half-step
-	// increments, such as 8, 8.5, 9, and so on. The smallest value that you can use is
-	// 0.5.
+	// increments, such as 8, 8.5, 9, and so on. For Aurora versions that support the
+	// Aurora Serverless v2 auto-pause feature, the smallest value that you can use is
+	// 0. For versions that don't support Aurora Serverless v2 auto-pause, the smallest
+	// value that you can use is 0.5.
 	MinCapacity *float64
+
+	//  The number of seconds an Aurora Serverless v2 DB instance must be idle before
+	// Aurora attempts to automatically pause it. This property is only shown when the
+	// minimum capacity for the cluster is set to 0 ACUs. Changing the minimum capacity
+	// to a nonzero value removes this property. If you later change the minimum
+	// capacity back to 0 ACUs, this property is reset to its default value unless you
+	// specify it again.
+	//
+	// This value ranges between 300 seconds (five minutes) and 86,400 seconds (one
+	// day). The default is 300 seconds.
+	SecondsUntilAutoPause *int32
 
 	noSmithyDocumentSerde
 }
@@ -5169,8 +5314,7 @@ type UserAuthConfigInfo struct {
 	Description *string
 
 	// Whether to require or disallow Amazon Web Services Identity and Access
-	// Management (IAM) authentication for connections to the proxy. The ENABLED value
-	// is valid only for proxies with RDS for Microsoft SQL Server.
+	// Management (IAM) authentication for connections to the proxy.
 	IAMAuth IAMAuthMode
 
 	// The Amazon Resource Name (ARN) representing the secret that the proxy uses to

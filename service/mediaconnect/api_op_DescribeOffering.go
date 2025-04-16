@@ -11,7 +11,8 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Displays the details of an offering. The response includes the offering
+//	Displays the details of an offering. The response includes the offering
+//
 // description, duration, outbound bandwidth, price, and Amazon Resource Name
 // (ARN).
 func (c *Client) DescribeOffering(ctx context.Context, params *DescribeOfferingInput, optFns ...func(*Options)) (*DescribeOfferingOutput, error) {
@@ -31,7 +32,7 @@ func (c *Client) DescribeOffering(ctx context.Context, params *DescribeOfferingI
 
 type DescribeOfferingInput struct {
 
-	// The Amazon Resource Name (ARN) of the offering.
+	//  The ARN of the offering.
 	//
 	// This member is required.
 	OfferingArn *string
@@ -41,8 +42,7 @@ type DescribeOfferingInput struct {
 
 type DescribeOfferingOutput struct {
 
-	// A savings plan that reserves a certain amount of outbound bandwidth usage at a
-	// discounted rate each month over a period of time.
+	// The offering that you requested a description of.
 	Offering *types.Offering
 
 	// Metadata pertaining to the operation's result.
@@ -94,6 +94,9 @@ func (c *Client) addOperationDescribeOfferingMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -110,6 +113,9 @@ func (c *Client) addOperationDescribeOfferingMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeOfferingValidationMiddleware(stack); err != nil {
@@ -131,6 +137,18 @@ func (c *Client) addOperationDescribeOfferingMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

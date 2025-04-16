@@ -14,7 +14,7 @@ import (
 //	Stops a CIS session. This API is used by the Amazon Inspector SSM plugin to
 //
 // communicate with the Amazon Inspector service. The Amazon Inspector SSM plugin
-// calls this API to start a CIS scan session for the scan ID supplied by the
+// calls this API to stop a CIS scan session for the scan ID supplied by the
 // service.
 func (c *Client) StopCisSession(ctx context.Context, params *StopCisSessionInput, optFns ...func(*Options)) (*StopCisSessionOutput, error) {
 	if params == nil {
@@ -101,6 +101,9 @@ func (c *Client) addOperationStopCisSessionMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -117,6 +120,9 @@ func (c *Client) addOperationStopCisSessionMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpStopCisSessionValidationMiddleware(stack); err != nil {
@@ -138,6 +144,18 @@ func (c *Client) addOperationStopCisSessionMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

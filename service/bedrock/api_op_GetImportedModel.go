@@ -43,6 +43,12 @@ type GetImportedModelOutput struct {
 	// Creation time of the imported model.
 	CreationTime *time.Time
 
+	// Information about the hardware utilization for a single copy of the model.
+	CustomModelUnits *types.CustomModelUnits
+
+	// Specifies if the imported model supports converse.
+	InstructSupported *bool
+
 	// Job Amazon Resource Name (ARN) associated with the imported model.
 	JobArn *string
 
@@ -113,6 +119,9 @@ func (c *Client) addOperationGetImportedModelMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -129,6 +138,9 @@ func (c *Client) addOperationGetImportedModelMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetImportedModelValidationMiddleware(stack); err != nil {
@@ -150,6 +162,18 @@ func (c *Client) addOperationGetImportedModelMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

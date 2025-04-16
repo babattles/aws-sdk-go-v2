@@ -13,13 +13,30 @@ type AutoParticipantRecordingConfiguration struct {
 	// ARN of the StorageConfiguration resource to use for individual participant recording. Default: ""
 	// (empty string, no storage configuration is specified). Individual participant
 	// recording cannot be started unless a storage configuration is specified, when a Stage
-	// is created or updated.
+	// is created or updated. To disable individual participant recording, set this to
+	// "" ; other fields in this object will get reset to their defaults when sending
+	// "" .
 	//
 	// This member is required.
 	StorageConfigurationArn *string
 
+	// HLS configuration object for individual participant recording.
+	HlsConfiguration *ParticipantRecordingHlsConfiguration
+
 	// Types of media to be recorded. Default: AUDIO_VIDEO .
 	MediaTypes []ParticipantRecordingMediaType
+
+	// If a stage publisher disconnects and then reconnects within the specified
+	// interval, the multiple recordings will be considered a single recording and
+	// merged together.
+	//
+	// The default value is 0, which disables merging.
+	RecordingReconnectWindowSeconds int32
+
+	// A complex type that allows you to enable/disable the recording of thumbnails
+	// for individual participant recording and modify the interval at which thumbnails
+	// are generated for the live session.
+	ThumbnailConfiguration *ParticipantThumbnailConfiguration
 
 	noSmithyDocumentSerde
 }
@@ -79,12 +96,25 @@ type Composition struct {
 	StartTime *time.Time
 
 	// Tags attached to the resource. Array of maps, each of the form string:string
-	// (key:value) . See [Tagging AWS Resources] for details, including restrictions that apply to tags and
-	// "Tag naming limits and requirements"; Amazon IVS has no constraints on tags
-	// beyond what is documented there.
+	// (key:value) . See [Best practices and strategies] in Tagging AWS Resources and Tag Editor for details,
+	// including restrictions that apply to tags and "Tag naming limits and
+	// requirements"; Amazon IVS has no constraints on tags beyond what is documented
+	// there.
 	//
-	// [Tagging AWS Resources]: https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html
+	// [Best practices and strategies]: https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html
 	Tags map[string]string
+
+	noSmithyDocumentSerde
+}
+
+// An object representing a configuration of HLS recordings for server-side
+// composition.
+type CompositionRecordingHlsConfiguration struct {
+
+	// Defines the target duration for recorded segments generated when using
+	// composite recording. Segments may have durations shorter than the specified
+	// value when needed to ensure each segment begins with a keyframe. Default: 2.
+	TargetSegmentDurationSeconds *int32
 
 	noSmithyDocumentSerde
 }
@@ -121,12 +151,31 @@ type CompositionSummary struct {
 	StartTime *time.Time
 
 	// Tags attached to the resource. Array of maps, each of the form string:string
-	// (key:value) . See [Tagging AWS Resources] for details, including restrictions that apply to tags and
-	// "Tag naming limits and requirements"; Amazon IVS has no constraints on tags
-	// beyond what is documented there.
+	// (key:value) . See [Best practices and strategies] in Tagging AWS Resources and Tag Editor for details,
+	// including restrictions that apply to tags and "Tag naming limits and
+	// requirements"; Amazon IVS has no constraints on tags beyond what is documented
+	// there.
 	//
-	// [Tagging AWS Resources]: https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html
+	// [Best practices and strategies]: https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html
 	Tags map[string]string
+
+	noSmithyDocumentSerde
+}
+
+// An object representing a configuration of thumbnails for recorded video for a Composition.
+type CompositionThumbnailConfiguration struct {
+
+	// Indicates the format in which thumbnails are recorded. SEQUENTIAL records all
+	// generated thumbnails in a serial manner, to the
+	// media/thumbnails/(width)x(height) directory, where (width) and (height) are the
+	// width and height of the thumbnail. LATEST saves the latest thumbnail in
+	// media/latest_thumbnail/(width)x(height)/thumb.jpg and overwrites it at the
+	// interval specified by targetIntervalSeconds . You can enable both SEQUENTIAL
+	// and LATEST . Default: SEQUENTIAL .
+	Storage []ThumbnailStorageType
+
+	// The targeted thumbnail-generation interval in seconds. Default: 60.
+	TargetIntervalSeconds *int32
 
 	noSmithyDocumentSerde
 }
@@ -225,11 +274,12 @@ type EncoderConfiguration struct {
 	Name *string
 
 	// Tags attached to the resource. Array of maps, each of the form string:string
-	// (key:value) . See [Tagging AWS Resources] for details, including restrictions that apply to tags and
-	// "Tag naming limits and requirements"; Amazon IVS has no constraints on tags
-	// beyond what is documented there.
+	// (key:value) . See [Best practices and strategies] in Tagging AWS Resources and Tag Editor for details,
+	// including restrictions that apply to tags and "Tag naming limits and
+	// requirements"; Amazon IVS has no constraints on tags beyond what is documented
+	// there.
 	//
-	// [Tagging AWS Resources]: https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html
+	// [Best practices and strategies]: https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html
 	Tags map[string]string
 
 	// Video configuration. Default: video resolution 1280x720, bitrate 2500 kbps, 30
@@ -251,11 +301,12 @@ type EncoderConfigurationSummary struct {
 	Name *string
 
 	// Tags attached to the resource. Array of maps, each of the form string:string
-	// (key:value) . See [Tagging AWS Resources] for details, including restrictions that apply to tags and
-	// "Tag naming limits and requirements"; Amazon IVS has no constraints on tags
-	// beyond what is documented there.
+	// (key:value) . See [Best practices and strategies] in Tagging AWS Resources and Tag Editor for details,
+	// including restrictions that apply to tags and "Tag naming limits and
+	// requirements"; Amazon IVS has no constraints on tags beyond what is documented
+	// there.
 	//
-	// [Tagging AWS Resources]: https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html
+	// [Best practices and strategies]: https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html
 	Tags map[string]string
 
 	noSmithyDocumentSerde
@@ -266,15 +317,53 @@ type Event struct {
 
 	// If the event is an error event, the error code is provided to give insight into
 	// the specific error that occurred. If the event is not an error event, this field
-	// is null. INSUFFICIENT_CAPABILITIES indicates that the participant tried to take
-	// an action that the participant’s token is not allowed to do. For more
-	// information about participant capabilities, see the capabilities field in CreateParticipantToken.
-	// QUOTA_EXCEEDED indicates that the number of participants who want to
-	// publish/subscribe to a stage exceeds the quota; for more information, see [Service Quotas].
-	// PUBLISHER_NOT_FOUND indicates that the participant tried to subscribe to a
-	// publisher that doesn’t exist.
+	// is null.
 	//
+	//   - B_FRAME_PRESENT — The participant's stream includes B-frames. For details,
+	//   see [IVS RTMP Publishing].
+	//
+	//   - BITRATE_EXCEEDED — The participant exceeded the maximum supported bitrate.
+	//   For details, see [Service Quotas].
+	//
+	//   - INSUFFICIENT_CAPABILITIES — The participant tried to take an action that the
+	//   participant’s token is not allowed to do. For details on participant
+	//   capabilities, see the capabilities field in CreateParticipantToken.
+	//
+	//   - INTERNAL_SERVER_EXCEPTION — The participant failed to publish to the stage
+	//   due to an internal server error.
+	//
+	//   - INVALID_AUDIO_CODEC — The participant is using an invalid audio codec. For
+	//   details, see [Stream Ingest].
+	//
+	//   - INVALID_INPUT — The participant is using an invalid input stream.
+	//
+	//   - INVALID_PROTOCOL — The participant's IngestConfiguration resource is
+	//   configured for RTMPS but they tried streaming with RTMP. For details, see [IVS RTMP Publishing].
+	//
+	//   - INVALID_STREAM_KEY — The participant is using an invalid stream key. For
+	//   details, see [IVS RTMP Publishing].
+	//
+	//   - INVALID_VIDEO_CODEC — The participant is using an invalid video codec. For
+	//   details, see [Stream Ingest].
+	//
+	//   - PUBLISHER_NOT_FOUND — The participant tried to subscribe to a publisher that
+	//   doesn’t exist.
+	//
+	//   - QUOTA_EXCEEDED — The number of participants who want to publish/subscribe to
+	//   a stage exceeds the quota. For details, see [Service Quotas].
+	//
+	//   - RESOLUTION_EXCEEDED — The participant exceeded the maximum supported
+	//   resolution. For details, see [Service Quotas].
+	//
+	//   - REUSE_OF_STREAM_KEY — The participant tried to use a stream key that is
+	//   associated with another active stage session.
+	//
+	//   - STREAM_DURATION_EXCEEDED — The participant exceeded the maximum allowed
+	//   stream duration. For details, see [Service Quotas].
+	//
+	// [Stream Ingest]: https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/rt-stream-ingest.html
 	// [Service Quotas]: https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/service-quotas.html
+	// [IVS RTMP Publishing]: https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/rt-rtmp-publishing.html
 	ErrorCode EventErrorCode
 
 	// ISO 8601 timestamp (returned as a string) for when the event occurred.
@@ -326,6 +415,111 @@ type GridConfiguration struct {
 	noSmithyDocumentSerde
 }
 
+// Object specifying an ingest configuration.
+type IngestConfiguration struct {
+
+	// Ingest configuration ARN.
+	//
+	// This member is required.
+	Arn *string
+
+	// Type of ingest protocol that the user employs for broadcasting.
+	//
+	// This member is required.
+	IngestProtocol IngestProtocol
+
+	// ID of the participant within the stage.
+	//
+	// This member is required.
+	ParticipantId *string
+
+	// ARN of the stage with which the IngestConfiguration is associated.
+	//
+	// This member is required.
+	StageArn *string
+
+	// State of the ingest configuration. It is ACTIVE if a publisher currently is
+	// publishing to the stage associated with the ingest configuration.
+	//
+	// This member is required.
+	State IngestConfigurationState
+
+	// Ingest-key value for the RTMP(S) protocol.
+	//
+	// This member is required.
+	StreamKey *string
+
+	// Application-provided attributes to to store in the IngestConfiguration and
+	// attach to a stage. Map keys and values can contain UTF-8 encoded text. The
+	// maximum length of this field is 1 KB total. This field is exposed to all stage
+	// participants and should not be used for personally identifying, confidential, or
+	// sensitive information.
+	Attributes map[string]string
+
+	// Ingest name
+	Name *string
+
+	// Tags attached to the resource. Array of maps, each of the form string:string
+	// (key:value) . See [Best practices and strategies] in Tagging AWS Resources and Tag Editor for details,
+	// including restrictions that apply to tags and "Tag naming limits and
+	// requirements"; Amazon IVS has no constraints on tags beyond what is documented
+	// there.
+	//
+	// [Best practices and strategies]: https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html
+	Tags map[string]string
+
+	// Customer-assigned name to help identify the participant using the
+	// IngestConfiguration; this can be used to link a participant to a user in the
+	// customer’s own systems. This can be any UTF-8 encoded text. This field is
+	// exposed to all stage participants and should not be used for personally
+	// identifying, confidential, or sensitive information.
+	UserId *string
+
+	noSmithyDocumentSerde
+}
+
+// Summary information about an IngestConfiguration.
+type IngestConfigurationSummary struct {
+
+	// Ingest configuration ARN.
+	//
+	// This member is required.
+	Arn *string
+
+	// Type of ingest protocol that the user employs for broadcasting.
+	//
+	// This member is required.
+	IngestProtocol IngestProtocol
+
+	// ID of the participant within the stage.
+	//
+	// This member is required.
+	ParticipantId *string
+
+	// ARN of the stage with which the IngestConfiguration is associated.
+	//
+	// This member is required.
+	StageArn *string
+
+	// State of the ingest configuration. It is ACTIVE if a publisher currently is
+	// publishing to the stage associated with the ingest configuration.
+	//
+	// This member is required.
+	State IngestConfigurationState
+
+	// Ingest name.
+	Name *string
+
+	// Customer-assigned name to help identify the participant using the
+	// IngestConfiguration; this can be used to link a participant to a user in the
+	// customer’s own systems. This can be any UTF-8 encoded text. This field is
+	// exposed to all stage participants and should not be used for personally
+	// identifying, confidential, or sensitive information.
+	UserId *string
+
+	noSmithyDocumentSerde
+}
+
 // Configuration information of supported layouts for server-side composition.
 type LayoutConfiguration struct {
 
@@ -369,6 +563,9 @@ type Participant struct {
 	// Unique identifier for this participant, assigned by IVS.
 	ParticipantId *string
 
+	// Type of ingest protocol that the participant employs for broadcasting.
+	Protocol ParticipantProtocol
+
 	// Whether the participant ever published to the stage session.
 	Published bool
 
@@ -400,6 +597,18 @@ type Participant struct {
 	noSmithyDocumentSerde
 }
 
+// An object representing a configuration of participant HLS recordings for
+// individual participant recording.
+type ParticipantRecordingHlsConfiguration struct {
+
+	// Defines the target duration for recorded segments generated when recording a
+	// stage participant. Segments may have durations longer than the specified value
+	// when needed to ensure each segment begins with a keyframe. Default: 6.
+	TargetSegmentDurationSeconds *int32
+
+	noSmithyDocumentSerde
+}
+
 // Summary object describing a participant that has joined a stage.
 type ParticipantSummary struct {
 
@@ -424,6 +633,27 @@ type ParticipantSummary struct {
 	// encoded text. This field is exposed to all stage participants and should not be
 	// used for personally identifying, confidential, or sensitive information.
 	UserId *string
+
+	noSmithyDocumentSerde
+}
+
+// An object representing a configuration of thumbnails for recorded video from an
+// individual participant.
+type ParticipantThumbnailConfiguration struct {
+
+	// Thumbnail recording mode. Default: DISABLED .
+	RecordingMode ThumbnailRecordingMode
+
+	// Indicates the format in which thumbnails are recorded. SEQUENTIAL records all
+	// generated thumbnails in a serial manner, to the media/thumbnails/high directory.
+	// LATEST saves the latest thumbnail in media/latest_thumbnail/high/thumb.jpg and
+	// overwrites it at the interval specified by targetIntervalSeconds . You can
+	// enable both SEQUENTIAL and LATEST . Default: SEQUENTIAL .
+	Storage []ThumbnailStorageType
+
+	// The targeted thumbnail-generation interval in seconds. This is configurable
+	// only if recordingMode is INTERVAL . Default: 60.
+	TargetIntervalSeconds *int32
 
 	noSmithyDocumentSerde
 }
@@ -558,11 +788,12 @@ type PublicKey struct {
 	PublicKeyMaterial *string
 
 	// Tags attached to the resource. Array of maps, each of the form string:string
-	// (key:value) . See [Tagging AWS Resources] for details, including restrictions that apply to tags and
-	// "Tag naming limits and requirements"; Amazon IVS has no constraints on tags
-	// beyond what is documented there.
+	// (key:value) . See [Best practices and strategies] in Tagging AWS Resources and Tag Editor for details,
+	// including restrictions that apply to tags and "Tag naming limits and
+	// requirements"; Amazon IVS has no constraints on tags beyond what is documented
+	// there.
 	//
-	// [Tagging AWS Resources]: https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html
+	// [Best practices and strategies]: https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html
 	Tags map[string]string
 
 	noSmithyDocumentSerde
@@ -578,11 +809,12 @@ type PublicKeySummary struct {
 	Name *string
 
 	// Tags attached to the resource. Array of maps, each of the form string:string
-	// (key:value) . See [Tagging AWS Resources] for details, including restrictions that apply to tags and
-	// "Tag naming limits and requirements"; Amazon IVS has no constraints on tags
-	// beyond what is documented there.
+	// (key:value) . See [Best practices and strategies] in Tagging AWS Resources and Tag Editor for details,
+	// including restrictions that apply to tags and "Tag naming limits and
+	// requirements"; Amazon IVS has no constraints on tags beyond what is documented
+	// there.
 	//
-	// [Tagging AWS Resources]: https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html
+	// [Best practices and strategies]: https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html
 	Tags map[string]string
 
 	noSmithyDocumentSerde
@@ -593,6 +825,10 @@ type RecordingConfiguration struct {
 
 	// The recording format for storing a recording in Amazon S3.
 	Format RecordingConfigurationFormat
+
+	// An HLS configuration object to return information about how the recording will
+	// be configured.
+	HlsConfiguration *CompositionRecordingHlsConfiguration
 
 	noSmithyDocumentSerde
 }
@@ -616,6 +852,11 @@ type S3DestinationConfiguration struct {
 	// customer specification, currently used only to specify the recording format for
 	// storing a recording in Amazon S3.
 	RecordingConfiguration *RecordingConfiguration
+
+	// A complex type that allows you to enable/disable the recording of thumbnails
+	// for a Compositionand modify the interval at which thumbnails are generated for the live
+	// session.
+	ThumbnailConfigurations []CompositionThumbnailConfiguration
 
 	noSmithyDocumentSerde
 }
@@ -667,23 +908,32 @@ type Stage struct {
 	Name *string
 
 	// Tags attached to the resource. Array of maps, each of the form string:string
-	// (key:value) . See [Tagging AWS Resources] for details, including restrictions that apply to tags and
-	// "Tag naming limits and requirements"; Amazon IVS has no constraints on tags
-	// beyond what is documented there.
+	// (key:value) . See [Best practices and strategies] in Tagging AWS Resources and Tag Editor for details,
+	// including restrictions that apply to tags and "Tag naming limits and
+	// requirements"; Amazon IVS has no constraints on tags beyond what is documented
+	// there.
 	//
-	// [Tagging AWS Resources]: https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html
+	// [Best practices and strategies]: https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html
 	Tags map[string]string
 
 	noSmithyDocumentSerde
 }
 
-// Summary information about various endpoints for a stage.
+// Summary information about various endpoints for a stage. We recommend that you
+// cache these values at stage creation; the values can be cached for up to 14
+// days.
 type StageEndpoints struct {
 
 	// Events endpoint.
 	Events *string
 
-	// WHIP endpoint.
+	// The endpoint to be used for IVS real-time streaming using the RTMP protocol.
+	Rtmp *string
+
+	// The endpoint to be used for IVS real-time streaming using the RTMPS protocol.
+	Rtmps *string
+
+	// The endpoint to be used for IVS real-time streaming using the WHIP protocol.
 	Whip *string
 
 	noSmithyDocumentSerde
@@ -739,11 +989,12 @@ type StageSummary struct {
 	Name *string
 
 	// Tags attached to the resource. Array of maps, each of the form string:string
-	// (key:value) . See [Tagging AWS Resources] for details, including restrictions that apply to tags and
-	// "Tag naming limits and requirements"; Amazon IVS has no constraints on tags
-	// beyond what is documented there.
+	// (key:value) . See [Best practices and strategies] in Tagging AWS Resources and Tag Editor for details,
+	// including restrictions that apply to tags and "Tag naming limits and
+	// requirements"; Amazon IVS has no constraints on tags beyond what is documented
+	// there.
 	//
-	// [Tagging AWS Resources]: https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html
+	// [Best practices and strategies]: https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html
 	Tags map[string]string
 
 	noSmithyDocumentSerde
@@ -764,11 +1015,12 @@ type StorageConfiguration struct {
 	S3 *S3StorageConfiguration
 
 	// Tags attached to the resource. Array of maps, each of the form string:string
-	// (key:value) . See [Tagging AWS Resources] for details, including restrictions that apply to tags and
-	// "Tag naming limits and requirements"; Amazon IVS has no constraints on tags
-	// beyond what is documented there.
+	// (key:value) . See [Best practices and strategies] in Tagging AWS Resources and Tag Editor for details,
+	// including restrictions that apply to tags and "Tag naming limits and
+	// requirements"; Amazon IVS has no constraints on tags beyond what is documented
+	// there.
 	//
-	// [Tagging AWS Resources]: https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html
+	// [Best practices and strategies]: https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html
 	Tags map[string]string
 
 	noSmithyDocumentSerde
@@ -789,11 +1041,12 @@ type StorageConfigurationSummary struct {
 	S3 *S3StorageConfiguration
 
 	// Tags attached to the resource. Array of maps, each of the form string:string
-	// (key:value) . See [Tagging AWS Resources] for details, including restrictions that apply to tags and
-	// "Tag naming limits and requirements"; Amazon IVS has no constraints on tags
-	// beyond what is documented there.
+	// (key:value) . See [Best practices and strategies] in Tagging AWS Resources and Tag Editor for details,
+	// including restrictions that apply to tags and "Tag naming limits and
+	// requirements"; Amazon IVS has no constraints on tags beyond what is documented
+	// there.
 	//
-	// [Tagging AWS Resources]: https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html
+	// [Best practices and strategies]: https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html
 	Tags map[string]string
 
 	noSmithyDocumentSerde
@@ -808,14 +1061,14 @@ type Video struct {
 	// Video frame rate, in fps. Default: 30.
 	Framerate *float32
 
-	// Video-resolution height. Note that the maximum value is determined by width
-	// times height , such that the maximum total pixels is 2073600 (1920x1080 or
-	// 1080x1920). Default: 720.
+	// Video-resolution height. This must be an even number. Note that the maximum
+	// value is determined by width times height , such that the maximum total pixels
+	// is 2073600 (1920x1080 or 1080x1920). Default: 720.
 	Height *int32
 
-	// Video-resolution width. Note that the maximum value is determined by width
-	// times height , such that the maximum total pixels is 2073600 (1920x1080 or
-	// 1080x1920). Default: 1280.
+	// Video-resolution width. This must be an even number. Note that the maximum
+	// value is determined by width times height , such that the maximum total pixels
+	// is 2073600 (1920x1080 or 1080x1920). Default: 1280.
 	Width *int32
 
 	noSmithyDocumentSerde

@@ -10,8 +10,16 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
+// End of support notice: On September 10, 2025, Amazon Web Services will
+// discontinue support for Amazon Web Services RoboMaker. After September 10, 2025,
+// you will no longer be able to access the Amazon Web Services RoboMaker console
+// or Amazon Web Services RoboMaker resources. For more information on
+// transitioning to Batch to help run containerized simulations, visit [https://aws.amazon.com/blogs/hpc/run-simulations-using-multiple-containers-in-a-single-aws-batch-job/].
+//
 // Cancels a simulation job batch. When you cancel a simulation job batch, you are
 // also cancelling all of the active simulation jobs created as part of the batch.
+//
+// [https://aws.amazon.com/blogs/hpc/run-simulations-using-multiple-containers-in-a-single-aws-batch-job/]: https://aws.amazon.com/blogs/hpc/run-simulations-using-multiple-containers-in-a-single-aws-batch-job/
 func (c *Client) CancelSimulationJobBatch(ctx context.Context, params *CancelSimulationJobBatchInput, optFns ...func(*Options)) (*CancelSimulationJobBatchOutput, error) {
 	if params == nil {
 		params = &CancelSimulationJobBatchInput{}
@@ -87,6 +95,9 @@ func (c *Client) addOperationCancelSimulationJobBatchMiddlewares(stack *middlewa
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -103,6 +114,9 @@ func (c *Client) addOperationCancelSimulationJobBatchMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCancelSimulationJobBatchValidationMiddleware(stack); err != nil {
@@ -124,6 +138,18 @@ func (c *Client) addOperationCancelSimulationJobBatchMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -152,12 +152,15 @@ type Component struct {
 	// The operating system platform of the component.
 	Platform Platform
 
+	// Contains product codes that are used for billing purposes for Amazon Web
+	// Services Marketplace components.
+	ProductCodes []ProductCodeListItem
+
 	// Contains the name of the publisher if this is a third-party component.
 	// Otherwise, this property is empty.
 	Publisher *string
 
-	// Describes the current status of the component. This is used for components that
-	// are no longer active.
+	// Describes the current status of the component.
 	State *ComponentState
 
 	// The operating system (OS) version supported by the component. If the OS
@@ -331,6 +334,13 @@ type ComponentVersion struct {
 
 	// The platform of the component.
 	Platform Platform
+
+	// Contains product codes that are used for billing purposes for Amazon Web
+	// Services Marketplace components.
+	ProductCodes []ProductCodeListItem
+
+	// Describes the current status of the component version.
+	Status ComponentStatus
 
 	// he operating system (OS) version supported by the component. If the OS
 	// information is available, a prefix match is performed against the base image OS
@@ -707,8 +717,8 @@ type EbsInstanceBlockDeviceSpecification struct {
 // container images that Amazon Inspector scans.
 type EcrConfiguration struct {
 
-	// Tags for Image Builder to apply to the output container image that &INS; scans.
-	// Tags can help you identify and manage your scanned images.
+	// Tags for Image Builder to apply to the output container image that Amazon
+	// Inspector scans. Tags can help you identify and manage your scanned images.
 	ContainerTags []string
 
 	// The name of the container repository that Amazon Inspector scans to identify
@@ -826,6 +836,8 @@ type Image struct {
 	//
 	//   - IMPORT – A VM import created the image to use as the base image for the
 	//   recipe.
+	//
+	//   - IMPORT_ISO – An ISO disk import created the image.
 	BuildType BuildType
 
 	// For container images, this is the container recipe that Image Builder used to
@@ -939,13 +951,15 @@ type ImageAggregation struct {
 	noSmithyDocumentSerde
 }
 
-// Represents a package installed on an Image Builder image.
+// A software package that's installed on top of the base image to create a
+// customized image.
 type ImagePackage struct {
 
-	// The name of the package as reported to the operating system package manager.
+	// The name of the package that's reported to the operating system package manager.
 	PackageName *string
 
-	// The version of the package as reported to the operating system package manager.
+	// The version of the package that's reported to the operating system package
+	// manager.
 	PackageVersion *string
 
 	noSmithyDocumentSerde
@@ -1259,6 +1273,8 @@ type ImageSummary struct {
 	//
 	//   - IMPORT – A VM import created the image to use as the base image for the
 	//   recipe.
+	//
+	//   - IMPORT_ISO – An ISO disk import created the image.
 	BuildType BuildType
 
 	// The date on which Image Builder created this image.
@@ -1317,7 +1333,7 @@ type ImageTestsConfiguration struct {
 
 	// The maximum time in minutes that tests are permitted to run.
 	//
-	// The timeoutMinutes attribute is not currently active. This value is ignored.
+	// The timeout property is not currently active. This value is ignored.
 	TimeoutMinutes *int32
 
 	noSmithyDocumentSerde
@@ -1351,6 +1367,8 @@ type ImageVersion struct {
 	//
 	//   - IMPORT – A VM import created the image to use as the base image for the
 	//   recipe.
+	//
+	//   - IMPORT_ISO – An ISO disk import created the image.
 	BuildType BuildType
 
 	// The date on which this specific version of the Image Builder image was created.
@@ -1432,6 +1450,10 @@ type InfrastructureConfiguration struct {
 	// The name of the infrastructure configuration.
 	Name *string
 
+	// The instance placement settings that define where the instances that are
+	// launched from your image will run.
+	Placement *Placement
+
 	// The tags attached to the resource created by Image Builder.
 	ResourceTags map[string]string
 
@@ -1482,6 +1504,10 @@ type InfrastructureConfigurationSummary struct {
 
 	// The name of the infrastructure configuration.
 	Name *string
+
+	// The instance placement settings that define where the instances that are
+	// launched from your image will run.
+	Placement *Placement
 
 	// The tags attached to the image created by Image Builder.
 	ResourceTags map[string]string
@@ -1610,7 +1636,7 @@ type LaunchTemplateConfiguration struct {
 
 	// Set the specified Amazon EC2 launch template as the default launch template for
 	// the specified account.
-	SetDefaultVersion bool
+	SetDefaultVersion *bool
 
 	noSmithyDocumentSerde
 }
@@ -2064,6 +2090,61 @@ type PackageVulnerabilityDetails struct {
 	noSmithyDocumentSerde
 }
 
+// By default, EC2 instances run on shared tenancy hardware. This means that
+// multiple Amazon Web Services accounts might share the same physical hardware.
+// When you use dedicated hardware, the physical server that hosts your instances
+// is dedicated to your Amazon Web Services account. Instance placement settings
+// contain the details for the physical hardware where instances that Image Builder
+// launches during image creation will run.
+type Placement struct {
+
+	// The Availability Zone where your build and test instances will launch.
+	AvailabilityZone *string
+
+	// The ID of the Dedicated Host on which build and test instances run. This only
+	// applies if tenancy is host . If you specify the host ID, you must not specify
+	// the resource group ARN. If you specify both, Image Builder returns an error.
+	HostId *string
+
+	// The Amazon Resource Name (ARN) of the host resource group in which to launch
+	// build and test instances. This only applies if tenancy is host . If you specify
+	// the resource group ARN, you must not specify the host ID. If you specify both,
+	// Image Builder returns an error.
+	HostResourceGroupArn *string
+
+	// The tenancy of the instance. An instance with a tenancy of dedicated runs on
+	// single-tenant hardware. An instance with a tenancy of host runs on a Dedicated
+	// Host.
+	//
+	// If tenancy is set to host , then you can optionally specify one target for
+	// placement – either host ID or host resource group ARN. If automatic placement is
+	// enabled for your host, and you don't specify any placement target, Amazon EC2
+	// will try to find an available host for your build and test instances.
+	Tenancy TenancyType
+
+	noSmithyDocumentSerde
+}
+
+// Information about a single product code.
+type ProductCodeListItem struct {
+
+	// For Amazon Web Services Marketplace components, this contains the product code
+	// ID that can be stamped onto an EC2 AMI to ensure that components are billed
+	// correctly. If this property is empty, it might mean that the component is not
+	// published.
+	//
+	// This member is required.
+	ProductCodeId *string
+
+	// The owner of the product code that's billed. If this property is empty, it
+	// might mean that the component is not published.
+	//
+	// This member is required.
+	ProductCodeType ProductCodeType
+
+	noSmithyDocumentSerde
+}
+
 // Information about how to remediate a finding.
 type Remediation struct {
 
@@ -2174,15 +2255,19 @@ type S3Logs struct {
 // new image.
 type Schedule struct {
 
-	// The condition configures when the pipeline should trigger a new image build.
-	// When the pipelineExecutionStartCondition is set to
-	// EXPRESSION_MATCH_AND_DEPENDENCY_UPDATES_AVAILABLE , and you use semantic version
-	// filters on the base image or components in your image recipe, EC2 Image Builder
-	// will build a new image only when there are new versions of the image or
-	// components in your recipe that match the semantic version filter. When it is set
-	// to EXPRESSION_MATCH_ONLY , it will build a new image every time the CRON
-	// expression matches the current time. For semantic version syntax, see [CreateComponent]in the
-	// EC2 Image Builder API Reference.
+	// The start condition configures when the pipeline should trigger a new image
+	// build, as follows. If no value is set Image Builder defaults to
+	// EXPRESSION_MATCH_AND_DEPENDENCY_UPDATES_AVAILABLE .
+	//
+	//   - EXPRESSION_MATCH_AND_DEPENDENCY_UPDATES_AVAILABLE (default) – When you use
+	//   semantic version filters on the base image or components in your image recipe,
+	//   EC2 Image Builder builds a new image only when there are new versions of the
+	//   base image or components in your recipe that match the filter.
+	//
+	// For semantic version syntax, see [CreateComponent].
+	//
+	//   - EXPRESSION_MATCH_ONLY – This condition builds a new image every time the
+	//   CRON expression matches the current time.
 	//
 	// [CreateComponent]: https://docs.aws.amazon.com/imagebuilder/latest/APIReference/API_CreateComponent.html
 	PipelineExecutionStartCondition PipelineExecutionStartCondition
@@ -2240,7 +2325,8 @@ type SystemsManagerAgent struct {
 type TargetContainerRepository struct {
 
 	// The name of the container repository where the output container image is
-	// stored. This name is prefixed by the repository location.
+	// stored. This name is prefixed by the repository location. For example,
+	// /repository_name .
 	//
 	// This member is required.
 	RepositoryName *string

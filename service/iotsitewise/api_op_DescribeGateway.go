@@ -81,6 +81,10 @@ type DescribeGatewayOutput struct {
 	// The gateway's platform.
 	GatewayPlatform *types.GatewayPlatform
 
+	// The version of the gateway. A value of 3 indicates an MQTT-enabled, V3 gateway,
+	// while 2 indicates a Classic streams, V2 gateway.
+	GatewayVersion *string
+
 	// Metadata pertaining to the operation's result.
 	ResultMetadata middleware.Metadata
 
@@ -130,6 +134,9 @@ func (c *Client) addOperationDescribeGatewayMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -146,6 +153,9 @@ func (c *Client) addOperationDescribeGatewayMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addEndpointPrefix_opDescribeGatewayMiddleware(stack); err != nil {
@@ -170,6 +180,18 @@ func (c *Client) addOperationDescribeGatewayMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

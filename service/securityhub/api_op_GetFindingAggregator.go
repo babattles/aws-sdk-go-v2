@@ -10,7 +10,11 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Returns the current finding aggregation configuration.
+// The aggregation Region is now called the home Region.
+//
+// Returns the current configuration in the calling account for cross-Region
+// aggregation. A finding aggregator is a resource that establishes the home Region
+// and any linked Regions.
 func (c *Client) GetFindingAggregator(ctx context.Context, params *GetFindingAggregatorInput, optFns ...func(*Options)) (*GetFindingAggregatorOutput, error) {
 	if params == nil {
 		params = &GetFindingAggregatorInput{}
@@ -39,7 +43,8 @@ type GetFindingAggregatorInput struct {
 
 type GetFindingAggregatorOutput struct {
 
-	// The aggregation Region.
+	// The home Region. Findings generated in linked Regions are replicated and sent
+	// to the home Region.
 	FindingAggregationRegion *string
 
 	// The ARN of the finding aggregator.
@@ -101,6 +106,9 @@ func (c *Client) addOperationGetFindingAggregatorMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -117,6 +125,9 @@ func (c *Client) addOperationGetFindingAggregatorMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetFindingAggregatorValidationMiddleware(stack); err != nil {
@@ -138,6 +149,18 @@ func (c *Client) addOperationGetFindingAggregatorMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

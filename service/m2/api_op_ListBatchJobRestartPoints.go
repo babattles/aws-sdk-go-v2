@@ -11,7 +11,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Lists all the job steps for JCL files to restart a batch job. This is only
+// Lists all the job steps for a JCL file to restart a batch job. This is only
 // applicable for Micro Focus engine with versions 8.0.6 and above.
 func (c *Client) ListBatchJobRestartPoints(ctx context.Context, params *ListBatchJobRestartPointsInput, optFns ...func(*Options)) (*ListBatchJobRestartPointsOutput, error) {
 	if params == nil {
@@ -35,10 +35,14 @@ type ListBatchJobRestartPointsInput struct {
 	// This member is required.
 	ApplicationId *string
 
-	// The unique identifier of each batch job execution.
+	// The unique identifier of the batch job execution.
 	//
 	// This member is required.
 	ExecutionId *string
+
+	// The Amazon Web Services Secrets Manager containing user's credentials for
+	// authentication and authorization for List Batch Job Restart Points operation.
+	AuthSecretsManagerArn *string
 
 	noSmithyDocumentSerde
 }
@@ -98,6 +102,9 @@ func (c *Client) addOperationListBatchJobRestartPointsMiddlewares(stack *middlew
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -114,6 +121,9 @@ func (c *Client) addOperationListBatchJobRestartPointsMiddlewares(stack *middlew
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListBatchJobRestartPointsValidationMiddleware(stack); err != nil {
@@ -135,6 +145,18 @@ func (c *Client) addOperationListBatchJobRestartPointsMiddlewares(stack *middlew
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

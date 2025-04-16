@@ -34,6 +34,11 @@ type StartWorkflowRunInput struct {
 	Name *string
 
 	// The workflow run properties for the new workflow run.
+	//
+	// Run properties may be logged. Do not pass plaintext secrets as properties.
+	// Retrieve secrets from a Glue Connection, Amazon Web Services Secrets Manager or
+	// other secret management mechanism if you intend to use them within the workflow
+	// run.
 	RunProperties map[string]string
 
 	noSmithyDocumentSerde
@@ -93,6 +98,9 @@ func (c *Client) addOperationStartWorkflowRunMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -109,6 +117,9 @@ func (c *Client) addOperationStartWorkflowRunMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpStartWorkflowRunValidationMiddleware(stack); err != nil {
@@ -130,6 +141,18 @@ func (c *Client) addOperationStartWorkflowRunMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

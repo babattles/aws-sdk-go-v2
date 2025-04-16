@@ -10,14 +10,16 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Cancels the specified deployment job.
+// This API is no longer supported. For more information, see the May 2, 2022
+// update in the [Support policy]page.
 //
-// This API will no longer be supported as of May 2, 2022. Use it to remove
-// resources that were created for Deployment Service.
+// Cancels the specified deployment job.
 //
 // Deprecated: Support for the AWS RoboMaker application deployment feature has
 // ended. For additional information, see
 // https://docs.aws.amazon.com/robomaker/latest/dg/fleets.html.
+//
+// [Support policy]: https://docs.aws.amazon.com/robomaker/latest/dg/chapter-support-policy.html#software-support-policy-may2022
 func (c *Client) CancelDeploymentJob(ctx context.Context, params *CancelDeploymentJobInput, optFns ...func(*Options)) (*CancelDeploymentJobOutput, error) {
 	if params == nil {
 		params = &CancelDeploymentJobInput{}
@@ -93,6 +95,9 @@ func (c *Client) addOperationCancelDeploymentJobMiddlewares(stack *middleware.St
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -109,6 +114,9 @@ func (c *Client) addOperationCancelDeploymentJobMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCancelDeploymentJobValidationMiddleware(stack); err != nil {
@@ -130,6 +138,18 @@ func (c *Client) addOperationCancelDeploymentJobMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

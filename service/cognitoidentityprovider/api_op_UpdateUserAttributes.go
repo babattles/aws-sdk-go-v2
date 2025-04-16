@@ -11,11 +11,11 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// With this operation, your users can update one or more of their attributes with
-// their own credentials. You authorize this API request with the user's access
-// token. To delete an attribute from your user, submit the attribute in your API
-// request with a blank value. Custom attribute values in this request must include
-// the custom: prefix.
+// Updates the currently signed-in user's attributes. To delete an attribute from
+// the user, submit the attribute in your API request with a blank value.
+//
+// For custom attributes, you must add a custom: prefix to the attribute name, for
+// example custom:department .
 //
 // Authorize this action with a signed-in user's access token. It must include the
 // scope aws.cognito.signin.user.admin .
@@ -63,16 +63,15 @@ func (c *Client) UpdateUserAttributes(ctx context.Context, params *UpdateUserAtt
 // Represents the request to update user attributes.
 type UpdateUserAttributesInput struct {
 
-	// A valid access token that Amazon Cognito issued to the user whose user
-	// attributes you want to update.
+	// A valid access token that Amazon Cognito issued to the currently signed-in
+	// user. Must include a scope claim for aws.cognito.signin.user.admin .
 	//
 	// This member is required.
 	AccessToken *string
 
 	// An array of name-value pairs representing user attributes.
 	//
-	// For custom attributes, you must prepend the custom: prefix to the attribute
-	// name.
+	// For custom attributes, you must add a custom: prefix to the attribute name.
 	//
 	// If you have set an attribute to require verification before Amazon Cognito
 	// updates its value, this request doesn’t immediately update the value of that
@@ -96,10 +95,10 @@ type UpdateUserAttributesInput struct {
 	// UpdateUserAttributes request. In your function code in Lambda, you can process
 	// the clientMetadata value to enhance your workflow for your specific needs.
 	//
-	// For more information, see [Customizing user pool Workflows with Lambda Triggers] in the Amazon Cognito Developer Guide.
+	// For more information, see [Using Lambda triggers] in the Amazon Cognito Developer Guide.
 	//
-	// When you use the ClientMetadata parameter, remember that Amazon Cognito won't
-	// do the following:
+	// When you use the ClientMetadata parameter, note that Amazon Cognito won't do
+	// the following:
 	//
 	//   - Store the ClientMetadata value. This data is available only to Lambda
 	//   triggers that are assigned to a user pool to support custom workflows. If your
@@ -108,10 +107,10 @@ type UpdateUserAttributesInput struct {
 	//
 	//   - Validate the ClientMetadata value.
 	//
-	//   - Encrypt the ClientMetadata value. Don't use Amazon Cognito to provide
-	//   sensitive information.
+	//   - Encrypt the ClientMetadata value. Don't send sensitive information in this
+	//   parameter.
 	//
-	// [Customizing user pool Workflows with Lambda Triggers]: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html
+	// [Using Lambda triggers]: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html
 	ClientMetadata map[string]string
 
 	noSmithyDocumentSerde
@@ -121,8 +120,14 @@ type UpdateUserAttributesInput struct {
 // attributes.
 type UpdateUserAttributesOutput struct {
 
-	// The code delivery details list from the server for the request to update user
-	// attributes.
+	// When the attribute-update request includes an email address or phone number
+	// attribute, Amazon Cognito sends a message to users with a code that confirms
+	// ownership of the new value that they entered. The CodeDeliveryDetails object is
+	// information about the delivery destination for that link or code. This behavior
+	// happens in user pools configured to automatically verify changes to those
+	// attributes. For more information, see [Verifying when users change their email or phone number].
+	//
+	// [Verifying when users change their email or phone number]: https://docs.aws.amazon.com/cognito/latest/developerguide/signing-up-users-in-your-app.html#verifying-when-users-change-their-email-or-phone-number
 	CodeDeliveryDetailsList []types.CodeDeliveryDetailsType
 
 	// Metadata pertaining to the operation's result.
@@ -171,6 +176,9 @@ func (c *Client) addOperationUpdateUserAttributesMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -187,6 +195,9 @@ func (c *Client) addOperationUpdateUserAttributesMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateUserAttributesValidationMiddleware(stack); err != nil {
@@ -208,6 +219,18 @@ func (c *Client) addOperationUpdateUserAttributesMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

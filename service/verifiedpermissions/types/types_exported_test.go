@@ -14,8 +14,14 @@ func ExampleAttributeValue_outputUsage() {
 	case *types.AttributeValueMemberBoolean:
 		_ = v.Value // Value is bool
 
+	case *types.AttributeValueMemberDecimal:
+		_ = v.Value // Value is string
+
 	case *types.AttributeValueMemberEntityIdentifier:
 		_ = v.Value // Value is types.EntityIdentifier
+
+	case *types.AttributeValueMemberIpaddr:
+		_ = v.Value // Value is string
 
 	case *types.AttributeValueMemberLong:
 		_ = v.Value // Value is int64
@@ -39,6 +45,8 @@ func ExampleAttributeValue_outputUsage() {
 }
 
 var _ *types.EntityIdentifier
+var _ *string
+var _ *string
 var _ *string
 var _ map[string]types.AttributeValue
 var _ *bool
@@ -115,6 +123,9 @@ func ExampleContextDefinition_outputUsage() {
 	var union types.ContextDefinition
 	// type switches can be used to check the union value
 	switch v := union.(type) {
+	case *types.ContextDefinitionMemberCedarJson:
+		_ = v.Value // Value is string
+
 	case *types.ContextDefinitionMemberContextMap:
 		_ = v.Value // Value is map[string]types.AttributeValue
 
@@ -127,12 +138,16 @@ func ExampleContextDefinition_outputUsage() {
 	}
 }
 
+var _ *string
 var _ map[string]types.AttributeValue
 
 func ExampleEntitiesDefinition_outputUsage() {
 	var union types.EntitiesDefinition
 	// type switches can be used to check the union value
 	switch v := union.(type) {
+	case *types.EntitiesDefinitionMemberCedarJson:
+		_ = v.Value // Value is string
+
 	case *types.EntitiesDefinitionMemberEntityList:
 		_ = v.Value // Value is []types.EntityItem
 
@@ -145,6 +160,7 @@ func ExampleEntitiesDefinition_outputUsage() {
 	}
 }
 
+var _ *string
 var _ []types.EntityItem
 
 func ExampleEntityReference_outputUsage() {

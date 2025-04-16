@@ -11,8 +11,10 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Confirms tracking of the device. This API call is the call that begins device
-// tracking. For more information about device authentication, see [Working with user devices in your user pool].
+// Confirms a device that a user wants to remember. A remembered device is a
+// "Remember me on this device" option for user pools that perform authentication
+// with the device key of a trusted device in the back end, instead of a
+// user-provided MFA code. For more information about device authentication, see [Working with user devices in your user pool].
 //
 // Authorize this action with a signed-in user's access token. It must include the
 // scope aws.cognito.signin.user.admin .
@@ -40,21 +42,22 @@ func (c *Client) ConfirmDevice(ctx context.Context, params *ConfirmDeviceInput, 
 	return out, nil
 }
 
-// Confirms the device request.
+// The confirm-device request.
 type ConfirmDeviceInput struct {
 
-	// A valid access token that Amazon Cognito issued to the user whose device you
-	// want to confirm.
+	// A valid access token that Amazon Cognito issued to the currently signed-in
+	// user. Must include a scope claim for aws.cognito.signin.user.admin .
 	//
 	// This member is required.
 	AccessToken *string
 
-	// The device key.
+	// The unique identifier, or device key, of the device that you want to update the
+	// status for.
 	//
 	// This member is required.
 	DeviceKey *string
 
-	// The device name.
+	// A friendly name for the device, for example MyMobilePhone .
 	DeviceName *string
 
 	// The configuration of the device secret verifier.
@@ -63,10 +66,19 @@ type ConfirmDeviceInput struct {
 	noSmithyDocumentSerde
 }
 
-// Confirms the device response.
+// The confirm-device response.
 type ConfirmDeviceOutput struct {
 
-	// Indicates whether the user confirmation must confirm the device response.
+	// When true , your user must confirm that they want to remember the device. Prompt
+	// the user for an answer.
+	//
+	// When false , immediately sets the device as remembered and eligible for device
+	// authentication.
+	//
+	// You can configure your user pool to always remember devices, in which case this
+	// response is false , or to allow users to opt in, in which case this response is
+	// true . Configure this option under Device tracking in the Sign-in menu of your
+	// user pool.
 	UserConfirmationNecessary bool
 
 	// Metadata pertaining to the operation's result.
@@ -115,6 +127,9 @@ func (c *Client) addOperationConfirmDeviceMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -131,6 +146,9 @@ func (c *Client) addOperationConfirmDeviceMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpConfirmDeviceValidationMiddleware(stack); err != nil {
@@ -152,6 +170,18 @@ func (c *Client) addOperationConfirmDeviceMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

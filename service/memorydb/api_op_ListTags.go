@@ -15,7 +15,7 @@ import (
 //
 // A tag is a key-value pair where the key and value are case-sensitive. You can
 // use tags to categorize and track your MemoryDB resources. For more information,
-// see [Tagging your MemoryDB resources]
+// see [Tagging your MemoryDB resources].
 //
 // [Tagging your MemoryDB resources]: https://docs.aws.amazon.com/MemoryDB/latest/devguide/Tagging-Resources.html
 func (c *Client) ListTags(ctx context.Context, params *ListTagsInput, optFns ...func(*Options)) (*ListTagsOutput, error) {
@@ -36,7 +36,7 @@ func (c *Client) ListTags(ctx context.Context, params *ListTagsInput, optFns ...
 type ListTagsInput struct {
 
 	// The Amazon Resource Name (ARN) of the resource for which you want the list of
-	// tags
+	// tags.
 	//
 	// This member is required.
 	ResourceArn *string
@@ -98,6 +98,9 @@ func (c *Client) addOperationListTagsMiddlewares(stack *middleware.Stack, option
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -114,6 +117,9 @@ func (c *Client) addOperationListTagsMiddlewares(stack *middleware.Stack, option
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListTagsValidationMiddleware(stack); err != nil {
@@ -135,6 +141,18 @@ func (c *Client) addOperationListTagsMiddlewares(stack *middleware.Stack, option
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

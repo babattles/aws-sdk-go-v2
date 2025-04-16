@@ -98,6 +98,18 @@ func TestCheckSnapshot_CreateChannel(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_CreateDashboard(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateDashboard(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "CreateDashboard")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_CreateEventDataStore(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.CreateEventDataStore(context.Background(), nil, func(o *Options) {
@@ -127,6 +139,18 @@ func TestCheckSnapshot_DeleteChannel(t *testing.T) {
 	_, err := svc.DeleteChannel(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "DeleteChannel")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_DeleteDashboard(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteDashboard(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DeleteDashboard")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -230,11 +254,35 @@ func TestCheckSnapshot_EnableFederation(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_GenerateQuery(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GenerateQuery(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GenerateQuery")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_GetChannel(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.GetChannel(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "GetChannel")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_GetDashboard(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetDashboard(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GetDashboard")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -343,6 +391,18 @@ func TestCheckSnapshot_ListChannels(t *testing.T) {
 	_, err := svc.ListChannels(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "ListChannels")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_ListDashboards(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListDashboards(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListDashboards")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -530,6 +590,30 @@ func TestCheckSnapshot_RestoreEventDataStore(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_SearchSampleQueries(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.SearchSampleQueries(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "SearchSampleQueries")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_StartDashboardRefresh(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.StartDashboardRefresh(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "StartDashboardRefresh")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_StartEventDataStoreIngestion(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.StartEventDataStoreIngestion(context.Background(), nil, func(o *Options) {
@@ -626,6 +710,18 @@ func TestCheckSnapshot_UpdateChannel(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_UpdateDashboard(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateDashboard(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "UpdateDashboard")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_UpdateEventDataStore(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.UpdateEventDataStore(context.Background(), nil, func(o *Options) {
@@ -685,6 +781,18 @@ func TestUpdateSnapshot_CreateChannel(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_CreateDashboard(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateDashboard(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "CreateDashboard")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_CreateEventDataStore(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.CreateEventDataStore(context.Background(), nil, func(o *Options) {
@@ -714,6 +822,18 @@ func TestUpdateSnapshot_DeleteChannel(t *testing.T) {
 	_, err := svc.DeleteChannel(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "DeleteChannel")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_DeleteDashboard(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteDashboard(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DeleteDashboard")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -817,11 +937,35 @@ func TestUpdateSnapshot_EnableFederation(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_GenerateQuery(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GenerateQuery(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GenerateQuery")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_GetChannel(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.GetChannel(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "GetChannel")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_GetDashboard(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetDashboard(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GetDashboard")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -930,6 +1074,18 @@ func TestUpdateSnapshot_ListChannels(t *testing.T) {
 	_, err := svc.ListChannels(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "ListChannels")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_ListDashboards(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListDashboards(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListDashboards")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -1117,6 +1273,30 @@ func TestUpdateSnapshot_RestoreEventDataStore(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_SearchSampleQueries(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.SearchSampleQueries(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "SearchSampleQueries")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_StartDashboardRefresh(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.StartDashboardRefresh(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "StartDashboardRefresh")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_StartEventDataStoreIngestion(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.StartEventDataStoreIngestion(context.Background(), nil, func(o *Options) {
@@ -1206,6 +1386,18 @@ func TestUpdateSnapshot_UpdateChannel(t *testing.T) {
 	_, err := svc.UpdateChannel(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "UpdateChannel")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_UpdateDashboard(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateDashboard(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "UpdateDashboard")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {

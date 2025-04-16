@@ -51,9 +51,9 @@ type UpdateExperienceInput struct {
 	// A new name for your Amazon Kendra experience.
 	Name *string
 
-	// The Amazon Resource Name (ARN) of a role with permission to access Query API,
-	// QuerySuggestions API, SubmitFeedback API, and IAM Identity Center that stores
-	// your user and group information. For more information, see [IAM roles for Amazon Kendra].
+	// The Amazon Resource Name (ARN) of an IAM role with permission to access the
+	// Query API, QuerySuggestions API, SubmitFeedback API, and IAM Identity Center
+	// that stores your users and groups information. For more information, see [IAM roles for Amazon Kendra].
 	//
 	// [IAM roles for Amazon Kendra]: https://docs.aws.amazon.com/kendra/latest/dg/iam-roles.html
 	RoleArn *string
@@ -111,6 +111,9 @@ func (c *Client) addOperationUpdateExperienceMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -127,6 +130,9 @@ func (c *Client) addOperationUpdateExperienceMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateExperienceValidationMiddleware(stack); err != nil {
@@ -148,6 +154,18 @@ func (c *Client) addOperationUpdateExperienceMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

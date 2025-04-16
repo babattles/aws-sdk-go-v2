@@ -56,14 +56,6 @@ type CreateModelCustomizationJobInput struct {
 	// This member is required.
 	CustomModelName *string
 
-	// Parameters related to tuning the model. For details on the format for different
-	// models, see [Custom model hyperparameters].
-	//
-	// [Custom model hyperparameters]: https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models-hp.html
-	//
-	// This member is required.
-	HyperParameters map[string]string
-
 	// A name for the fine-tuning job.
 	//
 	// This member is required.
@@ -101,8 +93,17 @@ type CreateModelCustomizationJobInput struct {
 	// Tags to attach to the resulting custom model.
 	CustomModelTags []types.Tag
 
+	// The customization configuration for the model customization job.
+	CustomizationConfig types.CustomizationConfig
+
 	// The customization type.
 	CustomizationType types.CustomizationType
+
+	// Parameters related to tuning the model. For details on the format for different
+	// models, see [Custom model hyperparameters].
+	//
+	// [Custom model hyperparameters]: https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models-hp.html
+	HyperParameters map[string]string
 
 	// Tags to attach to the job.
 	JobTags []types.Tag
@@ -110,8 +111,10 @@ type CreateModelCustomizationJobInput struct {
 	// Information about the validation dataset.
 	ValidationDataConfig *types.ValidationDataConfig
 
-	// VPC configuration (optional). Configuration parameters for the private Virtual
-	// Private Cloud (VPC) that contains the resources you are using for this job.
+	// The configuration of the Virtual Private Cloud (VPC) that contains the
+	// resources that you're using for this job. For more information, see [Protect your model customization jobs using a VPC].
+	//
+	// [Protect your model customization jobs using a VPC]: https://docs.aws.amazon.com/bedrock/latest/userguide/vpc-model-customization.html
 	VpcConfig *types.VpcConfig
 
 	noSmithyDocumentSerde
@@ -173,6 +176,9 @@ func (c *Client) addOperationCreateModelCustomizationJobMiddlewares(stack *middl
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -189,6 +195,9 @@ func (c *Client) addOperationCreateModelCustomizationJobMiddlewares(stack *middl
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateModelCustomizationJobMiddleware(stack, options); err != nil {
@@ -213,6 +222,18 @@ func (c *Client) addOperationCreateModelCustomizationJobMiddlewares(stack *middl
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

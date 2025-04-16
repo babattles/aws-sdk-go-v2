@@ -12,9 +12,6 @@ import (
 
 // Removes, or disassociates, a vehicle from a fleet. Disassociating a vehicle
 // from a fleet doesn't delete the vehicle.
-//
-// If the vehicle is successfully dissociated from a fleet, Amazon Web Services
-// IoT FleetWise sends back an HTTP 200 response with an empty body.
 func (c *Client) DisassociateVehicleFleet(ctx context.Context, params *DisassociateVehicleFleetInput, optFns ...func(*Options)) (*DisassociateVehicleFleetOutput, error) {
 	if params == nil {
 		params = &DisassociateVehicleFleetInput{}
@@ -95,6 +92,9 @@ func (c *Client) addOperationDisassociateVehicleFleetMiddlewares(stack *middlewa
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -111,6 +111,9 @@ func (c *Client) addOperationDisassociateVehicleFleetMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDisassociateVehicleFleetValidationMiddleware(stack); err != nil {
@@ -132,6 +135,18 @@ func (c *Client) addOperationDisassociateVehicleFleetMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

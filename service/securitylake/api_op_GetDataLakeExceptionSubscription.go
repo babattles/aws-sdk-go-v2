@@ -10,8 +10,8 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Retrieves the details of exception notifications for the account in Amazon
-// Security Lake.
+// Retrieves the protocol and endpoint that were provided when subscribing to
+// Amazon SNS topics for exception notifications.
 func (c *Client) GetDataLakeExceptionSubscription(ctx context.Context, params *GetDataLakeExceptionSubscriptionInput, optFns ...func(*Options)) (*GetDataLakeExceptionSubscriptionOutput, error) {
 	if params == nil {
 		params = &GetDataLakeExceptionSubscriptionInput{}
@@ -33,7 +33,8 @@ type GetDataLakeExceptionSubscriptionInput struct {
 
 type GetDataLakeExceptionSubscriptionOutput struct {
 
-	// The expiration period and time-to-live (TTL).
+	// The expiration period and time-to-live (TTL). It is the duration of time until
+	// which the exception message remains.
 	ExceptionTimeToLive *int64
 
 	// The Amazon Web Services account where you receive exception notifications.
@@ -91,6 +92,9 @@ func (c *Client) addOperationGetDataLakeExceptionSubscriptionMiddlewares(stack *
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -109,6 +113,9 @@ func (c *Client) addOperationGetDataLakeExceptionSubscriptionMiddlewares(stack *
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opGetDataLakeExceptionSubscription(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -125,6 +132,18 @@ func (c *Client) addOperationGetDataLakeExceptionSubscriptionMiddlewares(stack *
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

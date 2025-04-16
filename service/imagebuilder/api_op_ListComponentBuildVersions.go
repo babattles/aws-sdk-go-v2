@@ -11,15 +11,8 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Returns the list of component build versions for the specified semantic version.
-//
-// The semantic version has four nodes: ../. You can assign values for the first
-// three, and can filter on all of them.
-//
-// Filtering: With semantic versioning, you have the flexibility to use wildcards
-// (x) to specify the most recent versions or nodes when selecting the base image
-// or components for your recipe. When you use a wildcard in any node, all nodes to
-// the right of the first wildcard must also be wildcards.
+// Returns the list of component build versions for the specified component
+// version Amazon Resource Name (ARN).
 func (c *Client) ListComponentBuildVersions(ctx context.Context, params *ListComponentBuildVersionsInput, optFns ...func(*Options)) (*ListComponentBuildVersionsOutput, error) {
 	if params == nil {
 		params = &ListComponentBuildVersionsInput{}
@@ -115,6 +108,9 @@ func (c *Client) addOperationListComponentBuildVersionsMiddlewares(stack *middle
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -131,6 +127,9 @@ func (c *Client) addOperationListComponentBuildVersionsMiddlewares(stack *middle
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListComponentBuildVersionsValidationMiddleware(stack); err != nil {
@@ -152,6 +151,18 @@ func (c *Client) addOperationListComponentBuildVersionsMiddlewares(stack *middle
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -98,6 +98,18 @@ func TestCheckSnapshot_AssociateTrialComponent(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_BatchDeleteClusterNodes(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.BatchDeleteClusterNodes(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "BatchDeleteClusterNodes")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_BatchDescribeModelPackage(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.BatchDescribeModelPackage(context.Background(), nil, func(o *Options) {
@@ -206,6 +218,18 @@ func TestCheckSnapshot_CreateCluster(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_CreateClusterSchedulerConfig(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateClusterSchedulerConfig(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "CreateClusterSchedulerConfig")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_CreateCodeRepository(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.CreateCodeRepository(context.Background(), nil, func(o *Options) {
@@ -223,6 +247,18 @@ func TestCheckSnapshot_CreateCompilationJob(t *testing.T) {
 	_, err := svc.CreateCompilationJob(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "CreateCompilationJob")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_CreateComputeQuota(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateComputeQuota(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "CreateComputeQuota")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -650,6 +686,30 @@ func TestCheckSnapshot_CreateOptimizationJob(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_CreatePartnerApp(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreatePartnerApp(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "CreatePartnerApp")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_CreatePartnerAppPresignedUrl(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreatePartnerAppPresignedUrl(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "CreatePartnerAppPresignedUrl")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_CreatePipeline(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.CreatePipeline(context.Background(), nil, func(o *Options) {
@@ -751,6 +811,18 @@ func TestCheckSnapshot_CreateTrainingJob(t *testing.T) {
 	_, err := svc.CreateTrainingJob(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "CreateTrainingJob")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_CreateTrainingPlan(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateTrainingPlan(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "CreateTrainingPlan")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -914,6 +986,18 @@ func TestCheckSnapshot_DeleteCluster(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_DeleteClusterSchedulerConfig(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteClusterSchedulerConfig(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DeleteClusterSchedulerConfig")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_DeleteCodeRepository(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.DeleteCodeRepository(context.Background(), nil, func(o *Options) {
@@ -931,6 +1015,18 @@ func TestCheckSnapshot_DeleteCompilationJob(t *testing.T) {
 	_, err := svc.DeleteCompilationJob(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "DeleteCompilationJob")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_DeleteComputeQuota(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteComputeQuota(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DeleteComputeQuota")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -1334,6 +1430,18 @@ func TestCheckSnapshot_DeleteOptimizationJob(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_DeletePartnerApp(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeletePartnerApp(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DeletePartnerApp")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_DeletePipeline(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.DeletePipeline(context.Background(), nil, func(o *Options) {
@@ -1574,6 +1682,18 @@ func TestCheckSnapshot_DescribeClusterNode(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_DescribeClusterSchedulerConfig(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DescribeClusterSchedulerConfig(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DescribeClusterSchedulerConfig")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_DescribeCodeRepository(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.DescribeCodeRepository(context.Background(), nil, func(o *Options) {
@@ -1591,6 +1711,18 @@ func TestCheckSnapshot_DescribeCompilationJob(t *testing.T) {
 	_, err := svc.DescribeCompilationJob(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "DescribeCompilationJob")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_DescribeComputeQuota(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DescribeComputeQuota(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DescribeComputeQuota")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -2042,6 +2174,18 @@ func TestCheckSnapshot_DescribeOptimizationJob(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_DescribePartnerApp(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DescribePartnerApp(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DescribePartnerApp")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_DescribePipeline(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.DescribePipeline(context.Background(), nil, func(o *Options) {
@@ -2143,6 +2287,18 @@ func TestCheckSnapshot_DescribeTrainingJob(t *testing.T) {
 	_, err := svc.DescribeTrainingJob(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "DescribeTrainingJob")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_DescribeTrainingPlan(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DescribeTrainingPlan(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DescribeTrainingPlan")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -2474,6 +2630,18 @@ func TestCheckSnapshot_ListClusters(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_ListClusterSchedulerConfigs(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListClusterSchedulerConfigs(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListClusterSchedulerConfigs")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_ListCodeRepositories(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ListCodeRepositories(context.Background(), nil, func(o *Options) {
@@ -2491,6 +2659,18 @@ func TestCheckSnapshot_ListCompilationJobs(t *testing.T) {
 	_, err := svc.ListCompilationJobs(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "ListCompilationJobs")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_ListComputeQuotas(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListComputeQuotas(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListComputeQuotas")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -3026,6 +3206,18 @@ func TestCheckSnapshot_ListOptimizationJobs(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_ListPartnerApps(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListPartnerApps(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListPartnerApps")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_ListPipelineExecutions(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ListPipelineExecutions(context.Background(), nil, func(o *Options) {
@@ -3194,6 +3386,18 @@ func TestCheckSnapshot_ListTrainingJobsForHyperParameterTuningJob(t *testing.T) 
 	}
 }
 
+func TestCheckSnapshot_ListTrainingPlans(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListTrainingPlans(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListTrainingPlans")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_ListTransformJobs(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ListTransformJobs(context.Background(), nil, func(o *Options) {
@@ -3331,6 +3535,18 @@ func TestCheckSnapshot_Search(t *testing.T) {
 	_, err := svc.Search(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "Search")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_SearchTrainingPlanOfferings(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.SearchTrainingPlanOfferings(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "SearchTrainingPlanOfferings")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -3674,6 +3890,18 @@ func TestCheckSnapshot_UpdateCluster(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_UpdateClusterSchedulerConfig(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateClusterSchedulerConfig(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "UpdateClusterSchedulerConfig")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_UpdateClusterSoftware(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.UpdateClusterSoftware(context.Background(), nil, func(o *Options) {
@@ -3691,6 +3919,18 @@ func TestCheckSnapshot_UpdateCodeRepository(t *testing.T) {
 	_, err := svc.UpdateCodeRepository(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "UpdateCodeRepository")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_UpdateComputeQuota(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateComputeQuota(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "UpdateComputeQuota")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -3811,6 +4051,30 @@ func TestCheckSnapshot_UpdateHub(t *testing.T) {
 	_, err := svc.UpdateHub(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "UpdateHub")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_UpdateHubContent(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateHubContent(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "UpdateHubContent")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_UpdateHubContentReference(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateHubContentReference(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "UpdateHubContentReference")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -3955,6 +4219,18 @@ func TestCheckSnapshot_UpdateNotebookInstanceLifecycleConfig(t *testing.T) {
 	_, err := svc.UpdateNotebookInstanceLifecycleConfig(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "UpdateNotebookInstanceLifecycleConfig")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_UpdatePartnerApp(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdatePartnerApp(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "UpdatePartnerApp")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -4117,6 +4393,18 @@ func TestUpdateSnapshot_AssociateTrialComponent(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_BatchDeleteClusterNodes(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.BatchDeleteClusterNodes(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "BatchDeleteClusterNodes")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_BatchDescribeModelPackage(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.BatchDescribeModelPackage(context.Background(), nil, func(o *Options) {
@@ -4225,6 +4513,18 @@ func TestUpdateSnapshot_CreateCluster(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_CreateClusterSchedulerConfig(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateClusterSchedulerConfig(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "CreateClusterSchedulerConfig")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_CreateCodeRepository(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.CreateCodeRepository(context.Background(), nil, func(o *Options) {
@@ -4242,6 +4542,18 @@ func TestUpdateSnapshot_CreateCompilationJob(t *testing.T) {
 	_, err := svc.CreateCompilationJob(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "CreateCompilationJob")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_CreateComputeQuota(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateComputeQuota(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "CreateComputeQuota")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -4669,6 +4981,30 @@ func TestUpdateSnapshot_CreateOptimizationJob(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_CreatePartnerApp(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreatePartnerApp(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "CreatePartnerApp")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_CreatePartnerAppPresignedUrl(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreatePartnerAppPresignedUrl(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "CreatePartnerAppPresignedUrl")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_CreatePipeline(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.CreatePipeline(context.Background(), nil, func(o *Options) {
@@ -4770,6 +5106,18 @@ func TestUpdateSnapshot_CreateTrainingJob(t *testing.T) {
 	_, err := svc.CreateTrainingJob(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "CreateTrainingJob")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_CreateTrainingPlan(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateTrainingPlan(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "CreateTrainingPlan")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -4933,6 +5281,18 @@ func TestUpdateSnapshot_DeleteCluster(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_DeleteClusterSchedulerConfig(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteClusterSchedulerConfig(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DeleteClusterSchedulerConfig")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_DeleteCodeRepository(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.DeleteCodeRepository(context.Background(), nil, func(o *Options) {
@@ -4950,6 +5310,18 @@ func TestUpdateSnapshot_DeleteCompilationJob(t *testing.T) {
 	_, err := svc.DeleteCompilationJob(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "DeleteCompilationJob")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_DeleteComputeQuota(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteComputeQuota(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DeleteComputeQuota")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -5353,6 +5725,18 @@ func TestUpdateSnapshot_DeleteOptimizationJob(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_DeletePartnerApp(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeletePartnerApp(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DeletePartnerApp")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_DeletePipeline(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.DeletePipeline(context.Background(), nil, func(o *Options) {
@@ -5593,6 +5977,18 @@ func TestUpdateSnapshot_DescribeClusterNode(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_DescribeClusterSchedulerConfig(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DescribeClusterSchedulerConfig(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DescribeClusterSchedulerConfig")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_DescribeCodeRepository(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.DescribeCodeRepository(context.Background(), nil, func(o *Options) {
@@ -5610,6 +6006,18 @@ func TestUpdateSnapshot_DescribeCompilationJob(t *testing.T) {
 	_, err := svc.DescribeCompilationJob(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "DescribeCompilationJob")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_DescribeComputeQuota(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DescribeComputeQuota(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DescribeComputeQuota")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -6061,6 +6469,18 @@ func TestUpdateSnapshot_DescribeOptimizationJob(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_DescribePartnerApp(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DescribePartnerApp(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DescribePartnerApp")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_DescribePipeline(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.DescribePipeline(context.Background(), nil, func(o *Options) {
@@ -6162,6 +6582,18 @@ func TestUpdateSnapshot_DescribeTrainingJob(t *testing.T) {
 	_, err := svc.DescribeTrainingJob(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "DescribeTrainingJob")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_DescribeTrainingPlan(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DescribeTrainingPlan(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DescribeTrainingPlan")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -6493,6 +6925,18 @@ func TestUpdateSnapshot_ListClusters(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_ListClusterSchedulerConfigs(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListClusterSchedulerConfigs(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListClusterSchedulerConfigs")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_ListCodeRepositories(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ListCodeRepositories(context.Background(), nil, func(o *Options) {
@@ -6510,6 +6954,18 @@ func TestUpdateSnapshot_ListCompilationJobs(t *testing.T) {
 	_, err := svc.ListCompilationJobs(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "ListCompilationJobs")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_ListComputeQuotas(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListComputeQuotas(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListComputeQuotas")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -7045,6 +7501,18 @@ func TestUpdateSnapshot_ListOptimizationJobs(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_ListPartnerApps(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListPartnerApps(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListPartnerApps")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_ListPipelineExecutions(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ListPipelineExecutions(context.Background(), nil, func(o *Options) {
@@ -7213,6 +7681,18 @@ func TestUpdateSnapshot_ListTrainingJobsForHyperParameterTuningJob(t *testing.T)
 	}
 }
 
+func TestUpdateSnapshot_ListTrainingPlans(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListTrainingPlans(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListTrainingPlans")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_ListTransformJobs(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ListTransformJobs(context.Background(), nil, func(o *Options) {
@@ -7350,6 +7830,18 @@ func TestUpdateSnapshot_Search(t *testing.T) {
 	_, err := svc.Search(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "Search")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_SearchTrainingPlanOfferings(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.SearchTrainingPlanOfferings(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "SearchTrainingPlanOfferings")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -7693,6 +8185,18 @@ func TestUpdateSnapshot_UpdateCluster(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_UpdateClusterSchedulerConfig(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateClusterSchedulerConfig(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "UpdateClusterSchedulerConfig")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_UpdateClusterSoftware(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.UpdateClusterSoftware(context.Background(), nil, func(o *Options) {
@@ -7710,6 +8214,18 @@ func TestUpdateSnapshot_UpdateCodeRepository(t *testing.T) {
 	_, err := svc.UpdateCodeRepository(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "UpdateCodeRepository")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_UpdateComputeQuota(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateComputeQuota(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "UpdateComputeQuota")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -7830,6 +8346,30 @@ func TestUpdateSnapshot_UpdateHub(t *testing.T) {
 	_, err := svc.UpdateHub(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "UpdateHub")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_UpdateHubContent(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateHubContent(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "UpdateHubContent")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_UpdateHubContentReference(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateHubContentReference(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "UpdateHubContentReference")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -7974,6 +8514,18 @@ func TestUpdateSnapshot_UpdateNotebookInstanceLifecycleConfig(t *testing.T) {
 	_, err := svc.UpdateNotebookInstanceLifecycleConfig(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "UpdateNotebookInstanceLifecycleConfig")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_UpdatePartnerApp(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdatePartnerApp(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "UpdatePartnerApp")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {

@@ -34,13 +34,37 @@ type UpdateDbInstanceInput struct {
 	// This member is required.
 	Identifier *string
 
+	// The amount of storage to allocate for your DB storage type (in gibibytes).
+	AllocatedStorage *int32
+
+	// The Timestream for InfluxDB DB instance type to run InfluxDB on.
+	DbInstanceType types.DbInstanceType
+
 	// The id of the DB parameter group to assign to your DB instance. DB parameter
 	// groups specify how the database is configured. For example, DB parameter groups
 	// can specify the limit for query concurrency.
 	DbParameterGroupIdentifier *string
 
+	// The Timestream for InfluxDB DB storage type that InfluxDB stores data on.
+	DbStorageType types.DbStorageType
+
+	// Specifies whether the DB instance will be deployed as a standalone instance or
+	// with a Multi-AZ standby for high availability.
+	DeploymentType types.DeploymentType
+
 	// Configuration for sending InfluxDB engine logs to send to specified S3 bucket.
 	LogDeliveryConfiguration *types.LogDeliveryConfiguration
+
+	// The port number on which InfluxDB accepts connections.
+	//
+	// If you change the Port value, your database restarts immediately.
+	//
+	// Valid Values: 1024-65535
+	//
+	// Default: 8086
+	//
+	// Constraints: The value can't be 2375-2376, 7788-7799, 8090, or 51678-51680
+	Port *int32
 
 	noSmithyDocumentSerde
 }
@@ -58,7 +82,7 @@ type UpdateDbInstanceOutput struct {
 	Id *string
 
 	// This customer-supplied name uniquely identifies the DB instance when
-	// interacting with the Amazon Timestream for InfluxDB API and AWS CLI commands.
+	// interacting with the Amazon Timestream for InfluxDB API and CLI commands.
 	//
 	// This member is required.
 	Name *string
@@ -73,6 +97,9 @@ type UpdateDbInstanceOutput struct {
 
 	// The Availability Zone in which the DB instance resides.
 	AvailabilityZone *string
+
+	// Specifies the DbCluster to which this DbInstance belongs to.
+	DbClusterId *string
 
 	// The Timestream for InfluxDB instance type that InfluxDB runs on.
 	DbInstanceType types.DbInstanceType
@@ -90,14 +117,25 @@ type UpdateDbInstanceOutput struct {
 	// The endpoint used to connect to InfluxDB. The default InfluxDB port is 8086.
 	Endpoint *string
 
-	// The Amazon Resource Name (ARN) of the AWS Secrets Manager secret containing the
+	// The Amazon Resource Name (ARN) of the Secrets Manager secret containing the
 	// initial InfluxDB authorization parameters. The secret value is a JSON formatted
 	// key-value pair holding InfluxDB authorization values: organization, bucket,
 	// username, and password.
 	InfluxAuthParametersSecretArn *string
 
+	// Specifies the DbInstance's role in the cluster.
+	InstanceMode types.InstanceMode
+
 	// Configuration for sending InfluxDB engine logs to send to specified S3 bucket.
 	LogDeliveryConfiguration *types.LogDeliveryConfiguration
+
+	// Specifies whether the networkType of the Timestream for InfluxDB instance is
+	// IPV4, which can communicate over IPv4 protocol only, or DUAL, which can
+	// communicate over both IPv4 and IPv6 protocols.
+	NetworkType types.NetworkType
+
+	// The port number on which InfluxDB accepts connections.
+	Port *int32
 
 	// Indicates if the DB instance has a public IP to facilitate access.
 	PubliclyAccessible *bool
@@ -161,6 +199,9 @@ func (c *Client) addOperationUpdateDbInstanceMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -177,6 +218,9 @@ func (c *Client) addOperationUpdateDbInstanceMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateDbInstanceValidationMiddleware(stack); err != nil {
@@ -198,6 +242,18 @@ func (c *Client) addOperationUpdateDbInstanceMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

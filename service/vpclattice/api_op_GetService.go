@@ -30,7 +30,7 @@ func (c *Client) GetService(ctx context.Context, params *GetServiceInput, optFns
 
 type GetServiceInput struct {
 
-	// The ID or Amazon Resource Name (ARN) of the service.
+	// The ID or ARN of the service.
 	//
 	// This member is required.
 	ServiceIdentifier *string
@@ -49,7 +49,7 @@ type GetServiceOutput struct {
 	// The Amazon Resource Name (ARN) of the certificate.
 	CertificateArn *string
 
-	// The date and time that the service was created, specified in ISO-8601 format.
+	// The date and time that the service was created, in ISO-8601 format.
 	CreatedAt *time.Time
 
 	// The custom domain name of the service.
@@ -67,8 +67,7 @@ type GetServiceOutput struct {
 	// The ID of the service.
 	Id *string
 
-	// The date and time that the service was last updated, specified in ISO-8601
-	// format.
+	// The date and time that the service was last updated, in ISO-8601 format.
 	LastUpdatedAt *time.Time
 
 	// The name of the service.
@@ -126,6 +125,9 @@ func (c *Client) addOperationGetServiceMiddlewares(stack *middleware.Stack, opti
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -142,6 +144,9 @@ func (c *Client) addOperationGetServiceMiddlewares(stack *middleware.Stack, opti
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetServiceValidationMiddleware(stack); err != nil {
@@ -163,6 +168,18 @@ func (c *Client) addOperationGetServiceMiddlewares(stack *middleware.Stack, opti
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

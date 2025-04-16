@@ -61,7 +61,7 @@ type UpdateStackInstancesInput struct {
 	// This member is required.
 	StackSetName *string
 
-	// [Self-managed permissions] The names of one or more Amazon Web Services
+	// [Self-managed permissions] The account IDs of one or more Amazon Web Services
 	// accounts for which you want to update parameter values for stack instances. The
 	// overridden parameter values will be applied to all stack instances in the
 	// specified accounts and Amazon Web Services Regions.
@@ -202,6 +202,9 @@ func (c *Client) addOperationUpdateStackInstancesMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -218,6 +221,9 @@ func (c *Client) addOperationUpdateStackInstancesMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opUpdateStackInstancesMiddleware(stack, options); err != nil {
@@ -242,6 +248,18 @@ func (c *Client) addOperationUpdateStackInstancesMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

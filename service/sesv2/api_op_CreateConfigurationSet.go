@@ -40,6 +40,10 @@ type CreateConfigurationSetInput struct {
 	// This member is required.
 	ConfigurationSetName *string
 
+	// An object that defines the MailManager archiving options for emails that you
+	// send using the configuration set.
+	ArchivingOptions *types.ArchivingOptions
+
 	// An object that defines the dedicated IP pool that is used to send emails that
 	// you send using the configuration set.
 	DeliveryOptions *types.DeliveryOptions
@@ -123,6 +127,9 @@ func (c *Client) addOperationCreateConfigurationSetMiddlewares(stack *middleware
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -139,6 +146,9 @@ func (c *Client) addOperationCreateConfigurationSetMiddlewares(stack *middleware
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateConfigurationSetValidationMiddleware(stack); err != nil {
@@ -160,6 +170,18 @@ func (c *Client) addOperationCreateConfigurationSetMiddlewares(stack *middleware
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -118,11 +118,6 @@ type CreateSubscriptionTargetOutput struct {
 	// This member is required.
 	Id *string
 
-	// The manage access role with which the subscription target was created.
-	//
-	// This member is required.
-	ManageAccessRole *string
-
 	// The name of the subscription target.
 	//
 	// This member is required.
@@ -147,6 +142,9 @@ type CreateSubscriptionTargetOutput struct {
 	//
 	// This member is required.
 	Type *string
+
+	// The manage access role with which the subscription target was created.
+	ManageAccessRole *string
 
 	// The timestamp of when the subscription target was updated.
 	UpdatedAt *time.Time
@@ -203,6 +201,9 @@ func (c *Client) addOperationCreateSubscriptionTargetMiddlewares(stack *middlewa
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -219,6 +220,9 @@ func (c *Client) addOperationCreateSubscriptionTargetMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateSubscriptionTargetMiddleware(stack, options); err != nil {
@@ -243,6 +247,18 @@ func (c *Client) addOperationCreateSubscriptionTargetMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

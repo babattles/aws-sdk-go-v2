@@ -29,7 +29,7 @@ func (c *Client) GetKnowledgeBase(ctx context.Context, params *GetKnowledgeBaseI
 
 type GetKnowledgeBaseInput struct {
 
-	// The unique identifier of the knowledge base for which to get information.
+	// The unique identifier of the knowledge base you want to get information on.
 	//
 	// This member is required.
 	KnowledgeBaseId *string
@@ -93,6 +93,9 @@ func (c *Client) addOperationGetKnowledgeBaseMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -109,6 +112,9 @@ func (c *Client) addOperationGetKnowledgeBaseMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetKnowledgeBaseValidationMiddleware(stack); err != nil {
@@ -130,6 +136,18 @@ func (c *Client) addOperationGetKnowledgeBaseMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

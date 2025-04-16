@@ -30,7 +30,7 @@ func (c *Client) CreateEnvironment(ctx context.Context, params *CreateEnvironmen
 type CreateEnvironmentInput struct {
 
 	// The Amazon Resource Name (ARN) of the desktop to stream from Amazon WorkSpaces,
-	// WorkSpaces Web, or AppStream 2.0.
+	// WorkSpaces Secure Browser, or AppStream 2.0.
 	//
 	// This member is required.
 	DesktopArn *string
@@ -138,6 +138,9 @@ func (c *Client) addOperationCreateEnvironmentMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -154,6 +157,9 @@ func (c *Client) addOperationCreateEnvironmentMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addEndpointPrefix_opCreateEnvironmentMiddleware(stack); err != nil {
@@ -181,6 +187,18 @@ func (c *Client) addOperationCreateEnvironmentMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

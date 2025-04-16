@@ -37,6 +37,11 @@ type PutConfigurationSetDeliveryOptionsInput struct {
 	// This member is required.
 	ConfigurationSetName *string
 
+	// The maximum amount of time, in seconds, that Amazon SES API v2 will attempt
+	// delivery of email. If specified, the value must greater than or equal to 300
+	// seconds (5 minutes) and less than or equal to 50400 seconds (840 minutes).
+	MaxDeliverySeconds *int64
+
 	// The name of the dedicated IP pool to associate with the configuration set.
 	SendingPoolName *string
 
@@ -102,6 +107,9 @@ func (c *Client) addOperationPutConfigurationSetDeliveryOptionsMiddlewares(stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -118,6 +126,9 @@ func (c *Client) addOperationPutConfigurationSetDeliveryOptionsMiddlewares(stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpPutConfigurationSetDeliveryOptionsValidationMiddleware(stack); err != nil {
@@ -139,6 +150,18 @@ func (c *Client) addOperationPutConfigurationSetDeliveryOptionsMiddlewares(stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

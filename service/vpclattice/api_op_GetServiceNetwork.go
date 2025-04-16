@@ -30,7 +30,7 @@ func (c *Client) GetServiceNetwork(ctx context.Context, params *GetServiceNetwor
 
 type GetServiceNetworkInput struct {
 
-	// The ID or Amazon Resource Name (ARN) of the service network.
+	// The ID or ARN of the service network.
 	//
 	// This member is required.
 	ServiceNetworkIdentifier *string
@@ -46,14 +46,13 @@ type GetServiceNetworkOutput struct {
 	// The type of IAM policy.
 	AuthType types.AuthType
 
-	// The date and time that the service network was created, specified in ISO-8601
-	// format.
+	// The date and time that the service network was created, in ISO-8601 format.
 	CreatedAt *time.Time
 
 	// The ID of the service network.
 	Id *string
 
-	// The date and time of the last update, specified in ISO-8601 format.
+	// The date and time of the last update, in ISO-8601 format.
 	LastUpdatedAt *time.Time
 
 	// The name of the service network.
@@ -64,6 +63,9 @@ type GetServiceNetworkOutput struct {
 
 	// The number of VPCs associated with the service network.
 	NumberOfAssociatedVPCs *int64
+
+	// Specifies if the service network is enabled for sharing.
+	SharingConfig *types.SharingConfig
 
 	// Metadata pertaining to the operation's result.
 	ResultMetadata middleware.Metadata
@@ -114,6 +116,9 @@ func (c *Client) addOperationGetServiceNetworkMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -130,6 +135,9 @@ func (c *Client) addOperationGetServiceNetworkMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetServiceNetworkValidationMiddleware(stack); err != nil {
@@ -151,6 +159,18 @@ func (c *Client) addOperationGetServiceNetworkMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

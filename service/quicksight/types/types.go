@@ -233,6 +233,36 @@ type AmazonOpenSearchParameters struct {
 	noSmithyDocumentSerde
 }
 
+// A collection of Amazon Q feature configurations in an embedded Amazon
+// QuickSight console.
+type AmazonQInQuickSightConsoleConfigurations struct {
+
+	// Adds generative Q&A capabilitiees to an embedded Amazon QuickSight console.
+	DataQnA *DataQnAConfigurations
+
+	// Adds the data stories feature to an embedded Amazon QuickSight console.
+	DataStories *DataStoriesConfigurations
+
+	// Adds the executive summaries feature to an embedded Amazon QuickSight console.
+	ExecutiveSummary *ExecutiveSummaryConfigurations
+
+	// Adds the generative BI authoring experience to an embedded Amazon QuickSight
+	// console.
+	GenerativeAuthoring *GenerativeAuthoringConfigurations
+
+	noSmithyDocumentSerde
+}
+
+// A collection of Amazon Q feature configurations in an embedded Amazon
+// QuickSight dashboard.
+type AmazonQInQuickSightDashboardConfigurations struct {
+
+	// A generated executive summary of an embedded Amazon QuickSight dashboard.
+	ExecutiveSummary *ExecutiveSummaryConfigurations
+
+	noSmithyDocumentSerde
+}
+
 // Metadata structure for an analysis in Amazon QuickSight
 type Analysis struct {
 
@@ -326,6 +356,9 @@ type AnalysisDefinition struct {
 	// An array of sheet definitions for an analysis. Each SheetDefinition provides
 	// detailed information about a sheet within this analysis.
 	Sheets []SheetDefinition
+
+	// The static files for the definition.
+	StaticFiles []StaticFile
 
 	noSmithyDocumentSerde
 }
@@ -602,6 +635,18 @@ type AnonymousUserSnapshotJobResult struct {
 	noSmithyDocumentSerde
 }
 
+// The application theme.
+type ApplicationTheme struct {
+
+	// The color palette.
+	BrandColorPalette *BrandColorPalette
+
+	// The element style.
+	BrandElementStyle *BrandElementStyle
+
+	noSmithyDocumentSerde
+}
+
 // The arc axis configuration of a GaugeChartVisual .
 type ArcAxisConfiguration struct {
 
@@ -666,6 +711,10 @@ type AssetBundleCloudFormationOverridePropertyConfiguration struct {
 	// An optional list of structures that control how DataSource resources are
 	// parameterized in the returned CloudFormation template.
 	DataSources []AssetBundleExportJobDataSourceOverrideProperties
+
+	// An optional list of structures that controls how Folder resources are
+	// parameterized in the returned CloudFormation template.
+	Folders []AssetBundleExportJobFolderOverrideProperties
 
 	// An optional list of structures that control how RefreshSchedule resources are
 	// parameterized in the returned CloudFormation template.
@@ -773,6 +822,25 @@ type AssetBundleExportJobError struct {
 
 	// The specific error type of the error that occurred.
 	Type *string
+
+	noSmithyDocumentSerde
+}
+
+// Controls how a specific Folder resource is parameterized in the returned
+// CloudFormation template.
+type AssetBundleExportJobFolderOverrideProperties struct {
+
+	// The ARN of the specific Folder resource whose override properties are
+	// configured in this structure.
+	//
+	// This member is required.
+	Arn *string
+
+	// A list of Folder resource properties to generate variables for in the returned
+	// CloudFormation template.
+	//
+	// This member is required.
+	Properties []AssetBundleExportJobFolderPropertyToOverride
 
 	noSmithyDocumentSerde
 }
@@ -1012,6 +1080,9 @@ type AssetBundleImportJobDataSetOverrideParameters struct {
 	// This member is required.
 	DataSetId *string
 
+	// The refresh properties of a dataset.
+	DataSetRefreshProperties *DataSetRefreshProperties
+
 	// A new name for the dataset.
 	Name *string
 
@@ -1166,6 +1237,58 @@ type AssetBundleImportJobError struct {
 	noSmithyDocumentSerde
 }
 
+// The override parameters for a single folder that is being imported.
+type AssetBundleImportJobFolderOverrideParameters struct {
+
+	// The ID of the folder that you want to apply overrides to.
+	//
+	// This member is required.
+	FolderId *string
+
+	// A new name for the folder.
+	Name *string
+
+	// A new parent folder arn. This change can only be applied if the import creates
+	// a brand new folder. Existing folders cannot be moved.
+	ParentFolderArn *string
+
+	noSmithyDocumentSerde
+}
+
+// An object that contains a list of permissions to be applied to a list of folder
+// IDs.
+type AssetBundleImportJobFolderOverridePermissions struct {
+
+	// A list of folder IDs that you want to apply overrides to. You can use * to
+	// override all folders in this asset bundle.
+	//
+	// This member is required.
+	FolderIds []string
+
+	// A structure that contains the permissions for the resource that you want to
+	// override in an asset bundle import job.
+	Permissions *AssetBundleResourcePermissions
+
+	noSmithyDocumentSerde
+}
+
+// An object that contains a list of tags to be assigned to a list of folder IDs.
+type AssetBundleImportJobFolderOverrideTags struct {
+
+	// A list of folder IDs that you want to apply overrides to. You can use * to
+	// override all folders in this asset bundle.
+	//
+	// This member is required.
+	FolderIds []string
+
+	// A list of tags for the folders that you want to apply overrides to.
+	//
+	// This member is required.
+	Tags []Tag
+
+	noSmithyDocumentSerde
+}
+
 // A list of overrides that modify the asset bundle resource configuration before
 // the resource is imported.
 type AssetBundleImportJobOverrideParameters struct {
@@ -1185,6 +1308,10 @@ type AssetBundleImportJobOverrideParameters struct {
 	//  A list of overrides for any DataSource resources that are present in the asset
 	// bundle that is imported.
 	DataSources []AssetBundleImportJobDataSourceOverrideParameters
+
+	// A list of overrides for any Folder resources that are present in the asset
+	// bundle that is imported.
+	Folders []AssetBundleImportJobFolderOverrideParameters
 
 	// A list of overrides for any RefreshSchedule resources that are present in the
 	// asset bundle that is imported.
@@ -1225,6 +1352,9 @@ type AssetBundleImportJobOverridePermissions struct {
 	// in the asset bundle that is imported.
 	DataSources []AssetBundleImportJobDataSourceOverridePermissions
 
+	// A list of permissions for the folders that you want to apply overrides to.
+	Folders []AssetBundleImportJobFolderOverridePermissions
+
 	// A list of permissions overrides for any Theme resources that are present in the
 	// asset bundle that is imported.
 	Themes []AssetBundleImportJobThemeOverridePermissions
@@ -1251,6 +1381,10 @@ type AssetBundleImportJobOverrideTags struct {
 	// A list of tag overrides for any DataSource resources that are present in the
 	// asset bundle that is imported.
 	DataSources []AssetBundleImportJobDataSourceOverrideTags
+
+	// A list of tag overrides for any Folder resources that are present in the asset
+	// bundle that is imported.
+	Folders []AssetBundleImportJobFolderOverrideTags
 
 	// A list of tag overrides for any Theme resources that are present in the asset
 	// bundle that is imported.
@@ -1445,7 +1579,9 @@ type AssetBundleImportJobWarning struct {
 type AssetBundleImportSource struct {
 
 	// The bytes of the base64 encoded asset bundle import zip file. This file can't
-	// exceed 20 MB.
+	// exceed 20 MB. If the size of the file that you want to upload is more than 20
+	// MB, add the file to your Amazon S3 bucket and use S3Uri of the file for this
+	// operation.
 	//
 	// If you are calling the API operations from the Amazon Web Services SDK for
 	// Java, JavaScript, Python, or PHP, the SDK encodes base64 automatically to allow
@@ -1455,7 +1591,7 @@ type AssetBundleImportSource struct {
 
 	// The Amazon S3 URI for an asset bundle import file that exists in an Amazon S3
 	// bucket that the caller has read access to. The file must be a zip format file
-	// and can't exceed 20 MB.
+	// and can't exceed 1 GB.
 	S3Uri *string
 
 	noSmithyDocumentSerde
@@ -1508,6 +1644,13 @@ type AssetBundleResourcePermissions struct {
 
 // An array of analysis level configurations.
 type AssetOptions struct {
+
+	// A list of dataset ARNS to exclude from Dashboard Q&A.
+	ExcludedDataSetArns []string
+
+	// Determines whether insight summaries from Amazon Q Business are allowed in
+	// Dashboard Q&A.
+	QBusinessInsightsStatus QBusinessInsightsStatus
 
 	// Determines the timezone for the analysis.
 	Timezone *string
@@ -1943,6 +2086,9 @@ type BarChartVisual struct {
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
 
+	// The alt text for the visual.
+	VisualContentAltText *string
+
 	noSmithyDocumentSerde
 }
 
@@ -2255,6 +2401,133 @@ type BoxPlotVisual struct {
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
 
+	// The alt text for the visual.
+	VisualContentAltText *string
+
+	noSmithyDocumentSerde
+}
+
+// The color palette.
+type BrandColorPalette struct {
+
+	// The color that is used for accent elements.
+	Accent *Palette
+
+	// The color that is used for danger elements.
+	Danger *Palette
+
+	// The color that is used for dimension elements.
+	Dimension *Palette
+
+	// The color that is used for info elements.
+	Info *Palette
+
+	// The color that is used for measure elements.
+	Measure *Palette
+
+	// The primary color.
+	Primary *Palette
+
+	// The secondary color.
+	Secondary *Palette
+
+	// The color that is used for success elements.
+	Success *Palette
+
+	// The color that is used for warning elements.
+	Warning *Palette
+
+	noSmithyDocumentSerde
+}
+
+// The definition of the brand.
+type BrandDefinition struct {
+
+	// The name of the brand.
+	//
+	// This member is required.
+	BrandName *string
+
+	// The application theme of the brand.
+	ApplicationTheme *ApplicationTheme
+
+	// The description of the brand.
+	Description *string
+
+	// The logo configuration of the brand.
+	LogoConfiguration *LogoConfiguration
+
+	noSmithyDocumentSerde
+}
+
+// The details of the brand.
+type BrandDetail struct {
+
+	// The ID of the Amazon QuickSight brand.
+	//
+	// This member is required.
+	BrandId *string
+
+	// The Amazon Resource Name (ARN) of the brand.
+	Arn *string
+
+	// The status of the brand.
+	BrandStatus BrandStatus
+
+	// The time that the brand was created.
+	CreatedTime *time.Time
+
+	// A list of errors that occurred during the most recent brand operation.
+	Errors []string
+
+	// The last time the brand was updated.
+	LastUpdatedTime *time.Time
+
+	// The logo details.
+	Logo *Logo
+
+	// The ID of the version.
+	VersionId *string
+
+	// The status of the version.
+	VersionStatus BrandVersionStatus
+
+	noSmithyDocumentSerde
+}
+
+// The element style.
+type BrandElementStyle struct {
+
+	// The navigation bar style.
+	NavbarStyle *NavbarStyle
+
+	noSmithyDocumentSerde
+}
+
+// A summary of the brand.
+type BrandSummary struct {
+
+	// The Amazon Resource Name (ARN) of the brand.
+	Arn *string
+
+	// The ID of the Amazon QuickSight brand.
+	BrandId *string
+
+	// The name of the brand.
+	BrandName *string
+
+	// The status of the brand.
+	BrandStatus BrandStatus
+
+	// The time that the brand was created.
+	CreatedTime *time.Time
+
+	// The description of the brand.
+	Description *string
+
+	// The time when the brand was last updated.
+	LastUpdatedTime *time.Time
+
 	noSmithyDocumentSerde
 }
 
@@ -2314,6 +2587,63 @@ type CalculatedMeasureField struct {
 	//
 	// This member is required.
 	FieldId *string
+
+	noSmithyDocumentSerde
+}
+
+// A set of actions that correspond to Amazon QuickSight permissions.
+type Capabilities struct {
+
+	// The ability to add or run anomaly detection.
+	AddOrRunAnomalyDetectionForAnalyses CapabilityState
+
+	// The ability to create and update email reports.
+	CreateAndUpdateDashboardEmailReports CapabilityState
+
+	// The ability to create and update data sources.
+	CreateAndUpdateDataSources CapabilityState
+
+	// The ability to create and update datasets.
+	CreateAndUpdateDatasets CapabilityState
+
+	// The ability to export to Create and Update themes.
+	CreateAndUpdateThemes CapabilityState
+
+	// The ability to create and update threshold alerts.
+	CreateAndUpdateThresholdAlerts CapabilityState
+
+	// The ability to create a SPICE dataset.
+	CreateSPICEDataset CapabilityState
+
+	// The ability to create shared folders.
+	CreateSharedFolders CapabilityState
+
+	// The ability to export to CSV files.
+	ExportToCsv CapabilityState
+
+	// The ability to export to Excel files.
+	ExportToExcel CapabilityState
+
+	// The ability to rename shared folders.
+	RenameSharedFolders CapabilityState
+
+	// The ability to share analyses.
+	ShareAnalyses CapabilityState
+
+	// The ability to share dashboards.
+	ShareDashboards CapabilityState
+
+	// The ability to share data sources.
+	ShareDataSources CapabilityState
+
+	// The ability to share datasets.
+	ShareDatasets CapabilityState
+
+	// The ability to subscribe to email reports.
+	SubscribeDashboardEmailReports CapabilityState
+
+	// The ability to view account SPICE capacity.
+	ViewAccountSPICECapacity CapabilityState
 
 	noSmithyDocumentSerde
 }
@@ -2940,6 +3270,9 @@ type ComboChartVisual struct {
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
 
+	// The alt text for the visual.
+	VisualContentAltText *string
+
 	noSmithyDocumentSerde
 }
 
@@ -3426,6 +3759,9 @@ type CustomContentVisual struct {
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
 
+	// The alt text for the visual.
+	VisualContentAltText *string
+
 	noSmithyDocumentSerde
 }
 
@@ -3525,6 +3861,21 @@ type CustomParameterValues struct {
 
 	// A list of string-type parameter values.
 	StringValues []string
+
+	noSmithyDocumentSerde
+}
+
+// The custom permissions profile.
+type CustomPermissions struct {
+
+	// The Amazon Resource Name (ARN) of the custom permissions profile.
+	Arn *string
+
+	// A set of actions in the custom permissions profile.
+	Capabilities *Capabilities
+
+	// The name of the custom permissions profile.
+	CustomPermissionsName *string
 
 	noSmithyDocumentSerde
 }
@@ -3630,6 +3981,12 @@ type DashboardPublishOptions struct {
 
 	// The data point tool tip options of a dashboard.
 	DataPointTooltipOption *DataPointTooltipOption
+
+	// Adds Q&A capabilities to an Amazon QuickSight dashboard. If no topic is linked,
+	// Dashboard Q&A uses the data values that are rendered on the dashboard. End users
+	// can use Dashboard Q&A to ask for different slices of the data that they see on
+	// the dashboard. If a topic is linked, Topic Q&A is used.
+	DataQAEnabledOption *DataQAEnabledOption
 
 	// Export to .csv option.
 	ExportToCSVOption *ExportToCSVOption
@@ -3848,6 +4205,9 @@ type DashboardVersionDefinition struct {
 	// An array of sheet definitions for a dashboard.
 	Sheets []SheetDefinition
 
+	// The static files for the definition.
+	StaticFiles []StaticFile
+
 	noSmithyDocumentSerde
 }
 
@@ -3919,6 +4279,36 @@ type DashboardVisualPublishOptions struct {
 
 	// Determines if hidden fields are included in an exported dashboard.
 	ExportHiddenFieldsOption *ExportHiddenFieldsOption
+
+	noSmithyDocumentSerde
+}
+
+// The QA result that is made from dashboard visual.
+type DashboardVisualResult struct {
+
+	// The ID of the dashboard.
+	DashboardId *string
+
+	// The name of the dashboard.
+	DashboardName *string
+
+	// The URL of the dashboard.
+	DashboardUrl *string
+
+	// The ID of the sheet.
+	SheetId *string
+
+	// The name of the sheet.
+	SheetName *string
+
+	// The ID of the visual.
+	VisualId *string
+
+	// The subtitle of the visual.
+	VisualSubtitle *string
+
+	// The title of the visual.
+	VisualTitle *string
 
 	noSmithyDocumentSerde
 }
@@ -4201,6 +4591,29 @@ type DataPointTooltipOption struct {
 	noSmithyDocumentSerde
 }
 
+// Adds Q&A capabilities to a dashboard. If no topic is linked, Dashboard Q&A uses
+// the data values that are rendered on the dashboard. End users can use Dashboard
+// Q&A to ask for different slices of the data that they see on the dashboard. If a
+// topic is linked, Topic Q&A is enabled.
+type DataQAEnabledOption struct {
+
+	// The status of the Data Q&A option on the dashboard.
+	AvailabilityStatus DashboardBehavior
+
+	noSmithyDocumentSerde
+}
+
+// The generative Q&A settings of an embedded Amazon QuickSight console.
+type DataQnAConfigurations struct {
+
+	// The generative Q&A settings of an embedded Amazon QuickSight console.
+	//
+	// This member is required.
+	Enabled bool
+
+	noSmithyDocumentSerde
+}
+
 // Dataset.
 type DataSet struct {
 
@@ -4253,6 +4666,9 @@ type DataSet struct {
 	// templates, analyses, and dashboards.
 	OutputColumns []OutputColumn
 
+	// The performance optimization configuration of a dataset.
+	PerformanceConfiguration *PerformanceConfiguration
+
 	// Declares the physical tables that are available in the underlying data sources.
 	PhysicalTableMap map[string]PhysicalTable
 
@@ -4261,6 +4677,9 @@ type DataSet struct {
 
 	// The element you can use to define tags for row-level security.
 	RowLevelPermissionTagConfiguration *RowLevelPermissionTagConfiguration
+
+	// The usage of the dataset.
+	UseAs DataSetUseAs
 
 	noSmithyDocumentSerde
 }
@@ -4366,9 +4785,10 @@ type DataSetReference struct {
 // The refresh properties of a dataset.
 type DataSetRefreshProperties struct {
 
+	// The failure configuration for a dataset.
+	FailureConfiguration *RefreshFailureConfiguration
+
 	// The refresh configuration for a dataset.
-	//
-	// This member is required.
 	RefreshConfiguration *RefreshConfiguration
 
 	noSmithyDocumentSerde
@@ -4473,6 +4893,9 @@ type DataSetSummary struct {
 
 	// Whether or not the row level permission tags are applied.
 	RowLevelPermissionTagConfigurationApplied bool
+
+	// The usage of the dataset.
+	UseAs DataSetUseAs
 
 	noSmithyDocumentSerde
 }
@@ -4937,6 +5360,17 @@ type DataSourceSummary struct {
 	noSmithyDocumentSerde
 }
 
+// The data story settings of an embedded Amazon QuickSight console.
+type DataStoriesConfigurations struct {
+
+	// The data story settings of an embedded Amazon QuickSight console.
+	//
+	// This member is required.
+	Enabled bool
+
+	noSmithyDocumentSerde
+}
+
 // The options that determine how a date axis is displayed.
 type DateAxisOptions struct {
 
@@ -5299,6 +5733,9 @@ type DecimalValueWhenUnsetConfiguration struct {
 // DateTimePicker .
 type DefaultDateTimePickerControlOptions struct {
 
+	// The visibility configuration of the Apply button on a DateTimePickerControl .
+	CommitMode CommitMode
+
 	// The display options of a control.
 	DisplayOptions *DateTimePickerControlDisplayOptions
 
@@ -5360,6 +5797,9 @@ type DefaultFilterControlOptions struct {
 
 // The default options that correspond to the Dropdown filter control type.
 type DefaultFilterDropDownControlOptions struct {
+
+	// The visibility configuration of the Apply button on a FilterDropDownControl .
+	CommitMode CommitMode
 
 	// The display options of a control.
 	DisplayOptions *DropDownControlDisplayOptions
@@ -5477,6 +5917,9 @@ type DefaultPaginatedLayoutConfiguration struct {
 
 // The default options that correspond to the RelativeDateTime filter control type.
 type DefaultRelativeDateTimeControlOptions struct {
+
+	// The visibility configuration of the Apply button on a RelativeDateTimeControl .
+	CommitMode CommitMode
 
 	// The display options of a control.
 	DisplayOptions *RelativeDateTimeControlDisplayOptions
@@ -5803,6 +6246,19 @@ type ExcludePeriodConfiguration struct {
 	noSmithyDocumentSerde
 }
 
+// The executive summary settings of an embedded Amazon QuickSight console or
+// dashboard.
+type ExecutiveSummaryConfigurations struct {
+
+	// The executive summary settings of an embedded Amazon QuickSight console or
+	// dashboard.
+	//
+	// This member is required.
+	Enabled bool
+
+	noSmithyDocumentSerde
+}
+
 // The option that determines the hierarchy of the fields that are built within a
 // visual's field wells. These fields can't be duplicated to other visuals.
 type ExplicitHierarchy struct {
@@ -5863,7 +6319,7 @@ type FailedKeyRegistrationEntry struct {
 	// user error. If the value of this property is True , the error was caused by user
 	// error. If the value of this property is False , the error occurred on the
 	// backend. If your job continues fail and with a False SenderFault value, contact
-	// Amazon Web Services Support.
+	// Amazon Web ServicesSupport.
 	//
 	// This member is required.
 	SenderFault bool
@@ -6125,6 +6581,9 @@ type FilledMapVisual struct {
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
 
+	// The alt text for the visual.
+	VisualContentAltText *string
+
 	noSmithyDocumentSerde
 }
 
@@ -6262,6 +6721,9 @@ type FilterDateTimePickerControl struct {
 	// This member is required.
 	Title *string
 
+	// The visibility configurationof the Apply button on a DateTimePickerControl .
+	CommitMode CommitMode
+
 	// The display options of a control.
 	DisplayOptions *DateTimePickerControlDisplayOptions
 
@@ -6297,6 +6759,9 @@ type FilterDropDownControl struct {
 	// The values that are displayed in a control can be configured to only show
 	// values that are valid based on what's selected in other controls.
 	CascadingControlConfiguration *CascadingControlConfiguration
+
+	// The visibility configuration of the Apply button on a FilterDropDownControl .
+	CommitMode CommitMode
 
 	// The display options of the FilterDropDownControl .
 	DisplayOptions *DropDownControlDisplayOptions
@@ -6488,6 +6953,10 @@ type FilterRelativeDateTimeControl struct {
 	//
 	// This member is required.
 	Title *string
+
+	// The visibility configuration of the Apply button on a
+	// FilterRelativeDateTimeControl .
+	CommitMode CommitMode
 
 	// The display options of a control.
 	DisplayOptions *RelativeDateTimeControlDisplayOptions
@@ -6767,6 +7236,9 @@ type FontConfiguration struct {
 	// Determines the appearance of decorative lines on the text.
 	FontDecoration FontDecoration
 
+	// The font family that you want to use.
+	FontFamily *string
+
 	// The option that determines the text display size.
 	FontSize *FontSize
 
@@ -6781,6 +7253,9 @@ type FontConfiguration struct {
 
 // The option that determines the text display size.
 type FontSize struct {
+
+	// The font size that you want to use in px.
+	Absolute *string
 
 	// The lexical name for the text size, proportional to its surrounding context.
 	Relative RelativeFontSize
@@ -7134,6 +7609,9 @@ type FunnelChartVisual struct {
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
 
+	// The alt text for the visual.
+	VisualContentAltText *string
+
 	noSmithyDocumentSerde
 }
 
@@ -7280,6 +7758,128 @@ type GaugeChartVisual struct {
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
 
+	// The alt text for the visual.
+	VisualContentAltText *string
+
+	noSmithyDocumentSerde
+}
+
+// The QA result that is made from generated answer.
+type GeneratedAnswerResult struct {
+
+	// The ID of the answer.
+	AnswerId *string
+
+	// The answer status of the generated answer.
+	AnswerStatus GeneratedAnswerStatus
+
+	// The ID of the question.
+	QuestionId *string
+
+	// The question text.
+	QuestionText *string
+
+	// The URL of the question.
+	QuestionUrl *string
+
+	// The restatement for the answer.
+	Restatement *string
+
+	// The ID of the topic.
+	TopicId *string
+
+	// The name of the topic.
+	TopicName *string
+
+	noSmithyDocumentSerde
+}
+
+// The generative BI authoring settings of an embedded Amazon QuickSight console.
+type GenerativeAuthoringConfigurations struct {
+
+	// The generative BI authoring settings of an embedded Amazon QuickSight console.
+	//
+	// This member is required.
+	Enabled bool
+
+	noSmithyDocumentSerde
+}
+
+// The definition for a categorical color.
+type GeospatialCategoricalColor struct {
+
+	// A list of categorical data colors for each category.
+	//
+	// This member is required.
+	CategoryDataColors []GeospatialCategoricalDataColor
+
+	// The default opacity of a categorical color.
+	DefaultOpacity *float64
+
+	// The null data visualization settings.
+	NullDataSettings *GeospatialNullDataSettings
+
+	// The state of visibility for null data.
+	NullDataVisibility Visibility
+
+	noSmithyDocumentSerde
+}
+
+// The categorical data color for a single category.
+type GeospatialCategoricalDataColor struct {
+
+	// The color and opacity values for the category data color.
+	//
+	// This member is required.
+	Color *string
+
+	// The data value for the category data color.
+	//
+	// This member is required.
+	DataValue *string
+
+	noSmithyDocumentSerde
+}
+
+// The geospatial radius for a circle.
+type GeospatialCircleRadius struct {
+
+	// The positive value for the radius of a circle.
+	Radius *float64
+
+	noSmithyDocumentSerde
+}
+
+// The properties for a circle symbol style.
+type GeospatialCircleSymbolStyle struct {
+
+	// The radius of the circle.
+	CircleRadius *GeospatialCircleRadius
+
+	// The color and opacity values for the fill color.
+	FillColor *GeospatialColor
+
+	// The color and opacity values for the stroke color.
+	StrokeColor *GeospatialColor
+
+	// The width of the stroke (border).
+	StrokeWidth *GeospatialLineWidth
+
+	noSmithyDocumentSerde
+}
+
+// The visualization properties for solid, gradient, and categorical colors.
+type GeospatialColor struct {
+
+	// The visualization properties for the categorical color.
+	Categorical *GeospatialCategoricalColor
+
+	// The visualization properties for the gradient color.
+	Gradient *GeospatialGradientColor
+
+	// The visualization properties for the solid color.
+	Solid *GeospatialSolidColor
+
 	noSmithyDocumentSerde
 }
 
@@ -7328,6 +7928,51 @@ type GeospatialCoordinateBounds struct {
 	noSmithyDocumentSerde
 }
 
+// The data source properties for the geospatial data.
+type GeospatialDataSourceItem struct {
+
+	// The static file data source properties for the geospatial data.
+	StaticFileDataSource *GeospatialStaticFileSource
+
+	noSmithyDocumentSerde
+}
+
+// The definition for a gradient color.
+type GeospatialGradientColor struct {
+
+	// A list of gradient step colors for the gradient.
+	//
+	// This member is required.
+	StepColors []GeospatialGradientStepColor
+
+	// The default opacity for the gradient color.
+	DefaultOpacity *float64
+
+	// The null data visualization settings.
+	NullDataSettings *GeospatialNullDataSettings
+
+	// The state of visibility for null data.
+	NullDataVisibility Visibility
+
+	noSmithyDocumentSerde
+}
+
+// The gradient step color for a single step.
+type GeospatialGradientStepColor struct {
+
+	// The color and opacity values for the gradient step color.
+	//
+	// This member is required.
+	Color *string
+
+	// The data value for the gradient step color.
+	//
+	// This member is required.
+	DataValue float64
+
+	noSmithyDocumentSerde
+}
+
 // The color scale specification for the heatmap point style.
 type GeospatialHeatmapColorScale struct {
 
@@ -7353,6 +7998,145 @@ type GeospatialHeatmapDataColor struct {
 	//
 	// This member is required.
 	Color *string
+
+	noSmithyDocumentSerde
+}
+
+// The color field that defines a gradient or categorical style.
+type GeospatialLayerColorField struct {
+
+	// A list of color dimension fields.
+	ColorDimensionsFields []DimensionField
+
+	// A list of color measure fields.
+	ColorValuesFields []MeasureField
+
+	noSmithyDocumentSerde
+}
+
+// The definition properties for a geospatial layer.
+type GeospatialLayerDefinition struct {
+
+	// The definition for a line layer.
+	LineLayer *GeospatialLineLayer
+
+	// The definition for a point layer.
+	PointLayer *GeospatialPointLayer
+
+	// The definition for a polygon layer.
+	PolygonLayer *GeospatialPolygonLayer
+
+	noSmithyDocumentSerde
+}
+
+// The properties for a single geospatial layer.
+type GeospatialLayerItem struct {
+
+	// The ID of the layer.
+	//
+	// This member is required.
+	LayerId *string
+
+	// A list of custom actions for a layer.
+	Actions []LayerCustomAction
+
+	// The data source for the layer.
+	DataSource *GeospatialDataSourceItem
+
+	// The join definition properties for a layer.
+	JoinDefinition *GeospatialLayerJoinDefinition
+
+	// The label that is displayed for the layer.
+	Label *string
+
+	// The definition properties for a layer.
+	LayerDefinition *GeospatialLayerDefinition
+
+	// The layer type.
+	LayerType GeospatialLayerType
+
+	// The display options for the visual tooltip.
+	Tooltip *TooltipOptions
+
+	// The state of visibility for the layer.
+	Visibility Visibility
+
+	noSmithyDocumentSerde
+}
+
+// The custom actions for a layer.
+type GeospatialLayerJoinDefinition struct {
+
+	// The geospatial color field for the join definition.
+	ColorField *GeospatialLayerColorField
+
+	// The unaggregated field for a table.
+	DatasetKeyField *UnaggregatedField
+
+	// The name of the field or property in the geospatial data source.
+	ShapeKeyField *string
+
+	noSmithyDocumentSerde
+}
+
+// The map definition that defines map state, map style, and geospatial layers.
+type GeospatialLayerMapConfiguration struct {
+
+	// The general visual interactions setup for visual publish options
+	Interactions *VisualInteractionOptions
+
+	// The options for the legend setup of a visual.
+	Legend *LegendOptions
+
+	// The geospatial layers to visualize on the map.
+	MapLayers []GeospatialLayerItem
+
+	// The map state properties for the map.
+	MapState *GeospatialMapState
+
+	// The map style properties for the map.
+	MapStyle *GeospatialMapStyle
+
+	noSmithyDocumentSerde
+}
+
+// The geospatial Line layer.
+type GeospatialLineLayer struct {
+
+	// The visualization style for a line layer.
+	//
+	// This member is required.
+	Style *GeospatialLineStyle
+
+	noSmithyDocumentSerde
+}
+
+// The visualization style for a line layer.
+type GeospatialLineStyle struct {
+
+	// The symbol style for a line style.
+	LineSymbolStyle *GeospatialLineSymbolStyle
+
+	noSmithyDocumentSerde
+}
+
+// The symbol style for a line layer.
+type GeospatialLineSymbolStyle struct {
+
+	// The color and opacity values for the fill color.
+	FillColor *GeospatialColor
+
+	// The width value for a line.
+	LineWidth *GeospatialLineWidth
+
+	noSmithyDocumentSerde
+}
+
+// The width properties for a line.
+type GeospatialLineWidth struct {
+
+	// The positive value for the width of a line.
+	LineWidth *float64
 
 	noSmithyDocumentSerde
 }
@@ -7416,6 +8200,33 @@ type GeospatialMapFieldWells struct {
 	noSmithyDocumentSerde
 }
 
+// The map state properties for a map.
+type GeospatialMapState struct {
+
+	// The bound options (north, south, west, east) of the geospatial window options.
+	Bounds *GeospatialCoordinateBounds
+
+	// Enables or disables map navigation for a map.
+	MapNavigation GeospatialMapNavigation
+
+	noSmithyDocumentSerde
+}
+
+// The map style properties for a map.
+type GeospatialMapStyle struct {
+
+	// The background color and opacity values for a map.
+	BackgroundColor *string
+
+	// The selected base map style.
+	BaseMapStyle BaseMapStyleType
+
+	// The state of visibility for the base map.
+	BaseMapVisibility Visibility
+
+	noSmithyDocumentSerde
+}
+
 // The map style options of the geospatial map.
 type GeospatialMapStyleOptions struct {
 
@@ -7454,6 +8265,55 @@ type GeospatialMapVisual struct {
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
 
+	// The alt text for the visual.
+	VisualContentAltText *string
+
+	noSmithyDocumentSerde
+}
+
+// The properties for the visualization of null data.
+type GeospatialNullDataSettings struct {
+
+	// The symbol style for null data.
+	//
+	// This member is required.
+	SymbolStyle *GeospatialNullSymbolStyle
+
+	noSmithyDocumentSerde
+}
+
+// The symbol style for null data.
+type GeospatialNullSymbolStyle struct {
+
+	// The color and opacity values for the fill color.
+	FillColor *string
+
+	// The color and opacity values for the stroke color.
+	StrokeColor *string
+
+	// The width of the border stroke.
+	StrokeWidth *float64
+
+	noSmithyDocumentSerde
+}
+
+// The geospatial Point layer.
+type GeospatialPointLayer struct {
+
+	// The visualization style for a point layer.
+	//
+	// This member is required.
+	Style *GeospatialPointStyle
+
+	noSmithyDocumentSerde
+}
+
+// The point style for a point layer.
+type GeospatialPointStyle struct {
+
+	// The circle symbol style for a point layer.
+	CircleSymbolStyle *GeospatialCircleSymbolStyle
+
 	noSmithyDocumentSerde
 }
 
@@ -7468,6 +8328,66 @@ type GeospatialPointStyleOptions struct {
 
 	// The selected point styles (point, cluster) of the geospatial map.
 	SelectedPointStyle GeospatialSelectedPointStyle
+
+	noSmithyDocumentSerde
+}
+
+// The geospatial polygon layer.
+type GeospatialPolygonLayer struct {
+
+	// The visualization style for a polygon layer.
+	//
+	// This member is required.
+	Style *GeospatialPolygonStyle
+
+	noSmithyDocumentSerde
+}
+
+// The polygon style for a polygon layer.
+type GeospatialPolygonStyle struct {
+
+	// The polygon symbol style for a polygon layer.
+	PolygonSymbolStyle *GeospatialPolygonSymbolStyle
+
+	noSmithyDocumentSerde
+}
+
+// The polygon symbol style for a polygon layer.
+type GeospatialPolygonSymbolStyle struct {
+
+	// The color and opacity values for the fill color.
+	FillColor *GeospatialColor
+
+	// The color and opacity values for the stroke color.
+	StrokeColor *GeospatialColor
+
+	// The width of the border stroke.
+	StrokeWidth *GeospatialLineWidth
+
+	noSmithyDocumentSerde
+}
+
+// The definition for a solid color.
+type GeospatialSolidColor struct {
+
+	// The color and opacity values for the color.
+	//
+	// This member is required.
+	Color *string
+
+	// Enables and disables the view state of the color.
+	State GeospatialColorState
+
+	noSmithyDocumentSerde
+}
+
+// The source properties for a geospatial static file.
+type GeospatialStaticFileSource struct {
+
+	// The ID of the static file.
+	//
+	// This member is required.
+	StaticFileId *string
 
 	noSmithyDocumentSerde
 }
@@ -7816,6 +8736,9 @@ type HeatMapVisual struct {
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
 
+	// The alt text for the visual.
+	VisualContentAltText *string
+
 	noSmithyDocumentSerde
 }
 
@@ -7915,6 +8838,9 @@ type HistogramVisual struct {
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
 
+	// The alt text for the visual.
+	VisualContentAltText *string
+
 	noSmithyDocumentSerde
 }
 
@@ -7971,6 +8897,176 @@ type IdentityCenterConfiguration struct {
 	// A Boolean option that controls whether Trusted Identity Propagation should be
 	// used.
 	EnableIdentityPropagation *bool
+
+	noSmithyDocumentSerde
+}
+
+// The logo image.
+type Image struct {
+
+	// The URL that points to the generated logo image.
+	GeneratedImageUrl *string
+
+	// The source of the logo image.
+	Source ImageSource
+
+	noSmithyDocumentSerde
+}
+
+// The logo image configuration.
+type ImageConfiguration struct {
+
+	// The source of the image.
+	Source ImageSource
+
+	noSmithyDocumentSerde
+}
+
+// A custom action defined on an image.
+type ImageCustomAction struct {
+
+	// A list of ImageCustomActionOperations .
+	//
+	// This is a union type structure. For this structure to be valid, only one of the
+	// attributes can be defined.
+	//
+	// This member is required.
+	ActionOperations []ImageCustomActionOperation
+
+	// The ID of the custom action.
+	//
+	// This member is required.
+	CustomActionId *string
+
+	// The name of the custom action.
+	//
+	// This member is required.
+	Name *string
+
+	// The trigger of the VisualCustomAction .
+	//
+	// Valid values are defined as follows:
+	//
+	//   - CLICK : Initiates a custom action by a left pointer click on a data point.
+	//
+	//   - MENU : Initiates a custom action by right pointer click from the menu.
+	//
+	// This member is required.
+	Trigger ImageCustomActionTrigger
+
+	// The status of the custom action.
+	Status WidgetStatus
+
+	noSmithyDocumentSerde
+}
+
+// The operation that is defined by the custom action.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
+type ImageCustomActionOperation struct {
+
+	// The navigation operation that navigates between different sheets in the same
+	// analysis.
+	//
+	// This is a union type structure. For this structure to be valid, only one of the
+	// attributes can be defined.
+	NavigationOperation *CustomActionNavigationOperation
+
+	// The set parameter operation that sets parameters in custom action.
+	SetParametersOperation *CustomActionSetParametersOperation
+
+	// The URL operation that opens a link to another webpage.
+	URLOperation *CustomActionURLOperation
+
+	noSmithyDocumentSerde
+}
+
+// The general image interactions setup for image publish options.
+type ImageInteractionOptions struct {
+
+	// The menu options for the image.
+	ImageMenuOption *ImageMenuOption
+
+	noSmithyDocumentSerde
+}
+
+// The menu options for the interactions of an image.
+type ImageMenuOption struct {
+
+	// The availability status of the image menu. If the value of this property is set
+	// to ENABLED , dashboard readers can interact with the image menu.
+	AvailabilityStatus DashboardBehavior
+
+	noSmithyDocumentSerde
+}
+
+// The image set.
+type ImageSet struct {
+
+	// The original image.
+	//
+	// This member is required.
+	Original *Image
+
+	// The image with the height set to 32 pixels.
+	Height32 *Image
+
+	// The image with the height set to 64 pixels.
+	Height64 *Image
+
+	noSmithyDocumentSerde
+}
+
+// The image set configuration.
+type ImageSetConfiguration struct {
+
+	// The original image.
+	//
+	// This member is required.
+	Original *ImageConfiguration
+
+	noSmithyDocumentSerde
+}
+
+// The source of the image.
+//
+// The following types satisfy this interface:
+//
+//	ImageSourceMemberPublicUrl
+//	ImageSourceMemberS3Uri
+type ImageSource interface {
+	isImageSource()
+}
+
+// The public URL that points to the source image.
+type ImageSourceMemberPublicUrl struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*ImageSourceMemberPublicUrl) isImageSource() {}
+
+// The Amazon S3 URI that points to the source image.
+type ImageSourceMemberS3Uri struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*ImageSourceMemberS3Uri) isImageSource() {}
+
+// A static file that contains an image.
+type ImageStaticFile struct {
+
+	// The ID of the static file that contains an image.
+	//
+	// This member is required.
+	StaticFileId *string
+
+	// The source of the image static file.
+	Source *StaticFileSource
 
 	noSmithyDocumentSerde
 }
@@ -8105,6 +9201,9 @@ type InsightVisual struct {
 
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
+
+	// The alt text for the visual.
+	VisualContentAltText *string
 
 	noSmithyDocumentSerde
 }
@@ -8504,6 +9603,9 @@ type KPIVisual struct {
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
 
+	// The alt text for the visual.
+	VisualContentAltText *string
+
 	noSmithyDocumentSerde
 }
 
@@ -8538,6 +9640,101 @@ type LabelOptions struct {
 
 	// Determines whether or not the label is visible.
 	Visibility Visibility
+
+	noSmithyDocumentSerde
+}
+
+// A layer custom action.
+type LayerCustomAction struct {
+
+	// A list of LayerCustomActionOperations .
+	//
+	// This is a union type structure. For this structure to be valid, only one of the
+	// attributes can be defined.
+	//
+	// This member is required.
+	ActionOperations []LayerCustomActionOperation
+
+	// The ID of the custom action.
+	//
+	// This member is required.
+	CustomActionId *string
+
+	// The name of the custom action.
+	//
+	// This member is required.
+	Name *string
+
+	// The trigger of the LayerCustomAction .
+	//
+	// Valid values are defined as follows:
+	//
+	//   - DATA_POINT_CLICK : Initiates a custom action by a left pointer click on a
+	//   data point.
+	//
+	//   - DATA_POINT_MENU : Initiates a custom action by right pointer click from the
+	//   menu.
+	//
+	// This member is required.
+	Trigger LayerCustomActionTrigger
+
+	// The status of the LayerCustomAction .
+	Status WidgetStatus
+
+	noSmithyDocumentSerde
+}
+
+// The operation that is defined by the custom action.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
+type LayerCustomActionOperation struct {
+
+	// The filter operation that filters data included in a visual or in an entire
+	// sheet.
+	FilterOperation *CustomActionFilterOperation
+
+	// The navigation operation that navigates between different sheets in the same
+	// analysis.
+	//
+	// This is a union type structure. For this structure to be valid, only one of the
+	// attributes can be defined.
+	NavigationOperation *CustomActionNavigationOperation
+
+	// The set parameter operation that sets parameters in custom action.
+	SetParametersOperation *CustomActionSetParametersOperation
+
+	// The URL operation that opens a link to another webpage.
+	URLOperation *CustomActionURLOperation
+
+	noSmithyDocumentSerde
+}
+
+// A layer map visual.
+type LayerMapVisual struct {
+
+	// The dataset that is used to create the layer map visual. You can't create a
+	// visual without a dataset.
+	//
+	// This member is required.
+	DataSetIdentifier *string
+
+	// The ID of the visual.
+	//
+	// This member is required.
+	VisualId *string
+
+	// The configuration settings of the visual.
+	ChartConfiguration *GeospatialLayerMapConfiguration
+
+	// The subtitle label options for a visual.
+	Subtitle *VisualSubtitleLabelOptions
+
+	// The title label options for a visual.
+	Title *VisualTitleLabelOptions
+
+	// The alt text for the visual.
+	VisualContentAltText *string
 
 	noSmithyDocumentSerde
 }
@@ -8605,6 +9802,9 @@ type LegendOptions struct {
 
 	// The custom title for the legend.
 	Title *LabelOptions
+
+	// Configures the display properties of the given text.
+	ValueFontConfiguration *FontConfiguration
 
 	// Determines whether or not the legend is visible.
 	Visibility Visibility
@@ -8850,6 +10050,9 @@ type LineChartVisual struct {
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
 
+	// The alt text for the visual.
+	VisualContentAltText *string
+
 	noSmithyDocumentSerde
 }
 
@@ -8968,6 +10171,66 @@ type LogicalTableSource struct {
 
 	// Physical table ID.
 	PhysicalTableId *string
+
+	noSmithyDocumentSerde
+}
+
+// The logo configuration.
+type Logo struct {
+
+	// The alt text for the logo.
+	//
+	// This member is required.
+	AltText *string
+
+	// A set of configured logos.
+	//
+	// This member is required.
+	LogoSet *LogoSet
+
+	noSmithyDocumentSerde
+}
+
+// The logo configuration.
+type LogoConfiguration struct {
+
+	// The alt text for the logo.
+	//
+	// This member is required.
+	AltText *string
+
+	// A set of configured logos.
+	//
+	// This member is required.
+	LogoSet *LogoSetConfiguration
+
+	noSmithyDocumentSerde
+}
+
+// A set of logos.
+type LogoSet struct {
+
+	// The primary logo.
+	//
+	// This member is required.
+	Primary *ImageSet
+
+	// The favicon logo.
+	Favicon *ImageSet
+
+	noSmithyDocumentSerde
+}
+
+// The logo set configuration.
+type LogoSetConfiguration struct {
+
+	// The primary logo.
+	//
+	// This member is required.
+	Primary *ImageSetConfiguration
+
+	// The favicon logo.
+	Favicon *ImageSetConfiguration
 
 	noSmithyDocumentSerde
 }
@@ -9279,6 +10542,12 @@ type NamespaceInfoV2 struct {
 	// The creation status of a namespace that is not yet completely created.
 	CreationStatus NamespaceStatus
 
+	// The Amazon Resource Name (ARN) for the IAM Identity Center application.
+	IamIdentityCenterApplicationArn *string
+
+	// The Amazon Resource Name (ARN) for the IAM Identity Center instance.
+	IamIdentityCenterInstanceArn *string
+
 	// The identity store used for the namespace.
 	IdentityStore IdentityStore
 
@@ -9287,6 +10556,18 @@ type NamespaceInfoV2 struct {
 
 	// An error that occurred when the namespace was created.
 	NamespaceError *NamespaceError
+
+	noSmithyDocumentSerde
+}
+
+// The navigation bar style.
+type NavbarStyle struct {
+
+	// The contextual navigation bar style.
+	ContextualNavbar *Palette
+
+	// The global navigation bar style.
+	GlobalNavbar *Palette
 
 	noSmithyDocumentSerde
 }
@@ -9683,6 +10964,28 @@ type NumericSeparatorConfiguration struct {
 	noSmithyDocumentSerde
 }
 
+// An object that contains information needed to create a data source connection
+// that uses OAuth client credentials. This option is available for data source
+// connections that are made with Snowflake and Starburst.
+type OAuthParameters struct {
+
+	// The token endpoint URL of the identity provider.
+	//
+	// This member is required.
+	TokenProviderUrl *string
+
+	// The resource uri of the identity provider.
+	IdentityProviderResourceUri *string
+
+	// VPC connection properties.
+	IdentityProviderVpcConnectionProperties *VpcConnectionProperties
+
+	// The OAuth scope.
+	OAuthScope *string
+
+	noSmithyDocumentSerde
+}
+
 // The parameters for Oracle.
 type OracleParameters struct {
 
@@ -9700,6 +11003,11 @@ type OracleParameters struct {
 	//
 	// This member is required.
 	Port *int32
+
+	// A Boolean value that indicates whether the Database uses a service name or an
+	// SID. If this value is left blank, the default value is SID . If this value is
+	// set to false , the value is SID .
+	UseServiceName bool
 
 	noSmithyDocumentSerde
 }
@@ -9752,6 +11060,18 @@ type PaginationConfiguration struct {
 	//
 	// This member is required.
 	PageSize *int64
+
+	noSmithyDocumentSerde
+}
+
+// The color palette.
+type Palette struct {
+
+	// The background color.
+	Background *string
+
+	// The foreground color.
+	Foreground *string
 
 	noSmithyDocumentSerde
 }
@@ -9908,6 +11228,9 @@ type ParameterDropDownControl struct {
 	// The values that are displayed in a control can be configured to only show
 	// values that are valid based on what's selected in other controls.
 	CascadingControlConfiguration *CascadingControlConfiguration
+
+	// The visibility configuration of the Apply button on a ParameterDropDownControl .
+	CommitMode CommitMode
 
 	// The display options of a control.
 	DisplayOptions *DropDownControlDisplayOptions
@@ -10119,6 +11442,16 @@ type PercentVisibleRange struct {
 
 	// The top bound of the range.
 	To *float64
+
+	noSmithyDocumentSerde
+}
+
+// The configuration for the performance optimization of the dataset that contains
+// a UniqueKey configuration.
+type PerformanceConfiguration struct {
+
+	// A UniqueKey configuration.
+	UniqueKeys []UniqueKey
 
 	noSmithyDocumentSerde
 }
@@ -10339,6 +11672,9 @@ type PieChartVisual struct {
 
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
+
+	// The alt text for the visual.
+	VisualContentAltText *string
 
 	noSmithyDocumentSerde
 }
@@ -10699,6 +12035,9 @@ type PivotTableVisual struct {
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
 
+	// The alt text for the visual.
+	VisualContentAltText *string
+
 	noSmithyDocumentSerde
 }
 
@@ -10728,6 +12067,120 @@ type PivotTotalOptions struct {
 
 	// The cell styling options for the totals of value cells.
 	ValueCellStyle *TableCellStyle
+
+	noSmithyDocumentSerde
+}
+
+// A flexible visualization type that allows engineers to create new custom charts
+// in Amazon QuickSight.
+type PluginVisual struct {
+
+	// The Amazon Resource Name (ARN) that reflects the plugin and version.
+	//
+	// This member is required.
+	PluginArn *string
+
+	// The ID of the visual that you want to use.
+	//
+	// This member is required.
+	VisualId *string
+
+	//  A description of the plugin field wells and their persisted properties.
+	ChartConfiguration *PluginVisualConfiguration
+
+	// The subtitle label options for a visual.
+	Subtitle *VisualSubtitleLabelOptions
+
+	// The title label options for a visual.
+	Title *VisualTitleLabelOptions
+
+	// The alt text for the visual.
+	VisualContentAltText *string
+
+	noSmithyDocumentSerde
+}
+
+// The plugin visual configuration. This includes the field wells, sorting
+// options, and persisted options of the plugin visual.
+type PluginVisualConfiguration struct {
+
+	// The field wells configuration of the plugin visual.
+	FieldWells []PluginVisualFieldWell
+
+	// The sort configuration of the plugin visual.
+	SortConfiguration *PluginVisualSortConfiguration
+
+	// The persisted properties of the plugin visual.
+	VisualOptions *PluginVisualOptions
+
+	noSmithyDocumentSerde
+}
+
+// A collection of field wells for a plugin visual.
+type PluginVisualFieldWell struct {
+
+	// The semantic axis name for the field well.
+	AxisName PluginVisualAxisName
+
+	// A list of dimensions for the field well.
+	Dimensions []DimensionField
+
+	// A list of measures that exist in the field well.
+	Measures []MeasureField
+
+	// A list of unaggregated fields that exist in the field well.
+	Unaggregated []UnaggregatedField
+
+	noSmithyDocumentSerde
+}
+
+// A query limits configuration.
+type PluginVisualItemsLimitConfiguration struct {
+
+	// Determines how many values are be fetched at once.
+	ItemsLimit *int64
+
+	noSmithyDocumentSerde
+}
+
+// The options and persisted properties for the plugin visual.
+type PluginVisualOptions struct {
+
+	// The persisted properties and their values.
+	VisualProperties []PluginVisualProperty
+
+	noSmithyDocumentSerde
+}
+
+// The key value pair of the persisted property.
+type PluginVisualProperty struct {
+
+	// The name of the plugin visual property.
+	Name *string
+
+	// The value of the plugin visual property.
+	Value *string
+
+	noSmithyDocumentSerde
+}
+
+// Determines how the plugin visual sorts the data during query.
+type PluginVisualSortConfiguration struct {
+
+	// The table query sorting options for the plugin visual.
+	PluginVisualTableQuerySort *PluginVisualTableQuerySort
+
+	noSmithyDocumentSerde
+}
+
+// The table query sorting options for the plugin visual.
+type PluginVisualTableQuerySort struct {
+
+	// The maximum amount of data to be returned by a query.
+	ItemsLimitConfiguration *PluginVisualItemsLimitConfiguration
+
+	// Determines how data is sorted in the response.
+	RowSort []FieldSortOptions
 
 	noSmithyDocumentSerde
 }
@@ -10812,6 +12265,21 @@ type ProjectOperation struct {
 	//
 	// This member is required.
 	ProjectedColumns []string
+
+	noSmithyDocumentSerde
+}
+
+// The QA result that is made from the DashboardVisual or GeneratedAnswer .
+type QAResult struct {
+
+	// The representation of a dashboard visual result.
+	DashboardVisual *DashboardVisualResult
+
+	// The representation of a generated answer result.
+	GeneratedAnswer *GeneratedAnswerResult
+
+	// The type of QA result.
+	ResultType QAResultType
 
 	noSmithyDocumentSerde
 }
@@ -10981,6 +12449,9 @@ type RadarChartVisual struct {
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
 
+	// The alt text for the visual.
+	VisualContentAltText *string
+
 	noSmithyDocumentSerde
 }
 
@@ -11017,6 +12488,17 @@ type RdsParameters struct {
 	//
 	// This member is required.
 	InstanceId *string
+
+	noSmithyDocumentSerde
+}
+
+// The recent snapshots configuration for an embedded Amazon QuickSight dashboard.
+type RecentSnapshotsConfigurations struct {
+
+	// The recent snapshots configuration for an embedded Amazon QuickSight dashboard.
+	//
+	// This member is required.
+	Enabled bool
 
 	noSmithyDocumentSerde
 }
@@ -11268,6 +12750,25 @@ type RefreshConfiguration struct {
 	noSmithyDocumentSerde
 }
 
+// The failure configuration of a dataset.
+type RefreshFailureConfiguration struct {
+
+	// The email alert configuration for a dataset refresh failure.
+	EmailAlert *RefreshFailureEmailAlert
+
+	noSmithyDocumentSerde
+}
+
+// The configuration settings for the email alerts that are sent when a dataset
+// refresh fails.
+type RefreshFailureEmailAlert struct {
+
+	// The status value that determines if email alerts are sent.
+	AlertStatus RefreshFailureAlertStatus
+
+	noSmithyDocumentSerde
+}
+
 // Specifies the interval between each scheduled refresh of a dataset.
 type RefreshFrequency struct {
 
@@ -11369,11 +12870,23 @@ type RegisteredCustomerManagedKey struct {
 // The feature configurations of an embedded Amazon QuickSight console.
 type RegisteredUserConsoleFeatureConfigurations struct {
 
+	// The Amazon Q configurations of an embedded Amazon QuickSight console.
+	AmazonQInQuickSight *AmazonQInQuickSightConsoleConfigurations
+
+	// The recent snapshots configuration for an embedded Amazon QuickSight dashboard.
+	RecentSnapshots *RecentSnapshotsConfigurations
+
+	// The schedules configuration for an embedded Amazon QuickSight dashboard.
+	Schedules *SchedulesConfigurations
+
 	// The shared view settings of an embedded dashboard.
 	SharedView *SharedViewConfigurations
 
 	// The state persistence configurations of an embedded Amazon QuickSight console.
 	StatePersistence *StatePersistenceConfigurations
+
+	// The threshold alerts configuration for an embedded Amazon QuickSight dashboard.
+	ThresholdAlerts *ThresholdAlertsConfigurations
 
 	noSmithyDocumentSerde
 }
@@ -11400,14 +12913,26 @@ type RegisteredUserDashboardEmbeddingConfiguration struct {
 // The feature configuration for an embedded dashboard.
 type RegisteredUserDashboardFeatureConfigurations struct {
 
+	// The Amazon Q configurations of an embedded Amazon QuickSight dashboard.
+	AmazonQInQuickSight *AmazonQInQuickSightDashboardConfigurations
+
 	// The bookmarks configuration for an embedded dashboard in Amazon QuickSight.
 	Bookmarks *BookmarksConfigurations
+
+	// The recent snapshots configuration for an Amazon QuickSight embedded dashboard
+	RecentSnapshots *RecentSnapshotsConfigurations
+
+	// The schedules configuration for an embedded Amazon QuickSight dashboard.
+	Schedules *SchedulesConfigurations
 
 	// The shared view settings of an embedded dashboard.
 	SharedView *SharedViewConfigurations
 
 	// The state persistence settings of an embedded dashboard.
 	StatePersistence *StatePersistenceConfigurations
+
+	// The threshold alerts configuration for an Amazon QuickSight embedded dashboard.
+	ThresholdAlerts *ThresholdAlertsConfigurations
 
 	noSmithyDocumentSerde
 }
@@ -12013,6 +13538,9 @@ type SankeyDiagramVisual struct {
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
 
+	// The alt text for the visual.
+	VisualContentAltText *string
+
 	noSmithyDocumentSerde
 }
 
@@ -12164,6 +13692,9 @@ type ScatterPlotVisual struct {
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
 
+	// The alt text for the visual.
+	VisualContentAltText *string
+
 	noSmithyDocumentSerde
 }
 
@@ -12175,6 +13706,17 @@ type ScheduleRefreshOnEntity struct {
 
 	// The day of the week that you want to schedule a refresh on.
 	DayOfWeek DayOfWeek
+
+	noSmithyDocumentSerde
+}
+
+// The schedules configuration for an embedded Amazon QuickSight dashboard.
+type SchedulesConfigurations struct {
+
+	// The schedules configuration for an embedded Amazon QuickSight dashboard.
+	//
+	// This member is required.
+	Enabled bool
 
 	noSmithyDocumentSerde
 }
@@ -12451,6 +13993,9 @@ type SharedViewConfigurations struct {
 // with other components, such as controls, filters, and so on.
 type Sheet struct {
 
+	// A list of images on a sheet.
+	Images []SheetImage
+
 	// The name of a sheet. This name is displayed on the sheet's tab in the Amazon
 	// QuickSight console.
 	Name *string
@@ -12532,6 +14077,9 @@ type SheetDefinition struct {
 	// [Adding filter controls to analysis sheets]: https://docs.aws.amazon.com/quicksight/latest/user/filter-controls.html
 	FilterControls []FilterControl
 
+	// A list of images on a sheet.
+	Images []SheetImage
+
 	// Layouts define how the components of a sheet are arranged.
 	//
 	// For more information, see [Types of layout] in the Amazon QuickSight User Guide.
@@ -12592,6 +14140,101 @@ type SheetElementRenderingRule struct {
 	//
 	// This member is required.
 	Expression *string
+
+	noSmithyDocumentSerde
+}
+
+// An image that is located on a sheet.
+type SheetImage struct {
+
+	// The ID of the sheet image.
+	//
+	// This member is required.
+	SheetImageId *string
+
+	// The source of the image.
+	//
+	// This member is required.
+	Source *SheetImageSource
+
+	// A list of custom actions that are configured for an image.
+	Actions []ImageCustomAction
+
+	// The alt text for the image.
+	ImageContentAltText *string
+
+	// The general image interactions setup for an image.
+	Interactions *ImageInteractionOptions
+
+	// Determines how the image is scaled.
+	Scaling *SheetImageScalingConfiguration
+
+	// The tooltip to be shown when hovering over the image.
+	Tooltip *SheetImageTooltipConfiguration
+
+	noSmithyDocumentSerde
+}
+
+// Determines how the image is scaled
+type SheetImageScalingConfiguration struct {
+
+	// The scaling option to use when fitting the image inside the container.
+	//
+	// Valid values are defined as follows:
+	//
+	//   - SCALE_TO_WIDTH : The image takes up the entire width of the container. The
+	//   image aspect ratio is preserved.
+	//
+	//   - SCALE_TO_HEIGHT : The image takes up the entire height of the container. The
+	//   image aspect ratio is preserved.
+	//
+	//   - SCALE_TO_CONTAINER : The image takes up the entire width and height of the
+	//   container. The image aspect ratio is not preserved.
+	//
+	//   - SCALE_NONE : The image is displayed in its original size and is not scaled
+	//   to the container.
+	ScalingType SheetImageScalingType
+
+	noSmithyDocumentSerde
+}
+
+// The source of the image.
+type SheetImageSource struct {
+
+	// The source of the static file that contains the image.
+	SheetImageStaticFileSource *SheetImageStaticFileSource
+
+	noSmithyDocumentSerde
+}
+
+// The source of the static file that contains the image.
+type SheetImageStaticFileSource struct {
+
+	// The ID of the static file that contains the image.
+	//
+	// This member is required.
+	StaticFileId *string
+
+	noSmithyDocumentSerde
+}
+
+// The tooltip configuration for a sheet image.
+type SheetImageTooltipConfiguration struct {
+
+	// The text that appears in the tooltip.
+	TooltipText *SheetImageTooltipText
+
+	// The visibility of the tooltip.
+	Visibility Visibility
+
+	noSmithyDocumentSerde
+}
+
+// The text that appears in the sheet image tooltip.
+type SheetImageTooltipText struct {
+
+	// The plain text format.
+	PlainText *string
 
 	noSmithyDocumentSerde
 }
@@ -13027,6 +14670,17 @@ type SnowflakeParameters struct {
 	// This member is required.
 	Warehouse *string
 
+	// The authentication type that you want to use for your connection. This
+	// parameter accepts OAuth and non-OAuth authentication types.
+	AuthenticationType AuthenticationType
+
+	// The database access control role.
+	DatabaseAccessControlRole *string
+
+	// An object that contains information needed to create a data source connection
+	// between an Amazon QuickSight account and Snowflake.
+	OAuthParameters *OAuthParameters
+
 	noSmithyDocumentSerde
 }
 
@@ -13060,6 +14714,20 @@ type SparkParameters struct {
 	//
 	// This member is required.
 	Port *int32
+
+	noSmithyDocumentSerde
+}
+
+// A static file that contains the geospatial data.
+type SpatialStaticFile struct {
+
+	// The ID of the spatial static file.
+	//
+	// This member is required.
+	StaticFileId *string
+
+	// The source of the spatial static file.
+	Source *StaticFileSource
 
 	noSmithyDocumentSerde
 }
@@ -13113,6 +14781,17 @@ type StarburstParameters struct {
 	// This member is required.
 	Port *int32
 
+	// The authentication type that you want to use for your connection. This
+	// parameter accepts OAuth and non-OAuth authentication types.
+	AuthenticationType AuthenticationType
+
+	// The database access control role.
+	DatabaseAccessControlRole *string
+
+	// An object that contains information needed to create a data source connection
+	// between an Amazon QuickSight account and Starburst.
+	OAuthParameters *OAuthParameters
+
 	// The product type for the Starburst data source.
 	ProductType StarburstProductType
 
@@ -13127,6 +14806,64 @@ type StatePersistenceConfigurations struct {
 	//
 	// This member is required.
 	Enabled bool
+
+	noSmithyDocumentSerde
+}
+
+// The static file.
+type StaticFile struct {
+
+	// The image static file.
+	ImageStaticFile *ImageStaticFile
+
+	// The spacial static file.
+	SpatialStaticFile *SpatialStaticFile
+
+	noSmithyDocumentSerde
+}
+
+// The structure that contains the Amazon S3 location to download the static file
+// from.
+type StaticFileS3SourceOptions struct {
+
+	// The name of the Amazon S3 bucket.
+	//
+	// This member is required.
+	BucketName *string
+
+	// The identifier of the static file in the Amazon S3 bucket.
+	//
+	// This member is required.
+	ObjectKey *string
+
+	// The Region of the Amazon S3 account that contains the bucket.
+	//
+	// This member is required.
+	Region *string
+
+	noSmithyDocumentSerde
+}
+
+// The source of the static file.
+type StaticFileSource struct {
+
+	// The structure that contains the Amazon S3 location to download the static file
+	// from.
+	S3Options *StaticFileS3SourceOptions
+
+	// The structure that contains the URL to download the static file from.
+	UrlOptions *StaticFileUrlSourceOptions
+
+	noSmithyDocumentSerde
+}
+
+// The structure that contains the URL to download the static file from.
+type StaticFileUrlSourceOptions struct {
+
+	// The URL to download the static file from.
+	//
+	// This member is required.
+	Url *string
 
 	noSmithyDocumentSerde
 }
@@ -13542,6 +15279,9 @@ type TableFieldOptions struct {
 	// The field options to be configured to a table.
 	SelectedFieldOptions []TableFieldOption
 
+	// The TableOptions of a transposed table.
+	TransposedTableOptions []TransposedTableOption
+
 	noSmithyDocumentSerde
 }
 
@@ -13719,6 +15459,9 @@ type TableVisual struct {
 
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
+
+	// The alt text for the visual.
+	VisualContentAltText *string
 
 	noSmithyDocumentSerde
 }
@@ -13983,6 +15726,9 @@ type TemplateVersionDefinition struct {
 	// An array of sheet definitions for a template.
 	Sheets []SheetDefinition
 
+	// The static files for the definition.
+	StaticFiles []StaticFile
+
 	noSmithyDocumentSerde
 }
 
@@ -14237,11 +15983,28 @@ type ThemeVersionSummary struct {
 // The options that determine the thousands separator configuration.
 type ThousandSeparatorOptions struct {
 
+	// Determines the way numbers are styled to accommodate different readability
+	// standards. The DEFAULT value uses the standard international grouping system
+	// and groups numbers by the thousands. The LAKHS value uses the Indian numbering
+	// system and groups numbers by lakhs and crores.
+	GroupingStyle DigitGroupingStyle
+
 	// Determines the thousands separator symbol.
 	Symbol NumericSeparatorSymbol
 
 	// Determines the visibility of the thousands separator.
 	Visibility Visibility
+
+	noSmithyDocumentSerde
+}
+
+// The threshold alerts configuration for an embedded Amazon QuickSight dashboard.
+type ThresholdAlertsConfigurations struct {
+
+	// The threshold alerts configuration for an embedded Amazon QuickSight dashboard.
+	//
+	// This member is required.
+	Enabled bool
 
 	noSmithyDocumentSerde
 }
@@ -14746,6 +16509,15 @@ type TopicColumn struct {
 	noSmithyDocumentSerde
 }
 
+// Configuration options for a Topic .
+type TopicConfigOptions struct {
+
+	// Enables Amazon Q Business Insights for a Topic .
+	QBusinessInsightsEnabled *bool
+
+	noSmithyDocumentSerde
+}
+
 // The definition for a TopicConstantValue .
 type TopicConstantValue struct {
 
@@ -14784,6 +16556,9 @@ type TopicDateRangeFilter struct {
 // A structure that describes the details of a topic, such as its name,
 // description, and associated data sets.
 type TopicDetails struct {
+
+	// Configuration options for a Topic .
+	ConfigOptions *TopicConfigOptions
 
 	// The data sets that the topic is associated with.
 	DataSets []DatasetMetadata
@@ -15212,6 +16987,27 @@ type TopicReviewedAnswer struct {
 	noSmithyDocumentSerde
 }
 
+// The filter that is used to search for a topic.
+type TopicSearchFilter struct {
+
+	// The name of the topic search filter.
+	//
+	// This member is required.
+	Name TopicFilterAttribute
+
+	// The operator like equals or like.
+	//
+	// This member is required.
+	Operator TopicFilterOperator
+
+	// The value of the topic search filter.
+	//
+	// This member is required.
+	Value *string
+
+	noSmithyDocumentSerde
+}
+
 // A structure that represents a singular filter constant, used in filters to
 // specify a single value to match against.
 type TopicSingularFilterConstant struct {
@@ -15445,6 +17241,29 @@ type TransformOperationMemberUntagColumnOperation struct {
 
 func (*TransformOperationMemberUntagColumnOperation) isTransformOperation() {}
 
+// The column option of the transposed table.
+type TransposedTableOption struct {
+
+	// The column type of the column in a transposed table. Choose one of the
+	// following options:
+	//
+	//   - ROW_HEADER_COLUMN : Refers to the leftmost column of the row header in the
+	//   transposed table.
+	//
+	//   - VALUE_COLUMN : Refers to all value columns in the transposed table.
+	//
+	// This member is required.
+	ColumnType TransposedColumnType
+
+	// The index of a columns in a transposed table. The index range is 0-9999.
+	ColumnIndex *int32
+
+	// The width of a column in a transposed table.
+	ColumnWidth *string
+
+	noSmithyDocumentSerde
+}
+
 // Aggregated field wells of a tree map.
 type TreeMapAggregatedFieldWells struct {
 
@@ -15554,6 +17373,9 @@ type TreeMapVisual struct {
 
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
+
+	// The alt text for the visual.
+	VisualContentAltText *string
 
 	noSmithyDocumentSerde
 }
@@ -15697,6 +17519,17 @@ type UnaggregatedField struct {
 
 	// The format configuration of the field.
 	FormatConfiguration *FormatConfiguration
+
+	noSmithyDocumentSerde
+}
+
+// A UniqueKey configuration that references a dataset column.
+type UniqueKey struct {
+
+	// The name of the column that is referenced in the UniqueKey configuration.
+	//
+	// This member is required.
+	ColumnNames []string
 
 	noSmithyDocumentSerde
 }
@@ -15947,6 +17780,9 @@ type Visual struct {
 	// [Using KPIs]: https://docs.aws.amazon.com/quicksight/latest/user/kpi.html
 	KPIVisual *KPIVisual
 
+	// The properties for a layer map visual
+	LayerMapVisual *LayerMapVisual
+
 	// A line chart.
 	//
 	// For more information, see [Using line charts] in the Amazon QuickSight User Guide.
@@ -15967,6 +17803,9 @@ type Visual struct {
 	//
 	// [Using pivot tables]: https://docs.aws.amazon.com/quicksight/latest/user/pivot-table.html
 	PivotTableVisual *PivotTableVisual
+
+	// The custom plugin visual type.
+	PluginVisual *PluginVisual
 
 	// A radar chart visual.
 	//
@@ -16397,6 +18236,9 @@ type WaterfallVisual struct {
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
 
+	// The alt text for the visual.
+	VisualContentAltText *string
+
 	noSmithyDocumentSerde
 }
 
@@ -16552,6 +18394,9 @@ type WordCloudVisual struct {
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
 
+	// The alt text for the visual.
+	VisualContentAltText *string
+
 	noSmithyDocumentSerde
 }
 
@@ -16581,5 +18426,6 @@ type UnknownUnionMember struct {
 }
 
 func (*UnknownUnionMember) isDataSourceParameters() {}
+func (*UnknownUnionMember) isImageSource()          {}
 func (*UnknownUnionMember) isPhysicalTable()        {}
 func (*UnknownUnionMember) isTransformOperation()   {}

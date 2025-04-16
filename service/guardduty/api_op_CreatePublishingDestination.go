@@ -11,8 +11,8 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Creates a publishing destination to export findings to. The resource to export
-// findings to must exist before you use this operation.
+// Creates a publishing destination where you can export your GuardDuty findings.
+// Before you start exporting the findings, the destination resource must exist.
 func (c *Client) CreatePublishingDestination(ctx context.Context, params *CreatePublishingDestinationInput, optFns ...func(*Options)) (*CreatePublishingDestinationOutput, error) {
 	if params == nil {
 		params = &CreatePublishingDestinationInput{}
@@ -43,6 +43,11 @@ type CreatePublishingDestinationInput struct {
 	DestinationType types.DestinationType
 
 	// The ID of the GuardDuty detector associated with the publishing destination.
+	//
+	// To find the detectorId in the current Region, see the Settings page in the
+	// GuardDuty console, or run the [ListDetectors]API.
+	//
+	// [ListDetectors]: https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html
 	//
 	// This member is required.
 	DetectorId *string
@@ -109,6 +114,9 @@ func (c *Client) addOperationCreatePublishingDestinationMiddlewares(stack *middl
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -125,6 +133,9 @@ func (c *Client) addOperationCreatePublishingDestinationMiddlewares(stack *middl
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreatePublishingDestinationMiddleware(stack, options); err != nil {
@@ -149,6 +160,18 @@ func (c *Client) addOperationCreatePublishingDestinationMiddlewares(stack *middl
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -42,12 +42,6 @@ func (c *Client) CreateAppMonitor(ctx context.Context, params *CreateAppMonitorI
 
 type CreateAppMonitorInput struct {
 
-	// The top-level internet domain name for which your application has
-	// administrative authority.
-	//
-	// This member is required.
-	Domain *string
-
 	// A name for the app monitor.
 	//
 	// This member is required.
@@ -81,6 +75,18 @@ type CreateAppMonitorInput struct {
 	//
 	// If you omit this parameter, the default is false .
 	CwLogEnabled *bool
+
+	//  A structure that contains the configuration for how an app monitor can
+	// deobfuscate stack traces.
+	DeobfuscationConfiguration *types.DeobfuscationConfiguration
+
+	// The top-level internet domain name for which your application has
+	// administrative authority.
+	Domain *string
+
+	//  List the domain names for which your application has administrative authority.
+	// The CreateAppMonitor requires either the domain or the domain list.
+	DomainList []string
 
 	// Assigns one or more tags (key-value pairs) to the app monitor.
 	//
@@ -155,6 +161,9 @@ func (c *Client) addOperationCreateAppMonitorMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -171,6 +180,9 @@ func (c *Client) addOperationCreateAppMonitorMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateAppMonitorValidationMiddleware(stack); err != nil {
@@ -192,6 +204,18 @@ func (c *Client) addOperationCreateAppMonitorMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

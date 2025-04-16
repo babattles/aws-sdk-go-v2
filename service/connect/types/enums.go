@@ -179,6 +179,26 @@ func (AttachedFileInvalidRequestExceptionReason) Values() []AttachedFileInvalidR
 	}
 }
 
+type AttachedFileServiceQuotaExceededExceptionReason string
+
+// Enum values for AttachedFileServiceQuotaExceededExceptionReason
+const (
+	AttachedFileServiceQuotaExceededExceptionReasonTotalFileSizeExceeded  AttachedFileServiceQuotaExceededExceptionReason = "TOTAL_FILE_SIZE_EXCEEDED"
+	AttachedFileServiceQuotaExceededExceptionReasonTotalFileCountExceeded AttachedFileServiceQuotaExceededExceptionReason = "TOTAL_FILE_COUNT_EXCEEDED"
+)
+
+// Values returns all known values for
+// AttachedFileServiceQuotaExceededExceptionReason. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AttachedFileServiceQuotaExceededExceptionReason) Values() []AttachedFileServiceQuotaExceededExceptionReason {
+	return []AttachedFileServiceQuotaExceededExceptionReason{
+		"TOTAL_FILE_SIZE_EXCEEDED",
+		"TOTAL_FILE_COUNT_EXCEEDED",
+	}
+}
+
 type BehaviorType string
 
 // Enum values for BehaviorType
@@ -205,6 +225,7 @@ const (
 	ChannelVoice Channel = "VOICE"
 	ChannelChat  Channel = "CHAT"
 	ChannelTask  Channel = "TASK"
+	ChannelEmail Channel = "EMAIL"
 )
 
 // Values returns all known values for Channel. Note that this can be expanded in
@@ -216,6 +237,7 @@ func (Channel) Values() []Channel {
 		"VOICE",
 		"CHAT",
 		"TASK",
+		"EMAIL",
 	}
 }
 
@@ -346,6 +368,7 @@ const (
 	ContactFlowTypeOutboundWhisper ContactFlowType = "OUTBOUND_WHISPER"
 	ContactFlowTypeAgentTransfer   ContactFlowType = "AGENT_TRANSFER"
 	ContactFlowTypeQueueTransfer   ContactFlowType = "QUEUE_TRANSFER"
+	ContactFlowTypeCampaign        ContactFlowType = "CAMPAIGN"
 )
 
 // Values returns all known values for ContactFlowType. Note that this can be
@@ -363,6 +386,7 @@ func (ContactFlowType) Values() []ContactFlowType {
 		"OUTBOUND_WHISPER",
 		"AGENT_TRANSFER",
 		"QUEUE_TRANSFER",
+		"CAMPAIGN",
 	}
 }
 
@@ -379,6 +403,9 @@ const (
 	ContactInitiationMethodDisconnect       ContactInitiationMethod = "DISCONNECT"
 	ContactInitiationMethodMonitor          ContactInitiationMethod = "MONITOR"
 	ContactInitiationMethodExternalOutbound ContactInitiationMethod = "EXTERNAL_OUTBOUND"
+	ContactInitiationMethodWebrtcApi        ContactInitiationMethod = "WEBRTC_API"
+	ContactInitiationMethodAgentReply       ContactInitiationMethod = "AGENT_REPLY"
+	ContactInitiationMethodFlow             ContactInitiationMethod = "FLOW"
 )
 
 // Values returns all known values for ContactInitiationMethod. Note that this can
@@ -396,6 +423,30 @@ func (ContactInitiationMethod) Values() []ContactInitiationMethod {
 		"DISCONNECT",
 		"MONITOR",
 		"EXTERNAL_OUTBOUND",
+		"WEBRTC_API",
+		"AGENT_REPLY",
+		"FLOW",
+	}
+}
+
+type ContactRecordingType string
+
+// Enum values for ContactRecordingType
+const (
+	ContactRecordingTypeAgent  ContactRecordingType = "AGENT"
+	ContactRecordingTypeIvr    ContactRecordingType = "IVR"
+	ContactRecordingTypeScreen ContactRecordingType = "SCREEN"
+)
+
+// Values returns all known values for ContactRecordingType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ContactRecordingType) Values() []ContactRecordingType {
+	return []ContactRecordingType{
+		"AGENT",
+		"IVR",
+		"SCREEN",
 	}
 }
 
@@ -473,6 +524,52 @@ func (CurrentMetricName) Values() []CurrentMetricName {
 	}
 }
 
+type DateComparisonType string
+
+// Enum values for DateComparisonType
+const (
+	DateComparisonTypeGreaterThan          DateComparisonType = "GREATER_THAN"
+	DateComparisonTypeLessThan             DateComparisonType = "LESS_THAN"
+	DateComparisonTypeGreaterThanOrEqualTo DateComparisonType = "GREATER_THAN_OR_EQUAL_TO"
+	DateComparisonTypeLessThanOrEqualTo    DateComparisonType = "LESS_THAN_OR_EQUAL_TO"
+	DateComparisonTypeEqualTo              DateComparisonType = "EQUAL_TO"
+)
+
+// Values returns all known values for DateComparisonType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DateComparisonType) Values() []DateComparisonType {
+	return []DateComparisonType{
+		"GREATER_THAN",
+		"LESS_THAN",
+		"GREATER_THAN_OR_EQUAL_TO",
+		"LESS_THAN_OR_EQUAL_TO",
+		"EQUAL_TO",
+	}
+}
+
+type DeviceType string
+
+// Enum values for DeviceType
+const (
+	DeviceTypeGcm         DeviceType = "GCM"
+	DeviceTypeApns        DeviceType = "APNS"
+	DeviceTypeApnsSandbox DeviceType = "APNS_SANDBOX"
+)
+
+// Values returns all known values for DeviceType. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DeviceType) Values() []DeviceType {
+	return []DeviceType{
+		"GCM",
+		"APNS",
+		"APNS_SANDBOX",
+	}
+}
+
 type DirectoryType string
 
 // Enum values for DirectoryType
@@ -491,6 +588,31 @@ func (DirectoryType) Values() []DirectoryType {
 		"SAML",
 		"CONNECT_MANAGED",
 		"EXISTING_DIRECTORY",
+	}
+}
+
+type EmailHeaderType string
+
+// Enum values for EmailHeaderType
+const (
+	EmailHeaderTypeReferences       EmailHeaderType = "REFERENCES"
+	EmailHeaderTypeMessageId        EmailHeaderType = "MESSAGE_ID"
+	EmailHeaderTypeInReplyTo        EmailHeaderType = "IN_REPLY_TO"
+	EmailHeaderTypeXSesSpamVerdict  EmailHeaderType = "X_SES_SPAM_VERDICT"
+	EmailHeaderTypeXSesVirusVerdict EmailHeaderType = "X_SES_VIRUS_VERDICT"
+)
+
+// Values returns all known values for EmailHeaderType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (EmailHeaderType) Values() []EmailHeaderType {
+	return []EmailHeaderType{
+		"REFERENCES",
+		"MESSAGE_ID",
+		"IN_REPLY_TO",
+		"X_SES_SPAM_VERDICT",
+		"X_SES_VIRUS_VERDICT",
 	}
 }
 
@@ -515,9 +637,11 @@ type EndpointType string
 
 // Enum values for EndpointType
 const (
-	EndpointTypeTelephoneNumber EndpointType = "TELEPHONE_NUMBER"
-	EndpointTypeVoip            EndpointType = "VOIP"
-	EndpointTypeContactFlow     EndpointType = "CONTACT_FLOW"
+	EndpointTypeTelephoneNumber       EndpointType = "TELEPHONE_NUMBER"
+	EndpointTypeVoip                  EndpointType = "VOIP"
+	EndpointTypeContactFlow           EndpointType = "CONTACT_FLOW"
+	EndpointTypeConnectPhonenumberArn EndpointType = "CONNECT_PHONENUMBER_ARN"
+	EndpointTypeEmailAddress          EndpointType = "EMAIL_ADDRESS"
 )
 
 // Values returns all known values for EndpointType. Note that this can be
@@ -529,6 +653,8 @@ func (EndpointType) Values() []EndpointType {
 		"TELEPHONE_NUMBER",
 		"VOIP",
 		"CONTACT_FLOW",
+		"CONNECT_PHONENUMBER_ARN",
+		"EMAIL_ADDRESS",
 	}
 }
 
@@ -748,7 +874,8 @@ type FileUseCaseType string
 
 // Enum values for FileUseCaseType
 const (
-	FileUseCaseTypeAttachment FileUseCaseType = "ATTACHMENT"
+	FileUseCaseTypeEmailMessage FileUseCaseType = "EMAIL_MESSAGE"
+	FileUseCaseTypeAttachment   FileUseCaseType = "ATTACHMENT"
 )
 
 // Values returns all known values for FileUseCaseType. Note that this can be
@@ -757,6 +884,7 @@ const (
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (FileUseCaseType) Values() []FileUseCaseType {
 	return []FileUseCaseType{
+		"EMAIL_MESSAGE",
 		"ATTACHMENT",
 	}
 }
@@ -765,7 +893,11 @@ type FlowAssociationResourceType string
 
 // Enum values for FlowAssociationResourceType
 const (
-	FlowAssociationResourceTypeSmsPhoneNumber FlowAssociationResourceType = "SMS_PHONE_NUMBER"
+	FlowAssociationResourceTypeSmsPhoneNumber               FlowAssociationResourceType = "SMS_PHONE_NUMBER"
+	FlowAssociationResourceTypeInboundEmail                 FlowAssociationResourceType = "INBOUND_EMAIL"
+	FlowAssociationResourceTypeOutboundEmail                FlowAssociationResourceType = "OUTBOUND_EMAIL"
+	FlowAssociationResourceTypeAnalyticsConnector           FlowAssociationResourceType = "ANALYTICS_CONNECTOR"
+	FlowAssociationResourceTypeWhatsappMessagingPhoneNumber FlowAssociationResourceType = "WHATSAPP_MESSAGING_PHONE_NUMBER"
 )
 
 // Values returns all known values for FlowAssociationResourceType. Note that this
@@ -775,6 +907,10 @@ const (
 func (FlowAssociationResourceType) Values() []FlowAssociationResourceType {
 	return []FlowAssociationResourceType{
 		"SMS_PHONE_NUMBER",
+		"INBOUND_EMAIL",
+		"OUTBOUND_EMAIL",
+		"ANALYTICS_CONNECTOR",
+		"WHATSAPP_MESSAGING_PHONE_NUMBER",
 	}
 }
 
@@ -914,6 +1050,40 @@ func (HoursOfOperationDays) Values() []HoursOfOperationDays {
 	}
 }
 
+type InboundMessageSourceType string
+
+// Enum values for InboundMessageSourceType
+const (
+	InboundMessageSourceTypeRaw InboundMessageSourceType = "RAW"
+)
+
+// Values returns all known values for InboundMessageSourceType. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (InboundMessageSourceType) Values() []InboundMessageSourceType {
+	return []InboundMessageSourceType{
+		"RAW",
+	}
+}
+
+type InitiateAs string
+
+// Enum values for InitiateAs
+const (
+	InitiateAsConnectedToUser InitiateAs = "CONNECTED_TO_USER"
+)
+
+// Values returns all known values for InitiateAs. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (InitiateAs) Values() []InitiateAs {
+	return []InitiateAs{
+		"CONNECTED_TO_USER",
+	}
+}
+
 type InstanceAttributeType string
 
 // Enum values for InstanceAttributeType
@@ -929,6 +1099,7 @@ const (
 	InstanceAttributeTypeHighVolumeOutbound        InstanceAttributeType = "HIGH_VOLUME_OUTBOUND"
 	InstanceAttributeTypeEnhancedContactMonitoring InstanceAttributeType = "ENHANCED_CONTACT_MONITORING"
 	InstanceAttributeTypeEnhancedChatMonitoring    InstanceAttributeType = "ENHANCED_CHAT_MONITORING"
+	InstanceAttributeTypeMultiPartyChatConference  InstanceAttributeType = "MULTI_PARTY_CHAT_CONFERENCE"
 )
 
 // Values returns all known values for InstanceAttributeType. Note that this can
@@ -948,6 +1119,34 @@ func (InstanceAttributeType) Values() []InstanceAttributeType {
 		"HIGH_VOLUME_OUTBOUND",
 		"ENHANCED_CONTACT_MONITORING",
 		"ENHANCED_CHAT_MONITORING",
+		"MULTI_PARTY_CHAT_CONFERENCE",
+	}
+}
+
+type InstanceReplicationStatus string
+
+// Enum values for InstanceReplicationStatus
+const (
+	InstanceReplicationStatusInstanceReplicationComplete       InstanceReplicationStatus = "INSTANCE_REPLICATION_COMPLETE"
+	InstanceReplicationStatusInstanceReplicationInProgress     InstanceReplicationStatus = "INSTANCE_REPLICATION_IN_PROGRESS"
+	InstanceReplicationStatusInstanceReplicationFailed         InstanceReplicationStatus = "INSTANCE_REPLICATION_FAILED"
+	InstanceReplicationStatusInstanceReplicaDeleting           InstanceReplicationStatus = "INSTANCE_REPLICA_DELETING"
+	InstanceReplicationStatusInstanceReplicationDeletionFailed InstanceReplicationStatus = "INSTANCE_REPLICATION_DELETION_FAILED"
+	InstanceReplicationStatusResourceReplicationNotStarted     InstanceReplicationStatus = "RESOURCE_REPLICATION_NOT_STARTED"
+)
+
+// Values returns all known values for InstanceReplicationStatus. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (InstanceReplicationStatus) Values() []InstanceReplicationStatus {
+	return []InstanceReplicationStatus{
+		"INSTANCE_REPLICATION_COMPLETE",
+		"INSTANCE_REPLICATION_IN_PROGRESS",
+		"INSTANCE_REPLICATION_FAILED",
+		"INSTANCE_REPLICA_DELETING",
+		"INSTANCE_REPLICATION_DELETION_FAILED",
+		"RESOURCE_REPLICATION_NOT_STARTED",
 	}
 }
 
@@ -988,6 +1187,7 @@ const (
 	InstanceStorageResourceTypeScreenRecordings                     InstanceStorageResourceType = "SCREEN_RECORDINGS"
 	InstanceStorageResourceTypeRealTimeContactAnalysisChatSegments  InstanceStorageResourceType = "REAL_TIME_CONTACT_ANALYSIS_CHAT_SEGMENTS"
 	InstanceStorageResourceTypeRealTimeContactAnalysisVoiceSegments InstanceStorageResourceType = "REAL_TIME_CONTACT_ANALYSIS_VOICE_SEGMENTS"
+	InstanceStorageResourceTypeEmailMessages                        InstanceStorageResourceType = "EMAIL_MESSAGES"
 )
 
 // Values returns all known values for InstanceStorageResourceType. Note that this
@@ -1008,6 +1208,7 @@ func (InstanceStorageResourceType) Values() []InstanceStorageResourceType {
 		"SCREEN_RECORDINGS",
 		"REAL_TIME_CONTACT_ANALYSIS_CHAT_SEGMENTS",
 		"REAL_TIME_CONTACT_ANALYSIS_VOICE_SEGMENTS",
+		"EMAIL_MESSAGES",
 	}
 }
 
@@ -1015,15 +1216,20 @@ type IntegrationType string
 
 // Enum values for IntegrationType
 const (
-	IntegrationTypeEvent                IntegrationType = "EVENT"
-	IntegrationTypeVoiceId              IntegrationType = "VOICE_ID"
-	IntegrationTypePinpointApp          IntegrationType = "PINPOINT_APP"
-	IntegrationTypeWisdomAssistant      IntegrationType = "WISDOM_ASSISTANT"
-	IntegrationTypeWisdomKnowledgeBase  IntegrationType = "WISDOM_KNOWLEDGE_BASE"
-	IntegrationTypeWisdomQuickResponses IntegrationType = "WISDOM_QUICK_RESPONSES"
-	IntegrationTypeCasesDomain          IntegrationType = "CASES_DOMAIN"
-	IntegrationTypeApplication          IntegrationType = "APPLICATION"
-	IntegrationTypeFileScanner          IntegrationType = "FILE_SCANNER"
+	IntegrationTypeEvent                 IntegrationType = "EVENT"
+	IntegrationTypeVoiceId               IntegrationType = "VOICE_ID"
+	IntegrationTypePinpointApp           IntegrationType = "PINPOINT_APP"
+	IntegrationTypeWisdomAssistant       IntegrationType = "WISDOM_ASSISTANT"
+	IntegrationTypeWisdomKnowledgeBase   IntegrationType = "WISDOM_KNOWLEDGE_BASE"
+	IntegrationTypeWisdomQuickResponses  IntegrationType = "WISDOM_QUICK_RESPONSES"
+	IntegrationTypeQMessageTemplates     IntegrationType = "Q_MESSAGE_TEMPLATES"
+	IntegrationTypeCasesDomain           IntegrationType = "CASES_DOMAIN"
+	IntegrationTypeApplication           IntegrationType = "APPLICATION"
+	IntegrationTypeFileScanner           IntegrationType = "FILE_SCANNER"
+	IntegrationTypeSesIdentity           IntegrationType = "SES_IDENTITY"
+	IntegrationTypeAnalyticsConnector    IntegrationType = "ANALYTICS_CONNECTOR"
+	IntegrationTypeCallTransferConnector IntegrationType = "CALL_TRANSFER_CONNECTOR"
+	IntegrationTypeCognitoUserPool       IntegrationType = "COGNITO_USER_POOL"
 )
 
 // Values returns all known values for IntegrationType. Note that this can be
@@ -1038,9 +1244,14 @@ func (IntegrationType) Values() []IntegrationType {
 		"WISDOM_ASSISTANT",
 		"WISDOM_KNOWLEDGE_BASE",
 		"WISDOM_QUICK_RESPONSES",
+		"Q_MESSAGE_TEMPLATES",
 		"CASES_DOMAIN",
 		"APPLICATION",
 		"FILE_SCANNER",
+		"SES_IDENTITY",
+		"ANALYTICS_CONNECTOR",
+		"CALL_TRANSFER_CONNECTOR",
+		"COGNITO_USER_POOL",
 	}
 }
 
@@ -1071,6 +1282,23 @@ func (IntervalPeriod) Values() []IntervalPeriod {
 	}
 }
 
+type IvrRecordingTrack string
+
+// Enum values for IvrRecordingTrack
+const (
+	IvrRecordingTrackAll IvrRecordingTrack = "ALL"
+)
+
+// Values returns all known values for IvrRecordingTrack. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (IvrRecordingTrack) Values() []IvrRecordingTrack {
+	return []IvrRecordingTrack{
+		"ALL",
+	}
+}
+
 type LexVersion string
 
 // Enum values for LexVersion
@@ -1094,7 +1322,11 @@ type ListFlowAssociationResourceType string
 
 // Enum values for ListFlowAssociationResourceType
 const (
-	ListFlowAssociationResourceTypeVoicePhoneNumber ListFlowAssociationResourceType = "VOICE_PHONE_NUMBER"
+	ListFlowAssociationResourceTypeWhatsappMessagingPhoneNumber ListFlowAssociationResourceType = "WHATSAPP_MESSAGING_PHONE_NUMBER"
+	ListFlowAssociationResourceTypeVoicePhoneNumber             ListFlowAssociationResourceType = "VOICE_PHONE_NUMBER"
+	ListFlowAssociationResourceTypeInboundEmail                 ListFlowAssociationResourceType = "INBOUND_EMAIL"
+	ListFlowAssociationResourceTypeOutboundEmail                ListFlowAssociationResourceType = "OUTBOUND_EMAIL"
+	ListFlowAssociationResourceTypeAnalyticsConnector           ListFlowAssociationResourceType = "ANALYTICS_CONNECTOR"
 )
 
 // Values returns all known values for ListFlowAssociationResourceType. Note that
@@ -1104,7 +1336,11 @@ const (
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (ListFlowAssociationResourceType) Values() []ListFlowAssociationResourceType {
 	return []ListFlowAssociationResourceType{
+		"WHATSAPP_MESSAGING_PHONE_NUMBER",
 		"VOICE_PHONE_NUMBER",
+		"INBOUND_EMAIL",
+		"OUTBOUND_EMAIL",
+		"ANALYTICS_CONNECTOR",
 	}
 }
 
@@ -1238,6 +1474,54 @@ func (NumericQuestionPropertyAutomationLabel) Values() []NumericQuestionProperty
 		"CONTACT_DURATION",
 		"AGENT_INTERACTION_DURATION",
 		"CUSTOMER_HOLD_TIME",
+	}
+}
+
+type OutboundMessageSourceType string
+
+// Enum values for OutboundMessageSourceType
+const (
+	OutboundMessageSourceTypeTemplate OutboundMessageSourceType = "TEMPLATE"
+	OutboundMessageSourceTypeRaw      OutboundMessageSourceType = "RAW"
+)
+
+// Values returns all known values for OutboundMessageSourceType. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (OutboundMessageSourceType) Values() []OutboundMessageSourceType {
+	return []OutboundMessageSourceType{
+		"TEMPLATE",
+		"RAW",
+	}
+}
+
+type OverrideDays string
+
+// Enum values for OverrideDays
+const (
+	OverrideDaysSunday    OverrideDays = "SUNDAY"
+	OverrideDaysMonday    OverrideDays = "MONDAY"
+	OverrideDaysTuesday   OverrideDays = "TUESDAY"
+	OverrideDaysWednesday OverrideDays = "WEDNESDAY"
+	OverrideDaysThursday  OverrideDays = "THURSDAY"
+	OverrideDaysFriday    OverrideDays = "FRIDAY"
+	OverrideDaysSaturday  OverrideDays = "SATURDAY"
+)
+
+// Values returns all known values for OverrideDays. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (OverrideDays) Values() []OverrideDays {
+	return []OverrideDays{
+		"SUNDAY",
+		"MONDAY",
+		"TUESDAY",
+		"WEDNESDAY",
+		"THURSDAY",
+		"FRIDAY",
+		"SATURDAY",
 	}
 }
 
@@ -2109,8 +2393,12 @@ type ReferenceStatus string
 
 // Enum values for ReferenceStatus
 const (
-	ReferenceStatusApproved ReferenceStatus = "APPROVED"
-	ReferenceStatusRejected ReferenceStatus = "REJECTED"
+	ReferenceStatusAvailable  ReferenceStatus = "AVAILABLE"
+	ReferenceStatusDeleted    ReferenceStatus = "DELETED"
+	ReferenceStatusApproved   ReferenceStatus = "APPROVED"
+	ReferenceStatusRejected   ReferenceStatus = "REJECTED"
+	ReferenceStatusProcessing ReferenceStatus = "PROCESSING"
+	ReferenceStatusFailed     ReferenceStatus = "FAILED"
 )
 
 // Values returns all known values for ReferenceStatus. Note that this can be
@@ -2119,8 +2407,12 @@ const (
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (ReferenceStatus) Values() []ReferenceStatus {
 	return []ReferenceStatus{
+		"AVAILABLE",
+		"DELETED",
 		"APPROVED",
 		"REJECTED",
+		"PROCESSING",
+		"FAILED",
 	}
 }
 
@@ -2128,12 +2420,14 @@ type ReferenceType string
 
 // Enum values for ReferenceType
 const (
-	ReferenceTypeUrl        ReferenceType = "URL"
-	ReferenceTypeAttachment ReferenceType = "ATTACHMENT"
-	ReferenceTypeNumber     ReferenceType = "NUMBER"
-	ReferenceTypeString     ReferenceType = "STRING"
-	ReferenceTypeDate       ReferenceType = "DATE"
-	ReferenceTypeEmail      ReferenceType = "EMAIL"
+	ReferenceTypeUrl             ReferenceType = "URL"
+	ReferenceTypeAttachment      ReferenceType = "ATTACHMENT"
+	ReferenceTypeContactAnalysis ReferenceType = "CONTACT_ANALYSIS"
+	ReferenceTypeNumber          ReferenceType = "NUMBER"
+	ReferenceTypeString          ReferenceType = "STRING"
+	ReferenceTypeDate            ReferenceType = "DATE"
+	ReferenceTypeEmail           ReferenceType = "EMAIL"
+	ReferenceTypeEmailMessage    ReferenceType = "EMAIL_MESSAGE"
 )
 
 // Values returns all known values for ReferenceType. Note that this can be
@@ -2144,10 +2438,12 @@ func (ReferenceType) Values() []ReferenceType {
 	return []ReferenceType{
 		"URL",
 		"ATTACHMENT",
+		"CONTACT_ANALYSIS",
 		"NUMBER",
 		"STRING",
 		"DATE",
 		"EMAIL",
+		"EMAIL_MESSAGE",
 	}
 }
 
@@ -2240,6 +2536,23 @@ func (RulePublishStatus) Values() []RulePublishStatus {
 	return []RulePublishStatus{
 		"DRAFT",
 		"PUBLISHED",
+	}
+}
+
+type ScreenShareCapability string
+
+// Enum values for ScreenShareCapability
+const (
+	ScreenShareCapabilitySend ScreenShareCapability = "SEND"
+)
+
+// Values returns all known values for ScreenShareCapability. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ScreenShareCapability) Values() []ScreenShareCapability {
+	return []ScreenShareCapability{
+		"SEND",
 	}
 }
 
@@ -2475,18 +2788,20 @@ type TaskTemplateFieldType string
 
 // Enum values for TaskTemplateFieldType
 const (
-	TaskTemplateFieldTypeName          TaskTemplateFieldType = "NAME"
-	TaskTemplateFieldTypeDescription   TaskTemplateFieldType = "DESCRIPTION"
-	TaskTemplateFieldTypeScheduledTime TaskTemplateFieldType = "SCHEDULED_TIME"
-	TaskTemplateFieldTypeQuickConnect  TaskTemplateFieldType = "QUICK_CONNECT"
-	TaskTemplateFieldTypeUrl           TaskTemplateFieldType = "URL"
-	TaskTemplateFieldTypeNumber        TaskTemplateFieldType = "NUMBER"
-	TaskTemplateFieldTypeText          TaskTemplateFieldType = "TEXT"
-	TaskTemplateFieldTypeTextArea      TaskTemplateFieldType = "TEXT_AREA"
-	TaskTemplateFieldTypeDateTime      TaskTemplateFieldType = "DATE_TIME"
-	TaskTemplateFieldTypeBoolean       TaskTemplateFieldType = "BOOLEAN"
-	TaskTemplateFieldTypeSingleSelect  TaskTemplateFieldType = "SINGLE_SELECT"
-	TaskTemplateFieldTypeEmail         TaskTemplateFieldType = "EMAIL"
+	TaskTemplateFieldTypeName           TaskTemplateFieldType = "NAME"
+	TaskTemplateFieldTypeDescription    TaskTemplateFieldType = "DESCRIPTION"
+	TaskTemplateFieldTypeScheduledTime  TaskTemplateFieldType = "SCHEDULED_TIME"
+	TaskTemplateFieldTypeQuickConnect   TaskTemplateFieldType = "QUICK_CONNECT"
+	TaskTemplateFieldTypeUrl            TaskTemplateFieldType = "URL"
+	TaskTemplateFieldTypeNumber         TaskTemplateFieldType = "NUMBER"
+	TaskTemplateFieldTypeText           TaskTemplateFieldType = "TEXT"
+	TaskTemplateFieldTypeTextArea       TaskTemplateFieldType = "TEXT_AREA"
+	TaskTemplateFieldTypeDateTime       TaskTemplateFieldType = "DATE_TIME"
+	TaskTemplateFieldTypeBoolean        TaskTemplateFieldType = "BOOLEAN"
+	TaskTemplateFieldTypeSingleSelect   TaskTemplateFieldType = "SINGLE_SELECT"
+	TaskTemplateFieldTypeEmail          TaskTemplateFieldType = "EMAIL"
+	TaskTemplateFieldTypeSelfAssign     TaskTemplateFieldType = "SELF_ASSIGN"
+	TaskTemplateFieldTypeExpiryDuration TaskTemplateFieldType = "EXPIRY_DURATION"
 )
 
 // Values returns all known values for TaskTemplateFieldType. Note that this can
@@ -2507,6 +2822,8 @@ func (TaskTemplateFieldType) Values() []TaskTemplateFieldType {
 		"BOOLEAN",
 		"SINGLE_SELECT",
 		"EMAIL",
+		"SELF_ASSIGN",
+		"EXPIRY_DURATION",
 	}
 }
 
@@ -2718,6 +3035,16 @@ const (
 	VocabularyLanguageCodeZhCn VocabularyLanguageCode = "zh-CN"
 	VocabularyLanguageCodeEnNz VocabularyLanguageCode = "en-NZ"
 	VocabularyLanguageCodeEnZa VocabularyLanguageCode = "en-ZA"
+	VocabularyLanguageCodeCaEs VocabularyLanguageCode = "ca-ES"
+	VocabularyLanguageCodeDaDk VocabularyLanguageCode = "da-DK"
+	VocabularyLanguageCodeFiFi VocabularyLanguageCode = "fi-FI"
+	VocabularyLanguageCodeIdId VocabularyLanguageCode = "id-ID"
+	VocabularyLanguageCodeMsMy VocabularyLanguageCode = "ms-MY"
+	VocabularyLanguageCodeNlNl VocabularyLanguageCode = "nl-NL"
+	VocabularyLanguageCodeNoNo VocabularyLanguageCode = "no-NO"
+	VocabularyLanguageCodePlPl VocabularyLanguageCode = "pl-PL"
+	VocabularyLanguageCodeSvSe VocabularyLanguageCode = "sv-SE"
+	VocabularyLanguageCodeTlPh VocabularyLanguageCode = "tl-PH"
 )
 
 // Values returns all known values for VocabularyLanguageCode. Note that this can
@@ -2749,6 +3076,16 @@ func (VocabularyLanguageCode) Values() []VocabularyLanguageCode {
 		"zh-CN",
 		"en-NZ",
 		"en-ZA",
+		"ca-ES",
+		"da-DK",
+		"fi-FI",
+		"id-ID",
+		"ms-MY",
+		"nl-NL",
+		"no-NO",
+		"pl-PL",
+		"sv-SE",
+		"tl-PH",
 	}
 }
 

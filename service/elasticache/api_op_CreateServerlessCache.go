@@ -46,7 +46,8 @@ type CreateServerlessCacheInput struct {
 
 	// The daily time that snapshots will be created from the new serverless cache. By
 	// default this number is populated with 0, i.e. no snapshots will be created on an
-	// automatic daily basis. Available for Redis OSS and Serverless Memcached only.
+	// automatic daily basis. Available for Valkey, Redis OSS and Serverless Memcached
+	// only.
 	DailySnapshotTime *string
 
 	// User-provided description for the serverless cache. The default is NULL, i.e.
@@ -69,13 +70,13 @@ type CreateServerlessCacheInput struct {
 	SecurityGroupIds []string
 
 	// The ARN(s) of the snapshot that the new serverless cache will be created from.
-	// Available for Redis OSS and Serverless Memcached only.
+	// Available for Valkey, Redis OSS and Serverless Memcached only.
 	SnapshotArnsToRestore []string
 
 	// The number of snapshots that will be retained for the serverless cache that is
 	// being created. As new snapshots beyond this limit are added, the oldest
-	// snapshots will be deleted on a rolling basis. Available for Redis OSS and
-	// Serverless Memcached only.
+	// snapshots will be deleted on a rolling basis. Available for Valkey, Redis OSS
+	// and Serverless Memcached only.
 	SnapshotRetentionLimit *int32
 
 	// A list of the identifiers of the subnets where the VPC endpoint for the
@@ -88,7 +89,7 @@ type CreateServerlessCacheInput struct {
 	Tags []types.Tag
 
 	// The identifier of the UserGroup to be associated with the serverless cache.
-	// Available for Redis OSS only. Default is NULL.
+	// Available for Valkey and Redis OSS only. Default is NULL.
 	UserGroupId *string
 
 	noSmithyDocumentSerde
@@ -148,6 +149,9 @@ func (c *Client) addOperationCreateServerlessCacheMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -164,6 +168,9 @@ func (c *Client) addOperationCreateServerlessCacheMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateServerlessCacheValidationMiddleware(stack); err != nil {
@@ -185,6 +192,18 @@ func (c *Client) addOperationCreateServerlessCacheMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

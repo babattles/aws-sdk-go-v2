@@ -780,10 +780,11 @@ type S3ChecksumAlgorithm string
 
 // Enum values for S3ChecksumAlgorithm
 const (
-	S3ChecksumAlgorithmCrc32  S3ChecksumAlgorithm = "CRC32"
-	S3ChecksumAlgorithmCrc32c S3ChecksumAlgorithm = "CRC32C"
-	S3ChecksumAlgorithmSha1   S3ChecksumAlgorithm = "SHA1"
-	S3ChecksumAlgorithmSha256 S3ChecksumAlgorithm = "SHA256"
+	S3ChecksumAlgorithmCrc32     S3ChecksumAlgorithm = "CRC32"
+	S3ChecksumAlgorithmCrc32c    S3ChecksumAlgorithm = "CRC32C"
+	S3ChecksumAlgorithmSha1      S3ChecksumAlgorithm = "SHA1"
+	S3ChecksumAlgorithmSha256    S3ChecksumAlgorithm = "SHA256"
+	S3ChecksumAlgorithmCrc64nvme S3ChecksumAlgorithm = "CRC64NVME"
 )
 
 // Values returns all known values for S3ChecksumAlgorithm. Note that this can be
@@ -796,6 +797,7 @@ func (S3ChecksumAlgorithm) Values() []S3ChecksumAlgorithm {
 		"CRC32C",
 		"SHA1",
 		"SHA256",
+		"CRC64NVME",
 	}
 }
 
@@ -1002,6 +1004,37 @@ func (S3StorageClass) Values() []S3StorageClass {
 		"INTELLIGENT_TIERING",
 		"DEEP_ARCHIVE",
 		"GLACIER_IR",
+	}
+}
+
+type ScopePermission string
+
+// Enum values for ScopePermission
+const (
+	ScopePermissionGetObject                  ScopePermission = "GetObject"
+	ScopePermissionGetObjectAttributes        ScopePermission = "GetObjectAttributes"
+	ScopePermissionListMultipartUploadParts   ScopePermission = "ListMultipartUploadParts"
+	ScopePermissionListBucket                 ScopePermission = "ListBucket"
+	ScopePermissionListBucketMultipartUploads ScopePermission = "ListBucketMultipartUploads"
+	ScopePermissionPutObject                  ScopePermission = "PutObject"
+	ScopePermissionDeleteObject               ScopePermission = "DeleteObject"
+	ScopePermissionAbortMultipartUpload       ScopePermission = "AbortMultipartUpload"
+)
+
+// Values returns all known values for ScopePermission. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ScopePermission) Values() []ScopePermission {
+	return []ScopePermission{
+		"GetObject",
+		"GetObjectAttributes",
+		"ListMultipartUploadParts",
+		"ListBucket",
+		"ListBucketMultipartUploads",
+		"PutObject",
+		"DeleteObject",
+		"AbortMultipartUpload",
 	}
 }
 

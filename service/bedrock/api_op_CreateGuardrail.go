@@ -37,9 +37,9 @@ import (
 // returned to the user if a user input or model response is in violation of the
 // policies defined in the guardrail.
 //
-// For more information, see [Guardrails for Amazon Bedrock] in the Amazon Bedrock User Guide.
+// For more information, see [Amazon Bedrock Guardrails] in the Amazon Bedrock User Guide.
 //
-// [Guardrails for Amazon Bedrock]: https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html
+// [Amazon Bedrock Guardrails]: https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html
 func (c *Client) CreateGuardrail(ctx context.Context, params *CreateGuardrailInput, optFns ...func(*Options)) (*CreateGuardrailOutput, error) {
 	if params == nil {
 		params = &CreateGuardrailInput{}
@@ -178,6 +178,9 @@ func (c *Client) addOperationCreateGuardrailMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -194,6 +197,9 @@ func (c *Client) addOperationCreateGuardrailMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateGuardrailMiddleware(stack, options); err != nil {
@@ -218,6 +224,18 @@ func (c *Client) addOperationCreateGuardrailMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

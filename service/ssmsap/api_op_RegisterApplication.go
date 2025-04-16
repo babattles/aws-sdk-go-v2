@@ -54,6 +54,12 @@ type RegisterApplicationInput struct {
 	// This member is required.
 	Instances []string
 
+	// This is an optional parameter for component details to which the SAP ABAP
+	// application is attached, such as Web Dispatcher.
+	//
+	// This is an array of ApplicationComponent objects. You may input 0 to 5 items.
+	ComponentsInfo []types.ComponentInfo
+
 	// The credentials of the SAP application.
 	Credentials []types.ApplicationCredential
 
@@ -129,6 +135,9 @@ func (c *Client) addOperationRegisterApplicationMiddlewares(stack *middleware.St
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -145,6 +154,9 @@ func (c *Client) addOperationRegisterApplicationMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpRegisterApplicationValidationMiddleware(stack); err != nil {
@@ -166,6 +178,18 @@ func (c *Client) addOperationRegisterApplicationMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

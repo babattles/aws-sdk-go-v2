@@ -74,8 +74,7 @@ type CreateTrafficDistributionGroupOutput struct {
 	Arn *string
 
 	// The identifier of the traffic distribution group. This can be the ID or the ARN
-	// if the API is being called in the Region where the traffic distribution group
-	// was created. The ARN must be provided if the call is from the replicated Region.
+	// of the traffic distribution group.
 	Id *string
 
 	// Metadata pertaining to the operation's result.
@@ -127,6 +126,9 @@ func (c *Client) addOperationCreateTrafficDistributionGroupMiddlewares(stack *mi
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -143,6 +145,9 @@ func (c *Client) addOperationCreateTrafficDistributionGroupMiddlewares(stack *mi
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateTrafficDistributionGroupMiddleware(stack, options); err != nil {
@@ -167,6 +172,18 @@ func (c *Client) addOperationCreateTrafficDistributionGroupMiddlewares(stack *mi
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -34,8 +34,8 @@ func (c *Client) CreateLocationHdfs(ctx context.Context, params *CreateLocationH
 
 type CreateLocationHdfsInput struct {
 
-	// The Amazon Resource Names (ARNs) of the agents that are used to connect to the
-	// HDFS cluster.
+	// The Amazon Resource Names (ARNs) of the DataSync agents that can connect to
+	// your HDFS cluster.
 	//
 	// This member is required.
 	AgentArns []string
@@ -114,7 +114,7 @@ type CreateLocationHdfsInput struct {
 
 type CreateLocationHdfsOutput struct {
 
-	// The ARN of the source HDFS cluster location that's created.
+	// The ARN of the source HDFS cluster location that you create.
 	LocationArn *string
 
 	// Metadata pertaining to the operation's result.
@@ -166,6 +166,9 @@ func (c *Client) addOperationCreateLocationHdfsMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -182,6 +185,9 @@ func (c *Client) addOperationCreateLocationHdfsMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateLocationHdfsValidationMiddleware(stack); err != nil {
@@ -203,6 +209,18 @@ func (c *Client) addOperationCreateLocationHdfsMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

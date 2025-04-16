@@ -36,37 +36,38 @@ type UpdateNotebookInstanceInput struct {
 	// This member is required.
 	NotebookInstanceName *string
 
-	// A list of the Elastic Inference (EI) instance types to associate with this
-	// notebook instance. Currently only one EI instance type can be associated with a
-	// notebook instance. For more information, see [Using Elastic Inference in Amazon SageMaker].
+	// This parameter is no longer supported. Elastic Inference (EI) is no longer
+	// available.
 	//
-	// [Using Elastic Inference in Amazon SageMaker]: https://docs.aws.amazon.com/sagemaker/latest/dg/ei.html
+	// This parameter was used to specify a list of the EI instance types to associate
+	// with this notebook instance.
 	AcceleratorTypes []types.NotebookInstanceAcceleratorType
 
 	// An array of up to three Git repositories to associate with the notebook
 	// instance. These can be either the names of Git repositories stored as resources
 	// in your account, or the URL of Git repositories in [Amazon Web Services CodeCommit]or in any other Git
 	// repository. These repositories are cloned at the same level as the default
-	// repository of your notebook instance. For more information, see [Associating Git Repositories with SageMaker Notebook Instances].
+	// repository of your notebook instance. For more information, see [Associating Git Repositories with SageMaker AI Notebook Instances].
 	//
 	// [Amazon Web Services CodeCommit]: https://docs.aws.amazon.com/codecommit/latest/userguide/welcome.html
-	// [Associating Git Repositories with SageMaker Notebook Instances]: https://docs.aws.amazon.com/sagemaker/latest/dg/nbi-git-repo.html
+	// [Associating Git Repositories with SageMaker AI Notebook Instances]: https://docs.aws.amazon.com/sagemaker/latest/dg/nbi-git-repo.html
 	AdditionalCodeRepositories []string
 
 	// The Git repository to associate with the notebook instance as its default code
 	// repository. This can be either the name of a Git repository stored as a resource
 	// in your account, or the URL of a Git repository in [Amazon Web Services CodeCommit]or in any other Git
 	// repository. When you open a notebook instance, it opens in the directory that
-	// contains this repository. For more information, see [Associating Git Repositories with SageMaker Notebook Instances].
+	// contains this repository. For more information, see [Associating Git Repositories with SageMaker AI Notebook Instances].
 	//
 	// [Amazon Web Services CodeCommit]: https://docs.aws.amazon.com/codecommit/latest/userguide/welcome.html
-	// [Associating Git Repositories with SageMaker Notebook Instances]: https://docs.aws.amazon.com/sagemaker/latest/dg/nbi-git-repo.html
+	// [Associating Git Repositories with SageMaker AI Notebook Instances]: https://docs.aws.amazon.com/sagemaker/latest/dg/nbi-git-repo.html
 	DefaultCodeRepository *string
 
-	// A list of the Elastic Inference (EI) instance types to remove from this
-	// notebook instance. This operation is idempotent. If you specify an accelerator
-	// type that is not associated with the notebook instance when you call this
-	// method, it does not throw an error.
+	// This parameter is no longer supported. Elastic Inference (EI) is no longer
+	// available.
+	//
+	// This parameter was used to specify a list of the EI instance types to remove
+	// from this notebook instance.
 	DisassociateAcceleratorTypes *bool
 
 	// A list of names or URLs of the default Git repositories to remove from this
@@ -99,13 +100,13 @@ type UpdateNotebookInstanceInput struct {
 	// [Step 2.1: (Optional) Customize a Notebook Instance]: https://docs.aws.amazon.com/sagemaker/latest/dg/notebook-lifecycle-config.html
 	LifecycleConfigName *string
 
-	// The Amazon Resource Name (ARN) of the IAM role that SageMaker can assume to
-	// access the notebook instance. For more information, see [SageMaker Roles].
+	// The Amazon Resource Name (ARN) of the IAM role that SageMaker AI can assume to
+	// access the notebook instance. For more information, see [SageMaker AI Roles].
 	//
-	// To be able to pass this role to SageMaker, the caller of this API must have the
-	// iam:PassRole permission.
+	// To be able to pass this role to SageMaker AI, the caller of this API must have
+	// the iam:PassRole permission.
 	//
-	// [SageMaker Roles]: https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-roles.html
+	// [SageMaker AI Roles]: https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-roles.html
 	RoleArn *string
 
 	// Whether root access is enabled or disabled for users of the notebook instance.
@@ -116,11 +117,11 @@ type UpdateNotebookInstanceInput struct {
 	RootAccess types.RootAccess
 
 	// The size, in GB, of the ML storage volume to attach to the notebook instance.
-	// The default value is 5 GB. ML storage volumes are encrypted, so SageMaker can't
-	// determine the amount of available free space on the volume. Because of this, you
-	// can increase the volume size when you update a notebook instance, but you can't
-	// decrease the volume size. If you want to decrease the size of the ML storage
-	// volume in use, create a new notebook instance with the desired size.
+	// The default value is 5 GB. ML storage volumes are encrypted, so SageMaker AI
+	// can't determine the amount of available free space on the volume. Because of
+	// this, you can increase the volume size when you update a notebook instance, but
+	// you can't decrease the volume size. If you want to decrease the size of the ML
+	// storage volume in use, create a new notebook instance with the desired size.
 	VolumeSizeInGB *int32
 
 	noSmithyDocumentSerde
@@ -176,6 +177,9 @@ func (c *Client) addOperationUpdateNotebookInstanceMiddlewares(stack *middleware
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -192,6 +196,9 @@ func (c *Client) addOperationUpdateNotebookInstanceMiddlewares(stack *middleware
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateNotebookInstanceValidationMiddleware(stack); err != nil {
@@ -213,6 +220,18 @@ func (c *Client) addOperationUpdateNotebookInstanceMiddlewares(stack *middleware
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

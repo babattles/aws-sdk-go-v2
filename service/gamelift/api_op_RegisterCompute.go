@@ -11,17 +11,11 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-//	This operation has been expanded to use with the Amazon GameLift containers
+// Registers a compute resource in an Amazon GameLift Anywhere fleet.
 //
-// feature, which is currently in public preview.
-//
-// Registers a compute resource in an Amazon GameLift fleet. Register computes
-// with an Amazon GameLift Anywhere fleet or a container fleet.
-//
-// For an Anywhere fleet or a container fleet that's running the Amazon GameLift
-// Agent, the Agent handles all compute registry tasks for you. For an Anywhere
-// fleet that doesn't use the Agent, call this operation to register fleet
-// computes.
+// For an Anywhere fleet that's running the Amazon GameLift Agent, the Agent
+// handles all compute registry tasks for you. For an Anywhere fleet that doesn't
+// use the Agent, call this operation to register fleet computes.
 //
 // To register a compute, give the compute a name (must be unique within the
 // fleet) and specify the compute resource's DNS name or IP address. Provide a
@@ -87,11 +81,13 @@ type RegisterComputeInput struct {
 	DnsName *string
 
 	// The IP address of the compute resource. Amazon GameLift requires either a DNS
-	// name or IP address.
+	// name or IP address. When registering an Anywhere fleet, an IP address is
+	// required.
 	IpAddress *string
 
 	// The name of a custom location to associate with the compute resource being
-	// registered.
+	// registered. This parameter is required when registering a compute for an
+	// Anywhere fleet.
 	Location *string
 
 	noSmithyDocumentSerde
@@ -151,6 +147,9 @@ func (c *Client) addOperationRegisterComputeMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -167,6 +166,9 @@ func (c *Client) addOperationRegisterComputeMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpRegisterComputeValidationMiddleware(stack); err != nil {
@@ -188,6 +190,18 @@ func (c *Client) addOperationRegisterComputeMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

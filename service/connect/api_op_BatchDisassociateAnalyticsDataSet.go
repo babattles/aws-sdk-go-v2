@@ -11,8 +11,6 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// This API is in preview release for Amazon Connect and is subject to change.
-//
 // Removes a list of analytics datasets associated with a given Amazon Connect
 // instance. You can disassociate multiple datasets in a single call.
 func (c *Client) BatchDisassociateAnalyticsDataSet(ctx context.Context, params *BatchDisassociateAnalyticsDataSetInput, optFns ...func(*Options)) (*BatchDisassociateAnalyticsDataSetOutput, error) {
@@ -111,6 +109,9 @@ func (c *Client) addOperationBatchDisassociateAnalyticsDataSetMiddlewares(stack 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -127,6 +128,9 @@ func (c *Client) addOperationBatchDisassociateAnalyticsDataSetMiddlewares(stack 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpBatchDisassociateAnalyticsDataSetValidationMiddleware(stack); err != nil {
@@ -148,6 +152,18 @@ func (c *Client) addOperationBatchDisassociateAnalyticsDataSetMiddlewares(stack 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

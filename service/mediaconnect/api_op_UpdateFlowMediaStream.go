@@ -27,28 +27,27 @@ func (c *Client) UpdateFlowMediaStream(ctx context.Context, params *UpdateFlowMe
 	return out, nil
 }
 
-// The fields that you want to update in the media stream.
 type UpdateFlowMediaStreamInput struct {
 
-	// The Amazon Resource Name (ARN) of the flow.
+	//  The Amazon Resource Name (ARN) of the flow that is associated with the media
+	// stream that you updated.
 	//
 	// This member is required.
 	FlowArn *string
 
-	// The name of the media stream that you want to update.
+	//  The media stream that you updated.
 	//
 	// This member is required.
 	MediaStreamName *string
 
-	// The attributes that you want to assign to the media stream.
+	//  The attributes that you want to assign to the media stream.
 	Attributes *types.MediaStreamAttributesRequest
 
-	// The sample rate (in Hz) for the stream. If the media stream type is video or
-	// ancillary data, set this value to 90000. If the media stream type is audio, set
-	// this value to either 48000 or 96000.
+	// The sample rate for the stream. This value in measured in kHz.
 	ClockRate *int32
 
-	// Description
+	// A description that can help you quickly identify what your media stream is used
+	// for.
 	Description *string
 
 	// The type of media stream.
@@ -117,6 +116,9 @@ func (c *Client) addOperationUpdateFlowMediaStreamMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -133,6 +135,9 @@ func (c *Client) addOperationUpdateFlowMediaStreamMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateFlowMediaStreamValidationMiddleware(stack); err != nil {
@@ -154,6 +159,18 @@ func (c *Client) addOperationUpdateFlowMediaStreamMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

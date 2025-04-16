@@ -38,12 +38,13 @@ func (c *Client) UngroupResources(ctx context.Context, params *UngroupResourcesI
 
 type UngroupResourcesInput struct {
 
-	// The name or the ARN of the resource group from which to remove the resources.
+	// The name or the Amazon resource name (ARN) of the resource group from which to
+	// remove the resources.
 	//
 	// This member is required.
 	Group *string
 
-	// The ARNs of the resources to be removed from the group.
+	// The Amazon resource names (ARNs) of the resources to be removed from the group.
 	//
 	// This member is required.
 	ResourceArns []string
@@ -116,6 +117,9 @@ func (c *Client) addOperationUngroupResourcesMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -132,6 +136,9 @@ func (c *Client) addOperationUngroupResourcesMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUngroupResourcesValidationMiddleware(stack); err != nil {
@@ -153,6 +160,18 @@ func (c *Client) addOperationUngroupResourcesMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

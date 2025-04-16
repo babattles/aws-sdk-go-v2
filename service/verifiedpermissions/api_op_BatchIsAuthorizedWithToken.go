@@ -96,7 +96,7 @@ type BatchIsAuthorizedWithTokenInput struct {
 type BatchIsAuthorizedWithTokenOutput struct {
 
 	// A series of Allow or Deny decisions for each request, and the policies that
-	// produced them.
+	// produced them. These results are returned in the order they were requested.
 	//
 	// This member is required.
 	Results []types.BatchIsAuthorizedWithTokenOutputItem
@@ -153,6 +153,9 @@ func (c *Client) addOperationBatchIsAuthorizedWithTokenMiddlewares(stack *middle
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -169,6 +172,9 @@ func (c *Client) addOperationBatchIsAuthorizedWithTokenMiddlewares(stack *middle
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpBatchIsAuthorizedWithTokenValidationMiddleware(stack); err != nil {
@@ -190,6 +196,18 @@ func (c *Client) addOperationBatchIsAuthorizedWithTokenMiddlewares(stack *middle
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -34,6 +34,13 @@ type UpdateQueueInput struct {
 	// This member is required.
 	Name *string
 
+	// Specify the maximum number of jobs your queue can process concurrently. For
+	// on-demand queues, the value you enter is constrained by your service quotas for
+	// Maximum concurrent jobs, per on-demand queue and Maximum concurrent jobs, per
+	// account. For reserved queues, update your reservation plan instead in order to
+	// increase your yearly commitment.
+	ConcurrentJobs *int32
+
 	// The new description for the queue, if you are changing it.
 	Description *string
 
@@ -110,6 +117,9 @@ func (c *Client) addOperationUpdateQueueMiddlewares(stack *middleware.Stack, opt
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -126,6 +136,9 @@ func (c *Client) addOperationUpdateQueueMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateQueueValidationMiddleware(stack); err != nil {
@@ -147,6 +160,18 @@ func (c *Client) addOperationUpdateQueueMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -16,10 +16,6 @@ import (
 //
 // Before you begin, make sure that you understand how DataSync [accesses NFS file servers].
 //
-// If you're copying data to or from an Snowcone device, you can also use
-// CreateLocationNfs to create your transfer location. For more information, see [Configuring transfers with Snowcone].
-//
-// [Configuring transfers with Snowcone]: https://docs.aws.amazon.com/datasync/latest/userguide/nfs-on-snowcone.html
 // [accesses NFS file servers]: https://docs.aws.amazon.com/datasync/latest/userguide/create-nfs-location.html#accessing-nfs
 func (c *Client) CreateLocationNfs(ctx context.Context, params *CreateLocationNfsInput, optFns ...func(*Options)) (*CreateLocationNfsOutput, error) {
 	if params == nil {
@@ -39,18 +35,18 @@ func (c *Client) CreateLocationNfs(ctx context.Context, params *CreateLocationNf
 // CreateLocationNfsRequest
 type CreateLocationNfsInput struct {
 
-	// Specifies the Amazon Resource Name (ARN) of the DataSync agent that want to
-	// connect to your NFS file server.
+	// Specifies the Amazon Resource Name (ARN) of the DataSync agent that can connect
+	// to your NFS file server.
 	//
-	// You can specify more than one agent. For more information, see [Using multiple agents for transfers].
+	// You can specify more than one agent. For more information, see [Using multiple DataSync agents].
 	//
-	// [Using multiple agents for transfers]: https://docs.aws.amazon.com/datasync/latest/userguide/multiple-agents.html
+	// [Using multiple DataSync agents]: https://docs.aws.amazon.com/datasync/latest/userguide/do-i-need-datasync-agent.html#multiple-agents
 	//
 	// This member is required.
 	OnPremConfig *types.OnPremConfig
 
-	// Specifies the Domain Name System (DNS) name or IP version 4 address of the NFS
-	// file server that your DataSync agent connects to.
+	// Specifies the DNS name or IP version 4 address of the NFS file server that your
+	// DataSync agent connects to.
 	//
 	// This member is required.
 	ServerHostname *string
@@ -132,6 +128,9 @@ func (c *Client) addOperationCreateLocationNfsMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -148,6 +147,9 @@ func (c *Client) addOperationCreateLocationNfsMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateLocationNfsValidationMiddleware(stack); err != nil {
@@ -169,6 +171,18 @@ func (c *Client) addOperationCreateLocationNfsMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -13,8 +13,8 @@ import (
 
 // Returns the event types that meet the specified filter criteria. You can use
 // this API operation to find information about the Health event, such as the
-// category, Amazon Web Service, and event code. The metadata for each event
-// appears in the [EventType]object.
+// category, Amazon Web Services service, and event code. The metadata for each
+// event appears in the [EventType]object.
 //
 // If you don't specify a filter criteria, the API operation returns all event
 // types, in no particular order.
@@ -128,6 +128,9 @@ func (c *Client) addOperationDescribeEventTypesMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -146,6 +149,9 @@ func (c *Client) addOperationDescribeEventTypesMiddlewares(stack *middleware.Sta
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeEventTypes(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -162,6 +168,18 @@ func (c *Client) addOperationDescribeEventTypesMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

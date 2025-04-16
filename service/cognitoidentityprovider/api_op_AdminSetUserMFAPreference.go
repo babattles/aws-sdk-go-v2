@@ -11,9 +11,9 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// The user's multi-factor authentication (MFA) preference, including which MFA
-// options are activated, and if any are preferred. Only one factor can be set as
-// preferred. The preferred MFA factor will be used to authenticate a user if
+// Sets the user's multi-factor authentication (MFA) preference, including which
+// MFA options are activated, and if any are preferred. Only one factor can be set
+// as preferred. The preferred MFA factor will be used to authenticate a user if
 // multiple factors are activated. If multiple options are activated and no
 // preference is set, a challenge to choose an MFA option will be returned during
 // sign-in.
@@ -48,12 +48,12 @@ func (c *Client) AdminSetUserMFAPreference(ctx context.Context, params *AdminSet
 
 type AdminSetUserMFAPreferenceInput struct {
 
-	// The user pool ID.
+	// The ID of the user pool where you want to set a user's MFA preferences.
 	//
 	// This member is required.
 	UserPoolId *string
 
-	// The username of the user that you want to query or modify. The value of this
+	// The name of the user that you want to query or modify. The value of this
 	// parameter is typically your user's username, but it can be any of their alias
 	// attributes. If username isn't an alias attribute in your user pool, this value
 	// must be the sub of a local user or the username of a user from a third-party
@@ -62,10 +62,21 @@ type AdminSetUserMFAPreferenceInput struct {
 	// This member is required.
 	Username *string
 
-	// The SMS text message MFA settings.
+	// User preferences for email message MFA. Activates or deactivates email MFA and
+	// sets it as the preferred MFA method when multiple methods are available. To
+	// activate this setting, your user pool must be in the [Essentials tier]or higher.
+	//
+	// [Essentials tier]: https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-essentials.html
+	EmailMfaSettings *types.EmailMfaSettingsType
+
+	// User preferences for SMS message MFA. Activates or deactivates SMS MFA and sets
+	// it as the preferred MFA method when multiple methods are available.
 	SMSMfaSettings *types.SMSMfaSettingsType
 
-	// The time-based one-time password software token MFA settings.
+	// User preferences for time-based one-time password (TOTP) MFA. Activates or
+	// deactivates TOTP MFA and sets it as the preferred MFA method when multiple
+	// methods are available. This operation can set TOTP as a user's preferred MFA
+	// method before they register a TOTP authenticator.
 	SoftwareTokenMfaSettings *types.SoftwareTokenMfaSettingsType
 
 	noSmithyDocumentSerde
@@ -121,6 +132,9 @@ func (c *Client) addOperationAdminSetUserMFAPreferenceMiddlewares(stack *middlew
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -137,6 +151,9 @@ func (c *Client) addOperationAdminSetUserMFAPreferenceMiddlewares(stack *middlew
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpAdminSetUserMFAPreferenceValidationMiddleware(stack); err != nil {
@@ -158,6 +175,18 @@ func (c *Client) addOperationAdminSetUserMFAPreferenceMiddlewares(stack *middlew
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

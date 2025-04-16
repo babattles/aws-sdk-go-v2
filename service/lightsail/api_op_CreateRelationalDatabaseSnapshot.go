@@ -18,7 +18,7 @@ import (
 // The create relational database snapshot operation supports tag-based access
 // control via request tags. For more information, see the [Amazon Lightsail Developer Guide].
 //
-// [Amazon Lightsail Developer Guide]: https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-controlling-access-using-tags
+// [Amazon Lightsail Developer Guide]: https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags
 func (c *Client) CreateRelationalDatabaseSnapshot(ctx context.Context, params *CreateRelationalDatabaseSnapshotInput, optFns ...func(*Options)) (*CreateRelationalDatabaseSnapshotOutput, error) {
 	if params == nil {
 		params = &CreateRelationalDatabaseSnapshotInput{}
@@ -116,6 +116,9 @@ func (c *Client) addOperationCreateRelationalDatabaseSnapshotMiddlewares(stack *
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -132,6 +135,9 @@ func (c *Client) addOperationCreateRelationalDatabaseSnapshotMiddlewares(stack *
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateRelationalDatabaseSnapshotValidationMiddleware(stack); err != nil {
@@ -153,6 +159,18 @@ func (c *Client) addOperationCreateRelationalDatabaseSnapshotMiddlewares(stack *
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

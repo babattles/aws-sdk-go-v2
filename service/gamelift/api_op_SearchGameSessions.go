@@ -51,7 +51,7 @@ import (
 //
 //   - gameSessionProperties -- A set of key-value pairs that can store custom
 //     data in a game session. For example: {"Key": "difficulty", "Value": "novice"}
-//     . The filter expression must specify the GameProperty-- a Key and a string Value to search
+//     . The filter expression must specify the [https://docs.aws.amazon.com/gamelift/latest/apireference/API_GameProperty]-- a Key and a string Value to search
 //     for the game sessions.
 //
 // For example, to search for the above key-value pair, specify the following
@@ -83,6 +83,7 @@ import (
 // [All APIs by task]
 //
 // [Search game sessions by game property]: https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-client-api.html#game-properties-search
+// [https://docs.aws.amazon.com/gamelift/latest/apireference/API_GameProperty]: https://docs.aws.amazon.com/gamelift/latest/apireference/API_GameProperty
 // [DescribeGameSessions]: https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeGameSessions.html
 // [All APIs by task]: https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets
 func (c *Client) SearchGameSessions(ctx context.Context, params *SearchGameSessionsInput, optFns ...func(*Options)) (*SearchGameSessionsOutput, error) {
@@ -247,6 +248,9 @@ func (c *Client) addOperationSearchGameSessionsMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -265,6 +269,9 @@ func (c *Client) addOperationSearchGameSessionsMiddlewares(stack *middleware.Sta
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opSearchGameSessions(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -281,6 +288,18 @@ func (c *Client) addOperationSearchGameSessionsMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

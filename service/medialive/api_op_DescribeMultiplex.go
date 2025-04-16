@@ -12,7 +12,6 @@ import (
 	smithytime "github.com/aws/smithy-go/time"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	smithywaiter "github.com/aws/smithy-go/waiter"
-	jmespath "github.com/jmespath/go-jmespath"
 	"time"
 )
 
@@ -125,6 +124,9 @@ func (c *Client) addOperationDescribeMultiplexMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -141,6 +143,9 @@ func (c *Client) addOperationDescribeMultiplexMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeMultiplexValidationMiddleware(stack); err != nil {
@@ -162,6 +167,18 @@ func (c *Client) addOperationDescribeMultiplexMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -327,35 +344,21 @@ func (w *MultiplexCreatedWaiter) WaitForOutput(ctx context.Context, params *Desc
 func multiplexCreatedStateRetryable(ctx context.Context, input *DescribeMultiplexInput, output *DescribeMultiplexOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("State", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.State
 		expectedValue := "IDLE"
-		value, ok := pathValue.(types.MultiplexState)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.MultiplexState value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, nil
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("State", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.State
 		expectedValue := "CREATING"
-		value, ok := pathValue.(types.MultiplexState)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.MultiplexState value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return true, nil
 		}
 	}
@@ -368,22 +371,18 @@ func multiplexCreatedStateRetryable(ctx context.Context, input *DescribeMultiple
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("State", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.State
 		expectedValue := "CREATE_FAILED"
-		value, ok := pathValue.(types.MultiplexState)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.MultiplexState value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 
@@ -547,35 +546,21 @@ func (w *MultiplexDeletedWaiter) WaitForOutput(ctx context.Context, params *Desc
 func multiplexDeletedStateRetryable(ctx context.Context, input *DescribeMultiplexInput, output *DescribeMultiplexOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("State", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.State
 		expectedValue := "DELETED"
-		value, ok := pathValue.(types.MultiplexState)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.MultiplexState value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, nil
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("State", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.State
 		expectedValue := "DELETING"
-		value, ok := pathValue.(types.MultiplexState)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.MultiplexState value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return true, nil
 		}
 	}
@@ -587,6 +572,9 @@ func multiplexDeletedStateRetryable(ctx context.Context, input *DescribeMultiple
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 
@@ -750,35 +738,21 @@ func (w *MultiplexRunningWaiter) WaitForOutput(ctx context.Context, params *Desc
 func multiplexRunningStateRetryable(ctx context.Context, input *DescribeMultiplexInput, output *DescribeMultiplexOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("State", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.State
 		expectedValue := "RUNNING"
-		value, ok := pathValue.(types.MultiplexState)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.MultiplexState value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, nil
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("State", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.State
 		expectedValue := "STARTING"
-		value, ok := pathValue.(types.MultiplexState)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.MultiplexState value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return true, nil
 		}
 	}
@@ -790,6 +764,9 @@ func multiplexRunningStateRetryable(ctx context.Context, input *DescribeMultiple
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 
@@ -953,35 +930,21 @@ func (w *MultiplexStoppedWaiter) WaitForOutput(ctx context.Context, params *Desc
 func multiplexStoppedStateRetryable(ctx context.Context, input *DescribeMultiplexInput, output *DescribeMultiplexOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("State", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.State
 		expectedValue := "IDLE"
-		value, ok := pathValue.(types.MultiplexState)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.MultiplexState value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, nil
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("State", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.State
 		expectedValue := "STOPPING"
-		value, ok := pathValue.(types.MultiplexState)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.MultiplexState value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return true, nil
 		}
 	}
@@ -993,6 +956,9 @@ func multiplexStoppedStateRetryable(ctx context.Context, input *DescribeMultiple
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 

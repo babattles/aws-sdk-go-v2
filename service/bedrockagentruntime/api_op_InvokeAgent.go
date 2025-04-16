@@ -12,9 +12,6 @@ import (
 	"sync"
 )
 
-// The CLI doesn't support streaming operations in Amazon Bedrock, including
-// InvokeAgent .
-//
 // Sends a prompt for the agent to process and respond to. Note the following
 // fields for the request:
 //
@@ -32,7 +29,10 @@ import (
 //     prompt or, if you configured an action group to return control, results from
 //     invocation of the action group.
 //
-// The response is returned in the bytes field of the chunk object.
+// The response contains both chunk and trace attributes.
+//
+// The final response is returned in the bytes field of the chunk object. The
+// InvokeAgent returns one chunk for the entire interaction.
 //
 //   - The attribution object contains citations for parts of the response.
 //
@@ -79,6 +79,9 @@ type InvokeAgentInput struct {
 	// This member is required.
 	SessionId *string
 
+	// Model performance settings for the request.
+	BedrockModelConfigurations *types.BedrockModelConfigurations
+
 	// Specifies whether to turn on the trace or not to track the agent's reasoning
 	// process. For more information, see [Trace enablement].
 	//
@@ -105,6 +108,15 @@ type InvokeAgentInput struct {
 	//
 	// [Control session context]: https://docs.aws.amazon.com/bedrock/latest/userguide/agents-session-state.html
 	SessionState *types.SessionState
+
+	// The ARN of the resource making the request.
+	SourceArn *string
+
+	//  Specifies the configurations for streaming.
+	//
+	// To use agent streaming, you need permissions to perform the
+	// bedrock:InvokeModelWithResponseStream action.
+	StreamingConfigurations *types.StreamingConfigurations
 
 	noSmithyDocumentSerde
 }
@@ -184,6 +196,9 @@ func (c *Client) addOperationInvokeAgentMiddlewares(stack *middleware.Stack, opt
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -194,6 +209,9 @@ func (c *Client) addOperationInvokeAgentMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpInvokeAgentValidationMiddleware(stack); err != nil {
@@ -215,6 +233,18 @@ func (c *Client) addOperationInvokeAgentMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

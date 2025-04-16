@@ -62,6 +62,15 @@ type GetKxScalingGroupOutput struct {
 	//
 	// It can have one of the following values:
 	//
+	//   - kx.sg.large – The host type with a configuration of 16 GiB memory and 2
+	//   vCPUs.
+	//
+	//   - kx.sg.xlarge – The host type with a configuration of 32 GiB memory and 4
+	//   vCPUs.
+	//
+	//   - kx.sg.2xlarge – The host type with a configuration of 64 GiB memory and 8
+	//   vCPUs.
+	//
 	//   - kx.sg.4xlarge – The host type with a configuration of 108 GiB memory and 16
 	//   vCPUs.
 	//
@@ -163,6 +172,9 @@ func (c *Client) addOperationGetKxScalingGroupMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -184,6 +196,9 @@ func (c *Client) addOperationGetKxScalingGroupMiddlewares(stack *middleware.Stac
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = addOpGetKxScalingGroupValidationMiddleware(stack); err != nil {
 		return err
 	}
@@ -203,6 +218,18 @@ func (c *Client) addOperationGetKxScalingGroupMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -49,14 +49,14 @@ type DecreaseNodeGroupsInGlobalReplicationGroupInput struct {
 	// If the value of NodeGroupCount is less than the current number of node groups
 	// (shards), then either NodeGroupsToRemove or NodeGroupsToRetain is required.
 	// GlobalNodeGroupsToRemove is a list of NodeGroupIds to remove from the cluster.
-	// ElastiCache (Redis OSS) will attempt to remove all node groups listed by
+	// ElastiCache will attempt to remove all node groups listed by
 	// GlobalNodeGroupsToRemove from the cluster.
 	GlobalNodeGroupsToRemove []string
 
 	// If the value of NodeGroupCount is less than the current number of node groups
 	// (shards), then either NodeGroupsToRemove or NodeGroupsToRetain is required.
 	// GlobalNodeGroupsToRetain is a list of NodeGroupIds to retain from the cluster.
-	// ElastiCache (Redis OSS) will attempt to retain all node groups listed by
+	// ElastiCache will attempt to retain all node groups listed by
 	// GlobalNodeGroupsToRetain from the cluster.
 	GlobalNodeGroupsToRetain []string
 
@@ -123,6 +123,9 @@ func (c *Client) addOperationDecreaseNodeGroupsInGlobalReplicationGroupMiddlewar
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -139,6 +142,9 @@ func (c *Client) addOperationDecreaseNodeGroupsInGlobalReplicationGroupMiddlewar
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDecreaseNodeGroupsInGlobalReplicationGroupValidationMiddleware(stack); err != nil {
@@ -160,6 +166,18 @@ func (c *Client) addOperationDecreaseNodeGroupsInGlobalReplicationGroupMiddlewar
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

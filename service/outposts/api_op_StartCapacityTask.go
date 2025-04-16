@@ -13,7 +13,7 @@ import (
 )
 
 // Starts the specified capacity task. You can have one active capacity task for
-// an order.
+// each order and each Outpost.
 func (c *Client) StartCapacityTask(ctx context.Context, params *StartCapacityTaskInput, optFns ...func(*Options)) (*StartCapacityTaskOutput, error) {
 	if params == nil {
 		params = &StartCapacityTaskInput{}
@@ -36,26 +36,45 @@ type StartCapacityTaskInput struct {
 	// This member is required.
 	InstancePools []types.InstanceTypeCapacity
 
-	// The ID of the Amazon Web Services Outposts order associated with the specified
-	// capacity task.
-	//
-	// This member is required.
-	OrderId *string
-
 	// The ID or ARN of the Outposts associated with the specified capacity task.
 	//
 	// This member is required.
 	OutpostIdentifier *string
+
+	// The ID of the Outpost asset. An Outpost asset can be a single server within an
+	// Outposts rack or an Outposts server configuration.
+	AssetId *string
 
 	// You can request a dry run to determine if the instance type and instance size
 	// changes is above or below available instance capacity. Requesting a dry run does
 	// not make any changes to your plan.
 	DryRun bool
 
+	// List of user-specified running instances that must not be stopped in order to
+	// free up the capacity needed to run the capacity task.
+	InstancesToExclude *types.InstancesToExclude
+
+	// The ID of the Amazon Web Services Outposts order associated with the specified
+	// capacity task.
+	OrderId *string
+
+	// Specify one of the following options in case an instance is blocking the
+	// capacity task from running.
+	//
+	//   - WAIT_FOR_EVACUATION - Checks every 10 minutes over 48 hours to determine if
+	//   instances have stopped and capacity is available to complete the task.
+	//
+	//   - FAIL_TASK - The capacity task fails.
+	TaskActionOnBlockingInstances types.TaskActionOnBlockingInstances
+
 	noSmithyDocumentSerde
 }
 
 type StartCapacityTaskOutput struct {
+
+	// The ID of the asset. An Outpost asset can be a single server within an Outposts
+	// rack or an Outposts server configuration.
+	AssetId *string
 
 	// ID of the capacity task that you want to start.
 	CapacityTaskId *string
@@ -76,6 +95,10 @@ type StartCapacityTaskOutput struct {
 	// Reason that the specified capacity task failed.
 	Failed *types.CapacityTaskFailure
 
+	// User-specified instances that must not be stopped in order to free up the
+	// capacity needed to run the capacity task.
+	InstancesToExclude *types.InstancesToExclude
+
 	// Date that the specified capacity task was last modified.
 	LastModifiedDate *time.Time
 
@@ -88,6 +111,15 @@ type StartCapacityTaskOutput struct {
 
 	// List of the instance pools requested in the specified capacity task.
 	RequestedInstancePools []types.InstanceTypeCapacity
+
+	// User-specified option in case an instance is blocking the capacity task from
+	// running.
+	//
+	//   - WAIT_FOR_EVACUATION - Checks every 10 minutes over 48 hours to determine if
+	//   instances have stopped and capacity is available to complete the task.
+	//
+	//   - FAIL_TASK - The capacity task fails.
+	TaskActionOnBlockingInstances types.TaskActionOnBlockingInstances
 
 	// Metadata pertaining to the operation's result.
 	ResultMetadata middleware.Metadata
@@ -138,6 +170,9 @@ func (c *Client) addOperationStartCapacityTaskMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -154,6 +189,9 @@ func (c *Client) addOperationStartCapacityTaskMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpStartCapacityTaskValidationMiddleware(stack); err != nil {
@@ -175,6 +213,18 @@ func (c *Client) addOperationStartCapacityTaskMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

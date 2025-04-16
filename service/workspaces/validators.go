@@ -710,6 +710,26 @@ func (m *validateOpDescribeWorkspaceAssociations) HandleInitialize(ctx context.C
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpDescribeWorkspaceDirectories struct {
+}
+
+func (*validateOpDescribeWorkspaceDirectories) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDescribeWorkspaceDirectories) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DescribeWorkspaceDirectoriesInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDescribeWorkspaceDirectoriesInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpDescribeWorkspaceImagePermissions struct {
 }
 
@@ -965,6 +985,26 @@ func (m *validateOpModifyClientProperties) HandleInitialize(ctx context.Context,
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpModifyClientPropertiesInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpModifyEndpointEncryptionMode struct {
+}
+
+func (*validateOpModifyEndpointEncryptionMode) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpModifyEndpointEncryptionMode) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ModifyEndpointEncryptionModeInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpModifyEndpointEncryptionModeInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -1610,6 +1650,10 @@ func addOpDescribeWorkspaceAssociationsValidationMiddleware(stack *middleware.St
 	return stack.Initialize.Add(&validateOpDescribeWorkspaceAssociations{}, middleware.After)
 }
 
+func addOpDescribeWorkspaceDirectoriesValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDescribeWorkspaceDirectories{}, middleware.After)
+}
+
 func addOpDescribeWorkspaceImagePermissionsValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDescribeWorkspaceImagePermissions{}, middleware.After)
 }
@@ -1660,6 +1704,10 @@ func addOpModifyCertificateBasedAuthPropertiesValidationMiddleware(stack *middle
 
 func addOpModifyClientPropertiesValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpModifyClientProperties{}, middleware.After)
+}
+
+func addOpModifyEndpointEncryptionModeValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpModifyEndpointEncryptionMode{}, middleware.After)
 }
 
 func addOpModifySamlPropertiesValidationMiddleware(stack *middleware.Stack) error {
@@ -1828,6 +1876,41 @@ func validateConnectionAliasPermission(v *types.ConnectionAliasPermission) error
 	}
 }
 
+func validateDescribeWorkspaceDirectoriesFilter(v *types.DescribeWorkspaceDirectoriesFilter) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DescribeWorkspaceDirectoriesFilter"}
+	if len(v.Name) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Name"))
+	}
+	if v.Values == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Values"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateDescribeWorkspaceDirectoriesFilterList(v []types.DescribeWorkspaceDirectoriesFilter) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DescribeWorkspaceDirectoriesFilterList"}
+	for i := range v {
+		if err := validateDescribeWorkspaceDirectoriesFilter(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateDescribeWorkspacesPoolsFilter(v *types.DescribeWorkspacesPoolsFilter) error {
 	if v == nil {
 		return nil
@@ -1858,6 +1941,36 @@ func validateDescribeWorkspacesPoolsFilters(v []types.DescribeWorkspacesPoolsFil
 		if err := validateDescribeWorkspacesPoolsFilter(&v[i]); err != nil {
 			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
 		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateGlobalAcceleratorForDirectory(v *types.GlobalAcceleratorForDirectory) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GlobalAcceleratorForDirectory"}
+	if len(v.Mode) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Mode"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateGlobalAcceleratorForWorkSpace(v *types.GlobalAcceleratorForWorkSpace) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GlobalAcceleratorForWorkSpace"}
+	if len(v.Mode) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Mode"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -2035,6 +2148,11 @@ func validateStreamingProperties(v *types.StreamingProperties) error {
 			invalidParams.AddNested("StorageConnectors", err.(smithy.InvalidParamsError))
 		}
 	}
+	if v.GlobalAccelerator != nil {
+		if err := validateGlobalAcceleratorForDirectory(v.GlobalAccelerator); err != nil {
+			invalidParams.AddNested("GlobalAccelerator", err.(smithy.InvalidParamsError))
+		}
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -2156,6 +2274,23 @@ func validateUserStorage(v *types.UserStorage) error {
 	}
 }
 
+func validateWorkspaceProperties(v *types.WorkspaceProperties) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "WorkspaceProperties"}
+	if v.GlobalAccelerator != nil {
+		if err := validateGlobalAcceleratorForWorkSpace(v.GlobalAccelerator); err != nil {
+			invalidParams.AddNested("GlobalAccelerator", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateWorkspaceRequest(v *types.WorkspaceRequest) error {
 	if v == nil {
 		return nil
@@ -2169,6 +2304,11 @@ func validateWorkspaceRequest(v *types.WorkspaceRequest) error {
 	}
 	if v.BundleId == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("BundleId"))
+	}
+	if v.WorkspaceProperties != nil {
+		if err := validateWorkspaceProperties(v.WorkspaceProperties); err != nil {
+			invalidParams.AddNested("WorkspaceProperties", err.(smithy.InvalidParamsError))
+		}
 	}
 	if v.Tags != nil {
 		if err := validateTagList(v.Tags); err != nil {
@@ -2876,6 +3016,23 @@ func validateOpDescribeWorkspaceAssociationsInput(v *DescribeWorkspaceAssociatio
 	}
 }
 
+func validateOpDescribeWorkspaceDirectoriesInput(v *DescribeWorkspaceDirectoriesInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DescribeWorkspaceDirectoriesInput"}
+	if v.Filters != nil {
+		if err := validateDescribeWorkspaceDirectoriesFilterList(v.Filters); err != nil {
+			invalidParams.AddNested("Filters", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpDescribeWorkspaceImagePermissionsInput(v *DescribeWorkspaceImagePermissionsInput) error {
 	if v == nil {
 		return nil
@@ -3099,6 +3256,24 @@ func validateOpModifyClientPropertiesInput(v *ModifyClientPropertiesInput) error
 	}
 }
 
+func validateOpModifyEndpointEncryptionModeInput(v *ModifyEndpointEncryptionModeInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ModifyEndpointEncryptionModeInput"}
+	if v.DirectoryId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DirectoryId"))
+	}
+	if len(v.EndpointEncryptionMode) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("EndpointEncryptionMode"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpModifySamlPropertiesInput(v *ModifySamlPropertiesInput) error {
 	if v == nil {
 		return nil
@@ -3195,6 +3370,11 @@ func validateOpModifyWorkspacePropertiesInput(v *ModifyWorkspacePropertiesInput)
 	invalidParams := smithy.InvalidParamsError{Context: "ModifyWorkspacePropertiesInput"}
 	if v.WorkspaceId == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("WorkspaceId"))
+	}
+	if v.WorkspaceProperties != nil {
+		if err := validateWorkspaceProperties(v.WorkspaceProperties); err != nil {
+			invalidParams.AddNested("WorkspaceProperties", err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams

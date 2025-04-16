@@ -14,7 +14,7 @@ import (
 // Deletes the specified capacity provider.
 //
 // The FARGATE and FARGATE_SPOT capacity providers are reserved and can't be
-// deleted. You can disassociate them from a cluster using either [PutCapacityProviderProviders]or by deleting
+// deleted. You can disassociate them from a cluster using either [PutClusterCapacityProviders]or by deleting
 // the cluster.
 //
 // Prior to a capacity provider being deleted, the capacity provider must be
@@ -24,10 +24,10 @@ import (
 // that any tasks using the Amazon EC2 instance capacity provided by the capacity
 // provider are transitioned to use the capacity from the remaining capacity
 // providers. Only capacity providers that aren't associated with a cluster can be
-// deleted. To remove a capacity provider from a cluster, you can either use [PutCapacityProviderProviders]or
+// deleted. To remove a capacity provider from a cluster, you can either use [PutClusterCapacityProviders]or
 // delete the cluster.
 //
-// [PutCapacityProviderProviders]: https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_PutCapacityProviderProviders.html
+// [PutClusterCapacityProviders]: https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_PutClusterCapacityProviders.html
 // [UpdateService]: https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_UpdateService.html
 func (c *Client) DeleteCapacityProvider(ctx context.Context, params *DeleteCapacityProviderInput, optFns ...func(*Options)) (*DeleteCapacityProviderOutput, error) {
 	if params == nil {
@@ -109,6 +109,9 @@ func (c *Client) addOperationDeleteCapacityProviderMiddlewares(stack *middleware
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -125,6 +128,9 @@ func (c *Client) addOperationDeleteCapacityProviderMiddlewares(stack *middleware
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteCapacityProviderValidationMiddleware(stack); err != nil {
@@ -146,6 +152,18 @@ func (c *Client) addOperationDeleteCapacityProviderMiddlewares(stack *middleware
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

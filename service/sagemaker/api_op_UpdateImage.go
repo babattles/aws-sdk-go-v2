@@ -10,7 +10,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Updates the properties of a SageMaker image. To change the image's tags, use
+// Updates the properties of a SageMaker AI image. To change the image's tags, use
 // the [AddTags]and [DeleteTags] APIs.
 //
 // [AddTags]: https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AddTags.html
@@ -47,8 +47,8 @@ type UpdateImageInput struct {
 	// The new display name for the image.
 	DisplayName *string
 
-	// The new ARN for the IAM role that enables Amazon SageMaker to perform tasks on
-	// your behalf.
+	// The new ARN for the IAM role that enables Amazon SageMaker AI to perform tasks
+	// on your behalf.
 	RoleArn *string
 
 	noSmithyDocumentSerde
@@ -108,6 +108,9 @@ func (c *Client) addOperationUpdateImageMiddlewares(stack *middleware.Stack, opt
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -124,6 +127,9 @@ func (c *Client) addOperationUpdateImageMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateImageValidationMiddleware(stack); err != nil {
@@ -145,6 +151,18 @@ func (c *Client) addOperationUpdateImageMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

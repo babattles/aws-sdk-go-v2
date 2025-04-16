@@ -41,6 +41,11 @@ import (
 // conditions that initiate the possible Config evaluation results, see [Concepts | Config Rules]in the
 // Config Developer Guide.
 //
+// # Exceptions cannot be placed on service-linked remediation actions
+//
+// You cannot place an exception on service-linked remediation actions, such as
+// remediation actions put by an organizational conformance pack.
+//
 // # Auto remediation can be initiated even for compliant resources
 //
 // If you enable auto remediation for a specific Config rule using the [PutRemediationConfigurations] API or the
@@ -149,6 +154,9 @@ func (c *Client) addOperationPutRemediationExceptionsMiddlewares(stack *middlewa
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -165,6 +173,9 @@ func (c *Client) addOperationPutRemediationExceptionsMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpPutRemediationExceptionsValidationMiddleware(stack); err != nil {
@@ -186,6 +197,18 @@ func (c *Client) addOperationPutRemediationExceptionsMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

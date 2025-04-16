@@ -32,8 +32,9 @@ import (
 //
 //	- You can close only 10% of member accounts, between 10 and 1000, within a
 //	rolling 30 day period. This quota is not bound by a calendar month, but starts
-//	when you close an account. After you reach this limit, you can close additional
-//	accounts. For more information, see [Closing a member account in your organization]and [Quotas for Organizations]in the Organizations User Guide.
+//	when you close an account. After you reach this limit, you can't close
+//	additional accounts. For more information, see [Closing a member account in your organization]and [Quotas for Organizations]in the Organizations User
+//	Guide.
 //
 //	- To reinstate a closed account, contact Amazon Web Services Support within
 //	the 90-day grace period while the account is in SUSPENDED status.
@@ -125,6 +126,9 @@ func (c *Client) addOperationCloseAccountMiddlewares(stack *middleware.Stack, op
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -141,6 +145,9 @@ func (c *Client) addOperationCloseAccountMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCloseAccountValidationMiddleware(stack); err != nil {
@@ -162,6 +169,18 @@ func (c *Client) addOperationCloseAccountMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

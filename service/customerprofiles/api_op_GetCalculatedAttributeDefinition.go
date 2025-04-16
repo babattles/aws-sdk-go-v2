@@ -66,6 +66,9 @@ type GetCalculatedAttributeDefinitionOutput struct {
 	// The display name of the calculated attribute.
 	DisplayName *string
 
+	// The filter assigned to this calculated attribute definition.
+	Filter *types.Filter
+
 	// The timestamp of when the calculated attribute definition was most recently
 	// edited.
 	LastUpdatedAt *time.Time
@@ -125,6 +128,9 @@ func (c *Client) addOperationGetCalculatedAttributeDefinitionMiddlewares(stack *
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -141,6 +147,9 @@ func (c *Client) addOperationGetCalculatedAttributeDefinitionMiddlewares(stack *
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetCalculatedAttributeDefinitionValidationMiddleware(stack); err != nil {
@@ -162,6 +171,18 @@ func (c *Client) addOperationGetCalculatedAttributeDefinitionMiddlewares(stack *
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

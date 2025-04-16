@@ -175,6 +175,10 @@ type DescribeStateMachineOutput struct {
 	// Selects whether X-Ray tracing is enabled.
 	TracingConfiguration *types.TracingConfiguration
 
+	// A map of state name to a list of variables referenced by that state. States
+	// that do not use variable references will not be shown in the response.
+	VariableReferences map[string][]string
+
 	// Metadata pertaining to the operation's result.
 	ResultMetadata middleware.Metadata
 
@@ -224,6 +228,9 @@ func (c *Client) addOperationDescribeStateMachineMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -240,6 +247,9 @@ func (c *Client) addOperationDescribeStateMachineMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeStateMachineValidationMiddleware(stack); err != nil {
@@ -261,6 +271,18 @@ func (c *Client) addOperationDescribeStateMachineMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

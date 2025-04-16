@@ -47,7 +47,7 @@ type UpdateGroupQueryInput struct {
 	// This member is required.
 	ResourceQuery *types.ResourceQuery
 
-	// The name or the ARN of the resource group to query.
+	// The name or the Amazon resource name (ARN) of the resource group to query.
 	Group *string
 
 	// Don't use this parameter. Use Group instead.
@@ -112,6 +112,9 @@ func (c *Client) addOperationUpdateGroupQueryMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -128,6 +131,9 @@ func (c *Client) addOperationUpdateGroupQueryMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateGroupQueryValidationMiddleware(stack); err != nil {
@@ -149,6 +155,18 @@ func (c *Client) addOperationUpdateGroupQueryMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

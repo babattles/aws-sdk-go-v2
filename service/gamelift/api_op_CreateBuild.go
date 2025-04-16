@@ -69,8 +69,8 @@ func (c *Client) CreateBuild(ctx context.Context, params *CreateBuildInput, optF
 
 type CreateBuildInput struct {
 
-	// A descriptive label associated with a build. Build names don't need to be
-	// unique. You can change this value later.
+	// A descriptive label that is associated with a build. Build names do not need to
+	// be unique. You can change this value later.
 	Name *string
 
 	// The operating system that your game server binaries run on. This value
@@ -79,10 +79,13 @@ type CreateBuildInput struct {
 	// system. You must specify a valid operating system in this request. There is no
 	// default value. You can't change a build's operating system later.
 	//
-	// If you have active fleets using the Windows Server 2012 operating system, you
-	// can continue to create new builds using this OS until October 10, 2023, when
-	// Microsoft ends its support. All others must use Windows Server 2016 when
-	// creating new Windows-based builds.
+	// Amazon Linux 2 (AL2) will reach end of support on 6/30/2025. See more details
+	// in the [Amazon Linux 2 FAQs]. For game servers that are hosted on AL2 and use server SDK version 4.x
+	// for Amazon GameLift, first update the game server build to server SDK 5.x, and
+	// then deploy to AL2023 instances. See [Migrate to server SDK version 5.]
+	//
+	// [Migrate to server SDK version 5.]: https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-serversdk5-migration.html
+	// [Amazon Linux 2 FAQs]: https://aws.amazon.com/amazon-linux-2/faqs/
 	OperatingSystem types.OperatingSystem
 
 	// A server SDK version you used when integrating your game server build with
@@ -117,8 +120,8 @@ type CreateBuildInput struct {
 	// [ListTagsForResource]: https://docs.aws.amazon.com/gamelift/latest/apireference/API_ListTagsForResource.html
 	Tags []types.Tag
 
-	// Version information associated with a build or script. Version strings don't
-	// need to be unique. You can change this value later.
+	// Version information that is associated with a build or script. Version strings
+	// do not need to be unique. You can change this value later.
 	Version *string
 
 	noSmithyDocumentSerde
@@ -189,6 +192,9 @@ func (c *Client) addOperationCreateBuildMiddlewares(stack *middleware.Stack, opt
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -205,6 +211,9 @@ func (c *Client) addOperationCreateBuildMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateBuildValidationMiddleware(stack); err != nil {
@@ -226,6 +235,18 @@ func (c *Client) addOperationCreateBuildMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

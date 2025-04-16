@@ -41,10 +41,12 @@
         "api_op_GetInfrastructureConfiguration.go",
         "api_op_GetLifecycleExecution.go",
         "api_op_GetLifecyclePolicy.go",
+        "api_op_GetMarketplaceResource.go",
         "api_op_GetWorkflow.go",
         "api_op_GetWorkflowExecution.go",
         "api_op_GetWorkflowStepExecution.go",
         "api_op_ImportComponent.go",
+        "api_op_ImportDiskImage.go",
         "api_op_ImportVmImage.go",
         "api_op_ListComponentBuildVersions.go",
         "api_op_ListComponents.go",
@@ -94,12 +96,13 @@
         "protocol_test.go",
         "serializers.go",
         "snapshot_test.go",
+        "sra_operation_order_test.go",
         "types/enums.go",
         "types/errors.go",
         "types/types.go",
         "validators.go"
     ],
-    "go": "1.15",
+    "go": "1.22",
     "module": "github.com/aws/aws-sdk-go-v2/service/imagebuilder",
     "unstable": false
 }

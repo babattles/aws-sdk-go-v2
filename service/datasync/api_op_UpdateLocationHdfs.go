@@ -11,8 +11,12 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Updates some parameters of a previously created location for a Hadoop
-// Distributed File System cluster.
+// Modifies the following configuration parameters of the Hadoop Distributed File
+// System (HDFS) transfer location that you're using with DataSync.
+//
+// For more information, see [Configuring DataSync transfers with an HDFS cluster].
+//
+// [Configuring DataSync transfers with an HDFS cluster]: https://docs.aws.amazon.com/datasync/latest/userguide/create-hdfs-location.html
 func (c *Client) UpdateLocationHdfs(ctx context.Context, params *UpdateLocationHdfsInput, optFns ...func(*Options)) (*UpdateLocationHdfsOutput, error) {
 	if params == nil {
 		params = &UpdateLocationHdfsInput{}
@@ -35,7 +39,8 @@ type UpdateLocationHdfsInput struct {
 	// This member is required.
 	LocationArn *string
 
-	// The ARNs of the agents that are used to connect to the HDFS cluster.
+	// The Amazon Resource Names (ARNs) of the DataSync agents that can connect to
+	// your HDFS cluster.
 	AgentArns []string
 
 	// The type of authentication used to determine the identity of the user.
@@ -138,6 +143,9 @@ func (c *Client) addOperationUpdateLocationHdfsMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -154,6 +162,9 @@ func (c *Client) addOperationUpdateLocationHdfsMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateLocationHdfsValidationMiddleware(stack); err != nil {
@@ -175,6 +186,18 @@ func (c *Client) addOperationUpdateLocationHdfsMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

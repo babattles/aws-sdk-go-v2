@@ -11,7 +11,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/aws/aws-sdk-go-v2/aws/middleware/private/metrics/testutils"
 	internalcontext "github.com/aws/aws-sdk-go-v2/internal/context"
 
 	"github.com/aws/aws-sdk-go-v2/aws/ratelimit"
@@ -205,13 +204,16 @@ func TestAttemptMiddleware(t *testing.T) {
 					MaxAttempts: 3,
 				},
 				{
-					AttemptNum:  2,
-					AttemptTime: time.Date(2020, 8, 19, 10, 21, 30, 0, time.UTC),
+					AttemptNum: 2,
+					// note that here and everywhere else, time goes up two
+					// additional minutes because of the metrics calling
+					// sdk.NowTime twice
+					AttemptTime: time.Date(2020, 8, 19, 10, 23, 30, 0, time.UTC),
 					MaxAttempts: 3,
 				},
 				{
 					AttemptNum:  3,
-					AttemptTime: time.Date(2020, 8, 19, 10, 22, 30, 0, time.UTC),
+					AttemptTime: time.Date(2020, 8, 19, 10, 26, 30, 0, time.UTC),
 					MaxAttempts: 3,
 				},
 			},
@@ -369,7 +371,7 @@ func TestAttemptMiddleware(t *testing.T) {
 				},
 				{
 					AttemptNum:  2,
-					AttemptTime: time.Date(2020, 8, 19, 10, 21, 30, 0, time.UTC),
+					AttemptTime: time.Date(2020, 8, 19, 10, 23, 30, 0, time.UTC),
 					MaxAttempts: 3,
 				},
 			},
@@ -530,7 +532,7 @@ func TestClockSkew(t *testing.T) {
 	for name, tt := range cases {
 		t.Run(name, func(t *testing.T) {
 			am := NewAttemptMiddleware(NewStandard(func(s *StandardOptions) {
-			}), testutils.NoopRequestCloner)
+			}), func(i any) any { return i })
 			ctx := internalcontext.SetAttemptSkewContext(context.Background(), tt.skew)
 			_, metadata, err := am.HandleFinalize(ctx, middleware.FinalizeInput{}, middleware.FinalizeHandlerFunc(
 				func(ctx context.Context, in middleware.FinalizeInput) (

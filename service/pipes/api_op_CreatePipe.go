@@ -63,6 +63,18 @@ type CreatePipeInput struct {
 	// The parameters required to set up enrichment on your pipe.
 	EnrichmentParameters *types.PipeEnrichmentParameters
 
+	// The identifier of the KMS customer managed key for EventBridge to use, if you
+	// choose to use a customer managed key to encrypt pipe data. The identifier can be
+	// the key Amazon Resource Name (ARN), KeyId, key alias, or key alias ARN.
+	//
+	// If you do not specify a customer managed key identifier, EventBridge uses an
+	// Amazon Web Services owned key to encrypt pipe data.
+	//
+	// For more information, see [Managing keys] in the Key Management Service Developer Guide.
+	//
+	// [Managing keys]: https://docs.aws.amazon.com/kms/latest/developerguide/getting-started.html
+	KmsKeyIdentifier *string
+
 	// The logging configuration settings for the pipe.
 	LogConfiguration *types.PipeLogConfigurationParameters
 
@@ -154,6 +166,9 @@ func (c *Client) addOperationCreatePipeMiddlewares(stack *middleware.Stack, opti
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -170,6 +185,9 @@ func (c *Client) addOperationCreatePipeMiddlewares(stack *middleware.Stack, opti
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreatePipeValidationMiddleware(stack); err != nil {
@@ -191,6 +209,18 @@ func (c *Client) addOperationCreatePipeMiddlewares(stack *middleware.Stack, opti
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

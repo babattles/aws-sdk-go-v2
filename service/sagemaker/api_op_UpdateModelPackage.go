@@ -45,6 +45,9 @@ type UpdateModelPackageInput struct {
 	// A description for the approval status of the model.
 	ApprovalDescription *string
 
+	//  A unique token that guarantees that the call to this API is idempotent.
+	ClientToken *string
+
 	// The metadata properties associated with the model package versions.
 	CustomerMetadataProperties map[string]string
 
@@ -78,6 +81,9 @@ type UpdateModelPackageInput struct {
 	// [Model package model card schema]: https://docs.aws.amazon.com/sagemaker/latest/dg/model-registry-details.html#model-card-schema
 	// [View the Details of a Model Version]: https://docs.aws.amazon.com/sagemaker/latest/dg/model-registry-details.html
 	ModelCard *types.ModelPackageModelCard
+
+	//  A structure describing the current state of the model in its life cycle.
+	ModelLifeCycle *types.ModelLifeCycle
 
 	// The URI of the source for the model package.
 	SourceUri *string
@@ -141,6 +147,9 @@ func (c *Client) addOperationUpdateModelPackageMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -157,6 +166,9 @@ func (c *Client) addOperationUpdateModelPackageMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateModelPackageValidationMiddleware(stack); err != nil {
@@ -178,6 +190,18 @@ func (c *Client) addOperationUpdateModelPackageMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

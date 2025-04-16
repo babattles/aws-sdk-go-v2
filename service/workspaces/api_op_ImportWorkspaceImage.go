@@ -50,10 +50,10 @@ type ImportWorkspaceImageInput struct {
 	ImageName *string
 
 	// The ingestion process to be used when importing the image, depending on which
-	// protocol you want to use for your BYOL Workspace image, either PCoIP, WorkSpaces
-	// Streaming Protocol (WSP), or bring your own protocol (BYOP). To use WSP, specify
-	// a value that ends in _WSP . To use PCoIP, specify a value that does not end in
-	// _WSP . To use BYOP, specify a value that ends in _BYOP .
+	// protocol you want to use for your BYOL Workspace image, either PCoIP, WSP, or
+	// bring your own protocol (BYOP). To use DCV, specify a value that ends in _WSP .
+	// To use PCoIP, specify a value that does not end in _WSP . To use BYOP, specify a
+	// value that ends in _BYOP .
 	//
 	// For non-GPU-enabled bundles (bundles other than Graphics or GraphicsPro),
 	// specify BYOL_REGULAR , BYOL_REGULAR_WSP , or BYOL_REGULAR_BYOP , depending on
@@ -74,9 +74,9 @@ type ImportWorkspaceImageInput struct {
 	//
 	//   - Although this parameter is an array, only one item is allowed at this time.
 	//
-	//   - During the image import process, non-GPU WSP WorkSpaces with Windows 11
-	//   support only Microsoft_Office_2019 . GPU WSP WorkSpaces with Windows 11 do not
-	//   support Office installation.
+	//   - During the image import process, non-GPU DCV (formerly WSP) WorkSpaces with
+	//   Windows 11 support only Microsoft_Office_2019 . GPU DCV (formerly WSP)
+	//   WorkSpaces with Windows 11 do not support Office installation.
 	//
 	// [Bring Your Own Windows Desktop Licenses]: https://docs.aws.amazon.com/workspaces/latest/adminguide/byol-windows-images.html
 	Applications []types.Application
@@ -141,6 +141,9 @@ func (c *Client) addOperationImportWorkspaceImageMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -157,6 +160,9 @@ func (c *Client) addOperationImportWorkspaceImageMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpImportWorkspaceImageValidationMiddleware(stack); err != nil {
@@ -178,6 +184,18 @@ func (c *Client) addOperationImportWorkspaceImageMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

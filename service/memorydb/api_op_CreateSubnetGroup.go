@@ -59,7 +59,7 @@ type CreateSubnetGroupInput struct {
 
 type CreateSubnetGroupOutput struct {
 
-	// The newly-created subnet group
+	// The newly-created subnet group.
 	SubnetGroup *types.SubnetGroup
 
 	// Metadata pertaining to the operation's result.
@@ -111,6 +111,9 @@ func (c *Client) addOperationCreateSubnetGroupMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -127,6 +130,9 @@ func (c *Client) addOperationCreateSubnetGroupMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateSubnetGroupValidationMiddleware(stack); err != nil {
@@ -148,6 +154,18 @@ func (c *Client) addOperationCreateSubnetGroupMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

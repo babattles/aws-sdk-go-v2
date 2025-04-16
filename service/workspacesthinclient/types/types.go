@@ -71,6 +71,9 @@ type Device struct {
 	Status DeviceStatus
 
 	// The tag keys and optional values for the resource.
+	//
+	// Deprecated: This field will be removed in future releases. Use
+	// ListTagsForResource API instead.
 	Tags map[string]string
 
 	// The timestamp of when the device was updated.
@@ -147,7 +150,7 @@ type Environment struct {
 	DesiredSoftwareSetId *string
 
 	// The Amazon Resource Name (ARN) of the desktop to stream from Amazon WorkSpaces,
-	// WorkSpaces Web, or AppStream 2.0.
+	// WorkSpaces Secure Browser, or AppStream 2.0.
 	DesktopArn *string
 
 	// The URL for the identity provider login (only for environments that use
@@ -195,6 +198,9 @@ type Environment struct {
 	SoftwareSetUpdateSchedule SoftwareSetUpdateSchedule
 
 	// The tag keys and optional values for the resource.
+	//
+	// Deprecated: This field will be removed in future releases. Use
+	// ListTagsForResource API instead.
 	Tags map[string]string
 
 	// The timestamp of when the device was updated.
@@ -219,7 +225,7 @@ type EnvironmentSummary struct {
 	DesiredSoftwareSetId *string
 
 	// The Amazon Resource Name (ARN) of the desktop to stream from Amazon WorkSpaces,
-	// WorkSpaces Web, or AppStream 2.0.
+	// WorkSpaces Secure Browser, or AppStream 2.0.
 	DesktopArn *string
 
 	// The URL for the identity provider login (only for environments that use
@@ -257,6 +263,11 @@ type EnvironmentSummary struct {
 // Describes the maintenance window for a thin client device.
 type MaintenanceWindow struct {
 
+	// An option to select the default or custom maintenance window.
+	//
+	// This member is required.
+	Type MaintenanceWindowType
+
 	// The option to set the maintenance window during the device local time or
 	// Universal Coordinated Time (UTC).
 	ApplyTimeOf ApplyTimeOf
@@ -275,9 +286,6 @@ type MaintenanceWindow struct {
 
 	// The minutes past the hour for the maintenance window start ( 00 - 59 ).
 	StartTimeMinute *int32
-
-	// An option to select the default or custom maintenance window.
-	Type MaintenanceWindowType
 
 	noSmithyDocumentSerde
 }
@@ -313,6 +321,9 @@ type SoftwareSet struct {
 	SupportedUntil *time.Time
 
 	// The tag keys and optional values for the resource.
+	//
+	// Deprecated: This field will be removed in future releases. Use
+	// ListTagsForResource API instead.
 	Tags map[string]string
 
 	// An option to define if the software set has been validated.

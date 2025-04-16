@@ -12,8 +12,8 @@ import (
 	"time"
 )
 
-// Returns a list of the SageMaker notebook instances in the requester's account
-// in an Amazon Web Services Region.
+// Returns a list of the SageMaker AI notebook instances in the requester's
+// account in an Amazon Web Services Region.
 func (c *Client) ListNotebookInstances(ctx context.Context, params *ListNotebookInstancesInput, optFns ...func(*Options)) (*ListNotebookInstancesOutput, error) {
 	if params == nil {
 		params = &ListNotebookInstancesInput{}
@@ -93,7 +93,7 @@ type ListNotebookInstancesInput struct {
 type ListNotebookInstancesOutput struct {
 
 	// If the response to the previous ListNotebookInstances request was truncated,
-	// SageMaker returns this token. To retrieve the next set of notebook instances,
+	// SageMaker AI returns this token. To retrieve the next set of notebook instances,
 	// use the token in the next request.
 	NextToken *string
 
@@ -149,6 +149,9 @@ func (c *Client) addOperationListNotebookInstancesMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -167,6 +170,9 @@ func (c *Client) addOperationListNotebookInstancesMiddlewares(stack *middleware.
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListNotebookInstances(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -183,6 +189,18 @@ func (c *Client) addOperationListNotebookInstancesMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

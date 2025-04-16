@@ -10,8 +10,8 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Removes the log-level overrides for all resources; both wireless devices and
-// wireless gateways.
+// Removes the log-level overrides for all resources; wireless devices, wireless
+// gateways, and FUOTA tasks.
 func (c *Client) ResetAllResourceLogLevels(ctx context.Context, params *ResetAllResourceLogLevelsInput, optFns ...func(*Options)) (*ResetAllResourceLogLevelsOutput, error) {
 	if params == nil {
 		params = &ResetAllResourceLogLevelsInput{}
@@ -81,6 +81,9 @@ func (c *Client) addOperationResetAllResourceLogLevelsMiddlewares(stack *middlew
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -99,6 +102,9 @@ func (c *Client) addOperationResetAllResourceLogLevelsMiddlewares(stack *middlew
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opResetAllResourceLogLevels(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -115,6 +121,18 @@ func (c *Client) addOperationResetAllResourceLogLevelsMiddlewares(stack *middlew
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

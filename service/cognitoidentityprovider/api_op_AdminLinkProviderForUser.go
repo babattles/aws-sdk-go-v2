@@ -11,23 +11,21 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Links an existing user account in a user pool ( DestinationUser ) to an identity
-// from an external IdP ( SourceUser ) based on a specified attribute name and
-// value from the external IdP. This allows you to create a link from the existing
-// user account to an external federated user identity that has not yet been used
-// to sign in. You can then use the federated user identity to sign in as the
-// existing user account.
+// Links an existing user account in a user pool, or DestinationUser , to an
+// identity from an external IdP, or SourceUser , based on a specified attribute
+// name and value from the external IdP.
 //
-// For example, if there is an existing user with a username and password, this
-// API links that user to a federated user identity. When the user signs in with a
-// federated user identity, they sign in as the existing user account.
+// This operation connects a local user profile with a user identity who hasn't
+// yet signed in from their third-party IdP. When the user signs in with their IdP,
+// they get access-control configuration from the local user profile. Linked local
+// users can also sign in with SDK-based API operations like InitiateAuth after
+// they sign in at least once through their IdP. For more information, see [Linking federated users].
 //
 // The maximum number of federated identities linked to a user is five.
 //
 // Because this API allows a user with an external federated identity to sign in
-// as an existing user in the user pool, it is critical that it only be used with
-// external IdPs and provider attributes that have been trusted by the application
-// owner.
+// as a local user, it is critical that it only be used with external IdPs and
+// linked attributes that you trust.
 //
 // Amazon Cognito evaluates Identity and Access Management (IAM) policies in
 // requests for this API operation. For this operation, you must use IAM
@@ -41,6 +39,7 @@ import (
 // [Using the Amazon Cognito user pools API and user pool endpoints]
 //
 // [Using the Amazon Cognito user pools API and user pool endpoints]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html
+// [Linking federated users]: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-identity-federation-consolidate-users.html
 // [Signing Amazon Web Services API Requests]: https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html
 func (c *Client) AdminLinkProviderForUser(ctx context.Context, params *AdminLinkProviderForUserInput, optFns ...func(*Options)) (*AdminLinkProviderForUserOutput, error) {
 	if params == nil {
@@ -91,26 +90,25 @@ type AdminLinkProviderForUserInput struct {
 	// ProviderAttributeValue for the user must be the same value as the id , sub , or
 	// user_id value found in the social IdP token.
 	//
-	// For OIDC, the ProviderAttributeName can be any value that matches a claim in
-	// the ID token, or that your app retrieves from the userInfo endpoint. You must
-	// map the claim to a user pool attribute in your IdP configuration, and set the
-	// user pool attribute name as the value of ProviderAttributeName in your
-	// AdminLinkProviderForUser request.
+	// For OIDC, the ProviderAttributeName can be any mapped value from a claim in the
+	// ID token, or that your app retrieves from the userInfo endpoint. For SAML, the
+	// ProviderAttributeName can be any mapped value from a claim in the SAML assertion.
 	//
-	// For SAML, the ProviderAttributeName can be any value that matches a claim in
-	// the SAML assertion. To link SAML users based on the subject of the SAML
-	// assertion, map the subject to a claim through the SAML IdP and set that claim
-	// name as the value of ProviderAttributeName in your AdminLinkProviderForUser
-	// request.
+	// The following additional considerations apply to SourceUser for OIDC and SAML
+	// providers.
 	//
-	// For both OIDC and SAML users, when you set ProviderAttributeName to
-	// Cognito_Subject , Amazon Cognito will automatically parse the default unique
-	// identifier found in the subject from the IdP token.
+	//   - You must map the claim to a user pool attribute in your IdP configuration,
+	//   and set the user pool attribute name as the value of ProviderAttributeName in
+	//   your AdminLinkProviderForUser request. For example, email .
+	//
+	//   - When you set ProviderAttributeName to Cognito_Subject , Amazon Cognito will
+	//   automatically parse the default unique identifier found in the subject from the
+	//   IdP token.
 	//
 	// This member is required.
 	SourceUser *types.ProviderUserIdentifierType
 
-	// The user pool ID for the user pool.
+	// The ID of the user pool where you want to link a federated identity.
 	//
 	// This member is required.
 	UserPoolId *string
@@ -168,6 +166,9 @@ func (c *Client) addOperationAdminLinkProviderForUserMiddlewares(stack *middlewa
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -184,6 +185,9 @@ func (c *Client) addOperationAdminLinkProviderForUserMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpAdminLinkProviderForUserValidationMiddleware(stack); err != nil {
@@ -205,6 +209,18 @@ func (c *Client) addOperationAdminLinkProviderForUserMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

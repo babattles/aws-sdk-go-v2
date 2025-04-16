@@ -28,12 +28,12 @@ func (c *Client) RemoveBridgeOutput(ctx context.Context, params *RemoveBridgeOut
 
 type RemoveBridgeOutputInput struct {
 
-	// The ARN of the bridge that you want to update.
+	//  The Amazon Resource Name (ARN) of the bridge that you want to update.
 	//
 	// This member is required.
 	BridgeArn *string
 
-	// The name of the bridge output that you want to remove.
+	//  The name of the bridge output that you want to remove.
 	//
 	// This member is required.
 	OutputName *string
@@ -42,8 +42,11 @@ type RemoveBridgeOutputInput struct {
 }
 
 type RemoveBridgeOutputOutput struct {
+
+	//  The ARN of the bridge from which the output was removed.
 	BridgeArn *string
 
+	//  The name of the bridge output that was removed.
 	OutputName *string
 
 	// Metadata pertaining to the operation's result.
@@ -95,6 +98,9 @@ func (c *Client) addOperationRemoveBridgeOutputMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -111,6 +117,9 @@ func (c *Client) addOperationRemoveBridgeOutputMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpRemoveBridgeOutputValidationMiddleware(stack); err != nil {
@@ -132,6 +141,18 @@ func (c *Client) addOperationRemoveBridgeOutputMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

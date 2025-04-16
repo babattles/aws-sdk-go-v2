@@ -12,7 +12,7 @@ import (
 )
 
 // Indicates whether the specified Config rules are compliant. If a rule is
-// noncompliant, this action returns the number of Amazon Web Services resources
+// noncompliant, this operation returns the number of Amazon Web Services resources
 // that do not comply with the rule.
 //
 // A rule is compliant if all of the evaluated resources comply with it. It is
@@ -121,6 +121,9 @@ func (c *Client) addOperationDescribeComplianceByConfigRuleMiddlewares(stack *mi
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -139,6 +142,9 @@ func (c *Client) addOperationDescribeComplianceByConfigRuleMiddlewares(stack *mi
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeComplianceByConfigRule(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -155,6 +161,18 @@ func (c *Client) addOperationDescribeComplianceByConfigRuleMiddlewares(stack *mi
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

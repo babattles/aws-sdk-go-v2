@@ -56,22 +56,10 @@ type EnableLoggingInput struct {
 
 	// The prefix applied to the log file names.
 	//
-	// Constraints:
-	//
-	//   - Cannot exceed 512 characters
-	//
-	//   - Cannot contain spaces( ), double quotes ("), single quotes ('), a backslash
-	//   (\), or control characters. The hexadecimal codes for invalid characters are:
-	//
-	//   - x00 to x20
-	//
-	//   - x22
-	//
-	//   - x27
-	//
-	//   - x5c
-	//
-	//   - x7f or larger
+	// Valid characters are any letter from any language, any whitespace character,
+	// any numeric character, and the following characters: underscore ( _ ), period ( .
+	// ), colon ( : ), slash ( / ), equal ( = ), plus ( + ), backslash ( \ ), hyphen ( -
+	// ), at symbol ( @ ).
 	S3KeyPrefix *string
 
 	noSmithyDocumentSerde
@@ -154,6 +142,9 @@ func (c *Client) addOperationEnableLoggingMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -170,6 +161,9 @@ func (c *Client) addOperationEnableLoggingMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpEnableLoggingValidationMiddleware(stack); err != nil {
@@ -191,6 +185,18 @@ func (c *Client) addOperationEnableLoggingMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

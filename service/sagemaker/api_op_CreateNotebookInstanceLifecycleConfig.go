@@ -62,6 +62,13 @@ type CreateNotebookInstanceLifecycleConfigInput struct {
 	// string.
 	OnStart []types.NotebookInstanceLifecycleHook
 
+	// An array of key-value pairs. You can use tags to categorize your Amazon Web
+	// Services resources in different ways, for example, by purpose, owner, or
+	// environment. For more information, see [Tagging Amazon Web Services Resources].
+	//
+	// [Tagging Amazon Web Services Resources]: https://docs.aws.amazon.com/tag-editor/latest/userguide/tagging.html
+	Tags []types.Tag
+
 	noSmithyDocumentSerde
 }
 
@@ -119,6 +126,9 @@ func (c *Client) addOperationCreateNotebookInstanceLifecycleConfigMiddlewares(st
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -135,6 +145,9 @@ func (c *Client) addOperationCreateNotebookInstanceLifecycleConfigMiddlewares(st
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateNotebookInstanceLifecycleConfigValidationMiddleware(stack); err != nil {
@@ -156,6 +169,18 @@ func (c *Client) addOperationCreateNotebookInstanceLifecycleConfigMiddlewares(st
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

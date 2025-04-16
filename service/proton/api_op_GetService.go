@@ -12,7 +12,6 @@ import (
 	smithytime "github.com/aws/smithy-go/time"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	smithywaiter "github.com/aws/smithy-go/waiter"
-	jmespath "github.com/jmespath/go-jmespath"
 	"time"
 )
 
@@ -96,6 +95,9 @@ func (c *Client) addOperationGetServiceMiddlewares(stack *middleware.Stack, opti
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -112,6 +114,9 @@ func (c *Client) addOperationGetServiceMiddlewares(stack *middleware.Stack, opti
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetServiceValidationMiddleware(stack); err != nil {
@@ -133,6 +138,18 @@ func (c *Client) addOperationGetServiceMiddlewares(stack *middleware.Stack, opti
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -298,73 +315,68 @@ func (w *ServiceCreatedWaiter) WaitForOutput(ctx context.Context, params *GetSer
 func serviceCreatedStateRetryable(ctx context.Context, input *GetServiceInput, output *GetServiceOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("service.status", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Service
+		var v2 types.ServiceStatus
+		if v1 != nil {
+			v3 := v1.Status
+			v2 = v3
 		}
-
 		expectedValue := "ACTIVE"
-		value, ok := pathValue.(types.ServiceStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.ServiceStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v2)
+		if pathValue == expectedValue {
 			return false, nil
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("service.status", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Service
+		var v2 types.ServiceStatus
+		if v1 != nil {
+			v3 := v1.Status
+			v2 = v3
 		}
-
 		expectedValue := "CREATE_FAILED_CLEANUP_COMPLETE"
-		value, ok := pathValue.(types.ServiceStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.ServiceStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v2)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("service.status", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Service
+		var v2 types.ServiceStatus
+		if v1 != nil {
+			v3 := v1.Status
+			v2 = v3
 		}
-
 		expectedValue := "CREATE_FAILED_CLEANUP_FAILED"
-		value, ok := pathValue.(types.ServiceStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.ServiceStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v2)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("service.status", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Service
+		var v2 types.ServiceStatus
+		if v1 != nil {
+			v3 := v1.Status
+			v2 = v3
 		}
-
 		expectedValue := "CREATE_FAILED"
-		value, ok := pathValue.(types.ServiceStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.ServiceStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v2)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 
@@ -528,90 +540,83 @@ func (w *ServiceUpdatedWaiter) WaitForOutput(ctx context.Context, params *GetSer
 func serviceUpdatedStateRetryable(ctx context.Context, input *GetServiceInput, output *GetServiceOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("service.status", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Service
+		var v2 types.ServiceStatus
+		if v1 != nil {
+			v3 := v1.Status
+			v2 = v3
 		}
-
 		expectedValue := "ACTIVE"
-		value, ok := pathValue.(types.ServiceStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.ServiceStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v2)
+		if pathValue == expectedValue {
 			return false, nil
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("service.status", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Service
+		var v2 types.ServiceStatus
+		if v1 != nil {
+			v3 := v1.Status
+			v2 = v3
 		}
-
 		expectedValue := "UPDATE_FAILED_CLEANUP_COMPLETE"
-		value, ok := pathValue.(types.ServiceStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.ServiceStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v2)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("service.status", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Service
+		var v2 types.ServiceStatus
+		if v1 != nil {
+			v3 := v1.Status
+			v2 = v3
 		}
-
 		expectedValue := "UPDATE_FAILED_CLEANUP_FAILED"
-		value, ok := pathValue.(types.ServiceStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.ServiceStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v2)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("service.status", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Service
+		var v2 types.ServiceStatus
+		if v1 != nil {
+			v3 := v1.Status
+			v2 = v3
 		}
-
 		expectedValue := "UPDATE_FAILED"
-		value, ok := pathValue.(types.ServiceStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.ServiceStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v2)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("service.status", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Service
+		var v2 types.ServiceStatus
+		if v1 != nil {
+			v3 := v1.Status
+			v2 = v3
 		}
-
 		expectedValue := "UPDATE_COMPLETE_CLEANUP_FAILED"
-		value, ok := pathValue.(types.ServiceStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.ServiceStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v2)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 
@@ -782,22 +787,23 @@ func serviceDeletedStateRetryable(ctx context.Context, input *GetServiceInput, o
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("service.status", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Service
+		var v2 types.ServiceStatus
+		if v1 != nil {
+			v3 := v1.Status
+			v2 = v3
 		}
-
 		expectedValue := "DELETE_FAILED"
-		value, ok := pathValue.(types.ServiceStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.ServiceStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v2)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 
@@ -963,39 +969,48 @@ func (w *ServicePipelineDeployedWaiter) WaitForOutput(ctx context.Context, param
 func servicePipelineDeployedStateRetryable(ctx context.Context, input *GetServiceInput, output *GetServiceOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("service.pipeline.deploymentStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Service
+		var v2 *types.ServicePipeline
+		if v1 != nil {
+			v3 := v1.Pipeline
+			v2 = v3
 		}
-
+		var v4 types.DeploymentStatus
+		if v2 != nil {
+			v5 := v2.DeploymentStatus
+			v4 = v5
+		}
 		expectedValue := "SUCCEEDED"
-		value, ok := pathValue.(types.DeploymentStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.DeploymentStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v4)
+		if pathValue == expectedValue {
 			return false, nil
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("service.pipeline.deploymentStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Service
+		var v2 *types.ServicePipeline
+		if v1 != nil {
+			v3 := v1.Pipeline
+			v2 = v3
 		}
-
+		var v4 types.DeploymentStatus
+		if v2 != nil {
+			v5 := v2.DeploymentStatus
+			v4 = v5
+		}
 		expectedValue := "FAILED"
-		value, ok := pathValue.(types.DeploymentStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.DeploymentStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v4)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 

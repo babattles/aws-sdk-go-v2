@@ -11,7 +11,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Deletes a cluster. It also deletes all associated nodes and node endpoints
+// Deletes a cluster. It also deletes all associated nodes and node endpoints.
 //
 // CreateSnapshot permission is required to create a final snapshot. Without this
 // permission, the API call will fail with an Access Denied exception.
@@ -42,12 +42,15 @@ type DeleteClusterInput struct {
 	// the cluster immediately afterward.
 	FinalSnapshotName *string
 
+	// The name of the multi-Region cluster to be deleted.
+	MultiRegionClusterName *string
+
 	noSmithyDocumentSerde
 }
 
 type DeleteClusterOutput struct {
 
-	// The cluster object that has been deleted
+	// The cluster object that has been deleted.
 	Cluster *types.Cluster
 
 	// Metadata pertaining to the operation's result.
@@ -99,6 +102,9 @@ func (c *Client) addOperationDeleteClusterMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -115,6 +121,9 @@ func (c *Client) addOperationDeleteClusterMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteClusterValidationMiddleware(stack); err != nil {
@@ -136,6 +145,18 @@ func (c *Client) addOperationDeleteClusterMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

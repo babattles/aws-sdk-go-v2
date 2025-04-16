@@ -26,6 +26,46 @@ type AdditionalAuthenticationProvider struct {
 	noSmithyDocumentSerde
 }
 
+// Describes an AppSync API. You can use Api for an AppSync API with your
+// preferred configuration, such as an Event API that provides real-time message
+// publishing and message subscriptions over WebSockets.
+type Api struct {
+
+	// The Amazon Resource Name (ARN) for the Api .
+	ApiArn *string
+
+	// The Api ID.
+	ApiId *string
+
+	// The date and time that the Api was created.
+	Created *time.Time
+
+	// The DNS records for the API. This will include an HTTP and a real-time endpoint.
+	Dns map[string]string
+
+	// The Event API configuration. This includes the default authorization
+	// configuration for connecting, publishing, and subscribing to an Event API.
+	EventConfig *EventConfig
+
+	// The name of the Api .
+	Name *string
+
+	// The owner contact information for the Api
+	OwnerContact *string
+
+	// A map with keys of TagKey objects and values of TagValue objects.
+	Tags map[string]string
+
+	// The Amazon Resource Name (ARN) of the WAF web access control list (web ACL)
+	// associated with this Api , if one exists.
+	WafWebAclArn *string
+
+	// A flag indicating whether to use X-Ray tracing for this Api .
+	XrayEnabled bool
+
+	noSmithyDocumentSerde
+}
+
 // Describes an ApiAssociation object.
 type ApiAssociation struct {
 
@@ -58,9 +98,14 @@ type ApiCache struct {
 
 	// Caching behavior.
 	//
-	//   - FULL_REQUEST_CACHING: All requests are fully cached.
+	//   - FULL_REQUEST_CACHING: All requests from the same user are cached.
+	//   Individual resolvers are automatically cached. All API calls will try to return
+	//   responses from the cache.
 	//
 	//   - PER_RESOLVER_CACHING: Individual resolvers that you specify are cached.
+	//
+	//   - OPERATION_LEVEL_CACHING: Full requests are cached together and returned
+	//   without executing resolvers.
 	ApiCachingBehavior ApiCachingBehavior
 
 	// At-rest encryption flag for cache. You cannot update this setting after
@@ -226,6 +271,18 @@ type AppSyncRuntime struct {
 	noSmithyDocumentSerde
 }
 
+// Describes an authorization configuration. Use AuthMode to specify the
+// publishing and subscription authorization configuration for an Event API.
+type AuthMode struct {
+
+	// The authorization type.
+	//
+	// This member is required.
+	AuthType AuthenticationType
+
+	noSmithyDocumentSerde
+}
+
 // The authorization configuration in case the HTTP endpoint requires
 // authorization.
 type AuthorizationConfig struct {
@@ -239,6 +296,28 @@ type AuthorizationConfig struct {
 
 	// The Identity and Access Management (IAM) settings.
 	AwsIamConfig *AwsIamConfig
+
+	noSmithyDocumentSerde
+}
+
+// Describes an authorization provider.
+type AuthProvider struct {
+
+	// The authorization type.
+	//
+	// This member is required.
+	AuthType AuthenticationType
+
+	// Describes an Amazon Cognito user pool configuration.
+	CognitoConfig *CognitoConfig
+
+	// A LambdaAuthorizerConfig specifies how to authorize AppSync API access when
+	// using the AWS_LAMBDA authorizer mode. Be aware that an AppSync API can have
+	// only one Lambda authorizer configured at a time.
+	LambdaAuthorizerConfig *LambdaAuthorizerConfig
+
+	// Describes an OpenID Connect (OIDC) configuration.
+	OpenIDConnectConfig *OpenIDConnectConfig
 
 	noSmithyDocumentSerde
 }
@@ -284,6 +363,44 @@ type CachingConfig struct {
 	noSmithyDocumentSerde
 }
 
+// Describes a channel namespace associated with an Api . The ChannelNamespace
+// contains the definitions for code handlers for the Api .
+type ChannelNamespace struct {
+
+	// The Api ID.
+	ApiId *string
+
+	// The Amazon Resource Name (ARN) for the ChannelNamespace .
+	ChannelNamespaceArn *string
+
+	// The event handler functions that run custom business logic to process published
+	// events and subscribe requests.
+	CodeHandlers *string
+
+	// The date and time that the ChannelNamespace was created.
+	Created *time.Time
+
+	// The date and time that the ChannelNamespace was last changed.
+	LastModified *time.Time
+
+	// The name of the channel namespace. This name must be unique within the Api .
+	Name *string
+
+	// The authorization mode to use for publishing messages on the channel namespace.
+	// This configuration overrides the default Api authorization configuration.
+	PublishAuthModes []AuthMode
+
+	// The authorization mode to use for subscribing to messages on the channel
+	// namespace. This configuration overrides the default Api authorization
+	// configuration.
+	SubscribeAuthModes []AuthMode
+
+	// A map with keys of TagKey objects and values of TagValue objects.
+	Tags map[string]string
+
+	noSmithyDocumentSerde
+}
+
 // Describes an AppSync error.
 type CodeError struct {
 
@@ -315,6 +432,26 @@ type CodeErrorLocation struct {
 
 	// The span/length of the error. Defaults to -1 if unknown.
 	Span int32
+
+	noSmithyDocumentSerde
+}
+
+// Describes an Amazon Cognito configuration.
+type CognitoConfig struct {
+
+	// The Amazon Web Services Region in which the user pool was created.
+	//
+	// This member is required.
+	AwsRegion *string
+
+	// The user pool ID.
+	//
+	// This member is required.
+	UserPoolId *string
+
+	// A regular expression for validating the incoming Amazon Cognito user pool app
+	// client ID. If this value isn't set, no filtering is applied.
+	AppIdClientRegex *string
 
 	noSmithyDocumentSerde
 }
@@ -399,6 +536,8 @@ type DataSource struct {
 	//   domain.
 	//
 	//   - AMAZON_EVENTBRIDGE: The data source is an Amazon EventBridge configuration.
+	//
+	//   - AMAZON_BEDROCK_RUNTIME: The data source is the Amazon Bedrock runtime.
 	//
 	//   - NONE: There is no data source. Use this type when you want to invoke a
 	//   GraphQL operation without connecting to a data source, such as when you're
@@ -547,8 +686,14 @@ type DomainNameConfig struct {
 	// The domain name.
 	DomainName *string
 
+	// The Amazon Resource Name (ARN) of the domain name.
+	DomainNameArn *string
+
 	// The ID of your Amazon Route 53 hosted zone.
 	HostedZoneId *string
+
+	// A map with keys of TagKey objects and values of TagValue objects.
+	Tags map[string]string
 
 	noSmithyDocumentSerde
 }
@@ -760,6 +905,53 @@ type EventBridgeDataSourceConfig struct {
 	//
 	// This member is required.
 	EventBusArn *string
+
+	noSmithyDocumentSerde
+}
+
+// Describes the authorization configuration for connections, message publishing,
+// message subscriptions, and logging for an Event API.
+type EventConfig struct {
+
+	// A list of authorization providers.
+	//
+	// This member is required.
+	AuthProviders []AuthProvider
+
+	// A list of valid authorization modes for the Event API connections.
+	//
+	// This member is required.
+	ConnectionAuthModes []AuthMode
+
+	// A list of valid authorization modes for the Event API publishing.
+	//
+	// This member is required.
+	DefaultPublishAuthModes []AuthMode
+
+	// A list of valid authorization modes for the Event API subscriptions.
+	//
+	// This member is required.
+	DefaultSubscribeAuthModes []AuthMode
+
+	// The CloudWatch Logs configuration for the Event API.
+	LogConfig *EventLogConfig
+
+	noSmithyDocumentSerde
+}
+
+// Describes the CloudWatch Logs configuration for the Event API.
+type EventLogConfig struct {
+
+	// The IAM service role that AppSync assumes to publish CloudWatch Logs in your
+	// account.
+	//
+	// This member is required.
+	CloudWatchLogsRoleArn *string
+
+	// The type of information to log for the Event API.
+	//
+	// This member is required.
+	LogLevel EventLogLevel
 
 	noSmithyDocumentSerde
 }

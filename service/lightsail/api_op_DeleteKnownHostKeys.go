@@ -20,7 +20,7 @@ import (
 // mismatch or if you are familiar with the new host key or certificate on the
 // instance. For more information, see [Troubleshooting connection issues when using the Amazon Lightsail browser-based SSH or RDP client].
 //
-// [Troubleshooting connection issues when using the Amazon Lightsail browser-based SSH or RDP client]: https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-troubleshooting-browser-based-ssh-rdp-client-connection
+// [Troubleshooting connection issues when using the Amazon Lightsail browser-based SSH or RDP client]: https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-troubleshooting-browser-based-ssh-rdp-client-connection
 func (c *Client) DeleteKnownHostKeys(ctx context.Context, params *DeleteKnownHostKeysInput, optFns ...func(*Options)) (*DeleteKnownHostKeysOutput, error) {
 	if params == nil {
 		params = &DeleteKnownHostKeysInput{}
@@ -103,6 +103,9 @@ func (c *Client) addOperationDeleteKnownHostKeysMiddlewares(stack *middleware.St
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -119,6 +122,9 @@ func (c *Client) addOperationDeleteKnownHostKeysMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteKnownHostKeysValidationMiddleware(stack); err != nil {
@@ -140,6 +146,18 @@ func (c *Client) addOperationDeleteKnownHostKeysMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

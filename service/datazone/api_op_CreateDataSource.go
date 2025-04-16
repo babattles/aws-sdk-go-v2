@@ -35,12 +35,6 @@ type CreateDataSourceInput struct {
 	// This member is required.
 	DomainIdentifier *string
 
-	// The unique identifier of the Amazon DataZone environment to which the data
-	// source publishes assets.
-	//
-	// This member is required.
-	EnvironmentIdentifier *string
-
 	// The name of the data source.
 	//
 	// This member is required.
@@ -52,7 +46,11 @@ type CreateDataSourceInput struct {
 	// This member is required.
 	ProjectIdentifier *string
 
-	// The type of the data source.
+	// The type of the data source. In Amazon DataZone, you can use data sources to
+	// import technical metadata of assets (data) from the source databases or data
+	// warehouses into Amazon DataZone. In the current release of Amazon DataZone, you
+	// can create and run data sources for Amazon Web Services Glue and Amazon
+	// Redshift.
 	//
 	// This member is required.
 	Type *string
@@ -69,11 +67,18 @@ type CreateDataSourceInput struct {
 	// glueRunConfiguration or redshiftRunConfiguration .
 	Configuration types.DataSourceConfigurationInput
 
+	// The ID of the connection.
+	ConnectionIdentifier *string
+
 	// The description of the data source.
 	Description *string
 
 	// Specifies whether the data source is enabled.
 	EnableSetting types.EnableSetting
+
+	// The unique identifier of the Amazon DataZone environment to which the data
+	// source publishes assets.
+	EnvironmentIdentifier *string
 
 	// Specifies whether the assets that this data source creates in the inventory are
 	// to be also automatically published to the catalog.
@@ -95,12 +100,6 @@ type CreateDataSourceOutput struct {
 	//
 	// This member is required.
 	DomainId *string
-
-	// The unique identifier of the Amazon DataZone environment to which the data
-	// source publishes assets.
-	//
-	// This member is required.
-	EnvironmentId *string
 
 	// The unique identifier of the data source.
 	//
@@ -124,6 +123,9 @@ type CreateDataSourceOutput struct {
 	// glueRunConfiguration or redshiftRunConfiguration .
 	Configuration types.DataSourceConfigurationOutput
 
+	// The ID of the connection.
+	ConnectionId *string
+
 	// The timestamp of when the data source was created.
 	CreatedAt *time.Time
 
@@ -132,6 +134,10 @@ type CreateDataSourceOutput struct {
 
 	// Specifies whether the data source is enabled.
 	EnableSetting types.EnableSetting
+
+	// The unique identifier of the Amazon DataZone environment to which the data
+	// source publishes assets.
+	EnvironmentId *string
 
 	// Specifies the error message that is returned if the operation cannot be
 	// successfully completed.
@@ -216,6 +222,9 @@ func (c *Client) addOperationCreateDataSourceMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -232,6 +241,9 @@ func (c *Client) addOperationCreateDataSourceMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateDataSourceMiddleware(stack, options); err != nil {
@@ -256,6 +268,18 @@ func (c *Client) addOperationCreateDataSourceMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

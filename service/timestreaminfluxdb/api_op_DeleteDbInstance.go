@@ -66,6 +66,9 @@ type DeleteDbInstanceOutput struct {
 	// The Availability Zone in which the DB instance resides.
 	AvailabilityZone *string
 
+	// Specifies the DbCluster to which this DbInstance belongs to.
+	DbClusterId *string
+
 	// The Timestream for InfluxDB instance type that InfluxDB runs on.
 	DbInstanceType types.DbInstanceType
 
@@ -82,14 +85,25 @@ type DeleteDbInstanceOutput struct {
 	// The endpoint used to connect to InfluxDB. The default InfluxDB port is 8086.
 	Endpoint *string
 
-	// The Amazon Resource Name (ARN) of the AWS Secrets Manager secret containing the
+	// The Amazon Resource Name (ARN) of the Secrets Manager secret containing the
 	// initial InfluxDB authorization parameters. The secret value is a JSON formatted
 	// key-value pair holding InfluxDB authorization values: organization, bucket,
 	// username, and password.
 	InfluxAuthParametersSecretArn *string
 
+	// Specifies the DbInstance's role in the cluster.
+	InstanceMode types.InstanceMode
+
 	// Configuration for sending InfluxDB engine logs to send to specified S3 bucket.
 	LogDeliveryConfiguration *types.LogDeliveryConfiguration
+
+	// Specifies whether the networkType of the Timestream for InfluxDB instance is
+	// IPV4, which can communicate over IPv4 protocol only, or DUAL, which can
+	// communicate over both IPv4 and IPv6 protocols.
+	NetworkType types.NetworkType
+
+	// The port number on which InfluxDB accepts connections.
+	Port *int32
 
 	// Indicates if the DB instance has a public IP to facilitate access.
 	PubliclyAccessible *bool
@@ -153,6 +167,9 @@ func (c *Client) addOperationDeleteDbInstanceMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -169,6 +186,9 @@ func (c *Client) addOperationDeleteDbInstanceMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteDbInstanceValidationMiddleware(stack); err != nil {
@@ -190,6 +210,18 @@ func (c *Client) addOperationDeleteDbInstanceMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -29,16 +29,17 @@ func (c *Client) DeleteFirewallRule(ctx context.Context, params *DeleteFirewallR
 
 type DeleteFirewallRuleInput struct {
 
-	// The ID of the domain list that's used in the rule.
-	//
-	// This member is required.
-	FirewallDomainListId *string
-
 	// The unique identifier of the firewall rule group that you want to delete the
 	// rule from.
 	//
 	// This member is required.
 	FirewallRuleGroupId *string
+
+	// The ID of the domain list that's used in the rule.
+	FirewallDomainListId *string
+
+	//  The ID that is created for a DNS Firewall Advanced rule.
+	FirewallThreatProtectionId *string
 
 	//  The DNS query type that the rule you are deleting evaluates. Allowed values
 	// are;
@@ -133,6 +134,9 @@ func (c *Client) addOperationDeleteFirewallRuleMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -149,6 +153,9 @@ func (c *Client) addOperationDeleteFirewallRuleMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteFirewallRuleValidationMiddleware(stack); err != nil {
@@ -170,6 +177,18 @@ func (c *Client) addOperationDeleteFirewallRuleMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

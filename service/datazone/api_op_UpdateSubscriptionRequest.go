@@ -100,6 +100,12 @@ type UpdateSubscriptionRequestOutput struct {
 	// The decision comment of the UpdateSubscriptionRequest action.
 	DecisionComment *string
 
+	// The ID of the existing subscription.
+	ExistingSubscriptionId *string
+
+	// Metadata forms included in the subscription request.
+	MetadataForms []types.FormOutput
+
 	// The identifier of the Amazon DataZone user who reviews the subscription request.
 	ReviewerId *string
 
@@ -155,6 +161,9 @@ func (c *Client) addOperationUpdateSubscriptionRequestMiddlewares(stack *middlew
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -171,6 +180,9 @@ func (c *Client) addOperationUpdateSubscriptionRequestMiddlewares(stack *middlew
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateSubscriptionRequestValidationMiddleware(stack); err != nil {
@@ -192,6 +204,18 @@ func (c *Client) addOperationUpdateSubscriptionRequestMiddlewares(stack *middlew
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

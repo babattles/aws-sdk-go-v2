@@ -37,8 +37,8 @@ type AcceptAccountLinkInvitationInput struct {
 	// This member is required.
 	LinkId *string
 
-	// A string of up to 64 ASCII characters that Amazon EFS uses to ensure idempotent
-	// creation.
+	// A string of up to 64 ASCII characters that Amazon WorkSpaces uses to ensure
+	// idempotent creation.
 	ClientToken *string
 
 	noSmithyDocumentSerde
@@ -98,6 +98,9 @@ func (c *Client) addOperationAcceptAccountLinkInvitationMiddlewares(stack *middl
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -114,6 +117,9 @@ func (c *Client) addOperationAcceptAccountLinkInvitationMiddlewares(stack *middl
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpAcceptAccountLinkInvitationValidationMiddleware(stack); err != nil {
@@ -135,6 +141,18 @@ func (c *Client) addOperationAcceptAccountLinkInvitationMiddlewares(stack *middl
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

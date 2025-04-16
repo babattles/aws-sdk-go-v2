@@ -75,6 +75,9 @@ type CreateBotInput struct {
 	// bot.
 	Description *string
 
+	// Specifies the configuration for error logging during bot creation.
+	ErrorLogSettings *types.ErrorLogSettings
+
 	// A list of tags to add to the test alias for a bot. You can only add tags when
 	// you create a bot. You can't use the UpdateAlias operation to update tags. To
 	// update tags on the test alias, use the TagResource operation.
@@ -114,6 +117,10 @@ type CreateBotOutput struct {
 
 	// The description specified for the bot.
 	Description *string
+
+	// Specifies configuration settings for delivering error logs to Cloudwatch Logs
+	// in an Amazon Lex bot response.
+	ErrorLogSettings *types.ErrorLogSettings
 
 	// The session idle time specified for the bot.
 	IdleSessionTTLInSeconds *int32
@@ -173,6 +180,9 @@ func (c *Client) addOperationCreateBotMiddlewares(stack *middleware.Stack, optio
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -189,6 +199,9 @@ func (c *Client) addOperationCreateBotMiddlewares(stack *middleware.Stack, optio
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateBotValidationMiddleware(stack); err != nil {
@@ -210,6 +223,18 @@ func (c *Client) addOperationCreateBotMiddlewares(stack *middleware.Stack, optio
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

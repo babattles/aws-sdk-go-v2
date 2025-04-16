@@ -36,8 +36,8 @@ type UpdateSubscriberInput struct {
 	// This member is required.
 	SubscriberId *string
 
-	// The supported Amazon Web Services from which logs and events are collected. For
-	// the list of supported Amazon Web Services, see the [Amazon Security Lake User Guide].
+	// The supported Amazon Web Services services from which logs and events are
+	// collected. For the list of supported Amazon Web Services services, see the [Amazon Security Lake User Guide].
 	//
 	// [Amazon Security Lake User Guide]: https://docs.aws.amazon.com/security-lake/latest/userguide/internal-sources.html
 	Sources []types.LogSourceResource
@@ -45,7 +45,7 @@ type UpdateSubscriberInput struct {
 	// The description of the Security Lake account subscriber.
 	SubscriberDescription *string
 
-	// The AWS identity used to access your data.
+	// The Amazon Web Services identity used to access your data.
 	SubscriberIdentity *types.AwsIdentity
 
 	// The name of the Security Lake account subscriber.
@@ -108,6 +108,9 @@ func (c *Client) addOperationUpdateSubscriberMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -124,6 +127,9 @@ func (c *Client) addOperationUpdateSubscriberMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateSubscriberValidationMiddleware(stack); err != nil {
@@ -145,6 +151,18 @@ func (c *Client) addOperationUpdateSubscriberMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

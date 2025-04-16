@@ -68,7 +68,7 @@ type DescribeEndpointConfigOutput struct {
 	// [CreateEndpointConfig]: https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateEndpointConfig.html
 	AsyncInferenceConfig *types.AsyncInferenceConfig
 
-	// Configuration to control how SageMaker captures inference data.
+	// Configuration to control how SageMaker AI captures inference data.
 	DataCaptureConfig *types.DataCaptureConfig
 
 	// Indicates whether all model containers deployed to the endpoint are isolated.
@@ -148,6 +148,9 @@ func (c *Client) addOperationDescribeEndpointConfigMiddlewares(stack *middleware
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -164,6 +167,9 @@ func (c *Client) addOperationDescribeEndpointConfigMiddlewares(stack *middleware
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeEndpointConfigValidationMiddleware(stack); err != nil {
@@ -185,6 +191,18 @@ func (c *Client) addOperationDescribeEndpointConfigMiddlewares(stack *middleware
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

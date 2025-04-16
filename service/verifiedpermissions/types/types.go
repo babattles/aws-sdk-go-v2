@@ -43,7 +43,9 @@ type ActionIdentifier struct {
 // The following types satisfy this interface:
 //
 //	AttributeValueMemberBoolean
+//	AttributeValueMemberDecimal
 //	AttributeValueMemberEntityIdentifier
+//	AttributeValueMemberIpaddr
 //	AttributeValueMemberLong
 //	AttributeValueMemberRecord
 //	AttributeValueMemberSet
@@ -70,6 +72,19 @@ type AttributeValueMemberBoolean struct {
 
 func (*AttributeValueMemberBoolean) isAttributeValue() {}
 
+// An attribute value of [decimal] type.
+//
+// Example: {"decimal": "1.1"}
+//
+// [decimal]: https://docs.cedarpolicy.com/policies/syntax-datatypes.html#datatype-decimal
+type AttributeValueMemberDecimal struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*AttributeValueMemberDecimal) isAttributeValue() {}
+
 // An attribute value of type [EntityIdentifier].
 //
 // Example: "entityIdentifier": { "entityId": "<id>", "entityType": "<entity
@@ -83,6 +98,19 @@ type AttributeValueMemberEntityIdentifier struct {
 }
 
 func (*AttributeValueMemberEntityIdentifier) isAttributeValue() {}
+
+// An attribute value of [ipaddr] type.
+//
+// Example: {"ip": "192.168.1.100"}
+//
+// [ipaddr]: https://docs.cedarpolicy.com/policies/syntax-datatypes.html#datatype-ipaddr
+type AttributeValueMemberIpaddr struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*AttributeValueMemberIpaddr) isAttributeValue() {}
 
 // An attribute value of [Long] type.
 //
@@ -135,6 +163,91 @@ type AttributeValueMemberString struct {
 }
 
 func (*AttributeValueMemberString) isAttributeValue() {}
+
+// Contains the information about an error resulting from a BatchGetPolicy API
+// call.
+type BatchGetPolicyErrorItem struct {
+
+	// The error code that was returned.
+	//
+	// This member is required.
+	Code BatchGetPolicyErrorCode
+
+	// A detailed error message.
+	//
+	// This member is required.
+	Message *string
+
+	// The identifier of the policy associated with the failed request.
+	//
+	// This member is required.
+	PolicyId *string
+
+	// The identifier of the policy store associated with the failed request.
+	//
+	// This member is required.
+	PolicyStoreId *string
+
+	noSmithyDocumentSerde
+}
+
+// Information about a policy that you include in a BatchGetPolicy API request.
+type BatchGetPolicyInputItem struct {
+
+	// The identifier of the policy you want information about.
+	//
+	// This member is required.
+	PolicyId *string
+
+	// The identifier of the policy store where the policy you want information about
+	// is stored.
+	//
+	// This member is required.
+	PolicyStoreId *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about a policy returned from a BatchGetPolicy API request.
+type BatchGetPolicyOutputItem struct {
+
+	// The date and time the policy was created.
+	//
+	// This member is required.
+	CreatedDate *time.Time
+
+	// The policy definition of an item in the list of policies returned.
+	//
+	// This member is required.
+	Definition PolicyDefinitionDetail
+
+	// The date and time the policy was most recently updated.
+	//
+	// This member is required.
+	LastUpdatedDate *time.Time
+
+	// The identifier of the policy you want information about.
+	//
+	// This member is required.
+	PolicyId *string
+
+	// The identifier of the policy store where the policy you want information about
+	// is stored.
+	//
+	// This member is required.
+	PolicyStoreId *string
+
+	// The type of the policy. This is one of the following values:
+	//
+	//   - STATIC
+	//
+	//   - TEMPLATE_LINKED
+	//
+	// This member is required.
+	PolicyType PolicyType
+
+	noSmithyDocumentSerde
+}
 
 // An authorization request that you include in a BatchIsAuthorized API request.
 type BatchIsAuthorizedInputItem struct {
@@ -582,11 +695,16 @@ func (*ConfigurationItemMemberOpenIdConnectConfiguration) isConfigurationItem() 
 //
 // This data type is used as a request parameter for the [IsAuthorized], [BatchIsAuthorized], and [IsAuthorizedWithToken] operations.
 //
+// If you're passing context as part of the request, exactly one instance of
+// context must be passed. If you don't want to pass context, omit the context
+// parameter from your request rather than sending context {} .
+//
 // Example:
 // "context":{"contextMap":{"<KeyName1>":{"boolean":true},"<KeyName2>":{"long":1234}}}
 //
 // The following types satisfy this interface:
 //
+//	ContextDefinitionMemberCedarJson
 //	ContextDefinitionMemberContextMap
 //
 // [BatchIsAuthorized]: https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_BatchIsAuthorized.html
@@ -595,6 +713,18 @@ func (*ConfigurationItemMemberOpenIdConnectConfiguration) isConfigurationItem() 
 type ContextDefinition interface {
 	isContextDefinition()
 }
+
+// A Cedar JSON string representation of the context needed to successfully
+// evaluate an authorization request.
+//
+// Example: {"cedarJson":"{\"<KeyName1>\": true, \"<KeyName2>\": 1234}" }
+type ContextDefinitionMemberCedarJson struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*ContextDefinitionMemberCedarJson) isContextDefinition() {}
 
 // An list of attributes that are needed to successfully evaluate an authorization
 // request. Each attribute in this array must include a map of a data type and its
@@ -641,6 +771,7 @@ type DeterminingPolicyItem struct {
 //
 // The following types satisfy this interface:
 //
+//	EntitiesDefinitionMemberCedarJson
 //	EntitiesDefinitionMemberEntityList
 //
 // [IsAuthorizedWithToken]: https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorizedWithToken.html
@@ -649,9 +780,25 @@ type EntitiesDefinition interface {
 	isEntitiesDefinition()
 }
 
+// A Cedar JSON string representation of the entities needed to successfully
+// evaluate an authorization request.
+//
+// Example: {"cedarJson":
+// "[{\"uid\":{\"type\":\"Photo\",\"id\":\"VacationPhoto94.jpg\"},\"attrs\":{\"accessLevel\":\"public\"},\"parents\":[]}]"}
+type EntitiesDefinitionMemberCedarJson struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*EntitiesDefinitionMemberCedarJson) isEntitiesDefinition() {}
+
 // An array of entities that are needed to successfully evaluate an authorization
 // request. Each entity in this array must include an identifier for the entity,
 // the attributes of the entity, and a list of any parent entities.
+//
+// If you include multiple entities with the same identifier , only the last one is
+// processed in the request.
 type EntitiesDefinitionMemberEntityList struct {
 	Value []EntityItem
 
@@ -1528,7 +1675,7 @@ type PolicyItem struct {
 	// This member is required.
 	PolicyId *string
 
-	// The identifier of the PolicyStore where the policy you want information about
+	// The identifier of the policy store where the policy you want information about
 	// is stored.
 	//
 	// This member is required.
@@ -1536,9 +1683,9 @@ type PolicyItem struct {
 
 	// The type of the policy. This is one of the following values:
 	//
-	//   - static
+	//   - STATIC
 	//
-	//   - templateLinked
+	//   - TEMPLATE_LINKED
 	//
 	// This member is required.
 	PolicyType PolicyType
@@ -1656,9 +1803,10 @@ type SchemaDefinition interface {
 }
 
 // A JSON string representation of the schema supported by applications that use
-// this policy store. For more information, see [Policy store schema]in the Amazon Verified Permissions
-// User Guide.
+// this policy store. To delete the schema, run [PutSchema]with {} for this parameter. For
+// more information, see [Policy store schema]in the Amazon Verified Permissions User Guide.
 //
+// [PutSchema]: https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_PutSchema.html
 // [Policy store schema]: https://docs.aws.amazon.com/verifiedpermissions/latest/userguide/schema.html
 type SchemaDefinitionMemberCedarJson struct {
 	Value string

@@ -72,16 +72,25 @@ type CreateJobQueueInput struct {
 
 	// The set of actions that Batch performs on jobs that remain at the head of the
 	// job queue in the specified state longer than specified times. Batch will perform
-	// each action after maxTimeSeconds has passed.
+	// each action after maxTimeSeconds has passed. (Note: The minimum value for
+	// maxTimeSeconds is 600 (10 minutes) and its maximum value is 86,400 (24 hours).)
 	JobStateTimeLimitActions []types.JobStateTimeLimitAction
 
-	// The Amazon Resource Name (ARN) of the fair share scheduling policy. If this
-	// parameter is specified, the job queue uses a fair share scheduling policy. If
-	// this parameter isn't specified, the job queue uses a first in, first out (FIFO)
-	// scheduling policy. After a job queue is created, you can replace but can't
-	// remove the fair share scheduling policy. The format is
-	// aws:Partition:batch:Region:Account:scheduling-policy/Name . An example is
+	// The Amazon Resource Name (ARN) of the fair-share scheduling policy. Job queues
+	// that don't have a fair-share scheduling policy are scheduled in a first-in,
+	// first-out (FIFO) model. After a job queue has a fair-share scheduling policy, it
+	// can be replaced but can't be removed.
+	//
+	// The format is aws:Partition:batch:Region:Account:scheduling-policy/Name .
+	//
+	// An example is
 	// aws:aws:batch:us-west-2:123456789012:scheduling-policy/MySchedulingPolicy .
+	//
+	// A job queue without a fair-share scheduling policy is scheduled as a FIFO job
+	// queue and can't have a fair-share scheduling policy added. Jobs queues with a
+	// fair-share scheduling policy can have a maximum of 500 active share identifiers.
+	// When the limit has been reached, submissions of any jobs that add a new share
+	// identifier fail.
 	SchedulingPolicyArn *string
 
 	// The state of the job queue. If the job queue state is ENABLED , it is able to
@@ -160,6 +169,9 @@ func (c *Client) addOperationCreateJobQueueMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -176,6 +188,9 @@ func (c *Client) addOperationCreateJobQueueMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateJobQueueValidationMiddleware(stack); err != nil {
@@ -197,6 +212,18 @@ func (c *Client) addOperationCreateJobQueueMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

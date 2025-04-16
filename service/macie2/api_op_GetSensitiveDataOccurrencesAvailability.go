@@ -81,7 +81,8 @@ type GetSensitiveDataOccurrencesAvailabilityOutput struct {
 	//
 	//   - OBJECT_UNAVAILABLE - The affected S3 object isn't available. The object was
 	//   renamed, moved, deleted, or changed after Macie created the finding. Or the
-	//   object is encrypted with an KMS key that's currently disabled.
+	//   object is encrypted with an KMS key that isn’t available. For example, the key
+	//   is disabled, is scheduled for deletion, or was deleted.
 	//
 	//   - RESULT_NOT_SIGNED - The corresponding sensitive data discovery result is
 	//   stored in an S3 object that hasn't been signed. Macie can't verify the integrity
@@ -151,6 +152,9 @@ func (c *Client) addOperationGetSensitiveDataOccurrencesAvailabilityMiddlewares(
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -167,6 +171,9 @@ func (c *Client) addOperationGetSensitiveDataOccurrencesAvailabilityMiddlewares(
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetSensitiveDataOccurrencesAvailabilityValidationMiddleware(stack); err != nil {
@@ -188,6 +195,18 @@ func (c *Client) addOperationGetSensitiveDataOccurrencesAvailabilityMiddlewares(
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

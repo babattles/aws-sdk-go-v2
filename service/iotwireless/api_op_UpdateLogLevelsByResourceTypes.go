@@ -12,7 +12,7 @@ import (
 )
 
 // Set default log level, or log levels by resource types. This can be for
-// wireless device log options or wireless gateways log options and is used to
+// wireless device, wireless gateway, or FUOTA task log options, and is used to
 // control the log messages that'll be displayed in CloudWatch.
 func (c *Client) UpdateLogLevelsByResourceTypes(ctx context.Context, params *UpdateLogLevelsByResourceTypesInput, optFns ...func(*Options)) (*UpdateLogLevelsByResourceTypesOutput, error) {
 	if params == nil {
@@ -35,6 +35,9 @@ type UpdateLogLevelsByResourceTypesInput struct {
 	// to display less verbose logs containing only error information, or to INFO for
 	// more detailed logs.
 	DefaultLogLevel types.LogLevel
+
+	// The list of FUOTA task log options.
+	FuotaTaskLogOptions []types.FuotaTaskLogOption
 
 	// The list of wireless device log options.
 	WirelessDeviceLogOptions []types.WirelessDeviceLogOption
@@ -95,6 +98,9 @@ func (c *Client) addOperationUpdateLogLevelsByResourceTypesMiddlewares(stack *mi
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -111,6 +117,9 @@ func (c *Client) addOperationUpdateLogLevelsByResourceTypesMiddlewares(stack *mi
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateLogLevelsByResourceTypesValidationMiddleware(stack); err != nil {
@@ -132,6 +141,18 @@ func (c *Client) addOperationUpdateLogLevelsByResourceTypesMiddlewares(stack *mi
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -428,6 +428,10 @@ type Backup struct {
 	// Specifies the resource type that's backed up.
 	ResourceType ResourceType
 
+	//  The size of the backup in bytes. This represents the amount of data that the
+	// file system would contain if you restore this backup.
+	SizeInBytes *int64
+
 	// The ID of the source backup. Specifies the backup that you are copying.
 	SourceBackupId *string
 
@@ -478,9 +482,9 @@ type CompletionReport struct {
 	// file system's linked S3 data repository. An absolute path that defines where the
 	// completion report will be stored in the destination location. The Path you
 	// provide must be located within the file system’s ExportPath. An example Path
-	// value is "s3://myBucket/myExportPath/optionalPrefix". The report provides the
-	// following information for each file in the report: FilePath, FileStatus, and
-	// ErrorCode.
+	// value is "s3://amzn-s3-demo-bucket/myExportPath/optionalPrefix". The report
+	// provides the following information for each file in the report: FilePath,
+	// FileStatus, and ErrorCode.
 	Path *string
 
 	// Required if Enabled is set to true . Specifies the scope of the CompletionReport
@@ -669,6 +673,12 @@ type CreateFileSystemLustreConfiguration struct {
 	//
 	// This parameter is required when StorageType is set to HDD .
 	DriveCacheType DriveCacheType
+
+	// (Optional) Specifies whether Elastic Fabric Adapter (EFA) and GPUDirect Storage
+	// (GDS) support is enabled for the Amazon FSx for Lustre file system.
+	//
+	// (Default = false )
+	EfaEnabled *bool
 
 	// (Optional) Specifies the path in the Amazon S3 bucket where the root of your
 	// Amazon FSx file system is exported. The path must use the same Amazon S3 bucket
@@ -1040,6 +1050,10 @@ type CreateFileSystemOpenZFSConfiguration struct {
 	// which you want the preferred file server to be located.
 	PreferredSubnetId *string
 
+	//  Specifies the optional provisioned SSD read cache on file systems that use the
+	// Intelligent-Tiering storage class.
+	ReadCacheConfiguration *OpenZFSReadCacheConfiguration
+
 	// The configuration Amazon FSx uses when creating the root value of the Amazon
 	// FSx for OpenZFS file system. All volumes are children of the root volume.
 	RootVolumeConfiguration *OpenZFSCreateRootVolumeConfiguration
@@ -1404,13 +1418,15 @@ type CreateOpenZFSVolumeConfiguration struct {
 	ReadOnly *bool
 
 	// Specifies the suggested block size for a volume in a ZFS dataset, in kibibytes
-	// (KiB). Valid values are 4, 8, 16, 32, 64, 128, 256, 512, or 1024 KiB. The
-	// default is 128 KiB. We recommend using the default setting for the majority of
-	// use cases. Generally, workloads that write in fixed small or large record sizes
-	// may benefit from setting a custom record size, like database workloads (small
-	// record size) or media streaming workloads (large record size). For additional
-	// guidance on when to set a custom record size, see [ZFS Record size]in the Amazon FSx for OpenZFS
-	// User Guide.
+	// (KiB). For file systems using the Intelligent-Tiering storage class, valid
+	// values are 128, 256, 512, 1024, 2048, or 4096 KiB, with a default of 1024 KiB.
+	// For all other file systems, valid values are 4, 8, 16, 32, 64, 128, 256, 512, or
+	// 1024 KiB, with a default of 128 KiB. We recommend using the default setting for
+	// the majority of use cases. Generally, workloads that write in fixed small or
+	// large record sizes may benefit from setting a custom record size, like database
+	// workloads (small record size) or media streaming workloads (large record size).
+	// For additional guidance on when to set a custom record size, see [ZFS Record size]in the Amazon
+	// FSx for OpenZFS User Guide.
 	//
 	// [ZFS Record size]: https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/performance.html#record-size-performance
 	RecordSizeKiB *int32
@@ -1578,10 +1594,10 @@ type DataRepositoryAssociation struct {
 	//   DataRepositorySubdirectories parameter.
 	//
 	//   - For Amazon File Cache, the path can be an S3 bucket or prefix in the format
-	//   s3://myBucket/myPrefix/ .
+	//   s3://bucket-name/prefix/ (where prefix is optional).
 	//
 	//   - For Amazon FSx for Lustre, the path can be an S3 bucket or prefix in the
-	//   format s3://myBucket/myPrefix/ .
+	//   format s3://bucket-name/prefix/ (where prefix is optional).
 	DataRepositoryPath *string
 
 	// For Amazon File Cache, a list of NFS Exports that will be linked with an NFS
@@ -1920,7 +1936,7 @@ type DataRepositoryTaskFailureDetails struct {
 }
 
 // (Optional) An array of filter objects you can use to filter the response of
-// data repository tasks you will see in the the response. You can filter the tasks
+// data repository tasks you will see in the response. You can filter the tasks
 // returned in the response by one or more file system IDs, task lifecycles, and by
 // task type. A filter object consists of a filter Name , and one or more Values
 // for the filter.
@@ -2369,8 +2385,8 @@ type FileCacheDataRepositoryAssociation struct {
 	//   which indicates the root of the subdirectories specified with the
 	//   DataRepositorySubdirectories parameter.
 	//
-	//   - The path can be an S3 bucket or prefix in the format s3://myBucket/myPrefix/
-	//   .
+	//   - The path can be an S3 bucket or prefix in the format
+	//   s3://bucket-name/prefix/ (where prefix is optional).
 	//
 	// This member is required.
 	DataRepositoryPath *string
@@ -2782,6 +2798,10 @@ type LustreFileSystemConfiguration struct {
 	//
 	// This parameter is required when StorageType is set to HDD.
 	DriveCacheType DriveCacheType
+
+	// Specifies whether Elastic Fabric Adapter (EFA) and GPUDirect Storage (GDS)
+	// support is enabled for the Amazon FSx for Lustre file system.
+	EfaEnabled *bool
 
 	// The Lustre logging configuration. Lustre logging writes the enabled log events
 	// for your file system to Amazon CloudWatch Logs.
@@ -3355,6 +3375,10 @@ type OpenZFSFileSystemConfiguration struct {
 	// which you want the preferred file server to be located.
 	PreferredSubnetId *string
 
+	//  Required when StorageType is set to INTELLIGENT_TIERING . Specifies the
+	// optional provisioned SSD read cache.
+	ReadCacheConfiguration *OpenZFSReadCacheConfiguration
+
 	// The ID of the root volume of the OpenZFS file system.
 	RootVolumeId *string
 
@@ -3421,6 +3445,29 @@ type OpenZFSOriginSnapshotConfiguration struct {
 	//
 	// [Amazon Resource Names (ARNs)]: https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html
 	SnapshotARN *string
+
+	noSmithyDocumentSerde
+}
+
+//	The configuration for the optional provisioned SSD read cache on file systems
+//
+// that use the Intelligent-Tiering storage class.
+type OpenZFSReadCacheConfiguration struct {
+
+	//  Required if SizingMode is set to USER_PROVISIONED . Specifies the size of the
+	// file system's SSD read cache, in gibibytes (GiB).
+	SizeGiB *int32
+
+	//  Specifies how the provisioned SSD read cache is sized, as follows:
+	//
+	//   - Set to NO_CACHE if you do not want to use an SSD read cache with your
+	//   Intelligent-Tiering file system.
+	//
+	//   - Set to USER_PROVISIONED to specify the exact size of your SSD read cache.
+	//
+	//   - Set to PROPORTIONAL_TO_THROUGHPUT_CAPACITY to have your SSD read cache
+	//   automatically sized based on your throughput capacity.
+	SizingMode OpenZFSReadCacheSizingMode
 
 	noSmithyDocumentSerde
 }
@@ -3542,7 +3589,7 @@ type OpenZFSVolumeConfiguration struct {
 	// [Amazon Resource Names (ARNs)]: https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html
 	SourceSnapshotARN *string
 
-	// The maximum amount of storage in gibibtyes (GiB) that the volume can use from
+	// The maximum amount of storage in gibibytes (GiB) that the volume can use from
 	// its parent. You can specify a quota larger than the storage on the parent
 	// volume.
 	StorageCapacityQuotaGiB *int32
@@ -4306,9 +4353,9 @@ type UpdateFileSystemOntapConfiguration struct {
 
 	// Update the password for the fsxadmin user by entering a new password. You use
 	// the fsxadmin user to access the NetApp ONTAP CLI and REST API to manage your
-	// file system resources. For more information, see [Managing resources using NetApp Applicaton].
+	// file system resources. For more information, see [Managing resources using NetApp Application].
 	//
-	// [Managing resources using NetApp Applicaton]: https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/managing-resources-ontap-apps.html
+	// [Managing resources using NetApp Application]: https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/managing-resources-ontap-apps.html
 	FsxAdminPassword *string
 
 	// Use to update the number of high-availability (HA) pairs for a
@@ -4430,6 +4477,10 @@ type UpdateFileSystemOpenZFSConfiguration struct {
 	// configuration consists of the total number of provisioned SSD IOPS and how it is
 	// was provisioned, or the mode (by the customer or by Amazon FSx).
 	DiskIopsConfiguration *DiskIopsConfiguration
+
+	//  The configuration for the optional provisioned SSD read cache on file systems
+	// that use the Intelligent-Tiering storage class.
+	ReadCacheConfiguration *OpenZFSReadCacheConfiguration
 
 	// (Multi-AZ only) A list of IDs of existing virtual private cloud (VPC) route
 	// tables to disassociate (remove) from your Amazon FSx for OpenZFS file system.

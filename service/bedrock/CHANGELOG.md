@@ -1,3 +1,190 @@
+# v1.30.1 (2025-04-03)
+
+* No change notes available for this release.
+
+# v1.30.0 (2025-03-21)
+
+* **Feature**: A CustomModelUnit(CMU) is an abstract view of the hardware utilization that Bedrock needs to host a a single copy of your custom imported model. Bedrock determines the number of CMUs that a model copy needs when you import the custom model. You can use CMUs to estimate the cost of Inference's.
+
+# v1.29.0 (2025-03-20)
+
+* **Feature**: With this release, Bedrock Evaluation will now support bring your own inference responses.
+
+# v1.28.1 (2025-03-14)
+
+* No change notes available for this release.
+
+# v1.28.0 (2025-03-06)
+
+* **Feature**: This releases adds support for Custom Prompt Router
+
+# v1.27.1 (2025-03-04.2)
+
+* **Bug Fix**: Add assurance test for operation order.
+
+# v1.27.0 (2025-02-27)
+
+* **Feature**: Track credential providers via User-Agent Feature ids
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.26.8 (2025-02-20)
+
+* No change notes available for this release.
+
+# v1.26.7 (2025-02-18)
+
+* **Bug Fix**: Bump go version to 1.22
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.26.6 (2025-02-05)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.26.5 (2025-01-31)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.26.4 (2025-01-30)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.26.3 (2025-01-24)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+* **Dependency Update**: Upgrade to smithy-go v1.22.2.
+
+# v1.26.2 (2025-01-17)
+
+* **Bug Fix**: Fix bug where credentials weren't refreshed during retry loop.
+
+# v1.26.1 (2025-01-15)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.26.0 (2025-01-13)
+
+* **Feature**: With this release, Bedrock Evaluation will now support latency-optimized inference for foundation models.
+
+# v1.25.3 (2025-01-09)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.25.2 (2024-12-19)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.25.1 (2024-12-09)
+
+* No change notes available for this release.
+
+# v1.25.0 (2024-12-04)
+
+* **Feature**: Introduced two APIs ListPromptRouters and GetPromptRouter for Intelligent Prompt Router feature. Add support for Bedrock Guardrails image content filter. New Bedrock Marketplace feature enabling a wider range of bedrock compatible models with self-hosted capability.
+
+# v1.24.0 (2024-12-03.2)
+
+* **Feature**: Tagging support for Async Invoke resources. Added support for Distillation in CreateModelCustomizationJob API. Support for videoDataDeliveryEnabled flag in invocation logging.
+
+# v1.23.0 (2024-12-02)
+
+* **Feature**: Add support for Knowledge Base Evaluations & LLM as a judge
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.22.4 (2024-11-18)
+
+* **Dependency Update**: Update to smithy-go v1.22.1.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.22.3 (2024-11-11)
+
+* No change notes available for this release.
+
+# v1.22.2 (2024-11-07)
+
+* **Bug Fix**: Adds case-insensitive handling of error message fields in service responses
+
+# v1.22.1 (2024-11-06)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.22.0 (2024-10-29)
+
+* **Feature**: Update Application Inference Profile
+
+# v1.21.2 (2024-10-28)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.21.1 (2024-10-23)
+
+* **Documentation**: Doc updates for supporting converse
+
+# v1.21.0 (2024-10-18)
+
+* **Feature**: Adding converse support to CMI API's
+
+# v1.20.2 (2024-10-08)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.20.1 (2024-10-07)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.20.0 (2024-10-04)
+
+* **Feature**: Add support for HTTP client metrics.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.19.4 (2024-10-03)
+
+* No change notes available for this release.
+
+# v1.19.3 (2024-10-02)
+
+* No change notes available for this release.
+
+# v1.19.2 (2024-09-27)
+
+* No change notes available for this release.
+
+# v1.19.1 (2024-09-25)
+
+* No change notes available for this release.
+
+# v1.19.0 (2024-09-24)
+
+* **Feature**: Add support for Cross Region Inference in Bedrock Model Evaluations.
+
+# v1.18.1 (2024-09-23)
+
+* No change notes available for this release.
+
+# v1.18.0 (2024-09-20)
+
+* **Feature**: Add tracing and metrics support to service clients.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.17.1 (2024-09-17)
+
+* **Bug Fix**: **BREAKFIX**: Only generate AccountIDEndpointMode config for services that use it. This is a compiler break, but removes no actual functionality, as no services currently use the account ID in endpoint resolution.
+
+# v1.17.0 (2024-09-16)
+
+* **Feature**: This feature adds cross account s3 bucket and VPC support to ModelInvocation jobs. To use a cross account bucket, pass in the accountId of the bucket to s3BucketOwner in the ModelInvocationJobInputDataConfig or ModelInvocationJobOutputDataConfig.
+
+# v1.16.2 (2024-09-04)
+
+* No change notes available for this release.
+
+# v1.16.1 (2024-09-03)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.16.0 (2024-08-27)
+
+* **Feature**: Amazon Bedrock SDK updates for Inference Profile.
+
 # v1.15.0 (2024-08-22)
 
 * **Feature**: Amazon Bedrock Evaluation BatchDeleteEvaluationJob API allows customers to delete evaluation jobs under terminated evaluation job statuses - Stopped, Failed, or Completed. Customers can submit a batch of 25 evaluation jobs to be deleted at once.

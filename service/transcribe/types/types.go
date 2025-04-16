@@ -180,6 +180,10 @@ type CallAnalyticsJob struct {
 	// processing at 12:32 PM UTC-7 on May 4, 2022.
 	StartTime *time.Time
 
+	// The tags, each in the form of a key:value pair, assigned to the specified call
+	// analytics job.
+	Tags []Tag
+
 	// Provides you with the Amazon S3 URI you can use to access your transcript.
 	Transcript *Transcript
 
@@ -258,8 +262,11 @@ type CallAnalyticsJobSettings struct {
 	//
 	// For a list of languages supported with Call Analytics, refer to the [Supported languages] table.
 	//
-	// To transcribe speech in Modern Standard Arabic ( ar-SA ), your media file must
-	// be encoded at a sample rate of 16,000 Hz or higher.
+	// To transcribe speech in Modern Standard Arabic ( ar-SA ) in Amazon Web Services
+	// GovCloud (US) (US-West, us-gov-west-1), Amazon Web Services GovCloud (US)
+	// (US-East, us-gov-east-1), Canada (Calgary) ca-west-1 and Africa (Cape Town)
+	// af-south-1, your media file must be encoded at a sample rate of 16,000 Hz or
+	// higher.
 	//
 	// [Supported languages]: https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html
 	LanguageOptions []LanguageCode
@@ -401,6 +408,10 @@ type CategoryProperties struct {
 	// between 1 and 20 rules.
 	Rules []Rule
 
+	// The tags, each in the form of a key:value pair, assigned to the specified call
+	// analytics category.
+	Tags []Tag
+
 	noSmithyDocumentSerde
 }
 
@@ -416,6 +427,23 @@ type ChannelDefinition struct {
 	// Specify the speaker you want to define. Omitting this parameter is equivalent
 	// to specifying both participants.
 	ParticipantRole ParticipantRole
+
+	noSmithyDocumentSerde
+}
+
+// The output configuration for clinical note generation.
+type ClinicalNoteGenerationSettings struct {
+
+	// Specify one of the following templates to use for the clinical note summary.
+	// The default is HISTORY_AND_PHYSICAL .
+	//
+	//   - HISTORY_AND_PHYSICAL: Provides summaries for key sections of the clinical
+	//   documentation. Examples of sections include Chief Complaint, History of Present
+	//   Illness, Review of Systems, Past Medical History, Assessment, and Plan.
+	//
+	//   - GIRPP: Provides summaries based on the patients progress toward goals.
+	//   Examples of sections include Goal, Intervention, Response, Progress, and Plan.
+	NoteTemplate MedicalScribeNoteTemplate
 
 	noSmithyDocumentSerde
 }
@@ -985,6 +1013,9 @@ type MedicalScribeSettings struct {
 	//
 	// [Transcribing multi-channel audio]: https://docs.aws.amazon.com/transcribe/latest/dg/channel-id.html
 	ChannelIdentification *bool
+
+	// Specify settings for the clinical note generation.
+	ClinicalNoteGenerationSettings *ClinicalNoteGenerationSettings
 
 	// Specify the maximum number of speakers you want to partition in your media.
 	//

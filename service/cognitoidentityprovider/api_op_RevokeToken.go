@@ -39,7 +39,7 @@ func (c *Client) RevokeToken(ctx context.Context, params *RevokeTokenInput, optF
 
 type RevokeTokenInput struct {
 
-	// The client ID for the token that you want to revoke.
+	// The ID of the app client where the token that you want to revoke was issued.
 	//
 	// This member is required.
 	ClientId *string
@@ -49,8 +49,7 @@ type RevokeTokenInput struct {
 	// This member is required.
 	Token *string
 
-	// The secret for the client ID. This is required only if the client ID has a
-	// secret.
+	// The client secret of the requested app client, if the client has a secret.
 	ClientSecret *string
 
 	noSmithyDocumentSerde
@@ -103,6 +102,9 @@ func (c *Client) addOperationRevokeTokenMiddlewares(stack *middleware.Stack, opt
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -119,6 +121,9 @@ func (c *Client) addOperationRevokeTokenMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpRevokeTokenValidationMiddleware(stack); err != nil {
@@ -140,6 +145,18 @@ func (c *Client) addOperationRevokeTokenMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

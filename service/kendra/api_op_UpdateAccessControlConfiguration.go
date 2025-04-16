@@ -33,6 +33,10 @@ import (
 // currently only supports access control configuration for S3 data sources and
 // documents indexed using the BatchPutDocument API.
 //
+// You can't configure access control using CreateAccessControlConfiguration for
+// an Amazon Kendra Gen AI Enterprise Edition index. Amazon Kendra will return a
+// ValidationException error for a Gen_AI_ENTERPRISE_EDITION index.
+//
 // [BatchPutDocument]: https://docs.aws.amazon.com/kendra/latest/dg/API_BatchPutDocument.html
 // [Document]: https://docs.aws.amazon.com/kendra/latest/dg/API_Document.html
 func (c *Client) UpdateAccessControlConfiguration(ctx context.Context, params *UpdateAccessControlConfigurationInput, optFns ...func(*Options)) (*UpdateAccessControlConfigurationOutput, error) {
@@ -133,6 +137,9 @@ func (c *Client) addOperationUpdateAccessControlConfigurationMiddlewares(stack *
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -149,6 +156,9 @@ func (c *Client) addOperationUpdateAccessControlConfigurationMiddlewares(stack *
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateAccessControlConfigurationValidationMiddleware(stack); err != nil {
@@ -170,6 +180,18 @@ func (c *Client) addOperationUpdateAccessControlConfigurationMiddlewares(stack *
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -29,11 +29,6 @@ func (c *Client) UpdateConnector(ctx context.Context, params *UpdateConnectorInp
 
 type UpdateConnectorInput struct {
 
-	// The target capacity.
-	//
-	// This member is required.
-	Capacity *types.CapacityUpdate
-
 	// The Amazon Resource Name (ARN) of the connector that you want to update.
 	//
 	// This member is required.
@@ -44,6 +39,12 @@ type UpdateConnectorInput struct {
 	// This member is required.
 	CurrentVersion *string
 
+	// The target capacity.
+	Capacity *types.CapacityUpdate
+
+	// A map of keys to values that represent the configuration for the connector.
+	ConnectorConfiguration map[string]string
+
 	noSmithyDocumentSerde
 }
 
@@ -51,6 +52,9 @@ type UpdateConnectorOutput struct {
 
 	// The Amazon Resource Name (ARN) of the connector.
 	ConnectorArn *string
+
+	// The Amazon Resource Name (ARN) of the connector operation.
+	ConnectorOperationArn *string
 
 	// The state of the connector.
 	ConnectorState types.ConnectorState
@@ -104,6 +108,9 @@ func (c *Client) addOperationUpdateConnectorMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -120,6 +127,9 @@ func (c *Client) addOperationUpdateConnectorMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateConnectorValidationMiddleware(stack); err != nil {
@@ -141,6 +151,18 @@ func (c *Client) addOperationUpdateConnectorMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -38,6 +38,10 @@ type ListResourceScansInput struct {
 	// A string that identifies the next page of resource scan results.
 	NextToken *string
 
+	// The scan type that you want to get summary information about. The default is
+	// FULL .
+	ScanTypeFilter types.ScanType
+
 	noSmithyDocumentSerde
 }
 
@@ -101,6 +105,9 @@ func (c *Client) addOperationListResourceScansMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -119,6 +126,9 @@ func (c *Client) addOperationListResourceScansMiddlewares(stack *middleware.Stac
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListResourceScans(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -135,6 +145,18 @@ func (c *Client) addOperationListResourceScansMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -11,10 +11,10 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// For Redis OSS engine version 6.0 onwards: Creates a Redis OSS user. For more
-// information, see [Using Role Based Access Control (RBAC)].
+// For Valkey engine version 7.2 onwards and Redis OSS 6.0 to 7.1: Creates a user.
+// For more information, see [Using Role Based Access Control (RBAC)].
 //
-// [Using Role Based Access Control (RBAC)]: http://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Clusters.RBAC.html
+// [Using Role Based Access Control (RBAC)]: http://docs.aws.amazon.com/AmazonElastiCache/latest/dg/Clusters.RBAC.html
 func (c *Client) CreateUser(ctx context.Context, params *CreateUserInput, optFns ...func(*Options)) (*CreateUserOutput, error) {
 	if params == nil {
 		params = &CreateUserInput{}
@@ -37,7 +37,7 @@ type CreateUserInput struct {
 	// This member is required.
 	AccessString *string
 
-	// The current supported value is Redis.
+	// The options are valkey or redis.
 	//
 	// This member is required.
 	Engine *string
@@ -79,7 +79,7 @@ type CreateUserOutput struct {
 	// Denotes whether the user requires a password to authenticate.
 	Authentication *types.Authentication
 
-	// The current supported value is Redis.
+	// The options are valkey or redis.
 	Engine *string
 
 	// The minimum engine version required, which is Redis OSS 6.0
@@ -146,6 +146,9 @@ func (c *Client) addOperationCreateUserMiddlewares(stack *middleware.Stack, opti
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -162,6 +165,9 @@ func (c *Client) addOperationCreateUserMiddlewares(stack *middleware.Stack, opti
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateUserValidationMiddleware(stack); err != nil {
@@ -183,6 +189,18 @@ func (c *Client) addOperationCreateUserMiddlewares(stack *middleware.Stack, opti
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

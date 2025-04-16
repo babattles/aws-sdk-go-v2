@@ -38,9 +38,9 @@ type GetDataSourceIntrospectionInput struct {
 	IntrospectionId *string
 
 	// A boolean flag that determines whether SDL should be generated for introspected
-	// types or not. If set to true , each model will contain an sdl property that
-	// contains the SDL for that type. The SDL only contains the type data and no
-	// additional metadata or directives.
+	// types. If set to true , each model will contain an sdl property that contains
+	// the SDL for that type. The SDL only contains the type data and no additional
+	// metadata or directives.
 	IncludeModelsSDL bool
 
 	// The maximum number of introspected types that will be returned in a single
@@ -125,6 +125,9 @@ func (c *Client) addOperationGetDataSourceIntrospectionMiddlewares(stack *middle
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -141,6 +144,9 @@ func (c *Client) addOperationGetDataSourceIntrospectionMiddlewares(stack *middle
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetDataSourceIntrospectionValidationMiddleware(stack); err != nil {
@@ -162,6 +168,18 @@ func (c *Client) addOperationGetDataSourceIntrospectionMiddlewares(stack *middle
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

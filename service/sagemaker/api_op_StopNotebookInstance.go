@@ -11,9 +11,9 @@ import (
 )
 
 // Terminates the ML compute instance. Before terminating the instance, SageMaker
-// disconnects the ML storage volume from it. SageMaker preserves the ML storage
-// volume. SageMaker stops charging you for the ML compute instance when you call
-// StopNotebookInstance .
+// AI disconnects the ML storage volume from it. SageMaker AI preserves the ML
+// storage volume. SageMaker AI stops charging you for the ML compute instance when
+// you call StopNotebookInstance .
 //
 // To access data on the ML storage volume for a notebook instance that has been
 // terminated, call the StartNotebookInstance API. StartNotebookInstance launches
@@ -94,6 +94,9 @@ func (c *Client) addOperationStopNotebookInstanceMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -110,6 +113,9 @@ func (c *Client) addOperationStopNotebookInstanceMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpStopNotebookInstanceValidationMiddleware(stack); err != nil {
@@ -131,6 +137,18 @@ func (c *Client) addOperationStopNotebookInstanceMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

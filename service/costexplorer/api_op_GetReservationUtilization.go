@@ -62,6 +62,12 @@ type GetReservationUtilizationInput struct {
 	//
 	//   - SERVICE
 	//
+	// If not specified, the SERVICE filter defaults to Amazon Elastic Compute Cloud -
+	//   Compute. Supported values for SERVICE are Amazon Elastic Compute Cloud -
+	//   Compute, Amazon Relational Database Service, Amazon ElastiCache, Amazon
+	//   Redshift, and Amazon Elasticsearch Service. The value for the SERVICE filter
+	//   should not exceed "1".
+	//
 	//   - SCOPE
 	//
 	//   - TENANCY
@@ -204,6 +210,9 @@ func (c *Client) addOperationGetReservationUtilizationMiddlewares(stack *middlew
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -220,6 +229,9 @@ func (c *Client) addOperationGetReservationUtilizationMiddlewares(stack *middlew
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetReservationUtilizationValidationMiddleware(stack); err != nil {
@@ -241,6 +253,18 @@ func (c *Client) addOperationGetReservationUtilizationMiddlewares(stack *middlew
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

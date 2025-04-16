@@ -43,6 +43,10 @@ type PutIntegrationInput struct {
 	// This member is required.
 	DomainName *string
 
+	// A list of unique names for active event triggers associated with the
+	// integration.
+	EventTriggerNames []string
+
 	// The configuration that controls how Customer Profiles retrieves data from the
 	// source.
 	FlowDefinition *types.FlowDefinition
@@ -56,6 +60,10 @@ type PutIntegrationInput struct {
 	// ShopifyCreateCustomers , ShopifyUpdateCustomers , ShopifyCreateDraftOrders ,
 	// ShopifyUpdateDraftOrders , ShopifyCreateOrders , and ShopifyUpdatedOrders .
 	ObjectTypeNames map[string]string
+
+	// The Amazon Resource Name (ARN) of the IAM role. The Integration uses this role
+	// to make Customer Profiles requests on your behalf.
+	RoleArn *string
 
 	// The tags used to organize, track, or control access for this resource.
 	Tags map[string]string
@@ -88,6 +96,11 @@ type PutIntegrationOutput struct {
 	// This member is required.
 	Uri *string
 
+	// A list of unique names for active event triggers associated with the
+	// integration. This list would be empty if no Event Trigger is associated with the
+	// integration.
+	EventTriggerNames []string
+
 	// Boolean that shows if the Flow that's associated with the Integration is
 	// created in Amazon Appflow, or with ObjectTypeName equals _unstructured via
 	// API/CLI in flowDefinition.
@@ -102,6 +115,10 @@ type PutIntegrationOutput struct {
 	// ShopifyCreateCustomers , ShopifyUpdateCustomers , ShopifyCreateDraftOrders ,
 	// ShopifyUpdateDraftOrders , ShopifyCreateOrders , and ShopifyUpdatedOrders .
 	ObjectTypeNames map[string]string
+
+	// The Amazon Resource Name (ARN) of the IAM role. The Integration uses this role
+	// to make Customer Profiles requests on your behalf.
+	RoleArn *string
 
 	// The tags used to organize, track, or control access for this resource.
 	Tags map[string]string
@@ -158,6 +175,9 @@ func (c *Client) addOperationPutIntegrationMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -174,6 +194,9 @@ func (c *Client) addOperationPutIntegrationMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpPutIntegrationValidationMiddleware(stack); err != nil {
@@ -195,6 +218,18 @@ func (c *Client) addOperationPutIntegrationMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

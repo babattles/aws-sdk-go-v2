@@ -61,6 +61,11 @@ type BatchPutAssetPropertyValueInput struct {
 	// This member is required.
 	Entries []types.PutAssetPropertyValueEntry
 
+	// This setting enables partial ingestion at entry-level. If set to true , we
+	// ingest all TQVs not resulting in an error. If set to false , an invalid TQV
+	// fails ingestion of the entire entry that contains it.
+	EnablePartialEntryProcessing *bool
+
 	noSmithyDocumentSerde
 }
 
@@ -121,6 +126,9 @@ func (c *Client) addOperationBatchPutAssetPropertyValueMiddlewares(stack *middle
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -137,6 +145,9 @@ func (c *Client) addOperationBatchPutAssetPropertyValueMiddlewares(stack *middle
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addEndpointPrefix_opBatchPutAssetPropertyValueMiddleware(stack); err != nil {
@@ -161,6 +172,18 @@ func (c *Client) addOperationBatchPutAssetPropertyValueMiddlewares(stack *middle
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

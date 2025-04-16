@@ -11,19 +11,11 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Returns the status of autoshift observer notification. Autoshift observer
-// notification enables you to be notified, through Amazon EventBridge, when there
-// is an autoshift event for zonal autoshift.
-//
-// If the status is ENABLED , Route 53 ARC includes all autoshift events when you
-// use the EventBridge pattern Autoshift In Progress . When the status is DISABLED
-// , Route 53 ARC includes only autoshift events for autoshifts when one or more of
-// your resources is included in the autoshift.
-//
-// For more information, see [Notifications for practice runs and autoshifts] in the Amazon Route 53 Application Recovery
-// Controller Developer Guide.
-//
-// [Notifications for practice runs and autoshifts]: https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-autoshift.how-it-works.html#ZAShiftNotification
+// Returns the status of the autoshift observer notification. Autoshift observer
+// notifications notify you through Amazon EventBridge when there is an autoshift
+// event for zonal autoshift. The status can be ENABLED or DISABLED . When ENABLED
+// , a notification is sent when an autoshift is triggered. When DISABLED ,
+// notifications are not sent.
 func (c *Client) GetAutoshiftObserverNotificationStatus(ctx context.Context, params *GetAutoshiftObserverNotificationStatusInput, optFns ...func(*Options)) (*GetAutoshiftObserverNotificationStatusOutput, error) {
 	if params == nil {
 		params = &GetAutoshiftObserverNotificationStatusInput{}
@@ -45,9 +37,9 @@ type GetAutoshiftObserverNotificationStatusInput struct {
 
 type GetAutoshiftObserverNotificationStatusOutput struct {
 
-	// The status of autoshift observer notification. If the status is ENABLED , Route
-	// 53 ARC includes all autoshift events when you use the Amazon EventBridge pattern
-	// Autoshift In Progress . When the status is DISABLED , Route 53 ARC includes only
+	// The status of autoshift observer notification. If the status is ENABLED , ARC
+	// includes all autoshift events when you use the Amazon EventBridge pattern
+	// Autoshift In Progress . When the status is DISABLED , ARC includes only
 	// autoshift events for autoshifts when one or more of your resources is included
 	// in the autoshift.
 	//
@@ -103,6 +95,9 @@ func (c *Client) addOperationGetAutoshiftObserverNotificationStatusMiddlewares(s
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -121,6 +116,9 @@ func (c *Client) addOperationGetAutoshiftObserverNotificationStatusMiddlewares(s
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opGetAutoshiftObserverNotificationStatus(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -137,6 +135,18 @@ func (c *Client) addOperationGetAutoshiftObserverNotificationStatusMiddlewares(s
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

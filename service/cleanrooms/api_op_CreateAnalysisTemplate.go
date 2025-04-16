@@ -56,6 +56,9 @@ type CreateAnalysisTemplateInput struct {
 	// The description of the analysis template.
 	Description *string
 
+	// A relation within an analysis.
+	Schema *types.AnalysisSchema
+
 	// An optional label that you can assign to a resource when you create it. Each
 	// tag consists of a key and an optional value, both of which you define. When you
 	// use tagging, you can also use tag-based access control in IAM policies to
@@ -121,6 +124,9 @@ func (c *Client) addOperationCreateAnalysisTemplateMiddlewares(stack *middleware
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -137,6 +143,9 @@ func (c *Client) addOperationCreateAnalysisTemplateMiddlewares(stack *middleware
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateAnalysisTemplateValidationMiddleware(stack); err != nil {
@@ -158,6 +167,18 @@ func (c *Client) addOperationCreateAnalysisTemplateMiddlewares(stack *middleware
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

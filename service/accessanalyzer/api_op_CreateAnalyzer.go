@@ -52,11 +52,17 @@ type CreateAnalyzerInput struct {
 
 	// Specifies the configuration of the analyzer. If the analyzer is an unused
 	// access analyzer, the specified scope of unused access is used for the
-	// configuration. If the analyzer is an external access analyzer, this field is not
-	// used.
+	// configuration.
 	Configuration types.AnalyzerConfiguration
 
-	// An array of key-value pairs to apply to the analyzer.
+	// An array of key-value pairs to apply to the analyzer. You can use the set of
+	// Unicode letters, digits, whitespace, _ , . , / , = , + , and - .
+	//
+	// For the tag key, you can specify a value that is 1 to 128 characters in length
+	// and cannot be prefixed with aws: .
+	//
+	// For the tag value, you can specify a value that is 0 to 256 characters in
+	// length.
 	Tags map[string]string
 
 	noSmithyDocumentSerde
@@ -117,6 +123,9 @@ func (c *Client) addOperationCreateAnalyzerMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -133,6 +142,9 @@ func (c *Client) addOperationCreateAnalyzerMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateAnalyzerMiddleware(stack, options); err != nil {
@@ -157,6 +169,18 @@ func (c *Client) addOperationCreateAnalyzerMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

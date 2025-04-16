@@ -10,8 +10,6 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// This API is in preview release for Amazon Connect and is subject to change.
-//
 // Removes the dataset ID associated with a given Amazon Connect instance.
 func (c *Client) DisassociateAnalyticsDataSet(ctx context.Context, params *DisassociateAnalyticsDataSetInput, optFns ...func(*Options)) (*DisassociateAnalyticsDataSetOutput, error) {
 	if params == nil {
@@ -102,6 +100,9 @@ func (c *Client) addOperationDisassociateAnalyticsDataSetMiddlewares(stack *midd
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -118,6 +119,9 @@ func (c *Client) addOperationDisassociateAnalyticsDataSetMiddlewares(stack *midd
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDisassociateAnalyticsDataSetValidationMiddleware(stack); err != nil {
@@ -139,6 +143,18 @@ func (c *Client) addOperationDisassociateAnalyticsDataSetMiddlewares(stack *midd
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

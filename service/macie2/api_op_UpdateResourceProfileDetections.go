@@ -35,9 +35,9 @@ type UpdateResourceProfileDetectionsInput struct {
 	ResourceArn *string
 
 	// An array of objects, one for each custom data identifier or managed data
-	// identifier that detected the type of sensitive data to start excluding or
-	// including in the bucket's score. To start including all sensitive data types in
-	// the score, don't specify any values for this array.
+	// identifier that detected a type of sensitive data to exclude from the bucket's
+	// score. To include all sensitive data types in the score, don't specify any
+	// values for this array.
 	SuppressDataIdentifiers []types.SuppressDataIdentifier
 
 	noSmithyDocumentSerde
@@ -93,6 +93,9 @@ func (c *Client) addOperationUpdateResourceProfileDetectionsMiddlewares(stack *m
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -109,6 +112,9 @@ func (c *Client) addOperationUpdateResourceProfileDetectionsMiddlewares(stack *m
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateResourceProfileDetectionsValidationMiddleware(stack); err != nil {
@@ -130,6 +136,18 @@ func (c *Client) addOperationUpdateResourceProfileDetectionsMiddlewares(stack *m
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -32,7 +32,7 @@ func (c *Client) ListProfiles(ctx context.Context, params *ListProfilesInput, op
 
 type ListProfilesInput struct {
 
-	// The maximum number of profiles to return.
+	// The maximum number of items to return.
 	MaxResults *int32
 
 	// When there are additional results that were not returned, a NextToken parameter
@@ -108,6 +108,9 @@ func (c *Client) addOperationListProfilesMiddlewares(stack *middleware.Stack, op
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -124,6 +127,9 @@ func (c *Client) addOperationListProfilesMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListProfiles(options.Region), middleware.Before); err != nil {
@@ -144,12 +150,24 @@ func (c *Client) addOperationListProfilesMiddlewares(stack *middleware.Stack, op
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
+		return err
+	}
 	return nil
 }
 
 // ListProfilesPaginatorOptions is the paginator options for ListProfiles
 type ListProfilesPaginatorOptions struct {
-	// The maximum number of profiles to return.
+	// The maximum number of items to return.
 	Limit int32
 
 	// Set to true if pagination should stop if the service returns a pagination token

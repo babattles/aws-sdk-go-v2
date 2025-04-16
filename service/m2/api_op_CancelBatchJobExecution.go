@@ -38,6 +38,10 @@ type CancelBatchJobExecutionInput struct {
 	// This member is required.
 	ExecutionId *string
 
+	// The Amazon Web Services Secrets Manager containing user's credentials for
+	// authentication and authorization for Cancel Batch Job Execution operation.
+	AuthSecretsManagerArn *string
+
 	noSmithyDocumentSerde
 }
 
@@ -91,6 +95,9 @@ func (c *Client) addOperationCancelBatchJobExecutionMiddlewares(stack *middlewar
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -107,6 +114,9 @@ func (c *Client) addOperationCancelBatchJobExecutionMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCancelBatchJobExecutionValidationMiddleware(stack); err != nil {
@@ -128,6 +138,18 @@ func (c *Client) addOperationCancelBatchJobExecutionMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

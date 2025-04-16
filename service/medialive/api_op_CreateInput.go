@@ -36,6 +36,10 @@ type CreateInputInput struct {
 	// Settings for the devices.
 	InputDevices []types.InputDeviceSettings
 
+	// The location of this input. AWS, for an input existing in the AWS Cloud,
+	// On-Prem for an input in a customer network.
+	InputNetworkLocation types.InputNetworkLocation
+
 	// A list of security groups referenced by IDs to attach to the input.
 	InputSecurityGroups []string
 
@@ -44,6 +48,9 @@ type CreateInputInput struct {
 	// is when you have more than one is that each Flow is in a separate Availability
 	// Zone as this ensures your EML input is redundant to AZ issues.
 	MediaConnectFlows []types.MediaConnectFlowRequest
+
+	// Multicast Input settings.
+	MulticastSettings *types.MulticastSettingsCreateRequest
 
 	// Name of the input.
 	Name *string
@@ -55,6 +62,10 @@ type CreateInputInput struct {
 	// The Amazon Resource Name (ARN) of the role this input assumes during and after
 	// creation.
 	RoleArn *string
+
+	// Include this parameter if the input is a SMPTE 2110 input, to identify the
+	// stream sources for this input.
+	Smpte2110ReceiverGroupSettings *types.Smpte2110ReceiverGroupSettings
 
 	// The source URLs for a PULL-type input. Every PULL type input needs exactly two
 	// source URLs for redundancy. Only specify sources for PULL type Inputs. Leave
@@ -134,6 +145,9 @@ func (c *Client) addOperationCreateInputMiddlewares(stack *middleware.Stack, opt
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -150,6 +164,9 @@ func (c *Client) addOperationCreateInputMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateInputMiddleware(stack, options); err != nil {
@@ -174,6 +191,18 @@ func (c *Client) addOperationCreateInputMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

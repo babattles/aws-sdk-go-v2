@@ -12,8 +12,11 @@ import (
 	"time"
 )
 
-// Gets the specified user by user name in a user pool as an administrator. Works
-// on any user.
+// Given a username, returns details about a user profile in a user pool. You can
+// specify alias attributes in the Username request parameter.
+//
+// This operation contributes to your monthly active user (MAU) count for the
+// purpose of billing.
 //
 // Amazon Cognito evaluates Identity and Access Management (IAM) policies in
 // requests for this API operation. For this operation, you must use IAM
@@ -46,13 +49,12 @@ func (c *Client) AdminGetUser(ctx context.Context, params *AdminGetUserInput, op
 // Represents the request to get the specified user as an administrator.
 type AdminGetUserInput struct {
 
-	// The user pool ID for the user pool where you want to get information about the
-	// user.
+	// The ID of the user pool where you want to get information about the user.
 	//
 	// This member is required.
 	UserPoolId *string
 
-	// The username of the user that you want to query or modify. The value of this
+	// The name of the user that you want to query or modify. The value of this
 	// parameter is typically your user's username, but it can be any of their alias
 	// attributes. If username isn't an alias attribute in your user pool, this value
 	// must be the sub of a local user or the username of a user from a third-party
@@ -73,7 +75,7 @@ type AdminGetUserOutput struct {
 	// This member is required.
 	Username *string
 
-	// Indicates that the status is enabled .
+	// Indicates whether the user is activated for sign-in.
 	Enabled bool
 
 	//  This response parameter is no longer supported. It provides information only
@@ -83,13 +85,17 @@ type AdminGetUserOutput struct {
 	// instead.
 	MFAOptions []types.MFAOptionType
 
-	// The user's preferred MFA setting.
+	// The user's preferred MFA. Users can prefer SMS message, email message, or TOTP
+	// MFA.
 	PreferredMfaSetting *string
 
-	// An array of name-value pairs representing user attributes.
+	// An array of name-value pairs of user attributes and their values, for example
+	// "email": "testuser@example.com" .
 	UserAttributes []types.AttributeType
 
-	// The date the user was created.
+	// The date and time when the item was created. Amazon Cognito returns this
+	// timestamp in UNIX epoch time format. Your SDK might render the output in a
+	// human-readable format like ISO 8601 or a Java Date object.
 	UserCreateDate *time.Time
 
 	// The date and time when the item was modified. Amazon Cognito returns this
@@ -98,10 +104,10 @@ type AdminGetUserOutput struct {
 	UserLastModifiedDate *time.Time
 
 	// The MFA options that are activated for the user. The possible values in this
-	// list are SMS_MFA and SOFTWARE_TOKEN_MFA .
+	// list are SMS_MFA , EMAIL_OTP , and SOFTWARE_TOKEN_MFA .
 	UserMFASettingList []string
 
-	// The user status. Can be one of the following:
+	// The user's status. Can be one of the following:
 	//
 	//   - UNCONFIRMED - User has been created but not confirmed.
 	//
@@ -115,6 +121,8 @@ type AdminGetUserOutput struct {
 	//   - FORCE_CHANGE_PASSWORD - The user is confirmed and the user can sign in
 	//   using a temporary password, but on first sign-in, the user must change their
 	//   password to a new value before doing anything else.
+	//
+	//   - EXTERNAL_PROVIDER - The user signed in with a third-party identity provider.
 	UserStatus types.UserStatusType
 
 	// Metadata pertaining to the operation's result.
@@ -166,6 +174,9 @@ func (c *Client) addOperationAdminGetUserMiddlewares(stack *middleware.Stack, op
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -182,6 +193,9 @@ func (c *Client) addOperationAdminGetUserMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpAdminGetUserValidationMiddleware(stack); err != nil {
@@ -203,6 +217,18 @@ func (c *Client) addOperationAdminGetUserMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -12,8 +12,8 @@ import (
 )
 
 // Returns the details of one or more configuration aggregators. If the
-// configuration aggregator is not specified, this action returns the details for
-// all the configuration aggregators associated with the account.
+// configuration aggregator is not specified, this operation returns the details
+// for all the configuration aggregators associated with the account.
 func (c *Client) DescribeConfigurationAggregators(ctx context.Context, params *DescribeConfigurationAggregatorsInput, optFns ...func(*Options)) (*DescribeConfigurationAggregatorsOutput, error) {
 	if params == nil {
 		params = &DescribeConfigurationAggregatorsInput{}
@@ -103,6 +103,9 @@ func (c *Client) addOperationDescribeConfigurationAggregatorsMiddlewares(stack *
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -121,6 +124,9 @@ func (c *Client) addOperationDescribeConfigurationAggregatorsMiddlewares(stack *
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeConfigurationAggregators(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -137,6 +143,18 @@ func (c *Client) addOperationDescribeConfigurationAggregatorsMiddlewares(stack *
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

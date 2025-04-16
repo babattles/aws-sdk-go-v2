@@ -61,6 +61,9 @@ type GetEnvironmentBlueprintConfigurationOutput struct {
 	// The Amazon Web Services regions in which this blueprint is enabled.
 	EnabledRegions []string
 
+	// The environment role permissions boundary.
+	EnvironmentRolePermissionBoundary *string
+
 	// The ARN of the manage access role with which this blueprint is created.
 	ManageAccessRoleArn *string
 
@@ -125,6 +128,9 @@ func (c *Client) addOperationGetEnvironmentBlueprintConfigurationMiddlewares(sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -141,6 +147,9 @@ func (c *Client) addOperationGetEnvironmentBlueprintConfigurationMiddlewares(sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetEnvironmentBlueprintConfigurationValidationMiddleware(stack); err != nil {
@@ -162,6 +171,18 @@ func (c *Client) addOperationGetEnvironmentBlueprintConfigurationMiddlewares(sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -12,7 +12,7 @@ import (
 )
 
 // Cancels an existing Amazon FSx for Lustre data repository task if that task is
-// in either the PENDING or EXECUTING state. When you cancel am export task,
+// in either the PENDING or EXECUTING state. When you cancel an export task,
 // Amazon FSx does the following.
 //
 //   - Any files that FSx has already exported are not reverted.
@@ -121,6 +121,9 @@ func (c *Client) addOperationCancelDataRepositoryTaskMiddlewares(stack *middlewa
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -137,6 +140,9 @@ func (c *Client) addOperationCancelDataRepositoryTaskMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCancelDataRepositoryTaskValidationMiddleware(stack); err != nil {
@@ -158,6 +164,18 @@ func (c *Client) addOperationCancelDataRepositoryTaskMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

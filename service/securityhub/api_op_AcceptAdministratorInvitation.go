@@ -10,6 +10,9 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
+// We recommend using Organizations instead of Security Hub invitations to manage
+// your member accounts. For information, see [Managing Security Hub administrator and member accounts with Organizations]in the Security Hub User Guide.
+//
 // Accepts the invitation to be a member account and be monitored by the Security
 // Hub administrator account that the invitation was sent from.
 //
@@ -18,6 +21,8 @@ import (
 //
 // When the member account accepts the invitation, permission is granted to the
 // administrator account to view findings generated in the member account.
+//
+// [Managing Security Hub administrator and member accounts with Organizations]: https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-accounts-orgs.html
 func (c *Client) AcceptAdministratorInvitation(ctx context.Context, params *AcceptAdministratorInvitationInput, optFns ...func(*Options)) (*AcceptAdministratorInvitationOutput, error) {
 	if params == nil {
 		params = &AcceptAdministratorInvitationInput{}
@@ -100,6 +105,9 @@ func (c *Client) addOperationAcceptAdministratorInvitationMiddlewares(stack *mid
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -116,6 +124,9 @@ func (c *Client) addOperationAcceptAdministratorInvitationMiddlewares(stack *mid
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpAcceptAdministratorInvitationValidationMiddleware(stack); err != nil {
@@ -137,6 +148,18 @@ func (c *Client) addOperationAcceptAdministratorInvitationMiddlewares(stack *mid
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

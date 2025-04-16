@@ -72,9 +72,9 @@ type ListModelQualityJobDefinitionsOutput struct {
 	// This member is required.
 	JobDefinitionSummaries []types.MonitoringJobDefinitionSummary
 
-	// If the response is truncated, Amazon SageMaker returns this token. To retrieve
-	// the next set of model quality monitoring job definitions, use it in the next
-	// request.
+	// If the response is truncated, Amazon SageMaker AI returns this token. To
+	// retrieve the next set of model quality monitoring job definitions, use it in the
+	// next request.
 	NextToken *string
 
 	// Metadata pertaining to the operation's result.
@@ -126,6 +126,9 @@ func (c *Client) addOperationListModelQualityJobDefinitionsMiddlewares(stack *mi
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -144,6 +147,9 @@ func (c *Client) addOperationListModelQualityJobDefinitionsMiddlewares(stack *mi
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListModelQualityJobDefinitions(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -160,6 +166,18 @@ func (c *Client) addOperationListModelQualityJobDefinitionsMiddlewares(stack *mi
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

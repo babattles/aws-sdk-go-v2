@@ -14,6 +14,13 @@ import (
 // Updates some of the parameters for an existing agreement. Provide the
 // AgreementId and the ServerId for the agreement that you want to update, along
 // with the new values for the parameters to update.
+//
+// Specify either BaseDirectory or CustomDirectories , but not both. Specifying
+// both causes the command to fail.
+//
+// If you update an agreement from using base directory to custom directories, the
+// base directory is no longer used. Similarly, if you change from custom
+// directories to a base directory, the custom directories are no longer used.
 func (c *Client) UpdateAgreement(ctx context.Context, params *UpdateAgreementInput, optFns ...func(*Options)) (*UpdateAgreementOutput, error) {
 	if params == nil {
 		params = &UpdateAgreementInput{}
@@ -76,12 +83,37 @@ type UpdateAgreementInput struct {
 
 	// To change the landing directory (folder) for files that are transferred,
 	// provide the bucket folder that you want to use; for example,
-	// /DOC-EXAMPLE-BUCKET/home/mydirectory .
+	// /amzn-s3-demo-bucket/home/mydirectory .
 	BaseDirectory *string
+
+	// A CustomDirectoriesType structure. This structure specifies custom directories
+	// for storing various AS2 message files. You can specify directories for the
+	// following types of files.
+	//
+	//   - Failed files
+	//
+	//   - MDN files
+	//
+	//   - Payload files
+	//
+	//   - Status files
+	//
+	//   - Temporary files
+	CustomDirectories *types.CustomDirectoriesType
 
 	// To replace the existing description, provide a short description for the
 	// agreement.
 	Description *string
+
+	//  Determines whether or not unsigned messages from your trading partners will be
+	// accepted.
+	//
+	//   - ENABLED : Transfer Family rejects unsigned messages from your trading
+	//   partner.
+	//
+	//   - DISABLED (default value): Transfer Family accepts unsigned messages from
+	//   your trading partner.
+	EnforceMessageSigning types.EnforceMessageSigningType
 
 	// A unique identifier for the AS2 local profile.
 	//
@@ -91,6 +123,18 @@ type UpdateAgreementInput struct {
 	// A unique identifier for the partner profile. To change the partner profile
 	// identifier, provide a new value here.
 	PartnerProfileId *string
+
+	//  Determines whether or not Transfer Family appends a unique string of
+	// characters to the end of the AS2 message payload filename when saving it.
+	//
+	//   - ENABLED : the filename provided by your trading parter is preserved when the
+	//   file is saved.
+	//
+	//   - DISABLED (default value): when Transfer Family saves the file, the filename
+	//   is adjusted, as described in [File names and locations].
+	//
+	// [File names and locations]: https://docs.aws.amazon.com/transfer/latest/userguide/send-as2-messages.html#file-names-as2
+	PreserveFilename types.PreserveFilenameType
 
 	// You can update the status for the agreement, either activating an inactive
 	// agreement or the reverse.
@@ -156,6 +200,9 @@ func (c *Client) addOperationUpdateAgreementMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -172,6 +219,9 @@ func (c *Client) addOperationUpdateAgreementMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateAgreementValidationMiddleware(stack); err != nil {
@@ -193,6 +243,18 @@ func (c *Client) addOperationUpdateAgreementMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

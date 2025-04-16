@@ -11,8 +11,12 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Updates some parameters of an existing DataSync location for an object storage
-// system.
+// Modifies the following configuration parameters of the object storage transfer
+// location that you're using with DataSync.
+//
+// For more information, see [Configuring DataSync transfers with an object storage system].
+//
+// [Configuring DataSync transfers with an object storage system]: https://docs.aws.amazon.com/datasync/latest/userguide/create-object-location.html
 func (c *Client) UpdateLocationObjectStorage(ctx context.Context, params *UpdateLocationObjectStorageInput, optFns ...func(*Options)) (*UpdateLocationObjectStorageOutput, error) {
 	if params == nil {
 		params = &UpdateLocationObjectStorageInput{}
@@ -40,7 +44,7 @@ type UpdateLocationObjectStorageInput struct {
 	AccessKey *string
 
 	// Specifies the Amazon Resource Names (ARNs) of the DataSync agents that can
-	// securely connect with your location.
+	// connect with your object storage system.
 	AgentArns []string
 
 	// Specifies the secret key (for example, a password) if credentials are required
@@ -71,6 +75,10 @@ type UpdateLocationObjectStorageInput struct {
 	//
 	// Updating this parameter doesn't interfere with tasks that you have in progress.
 	ServerCertificate []byte
+
+	// Specifies the domain name or IP version 4 (IPv4) address of the object storage
+	// server that your DataSync agent connects to.
+	ServerHostname *string
 
 	// Specifies the port that your object storage server accepts inbound network
 	// traffic on (for example, port 443).
@@ -137,6 +145,9 @@ func (c *Client) addOperationUpdateLocationObjectStorageMiddlewares(stack *middl
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -153,6 +164,9 @@ func (c *Client) addOperationUpdateLocationObjectStorageMiddlewares(stack *middl
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateLocationObjectStorageValidationMiddleware(stack); err != nil {
@@ -174,6 +188,18 @@ func (c *Client) addOperationUpdateLocationObjectStorageMiddlewares(stack *middl
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

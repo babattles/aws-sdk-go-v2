@@ -1,3 +1,144 @@
+# v1.58.1 (2025-04-03)
+
+* No change notes available for this release.
+
+# v1.58.0 (2025-03-31)
+
+* **Feature**: Add WebAppEndpointPolicy support for WebApps
+
+# v1.57.1 (2025-03-04.2)
+
+* **Bug Fix**: Add assurance test for operation order.
+
+# v1.57.0 (2025-02-27)
+
+* **Feature**: Track credential providers via User-Agent Feature ids
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.56.4 (2025-02-18)
+
+* **Bug Fix**: Bump go version to 1.22
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.56.3 (2025-02-05)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.56.2 (2025-01-31)
+
+* **Dependency Update**: Switch to code-generated waiter matchers, removing the dependency on go-jmespath.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.56.1 (2025-01-30)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.56.0 (2025-01-24)
+
+* **Feature**: Added CustomDirectories as a new directory option for storing inbound AS2 messages, MDN files and Status files.
+* **Dependency Update**: Updated to the latest SDK module versions
+* **Dependency Update**: Upgrade to smithy-go v1.22.2.
+
+# v1.55.5 (2025-01-17)
+
+* **Bug Fix**: Fix bug where credentials weren't refreshed during retry loop.
+
+# v1.55.4 (2025-01-15)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.55.3 (2025-01-14)
+
+* **Bug Fix**: Fix issue where waiters were not failing on unmatched errors as they should. This may have breaking behavioral changes for users in fringe cases. See [this announcement](https://github.com/aws/aws-sdk-go-v2/discussions/2954) for more information.
+
+# v1.55.2 (2025-01-09)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.55.1 (2024-12-19)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.55.0 (2024-12-18)
+
+* **Feature**: Added AS2 agreement configurations to control filename preservation and message signing enforcement. Added AS2 connector configuration to preserve content type from S3 objects.
+
+# v1.54.0 (2024-12-02)
+
+* **Feature**: AWS Transfer Family now offers Web apps that enables simple and secure access to data stored in Amazon S3.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.53.5 (2024-11-18)
+
+* **Dependency Update**: Update to smithy-go v1.22.1.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.53.4 (2024-11-15.2)
+
+* No change notes available for this release.
+
+# v1.53.3 (2024-11-07)
+
+* **Bug Fix**: Adds case-insensitive handling of error message fields in service responses
+
+# v1.53.2 (2024-11-06)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.53.1 (2024-10-28)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.53.0 (2024-10-14)
+
+* **Feature**: This release enables customers using SFTP connectors to query the transfer status of their files to meet their monitoring needs as well as orchestrate post transfer actions.
+
+# v1.52.2 (2024-10-08)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.52.1 (2024-10-07)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.52.0 (2024-10-04)
+
+* **Feature**: Add support for HTTP client metrics.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.51.4 (2024-10-03)
+
+* No change notes available for this release.
+
+# v1.51.3 (2024-09-27)
+
+* No change notes available for this release.
+
+# v1.51.2 (2024-09-25)
+
+* No change notes available for this release.
+
+# v1.51.1 (2024-09-23)
+
+* No change notes available for this release.
+
+# v1.51.0 (2024-09-20)
+
+* **Feature**: Add tracing and metrics support to service clients.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.50.7 (2024-09-17)
+
+* **Bug Fix**: **BREAKFIX**: Only generate AccountIDEndpointMode config for services that use it. This is a compiler break, but removes no actual functionality, as no services currently use the account ID in endpoint resolution.
+
+# v1.50.6 (2024-09-04)
+
+* No change notes available for this release.
+
+# v1.50.5 (2024-09-03)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
 # v1.50.4 (2024-08-15)
 
 * **Dependency Update**: Bump minimum Go version to 1.21.

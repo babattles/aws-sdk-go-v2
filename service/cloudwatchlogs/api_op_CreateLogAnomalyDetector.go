@@ -96,8 +96,8 @@ type CreateLogAnomalyDetectorInput struct {
 	// a user must have permissions for both this key and for the anomaly detector to
 	// retrieve information about the anomalies that it finds.
 	//
-	// For more information about using a KMS key and to see the required IAM policy,
-	// see [Use a KMS key with an anomaly detector].
+	// Make sure the value provided is a valid KMS key ARN. For more information about
+	// using a KMS key and to see the required IAM policy, see [Use a KMS key with an anomaly detector].
 	//
 	// [Use a KMS key with an anomaly detector]: https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/LogsAnomalyDetection-KMS.html
 	KmsKeyId *string
@@ -166,6 +166,9 @@ func (c *Client) addOperationCreateLogAnomalyDetectorMiddlewares(stack *middlewa
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -182,6 +185,9 @@ func (c *Client) addOperationCreateLogAnomalyDetectorMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateLogAnomalyDetectorValidationMiddleware(stack); err != nil {
@@ -203,6 +209,18 @@ func (c *Client) addOperationCreateLogAnomalyDetectorMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

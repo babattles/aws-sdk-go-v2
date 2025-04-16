@@ -10,7 +10,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Deletes an data product in Amazon DataZone.
+// Deletes a data product in Amazon DataZone.
 func (c *Client) DeleteDataProduct(ctx context.Context, params *DeleteDataProductInput, optFns ...func(*Options)) (*DeleteDataProductOutput, error) {
 	if params == nil {
 		params = &DeleteDataProductInput{}
@@ -91,6 +91,9 @@ func (c *Client) addOperationDeleteDataProductMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -107,6 +110,9 @@ func (c *Client) addOperationDeleteDataProductMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteDataProductValidationMiddleware(stack); err != nil {
@@ -128,6 +134,18 @@ func (c *Client) addOperationDeleteDataProductMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

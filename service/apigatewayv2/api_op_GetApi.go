@@ -83,6 +83,9 @@ type GetApiOutput struct {
 	// only for HTTP APIs.
 	ImportInfo []string
 
+	// The IP address types that can invoke the API.
+	IpAddressType types.IpAddressType
+
 	// The name of the API.
 	Name *string
 
@@ -154,6 +157,9 @@ func (c *Client) addOperationGetApiMiddlewares(stack *middleware.Stack, options 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -170,6 +176,9 @@ func (c *Client) addOperationGetApiMiddlewares(stack *middleware.Stack, options 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetApiValidationMiddleware(stack); err != nil {
@@ -191,6 +200,18 @@ func (c *Client) addOperationGetApiMiddlewares(stack *middleware.Stack, options 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -11,26 +11,39 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Validates the syntax of a state machine definition.
+// Validates the syntax of a state machine definition specified in [Amazon States Language] (ASL), a
+// JSON-based, structured language.
 //
 // You can validate that a state machine definition is correct without creating a
-// state machine resource. Step Functions will implicitly perform the same syntax
-// check when you invoke CreateStateMachine and UpdateStateMachine . State machine
-// definitions are specified using a JSON-based, structured language. For more
-// information on Amazon States Language see [Amazon States Language](ASL).
+// state machine resource.
 //
 // Suggested uses for ValidateStateMachineDefinition :
 //
 //   - Integrate automated checks into your code review or Continuous Integration
-//     (CI) process to validate state machine definitions before starting deployments.
+//     (CI) process to check state machine definitions before starting deployments.
 //
-//   - Run the validation from a Git pre-commit hook to check your state machine
-//     definitions before committing them to your source repository.
+//   - Run validation from a Git pre-commit hook to verify the definition before
+//     committing to your source repository.
 //
-// Errors found in the state machine definition will be returned in the response
-// as a list of diagnostic elements, rather than raise an exception.
+// Validation will look for problems in your state machine definition and return a
+// result and a list of diagnostic elements.
+//
+// The result value will be OK when your workflow definition can be successfully
+// created or updated. Note the result can be OK even when diagnostic warnings are
+// present in the response. The result value will be FAIL when the workflow
+// definition contains errors that would prevent you from creating or updating your
+// state machine.
+//
+// The list of [ValidateStateMachineDefinitionDiagnostic] data elements can contain zero or more WARNING and/or ERROR
+// elements.
+//
+// The ValidateStateMachineDefinition API might add new diagnostics in the future,
+// adjust diagnostic codes, or change the message wording. Your automated processes
+// should only rely on the value of the result field value (OK, FAIL). Do not rely
+// on the exact order, count, or wording of diagnostic messages.
 //
 // [Amazon States Language]: https://docs.aws.amazon.com/step-functions/latest/dg/concepts-amazon-states-language.html
+// [ValidateStateMachineDefinitionDiagnostic]: https://docs.aws.amazon.com/step-functions/latest/apireference/API_ValidateStateMachineDefinitionDiagnostic.html
 func (c *Client) ValidateStateMachineDefinition(ctx context.Context, params *ValidateStateMachineDefinitionInput, optFns ...func(*Options)) (*ValidateStateMachineDefinitionOutput, error) {
 	if params == nil {
 		params = &ValidateStateMachineDefinitionInput{}
@@ -56,6 +69,18 @@ type ValidateStateMachineDefinitionInput struct {
 	// This member is required.
 	Definition *string
 
+	// The maximum number of diagnostics that are returned per call. The default and
+	// maximum value is 100. Setting the value to 0 will also use the default of 100.
+	//
+	// If the number of diagnostics returned in the response exceeds maxResults , the
+	// value of the truncated field in the response will be set to true .
+	MaxResults int32
+
+	// Minimum level of diagnostics to return. ERROR returns only ERROR diagnostics,
+	// whereas WARNING returns both WARNING and ERROR diagnostics. The default is ERROR
+	// .
+	Severity types.ValidateStateMachineDefinitionSeverity
+
 	// The target type of state machine for this definition. The default is STANDARD .
 	Type types.StateMachineType
 
@@ -64,8 +89,10 @@ type ValidateStateMachineDefinitionInput struct {
 
 type ValidateStateMachineDefinitionOutput struct {
 
-	// If the result is OK , this field will be empty. When there are errors, this
-	// field will contain an array of Diagnostic objects to help you troubleshoot.
+	// An array of diagnostic errors and warnings found during validation of the state
+	// machine definition. Since warnings do not prevent deploying your workflow
+	// definition, the result value could be OK even when warning diagnostics are
+	// present in the response.
 	//
 	// This member is required.
 	Diagnostics []types.ValidateStateMachineDefinitionDiagnostic
@@ -75,6 +102,11 @@ type ValidateStateMachineDefinitionOutput struct {
 	//
 	// This member is required.
 	Result types.ValidateStateMachineDefinitionResultCode
+
+	// The result value will be true if the number of diagnostics found in the
+	// workflow definition exceeds maxResults . When all diagnostics results are
+	// returned, the value will be false .
+	Truncated *bool
 
 	// Metadata pertaining to the operation's result.
 	ResultMetadata middleware.Metadata
@@ -125,6 +157,9 @@ func (c *Client) addOperationValidateStateMachineDefinitionMiddlewares(stack *mi
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -141,6 +176,9 @@ func (c *Client) addOperationValidateStateMachineDefinitionMiddlewares(stack *mi
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpValidateStateMachineDefinitionValidationMiddleware(stack); err != nil {
@@ -162,6 +200,18 @@ func (c *Client) addOperationValidateStateMachineDefinitionMiddlewares(stack *mi
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

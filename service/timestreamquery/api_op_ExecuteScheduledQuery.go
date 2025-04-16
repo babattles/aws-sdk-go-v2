@@ -7,12 +7,20 @@ import (
 	"fmt"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
 	internalEndpointDiscovery "github.com/aws/aws-sdk-go-v2/service/internal/endpoint-discovery"
+	"github.com/aws/aws-sdk-go-v2/service/timestreamquery/types"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	"time"
 )
 
-// You can use this API to run a scheduled query manually.
+//	You can use this API to run a scheduled query manually.
+//
+// If you enabled QueryInsights , this API also returns insights and metrics
+// related to the query that you executed as part of an Amazon SNS notification.
+// QueryInsights helps with performance tuning of your query. For more information
+// about QueryInsights , see [Using query insights to optimize queries in Amazon Timestream].
+//
+// [Using query insights to optimize queries in Amazon Timestream]: https://docs.aws.amazon.com/timestream/latest/developerguide/using-query-insights.html
 func (c *Client) ExecuteScheduledQuery(ctx context.Context, params *ExecuteScheduledQueryInput, optFns ...func(*Options)) (*ExecuteScheduledQueryOutput, error) {
 	if params == nil {
 		params = &ExecuteScheduledQueryInput{}
@@ -42,6 +50,13 @@ type ExecuteScheduledQueryInput struct {
 
 	// Not used.
 	ClientToken *string
+
+	// Encapsulates settings for enabling QueryInsights .
+	//
+	// Enabling QueryInsights returns insights and metrics as a part of the Amazon SNS
+	// notification for the query that you executed. You can use QueryInsights to tune
+	// your query performance and cost.
+	QueryInsights *types.ScheduledQueryInsights
 
 	noSmithyDocumentSerde
 }
@@ -96,6 +111,9 @@ func (c *Client) addOperationExecuteScheduledQueryMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -115,6 +133,9 @@ func (c *Client) addOperationExecuteScheduledQueryMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opExecuteScheduledQueryMiddleware(stack, options); err != nil {
@@ -139,6 +160,18 @@ func (c *Client) addOperationExecuteScheduledQueryMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

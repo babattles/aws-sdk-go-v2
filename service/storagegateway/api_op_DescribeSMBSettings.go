@@ -44,6 +44,10 @@ type DescribeSMBSettingsOutput struct {
 	// Indicates the status of a gateway that is a member of the Active Directory
 	// domain.
 	//
+	// This field is only used as part of a JoinDomain request. It is not affected by
+	// Active Directory connectivity changes that occur after the JoinDomain request
+	// succeeds.
+	//
 	//   - ACCESS_DENIED : Indicates that the JoinDomain operation failed due to an
 	//   authentication error.
 	//
@@ -158,6 +162,9 @@ func (c *Client) addOperationDescribeSMBSettingsMiddlewares(stack *middleware.St
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -174,6 +181,9 @@ func (c *Client) addOperationDescribeSMBSettingsMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeSMBSettingsValidationMiddleware(stack); err != nil {
@@ -195,6 +205,18 @@ func (c *Client) addOperationDescribeSMBSettingsMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

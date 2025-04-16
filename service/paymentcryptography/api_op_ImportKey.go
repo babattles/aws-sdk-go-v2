@@ -42,12 +42,6 @@ import (
 //
 // # To import a public root key certificate
 //
-// You can also import a root public key certificate, used to sign other public
-// key certificates, or a trusted public key certificate under an already
-// established root public key certificate.
-//
-// # To import a public root key certificate
-//
 // Using this operation, you can import the public component (in PEM cerificate
 // format) of your private root key. You can use the imported public root key
 // certificate for digital signatures, for example signing wrapping key or signing
@@ -288,6 +282,9 @@ func (c *Client) addOperationImportKeyMiddlewares(stack *middleware.Stack, optio
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -304,6 +301,9 @@ func (c *Client) addOperationImportKeyMiddlewares(stack *middleware.Stack, optio
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpImportKeyValidationMiddleware(stack); err != nil {
@@ -325,6 +325,18 @@ func (c *Client) addOperationImportKeyMiddlewares(stack *middleware.Stack, optio
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

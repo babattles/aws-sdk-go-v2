@@ -30,6 +30,26 @@ func (m *validateOpBatchGetServiceLevelObjectiveBudgetReport) HandleInitialize(c
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpBatchUpdateExclusionWindows struct {
+}
+
+func (*validateOpBatchUpdateExclusionWindows) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpBatchUpdateExclusionWindows) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*BatchUpdateExclusionWindowsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpBatchUpdateExclusionWindowsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpCreateServiceLevelObjective struct {
 }
 
@@ -145,6 +165,46 @@ func (m *validateOpListServiceDependents) HandleInitialize(ctx context.Context, 
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpListServiceDependentsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpListServiceLevelObjectiveExclusionWindows struct {
+}
+
+func (*validateOpListServiceLevelObjectiveExclusionWindows) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListServiceLevelObjectiveExclusionWindows) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListServiceLevelObjectiveExclusionWindowsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListServiceLevelObjectiveExclusionWindowsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpListServiceLevelObjectives struct {
+}
+
+func (*validateOpListServiceLevelObjectives) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListServiceLevelObjectives) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListServiceLevelObjectivesInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListServiceLevelObjectivesInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -274,6 +334,10 @@ func addOpBatchGetServiceLevelObjectiveBudgetReportValidationMiddleware(stack *m
 	return stack.Initialize.Add(&validateOpBatchGetServiceLevelObjectiveBudgetReport{}, middleware.After)
 }
 
+func addOpBatchUpdateExclusionWindowsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpBatchUpdateExclusionWindows{}, middleware.After)
+}
+
 func addOpCreateServiceLevelObjectiveValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpCreateServiceLevelObjective{}, middleware.After)
 }
@@ -296,6 +360,14 @@ func addOpListServiceDependenciesValidationMiddleware(stack *middleware.Stack) e
 
 func addOpListServiceDependentsValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpListServiceDependents{}, middleware.After)
+}
+
+func addOpListServiceLevelObjectiveExclusionWindowsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListServiceLevelObjectiveExclusionWindows{}, middleware.After)
+}
+
+func addOpListServiceLevelObjectivesValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListServiceLevelObjectives{}, middleware.After)
 }
 
 func addOpListServiceOperationsValidationMiddleware(stack *middleware.Stack) error {
@@ -322,6 +394,38 @@ func addOpUpdateServiceLevelObjectiveValidationMiddleware(stack *middleware.Stac
 	return stack.Initialize.Add(&validateOpUpdateServiceLevelObjective{}, middleware.After)
 }
 
+func validateBurnRateConfiguration(v *types.BurnRateConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "BurnRateConfiguration"}
+	if v.LookBackWindowMinutes == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("LookBackWindowMinutes"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateBurnRateConfigurations(v []types.BurnRateConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "BurnRateConfigurations"}
+	for i := range v {
+		if err := validateBurnRateConfiguration(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateCalendarInterval(v *types.CalendarInterval) error {
 	if v == nil {
 		return nil
@@ -335,6 +439,24 @@ func validateCalendarInterval(v *types.CalendarInterval) error {
 	}
 	if v.Duration == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("Duration"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateDependencyConfig(v *types.DependencyConfig) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DependencyConfig"}
+	if v.DependencyKeyAttributes == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DependencyKeyAttributes"))
+	}
+	if v.DependencyOperationName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DependencyOperationName"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -368,6 +490,47 @@ func validateDimensions(v []types.Dimension) error {
 	invalidParams := smithy.InvalidParamsError{Context: "Dimensions"}
 	for i := range v {
 		if err := validateDimension(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateExclusionWindow(v *types.ExclusionWindow) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ExclusionWindow"}
+	if v.Window == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Window"))
+	} else if v.Window != nil {
+		if err := validateWindow(v.Window); err != nil {
+			invalidParams.AddNested("Window", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.RecurrenceRule != nil {
+		if err := validateRecurrenceRule(v.RecurrenceRule); err != nil {
+			invalidParams.AddNested("RecurrenceRule", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateExclusionWindows(v []types.ExclusionWindow) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ExclusionWindows"}
+	for i := range v {
+		if err := validateExclusionWindow(&v[i]); err != nil {
 			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
 		}
 	}
@@ -498,6 +661,91 @@ func validateMetricStat(v *types.MetricStat) error {
 	}
 }
 
+func validateMonitoredRequestCountMetricDataQueries(v types.MonitoredRequestCountMetricDataQueries) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "MonitoredRequestCountMetricDataQueries"}
+	switch uv := v.(type) {
+	case *types.MonitoredRequestCountMetricDataQueriesMemberBadCountMetric:
+		if err := validateMetricDataQueries(uv.Value); err != nil {
+			invalidParams.AddNested("[BadCountMetric]", err.(smithy.InvalidParamsError))
+		}
+
+	case *types.MonitoredRequestCountMetricDataQueriesMemberGoodCountMetric:
+		if err := validateMetricDataQueries(uv.Value); err != nil {
+			invalidParams.AddNested("[GoodCountMetric]", err.(smithy.InvalidParamsError))
+		}
+
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateRecurrenceRule(v *types.RecurrenceRule) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "RecurrenceRule"}
+	if v.Expression == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Expression"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateRequestBasedServiceLevelIndicatorConfig(v *types.RequestBasedServiceLevelIndicatorConfig) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "RequestBasedServiceLevelIndicatorConfig"}
+	if v.RequestBasedSliMetricConfig == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RequestBasedSliMetricConfig"))
+	} else if v.RequestBasedSliMetricConfig != nil {
+		if err := validateRequestBasedServiceLevelIndicatorMetricConfig(v.RequestBasedSliMetricConfig); err != nil {
+			invalidParams.AddNested("RequestBasedSliMetricConfig", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateRequestBasedServiceLevelIndicatorMetricConfig(v *types.RequestBasedServiceLevelIndicatorMetricConfig) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "RequestBasedServiceLevelIndicatorMetricConfig"}
+	if v.TotalRequestCountMetric != nil {
+		if err := validateMetricDataQueries(v.TotalRequestCountMetric); err != nil {
+			invalidParams.AddNested("TotalRequestCountMetric", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.MonitoredRequestCountMetric != nil {
+		if err := validateMonitoredRequestCountMetricDataQueries(v.MonitoredRequestCountMetric); err != nil {
+			invalidParams.AddNested("MonitoredRequestCountMetric", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.DependencyConfig != nil {
+		if err := validateDependencyConfig(v.DependencyConfig); err != nil {
+			invalidParams.AddNested("DependencyConfig", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateRollingInterval(v *types.RollingInterval) error {
 	if v == nil {
 		return nil
@@ -551,6 +799,11 @@ func validateServiceLevelIndicatorMetricConfig(v *types.ServiceLevelIndicatorMet
 			invalidParams.AddNested("MetricDataQueries", err.(smithy.InvalidParamsError))
 		}
 	}
+	if v.DependencyConfig != nil {
+		if err := validateDependencyConfig(v.DependencyConfig); err != nil {
+			invalidParams.AddNested("DependencyConfig", err.(smithy.InvalidParamsError))
+		}
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -593,6 +846,24 @@ func validateTagList(v []types.Tag) error {
 	}
 }
 
+func validateWindow(v *types.Window) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "Window"}
+	if len(v.DurationUnit) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("DurationUnit"))
+	}
+	if v.Duration == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Duration"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpBatchGetServiceLevelObjectiveBudgetReportInput(v *BatchGetServiceLevelObjectiveBudgetReportInput) error {
 	if v == nil {
 		return nil
@@ -611,6 +882,31 @@ func validateOpBatchGetServiceLevelObjectiveBudgetReportInput(v *BatchGetService
 	}
 }
 
+func validateOpBatchUpdateExclusionWindowsInput(v *BatchUpdateExclusionWindowsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "BatchUpdateExclusionWindowsInput"}
+	if v.SloIds == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("SloIds"))
+	}
+	if v.AddExclusionWindows != nil {
+		if err := validateExclusionWindows(v.AddExclusionWindows); err != nil {
+			invalidParams.AddNested("AddExclusionWindows", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.RemoveExclusionWindows != nil {
+		if err := validateExclusionWindows(v.RemoveExclusionWindows); err != nil {
+			invalidParams.AddNested("RemoveExclusionWindows", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpCreateServiceLevelObjectiveInput(v *CreateServiceLevelObjectiveInput) error {
 	if v == nil {
 		return nil
@@ -619,11 +915,14 @@ func validateOpCreateServiceLevelObjectiveInput(v *CreateServiceLevelObjectiveIn
 	if v.Name == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("Name"))
 	}
-	if v.SliConfig == nil {
-		invalidParams.Add(smithy.NewErrParamRequired("SliConfig"))
-	} else if v.SliConfig != nil {
+	if v.SliConfig != nil {
 		if err := validateServiceLevelIndicatorConfig(v.SliConfig); err != nil {
 			invalidParams.AddNested("SliConfig", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.RequestBasedSliConfig != nil {
+		if err := validateRequestBasedServiceLevelIndicatorConfig(v.RequestBasedSliConfig); err != nil {
+			invalidParams.AddNested("RequestBasedSliConfig", err.(smithy.InvalidParamsError))
 		}
 	}
 	if v.Goal != nil {
@@ -634,6 +933,11 @@ func validateOpCreateServiceLevelObjectiveInput(v *CreateServiceLevelObjectiveIn
 	if v.Tags != nil {
 		if err := validateTagList(v.Tags); err != nil {
 			invalidParams.AddNested("Tags", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.BurnRateConfigurations != nil {
+		if err := validateBurnRateConfigurations(v.BurnRateConfigurations); err != nil {
+			invalidParams.AddNested("BurnRateConfigurations", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {
@@ -728,6 +1032,38 @@ func validateOpListServiceDependentsInput(v *ListServiceDependentsInput) error {
 	}
 	if v.KeyAttributes == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("KeyAttributes"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpListServiceLevelObjectiveExclusionWindowsInput(v *ListServiceLevelObjectiveExclusionWindowsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListServiceLevelObjectiveExclusionWindowsInput"}
+	if v.Id == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Id"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpListServiceLevelObjectivesInput(v *ListServiceLevelObjectivesInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListServiceLevelObjectivesInput"}
+	if v.DependencyConfig != nil {
+		if err := validateDependencyConfig(v.DependencyConfig); err != nil {
+			invalidParams.AddNested("DependencyConfig", err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -843,9 +1179,19 @@ func validateOpUpdateServiceLevelObjectiveInput(v *UpdateServiceLevelObjectiveIn
 			invalidParams.AddNested("SliConfig", err.(smithy.InvalidParamsError))
 		}
 	}
+	if v.RequestBasedSliConfig != nil {
+		if err := validateRequestBasedServiceLevelIndicatorConfig(v.RequestBasedSliConfig); err != nil {
+			invalidParams.AddNested("RequestBasedSliConfig", err.(smithy.InvalidParamsError))
+		}
+	}
 	if v.Goal != nil {
 		if err := validateGoal(v.Goal); err != nil {
 			invalidParams.AddNested("Goal", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.BurnRateConfigurations != nil {
+		if err := validateBurnRateConfigurations(v.BurnRateConfigurations); err != nil {
+			invalidParams.AddNested("BurnRateConfigurations", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {

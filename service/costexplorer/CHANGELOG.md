@@ -1,3 +1,141 @@
+# v1.48.1 (2025-04-03)
+
+* No change notes available for this release.
+
+# v1.48.0 (2025-03-10)
+
+* **Feature**: Releasing minor partition endpoint updates.
+
+# v1.47.1 (2025-03-04.2)
+
+* **Bug Fix**: Add assurance test for operation order.
+
+# v1.47.0 (2025-02-27)
+
+* **Feature**: Track credential providers via User-Agent Feature ids
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.46.8 (2025-02-18)
+
+* **Bug Fix**: Bump go version to 1.22
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.46.7 (2025-02-05)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.46.6 (2025-01-31)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.46.5 (2025-01-30)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.46.4 (2025-01-24)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+* **Dependency Update**: Upgrade to smithy-go v1.22.2.
+
+# v1.46.3 (2025-01-17)
+
+* **Bug Fix**: Fix bug where credentials weren't refreshed during retry loop.
+
+# v1.46.2 (2025-01-15)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.46.1 (2025-01-09)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.46.0 (2024-12-20)
+
+* **Feature**: Support for retrieving cost, usage, and forecast for billing view.
+
+# v1.45.2 (2024-12-19)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.45.1 (2024-12-02)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.45.0 (2024-11-22)
+
+* **Feature**: This release adds the Impact field(contains Contribution field) to the GetAnomalies API response under RootCause
+
+# v1.44.0 (2024-11-21)
+
+* **Feature**: This release introduces three new APIs that enable you to estimate the cost, coverage, and utilization impact of Savings Plans you plan to purchase. The three APIs are StartCommitmentPurchaseAnalysis, GetCommitmentPurchaseAnalysis, and ListCommitmentPurchaseAnalyses.
+
+# v1.43.6 (2024-11-18)
+
+* **Dependency Update**: Update to smithy-go v1.22.1.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.43.5 (2024-11-07)
+
+* **Bug Fix**: Adds case-insensitive handling of error message fields in service responses
+
+# v1.43.4 (2024-11-06)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.43.3 (2024-10-28)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.43.2 (2024-10-08)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.43.1 (2024-10-07)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.43.0 (2024-10-04)
+
+* **Feature**: Add support for HTTP client metrics.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.42.4 (2024-10-03)
+
+* No change notes available for this release.
+
+# v1.42.3 (2024-09-27)
+
+* No change notes available for this release.
+
+# v1.42.2 (2024-09-25)
+
+* No change notes available for this release.
+
+# v1.42.1 (2024-09-23)
+
+* No change notes available for this release.
+
+# v1.42.0 (2024-09-20)
+
+* **Feature**: Add tracing and metrics support to service clients.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.41.0 (2024-09-18)
+
+* **Feature**: This release extends the GetReservationPurchaseRecommendation API to support recommendations for Amazon DynamoDB reservations.
+
+# v1.40.7 (2024-09-17)
+
+* **Bug Fix**: **BREAKFIX**: Only generate AccountIDEndpointMode config for services that use it. This is a compiler break, but removes no actual functionality, as no services currently use the account ID in endpoint resolution.
+
+# v1.40.6 (2024-09-04)
+
+* No change notes available for this release.
+
+# v1.40.5 (2024-09-03)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
 # v1.40.4 (2024-08-15)
 
 * **Dependency Update**: Bump minimum Go version to 1.21.

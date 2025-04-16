@@ -13,7 +13,6 @@ import (
 	smithytime "github.com/aws/smithy-go/time"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	smithywaiter "github.com/aws/smithy-go/waiter"
-	jmespath "github.com/jmespath/go-jmespath"
 	"strconv"
 	"time"
 )
@@ -123,6 +122,9 @@ func (c *Client) addOperationGetPrivateGraphEndpointMiddlewares(stack *middlewar
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -139,6 +141,9 @@ func (c *Client) addOperationGetPrivateGraphEndpointMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetPrivateGraphEndpointValidationMiddleware(stack); err != nil {
@@ -160,6 +165,18 @@ func (c *Client) addOperationGetPrivateGraphEndpointMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -330,56 +347,38 @@ func (w *PrivateGraphEndpointAvailableWaiter) WaitForOutput(ctx context.Context,
 func privateGraphEndpointAvailableStateRetryable(ctx context.Context, input *GetPrivateGraphEndpointInput, output *GetPrivateGraphEndpointOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("status", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.Status
 		expectedValue := "DELETING"
-		value, ok := pathValue.(types.PrivateGraphEndpointStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.PrivateGraphEndpointStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("status", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.Status
 		expectedValue := "FAILED"
-		value, ok := pathValue.(types.PrivateGraphEndpointStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.PrivateGraphEndpointStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("status", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.Status
 		expectedValue := "AVAILABLE"
-		value, ok := pathValue.(types.PrivateGraphEndpointStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.PrivateGraphEndpointStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, nil
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 
@@ -547,22 +546,15 @@ func (w *PrivateGraphEndpointDeletedWaiter) WaitForOutput(ctx context.Context, p
 func privateGraphEndpointDeletedStateRetryable(ctx context.Context, input *GetPrivateGraphEndpointInput, output *GetPrivateGraphEndpointOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("status != 'DELETING'", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.Status
+		v2 := "DELETING"
+		v3 := string(v1) != string(v2)
 		expectedValue := "true"
 		bv, err := strconv.ParseBool(expectedValue)
 		if err != nil {
 			return false, fmt.Errorf("error parsing boolean from string %w", err)
 		}
-		value, ok := pathValue.(bool)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected bool value got %T", pathValue)
-		}
-
-		if value == bv {
+		if v3 == bv {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
@@ -574,6 +566,9 @@ func privateGraphEndpointDeletedStateRetryable(ctx context.Context, input *GetPr
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 

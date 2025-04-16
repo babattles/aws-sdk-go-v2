@@ -43,8 +43,18 @@ type CreateProjectInput struct {
 	// The description of the Amazon DataZone project.
 	Description *string
 
+	// The ID of the domain unit. This parameter is not required and if it is not
+	// specified, then the project is created at the root domain unit level.
+	DomainUnitId *string
+
 	// The glossary terms that can be used in this Amazon DataZone project.
 	GlossaryTerms []string
+
+	// The ID of the project profile.
+	ProjectProfileId *string
+
+	// The user parameters of the project.
+	UserParameters []types.EnvironmentConfigurationUserParameter
 
 	noSmithyDocumentSerde
 }
@@ -77,6 +87,12 @@ type CreateProjectOutput struct {
 	// The description of the project.
 	Description *string
 
+	// The ID of the domain unit.
+	DomainUnitId *string
+
+	// The environment deployment details.
+	EnvironmentDeploymentDetails *types.EnvironmentDeploymentDetails
+
 	// Specifies the error message that is returned if the operation cannot be
 	// successfully completed.
 	FailureReasons []types.ProjectDeletionError
@@ -87,8 +103,14 @@ type CreateProjectOutput struct {
 	// The timestamp of when the project was last updated.
 	LastUpdatedAt *time.Time
 
+	// The project profile ID.
+	ProjectProfileId *string
+
 	// The status of the Amazon DataZone project that was created.
 	ProjectStatus types.ProjectStatus
+
+	// The user parameters of the project.
+	UserParameters []types.EnvironmentConfigurationUserParameter
 
 	// Metadata pertaining to the operation's result.
 	ResultMetadata middleware.Metadata
@@ -139,6 +161,9 @@ func (c *Client) addOperationCreateProjectMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -155,6 +180,9 @@ func (c *Client) addOperationCreateProjectMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateProjectValidationMiddleware(stack); err != nil {
@@ -176,6 +204,18 @@ func (c *Client) addOperationCreateProjectMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -57,8 +57,18 @@ type CreateCollaborationInput struct {
 	// An indicator as to whether query logging has been enabled or disabled for the
 	// collaboration.
 	//
+	// When ENABLED , Clean Rooms logs details about queries run within this
+	// collaboration and those logs can be viewed in Amazon CloudWatch Logs. The
+	// default value is DISABLED .
+	//
 	// This member is required.
 	QueryLogStatus types.CollaborationQueryLogStatus
+
+	//  The analytics engine.
+	AnalyticsEngine types.AnalyticsEngine
+
+	// The ML abilities granted to the collaboration creator.
+	CreatorMLMemberAbilities *types.MLMemberAbilities
 
 	// The collaboration creator's payment responsibilities set by the collaboration
 	// creator.
@@ -70,6 +80,13 @@ type CreateCollaborationInput struct {
 	// The settings for client-side encryption with Cryptographic Computing for Clean
 	// Rooms.
 	DataEncryptionMetadata *types.DataEncryptionMetadata
+
+	// Specifies whether job logs are enabled for this collaboration.
+	//
+	// When ENABLED , Clean Rooms logs details about jobs run within this
+	// collaboration; those logs can be viewed in Amazon CloudWatch Logs. The default
+	// value is DISABLED .
+	JobLogStatus types.CollaborationJobLogStatus
 
 	// An optional label that you can assign to a resource when you create it. Each
 	// tag consists of a key and an optional value, both of which you define. When you
@@ -136,6 +153,9 @@ func (c *Client) addOperationCreateCollaborationMiddlewares(stack *middleware.St
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -152,6 +172,9 @@ func (c *Client) addOperationCreateCollaborationMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateCollaborationValidationMiddleware(stack); err != nil {
@@ -173,6 +196,18 @@ func (c *Client) addOperationCreateCollaborationMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

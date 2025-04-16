@@ -540,6 +540,9 @@ type ImportReadSetSourceItem struct {
 	// The source's name.
 	Name *string
 
+	// The source's read set ID.
+	ReadSetId *string
+
 	// The source's genome reference ARN.
 	ReferenceArn *string
 
@@ -614,6 +617,9 @@ type ImportReferenceSourceItem struct {
 
 	// The source's name.
 	Name *string
+
+	// The source's reference ID.
+	ReferenceId *string
 
 	// The source file's location in Amazon S3.
 	SourceFile *string
@@ -1097,6 +1103,33 @@ type ReferenceStoreFilter struct {
 	noSmithyDocumentSerde
 }
 
+// List entry for one run cache.
+type RunCacheListItem struct {
+
+	// Unique resource identifier for the run cache.
+	Arn *string
+
+	// Default cache behavior for the run cache.
+	CacheBehavior CacheBehavior
+
+	// The S3 uri for the run cache data.
+	CacheS3Uri *string
+
+	// The time that this run cache was created (an ISO 8601 formatted string).
+	CreationTime *time.Time
+
+	// The identifier for this run cache.
+	Id *string
+
+	// The name of the run cache.
+	Name *string
+
+	// The run cache status.
+	Status RunCacheStatus
+
+	noSmithyDocumentSerde
+}
+
 // A run group.
 type RunGroupListItem struct {
 
@@ -1179,6 +1212,15 @@ type RunLogLocation struct {
 	noSmithyDocumentSerde
 }
 
+// S3 access configuration parameters.
+type S3AccessConfig struct {
+
+	// Location of the access logs.
+	AccessLogLocation *string
+
+	noSmithyDocumentSerde
+}
+
 // Details about a sequence.
 type SequenceInformation struct {
 
@@ -1230,6 +1272,15 @@ type SequenceStoreDetail struct {
 	// The store's server-side encryption (SSE) settings.
 	SseConfig *SseConfig
 
+	// Status of the sequence store.
+	Status SequenceStoreStatus
+
+	// The status message of the sequence store.
+	StatusMessage *string
+
+	// The last-updated time of the Sequence Store.
+	UpdateTime *time.Time
+
 	noSmithyDocumentSerde
 }
 
@@ -1245,11 +1296,23 @@ type SequenceStoreFilter struct {
 	// A name to filter on.
 	Name *string
 
+	// Filter results based on status.
+	Status SequenceStoreStatus
+
+	// Filter results based on stores updated after the specified time.
+	UpdatedAfter *time.Time
+
+	// Filter results based on stores updated before the specified time.
+	UpdatedBefore *time.Time
+
 	noSmithyDocumentSerde
 }
 
 // The S3 access metadata of the sequence store.
 type SequenceStoreS3Access struct {
+
+	// Location of the access logs.
+	AccessLogLocation *string
 
 	// This is ARN of the access point associated with the S3 bucket storing read sets.
 	S3AccessPointArn *string
@@ -1419,6 +1482,13 @@ func (*StoreOptionsMemberTsvStoreOptions) isStoreOptions() {}
 
 // A workflow run task.
 type TaskListItem struct {
+
+	// Set to true if AWS HealthOmics found a matching entry in the run cache for this
+	// task.
+	CacheHit *bool
+
+	// The S3 URI of the cache location.
+	CacheS3Uri *string
 
 	// The task's CPU count.
 	Cpus *int32

@@ -11,7 +11,6 @@ import (
 	smithytime "github.com/aws/smithy-go/time"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	smithywaiter "github.com/aws/smithy-go/waiter"
-	jmespath "github.com/jmespath/go-jmespath"
 	"time"
 )
 
@@ -109,12 +108,29 @@ type GetFunctionConfigurationOutput struct {
 	// The function's image configuration values.
 	ImageConfigResponse *types.ImageConfigResponse
 
-	// The KMS key that's used to encrypt the function's [environment variables]. When [Lambda SnapStart] is activated, this
-	// key is also used to encrypt the function's snapshot. This key is returned only
-	// if you've configured a customer managed key.
+	// The ARN of the Key Management Service (KMS) customer managed key that's used to
+	// encrypt the following resources:
 	//
+	//   - The function's [environment variables].
+	//
+	//   - The function's [Lambda SnapStart]snapshots.
+	//
+	//   - When used with SourceKMSKeyArn , the unzipped version of the .zip deployment
+	//   package that's used for function invocations. For more information, see [Specifying a customer managed key for Lambda].
+	//
+	//   - The optimized version of the container image that's used for function
+	//   invocations. Note that this is not the same key that's used to protect your
+	//   container image in the Amazon Elastic Container Registry (Amazon ECR). For more
+	//   information, see [Function lifecycle].
+	//
+	// If you don't provide a customer managed key, Lambda uses an [Amazon Web Services owned key] or an [Amazon Web Services managed key].
+	//
+	// [Amazon Web Services owned key]: https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-owned-cmk
+	// [Specifying a customer managed key for Lambda]: https://docs.aws.amazon.com/lambda/latest/dg/encrypt-zip-package.html#enable-zip-custom-encryption
 	// [Lambda SnapStart]: https://docs.aws.amazon.com/lambda/latest/dg/snapstart-security.html
 	// [environment variables]: https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-encryption
+	// [Function lifecycle]: https://docs.aws.amazon.com/lambda/latest/dg/images-create.html#images-lifecycle
+	// [Amazon Web Services managed key]: https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk
 	KMSKeyArn *string
 
 	// The date and time that the function was last updated, in [ISO-8601 format]
@@ -261,6 +277,9 @@ func (c *Client) addOperationGetFunctionConfigurationMiddlewares(stack *middlewa
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -277,6 +296,9 @@ func (c *Client) addOperationGetFunctionConfigurationMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetFunctionConfigurationValidationMiddleware(stack); err != nil {
@@ -298,6 +320,18 @@ func (c *Client) addOperationGetFunctionConfigurationMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -463,56 +497,38 @@ func (w *FunctionActiveWaiter) WaitForOutput(ctx context.Context, params *GetFun
 func functionActiveStateRetryable(ctx context.Context, input *GetFunctionConfigurationInput, output *GetFunctionConfigurationOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("State", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.State
 		expectedValue := "Active"
-		value, ok := pathValue.(types.State)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.State value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, nil
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("State", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.State
 		expectedValue := "Failed"
-		value, ok := pathValue.(types.State)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.State value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("State", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.State
 		expectedValue := "Pending"
-		value, ok := pathValue.(types.State)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.State value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return true, nil
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 
@@ -676,56 +692,38 @@ func (w *FunctionUpdatedWaiter) WaitForOutput(ctx context.Context, params *GetFu
 func functionUpdatedStateRetryable(ctx context.Context, input *GetFunctionConfigurationInput, output *GetFunctionConfigurationOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("LastUpdateStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.LastUpdateStatus
 		expectedValue := "Successful"
-		value, ok := pathValue.(types.LastUpdateStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.LastUpdateStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, nil
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("LastUpdateStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.LastUpdateStatus
 		expectedValue := "Failed"
-		value, ok := pathValue.(types.LastUpdateStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.LastUpdateStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("LastUpdateStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.LastUpdateStatus
 		expectedValue := "InProgress"
-		value, ok := pathValue.(types.LastUpdateStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.LastUpdateStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return true, nil
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 
@@ -891,56 +889,38 @@ func (w *PublishedVersionActiveWaiter) WaitForOutput(ctx context.Context, params
 func publishedVersionActiveStateRetryable(ctx context.Context, input *GetFunctionConfigurationInput, output *GetFunctionConfigurationOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("State", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.State
 		expectedValue := "Active"
-		value, ok := pathValue.(types.State)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.State value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, nil
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("State", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.State
 		expectedValue := "Failed"
-		value, ok := pathValue.(types.State)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.State value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("State", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.State
 		expectedValue := "Pending"
-		value, ok := pathValue.(types.State)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.State value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return true, nil
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 

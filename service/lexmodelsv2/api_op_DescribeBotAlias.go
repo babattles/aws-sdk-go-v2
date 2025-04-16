@@ -11,7 +11,6 @@ import (
 	smithytime "github.com/aws/smithy-go/time"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	smithywaiter "github.com/aws/smithy-go/waiter"
-	jmespath "github.com/jmespath/go-jmespath"
 	"time"
 )
 
@@ -140,6 +139,9 @@ func (c *Client) addOperationDescribeBotAliasMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -156,6 +158,9 @@ func (c *Client) addOperationDescribeBotAliasMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeBotAliasValidationMiddleware(stack); err != nil {
@@ -177,6 +182,18 @@ func (c *Client) addOperationDescribeBotAliasMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -342,56 +359,38 @@ func (w *BotAliasAvailableWaiter) WaitForOutput(ctx context.Context, params *Des
 func botAliasAvailableStateRetryable(ctx context.Context, input *DescribeBotAliasInput, output *DescribeBotAliasOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("botAliasStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.BotAliasStatus
 		expectedValue := "Available"
-		value, ok := pathValue.(types.BotAliasStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.BotAliasStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, nil
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("botAliasStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.BotAliasStatus
 		expectedValue := "Failed"
-		value, ok := pathValue.(types.BotAliasStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.BotAliasStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("botAliasStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.BotAliasStatus
 		expectedValue := "Deleting"
-		value, ok := pathValue.(types.BotAliasStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.BotAliasStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 

@@ -22,8 +22,9 @@ import (
 //   - Create a delivery source, which is a logical object that represents the
 //     resource that is actually sending the logs. For more information, see [PutDeliverySource].
 //
-//   - Use PutDeliveryDestination to create a delivery destination, which is a
-//     logical object that represents the actual delivery destination.
+//   - Use PutDeliveryDestination to create a delivery destination in the same
+//     account of the actual delivery destination. The delivery destination that you
+//     create is a logical object that represents the actual delivery destination.
 //
 //   - If you are delivering logs cross-account, you must use [PutDeliveryDestinationPolicy]in the destination
 //     account to assign an IAM policy to the destination. This policy allows delivery
@@ -145,6 +146,9 @@ func (c *Client) addOperationPutDeliveryDestinationMiddlewares(stack *middleware
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -161,6 +165,9 @@ func (c *Client) addOperationPutDeliveryDestinationMiddlewares(stack *middleware
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpPutDeliveryDestinationValidationMiddleware(stack); err != nil {
@@ -182,6 +189,18 @@ func (c *Client) addOperationPutDeliveryDestinationMiddlewares(stack *middleware
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

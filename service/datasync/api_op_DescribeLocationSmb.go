@@ -47,12 +47,24 @@ type DescribeLocationSmbOutput struct {
 	// The ARNs of the DataSync agents that can connect with your SMB file server.
 	AgentArns []string
 
+	// The authentication protocol that DataSync uses to connect to your SMB file
+	// server.
+	AuthenticationType types.SmbAuthenticationType
+
 	// The time that the SMB location was created.
 	CreationTime *time.Time
 
-	// The name of the Microsoft Active Directory domain that the SMB file server
-	// belongs to.
+	// The IPv4 addresses for the DNS servers that your SMB file server belongs to.
+	// This element applies only if AuthenticationType is set to KERBEROS .
+	DnsIpAddresses []string
+
+	// The name of the Windows domain that the SMB file server belongs to. This
+	// element applies only if AuthenticationType is set to NTLM .
 	Domain *string
+
+	// The Kerberos principal that has permission to access the files, folders, and
+	// file metadata in your SMB file server.
+	KerberosPrincipal *string
 
 	// The ARN of the SMB location.
 	LocationArn *string
@@ -60,11 +72,12 @@ type DescribeLocationSmbOutput struct {
 	// The URI of the SMB location.
 	LocationUri *string
 
-	// The protocol that DataSync use to access your SMB file.
+	// The SMB protocol version that DataSync uses to access your SMB file server.
 	MountOptions *types.SmbMountOptions
 
 	// The user that can mount and access the files, folders, and file metadata in
-	// your SMB file server.
+	// your SMB file server. This element applies only if AuthenticationType is set to
+	// NTLM .
 	User *string
 
 	// Metadata pertaining to the operation's result.
@@ -116,6 +129,9 @@ func (c *Client) addOperationDescribeLocationSmbMiddlewares(stack *middleware.St
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -132,6 +148,9 @@ func (c *Client) addOperationDescribeLocationSmbMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeLocationSmbValidationMiddleware(stack); err != nil {
@@ -153,6 +172,18 @@ func (c *Client) addOperationDescribeLocationSmbMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

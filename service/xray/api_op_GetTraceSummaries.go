@@ -28,9 +28,9 @@ import (
 //	annotation.account = "12345"
 //
 // For a full list of indexed fields and keywords that you can use in filter
-// expressions, see [Using Filter Expressions]in the Amazon Web Services X-Ray Developer Guide.
+// expressions, see [Use filter expressions]in the Amazon Web Services X-Ray Developer Guide.
 //
-// [Using Filter Expressions]: https://docs.aws.amazon.com/xray/latest/devguide/xray-console-filters.html
+// [Use filter expressions]: https://docs.aws.amazon.com/xray/latest/devguide/aws-xray-interface-console.html#xray-console-filters
 func (c *Client) GetTraceSummaries(ctx context.Context, params *GetTraceSummariesInput, optFns ...func(*Options)) (*GetTraceSummariesOutput, error) {
 	if params == nil {
 		params = &GetTraceSummariesInput{}
@@ -73,8 +73,8 @@ type GetTraceSummariesInput struct {
 	// parameters are Name and Value.
 	SamplingStrategy *types.SamplingStrategy
 
-	// A parameter to indicate whether to query trace summaries by TraceId, Event
-	// (trace update time), or Service (segment end time).
+	// Query trace summaries by TraceId (trace start time), Event (trace update time),
+	// or Service (trace segment end time).
 	TimeRangeType types.TimeRangeType
 
 	noSmithyDocumentSerde
@@ -147,6 +147,9 @@ func (c *Client) addOperationGetTraceSummariesMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -163,6 +166,9 @@ func (c *Client) addOperationGetTraceSummariesMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetTraceSummariesValidationMiddleware(stack); err != nil {
@@ -184,6 +190,18 @@ func (c *Client) addOperationGetTraceSummariesMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

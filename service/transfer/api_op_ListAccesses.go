@@ -34,7 +34,7 @@ type ListAccessesInput struct {
 	// This member is required.
 	ServerId *string
 
-	// Specifies the maximum number of access SIDs to return.
+	// The maximum number of items to return.
 	MaxResults *int32
 
 	// When you can get additional results from the ListAccesses call, a NextToken
@@ -112,6 +112,9 @@ func (c *Client) addOperationListAccessesMiddlewares(stack *middleware.Stack, op
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -128,6 +131,9 @@ func (c *Client) addOperationListAccessesMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListAccessesValidationMiddleware(stack); err != nil {
@@ -151,12 +157,24 @@ func (c *Client) addOperationListAccessesMiddlewares(stack *middleware.Stack, op
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
+		return err
+	}
 	return nil
 }
 
 // ListAccessesPaginatorOptions is the paginator options for ListAccesses
 type ListAccessesPaginatorOptions struct {
-	// Specifies the maximum number of access SIDs to return.
+	// The maximum number of items to return.
 	Limit int32
 
 	// Set to true if pagination should stop if the service returns a pagination token

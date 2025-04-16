@@ -46,7 +46,7 @@ func (c *Client) GetDataAccess(ctx context.Context, params *GetDataAccessInput, 
 
 type GetDataAccessInput struct {
 
-	// The ID of the Amazon Web Services account that is making this request.
+	// The Amazon Web Services account ID of the S3 Access Grants instance.
 	//
 	// This member is required.
 	AccountId *string
@@ -107,6 +107,14 @@ type GetDataAccessOutput struct {
 	// The temporary credential token that S3 Access Grants vends.
 	Credentials *types.Credentials
 
+	// The user, group, or role that was granted access to the S3 location scope. For
+	// directory identities, this API also returns the grants of the IAM role used for
+	// the identity-aware request. For more information on identity-aware sessions, see
+	// [Granting permissions to use identity-aware console sessions].
+	//
+	// [Granting permissions to use identity-aware console sessions]: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_control-access_sts-setcontext.html
+	Grantee *types.Grantee
+
 	// The S3 URI path of the data to which you are being granted temporary access
 	// credentials.
 	MatchedGrantTarget *string
@@ -160,6 +168,9 @@ func (c *Client) addOperationGetDataAccessMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -179,6 +190,9 @@ func (c *Client) addOperationGetDataAccessMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = smithyhttp.AddContentChecksumMiddleware(stack); err != nil {
@@ -218,6 +232,18 @@ func (c *Client) addOperationGetDataAccessMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = s3controlcust.AddDisableHostPrefixMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

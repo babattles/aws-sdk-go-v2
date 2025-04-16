@@ -29,7 +29,7 @@ func (c *Client) DescribeBridge(ctx context.Context, params *DescribeBridgeInput
 
 type DescribeBridgeInput struct {
 
-	// The ARN of the bridge that you want to describe.
+	//  The Amazon Resource Name (ARN) of the bridge that you want to describe.
 	//
 	// This member is required.
 	BridgeArn *string
@@ -39,9 +39,7 @@ type DescribeBridgeInput struct {
 
 type DescribeBridgeOutput struct {
 
-	// A Bridge is the connection between your datacenter's Instances and the AWS
-	// cloud. A bridge can be used to send video from the AWS cloud to your datacenter
-	// or from your datacenter to the AWS cloud.
+	// The bridge that you requested a description of.
 	Bridge *types.Bridge
 
 	// Metadata pertaining to the operation's result.
@@ -93,6 +91,9 @@ func (c *Client) addOperationDescribeBridgeMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -109,6 +110,9 @@ func (c *Client) addOperationDescribeBridgeMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeBridgeValidationMiddleware(stack); err != nil {
@@ -130,6 +134,18 @@ func (c *Client) addOperationDescribeBridgeMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

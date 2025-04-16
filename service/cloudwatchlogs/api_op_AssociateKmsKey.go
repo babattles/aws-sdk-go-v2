@@ -17,9 +17,9 @@ import (
 // the resourceIdentifier parameter. You can't specify both of those parameters in
 // the same operation.
 //
-//   - Specify the logGroupName parameter to cause all log events stored in the log
-//     group to be encrypted with that key. Only the log events ingested after the key
-//     is associated are encrypted with that key.
+//   - Specify the logGroupName parameter to cause log events ingested into that
+//     log group to be encrypted with that key. Only the log events ingested after the
+//     key is associated are encrypted with that key.
 //
 // Associating a KMS key with a log group overrides any existing associations
 //
@@ -174,6 +174,9 @@ func (c *Client) addOperationAssociateKmsKeyMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -190,6 +193,9 @@ func (c *Client) addOperationAssociateKmsKeyMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpAssociateKmsKeyValidationMiddleware(stack); err != nil {
@@ -211,6 +217,18 @@ func (c *Client) addOperationAssociateKmsKeyMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

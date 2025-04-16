@@ -10,9 +10,10 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Imports a claimed phone number from an external service, such as Amazon
-// Pinpoint, into an Amazon Connect instance. You can call this API only in the
-// same Amazon Web Services Region where the Amazon Connect instance was created.
+// Imports a claimed phone number from an external service, such as Amazon Web
+// Services End User Messaging, into an Amazon Connect instance. You can call this
+// API only in the same Amazon Web Services Region where the Amazon Connect
+// instance was created.
 //
 // Call the [DescribePhoneNumber] API to verify the status of a previous ImportPhoneNumber operation.
 //
@@ -32,7 +33,7 @@ import (
 // level quota of 99 phone numbers, and in any 180 day period you release 99, claim
 // 99, and then release 99, you will have exceeded the 200% limit. At that point
 // you are blocked from claiming any more numbers until you open an Amazon Web
-// Services Support ticket.
+// ServicesSupport ticket.
 //
 // [DescribePhoneNumber]: https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribePhoneNumber.html
 func (c *Client) ImportPhoneNumber(ctx context.Context, params *ImportPhoneNumberInput, optFns ...func(*Options)) (*ImportPhoneNumberOutput, error) {
@@ -61,8 +62,9 @@ type ImportPhoneNumberInput struct {
 	InstanceId *string
 
 	// The claimed phone number ARN being imported from the external service, such as
-	// Amazon Pinpoint. If it is from Amazon Pinpoint, it looks like the ARN of the
-	// phone number to import from Amazon Pinpoint.
+	// Amazon Web Services End User Messaging. If it is from Amazon Web Services End
+	// User Messaging, it looks like the ARN of the phone number to import from Amazon
+	// Web Services End User Messaging.
 	//
 	// This member is required.
 	SourcePhoneNumberArn *string
@@ -141,6 +143,9 @@ func (c *Client) addOperationImportPhoneNumberMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -157,6 +162,9 @@ func (c *Client) addOperationImportPhoneNumberMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opImportPhoneNumberMiddleware(stack, options); err != nil {
@@ -181,6 +189,18 @@ func (c *Client) addOperationImportPhoneNumberMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

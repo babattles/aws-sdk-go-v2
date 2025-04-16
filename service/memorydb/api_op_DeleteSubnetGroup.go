@@ -30,7 +30,7 @@ func (c *Client) DeleteSubnetGroup(ctx context.Context, params *DeleteSubnetGrou
 
 type DeleteSubnetGroupInput struct {
 
-	// The name of the subnet group to delete
+	// The name of the subnet group to delete.
 	//
 	// This member is required.
 	SubnetGroupName *string
@@ -92,6 +92,9 @@ func (c *Client) addOperationDeleteSubnetGroupMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -108,6 +111,9 @@ func (c *Client) addOperationDeleteSubnetGroupMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteSubnetGroupValidationMiddleware(stack); err != nil {
@@ -129,6 +135,18 @@ func (c *Client) addOperationDeleteSubnetGroupMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

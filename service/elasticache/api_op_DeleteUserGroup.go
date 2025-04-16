@@ -11,11 +11,11 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// For Redis OSS engine version 6.0 onwards: Deletes a user group. The user group
-// must first be disassociated from the replication group before it can be deleted.
-// For more information, see [Using Role Based Access Control (RBAC)].
+// For Valkey engine version 7.2 onwards and Redis OSS 6.0 onwards: Deletes a user
+// group. The user group must first be disassociated from the replication group
+// before it can be deleted. For more information, see [Using Role Based Access Control (RBAC)].
 //
-// [Using Role Based Access Control (RBAC)]: http://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Clusters.RBAC.html
+// [Using Role Based Access Control (RBAC)]: http://docs.aws.amazon.com/AmazonElastiCache/latest/dg/Clusters.RBAC.html
 func (c *Client) DeleteUserGroup(ctx context.Context, params *DeleteUserGroupInput, optFns ...func(*Options)) (*DeleteUserGroupOutput, error) {
 	if params == nil {
 		params = &DeleteUserGroupInput{}
@@ -46,7 +46,7 @@ type DeleteUserGroupOutput struct {
 	// The Amazon Resource Name (ARN) of the user group.
 	ARN *string
 
-	// The current supported value is Redis user.
+	// The options are valkey or redis.
 	Engine *string
 
 	// The minimum engine version required, which is Redis OSS 6.0
@@ -59,7 +59,7 @@ type DeleteUserGroupOutput struct {
 	ReplicationGroups []string
 
 	// Indicates which serverless caches the specified user group is associated with.
-	// Available for Redis OSS and Serverless Memcached only.
+	// Available for Valkey, Redis OSS and Serverless Memcached only.
 	ServerlessCaches []string
 
 	// Indicates user group status. Can be "creating", "active", "modifying",
@@ -121,6 +121,9 @@ func (c *Client) addOperationDeleteUserGroupMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -137,6 +140,9 @@ func (c *Client) addOperationDeleteUserGroupMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteUserGroupValidationMiddleware(stack); err != nil {
@@ -158,6 +164,18 @@ func (c *Client) addOperationDeleteUserGroupMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

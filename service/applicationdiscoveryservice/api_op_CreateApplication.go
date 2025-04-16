@@ -28,20 +28,23 @@ func (c *Client) CreateApplication(ctx context.Context, params *CreateApplicatio
 
 type CreateApplicationInput struct {
 
-	// Name of the application to be created.
+	// The name of the application to be created.
 	//
 	// This member is required.
 	Name *string
 
-	// Description of the application to be created.
+	// The description of the application to be created.
 	Description *string
+
+	// The name of the migration wave of the application to be created.
+	Wave *string
 
 	noSmithyDocumentSerde
 }
 
 type CreateApplicationOutput struct {
 
-	// Configuration ID of an application to be created.
+	// The configuration ID of an application to be created.
 	ConfigurationId *string
 
 	// Metadata pertaining to the operation's result.
@@ -93,6 +96,9 @@ func (c *Client) addOperationCreateApplicationMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -109,6 +115,9 @@ func (c *Client) addOperationCreateApplicationMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateApplicationValidationMiddleware(stack); err != nil {
@@ -130,6 +139,18 @@ func (c *Client) addOperationCreateApplicationMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

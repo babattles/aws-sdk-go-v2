@@ -86,7 +86,7 @@ type ListCompilationJobsOutput struct {
 	// This member is required.
 	CompilationJobSummaries []types.CompilationJobSummary
 
-	// If the response is truncated, Amazon SageMaker returns this NextToken . To
+	// If the response is truncated, Amazon SageMaker AI returns this NextToken . To
 	// retrieve the next set of model compilation jobs, use this token in the next
 	// request.
 	NextToken *string
@@ -140,6 +140,9 @@ func (c *Client) addOperationListCompilationJobsMiddlewares(stack *middleware.St
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -158,6 +161,9 @@ func (c *Client) addOperationListCompilationJobsMiddlewares(stack *middleware.St
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListCompilationJobs(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -174,6 +180,18 @@ func (c *Client) addOperationListCompilationJobsMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

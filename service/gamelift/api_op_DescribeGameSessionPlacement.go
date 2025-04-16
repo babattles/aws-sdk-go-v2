@@ -18,10 +18,10 @@ import (
 //
 // This operation is not designed to be continually called to track game session
 // status. This practice can cause you to exceed your API limit, which results in
-// errors. Instead, you must configure configure an Amazon Simple Notification
-// Service (SNS) topic to receive notifications from FlexMatch or queues.
-// Continuously polling with DescribeGameSessionPlacement should only be used for
-// games in development with low game session usage.
+// errors. Instead, you must configure an Amazon Simple Notification Service (SNS)
+// topic to receive notifications from FlexMatch or queues. Continuously polling
+// with DescribeGameSessionPlacement should only be used for games in development
+// with low game session usage.
 func (c *Client) DescribeGameSessionPlacement(ctx context.Context, params *DescribeGameSessionPlacementInput, optFns ...func(*Options)) (*DescribeGameSessionPlacementOutput, error) {
 	if params == nil {
 		params = &DescribeGameSessionPlacementInput{}
@@ -101,6 +101,9 @@ func (c *Client) addOperationDescribeGameSessionPlacementMiddlewares(stack *midd
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -117,6 +120,9 @@ func (c *Client) addOperationDescribeGameSessionPlacementMiddlewares(stack *midd
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeGameSessionPlacementValidationMiddleware(stack); err != nil {
@@ -138,6 +144,18 @@ func (c *Client) addOperationDescribeGameSessionPlacementMiddlewares(stack *midd
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -86,6 +86,30 @@ func TestCheckSnapshot_AcceptSubscriptionRequest(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_AddEntityOwner(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.AddEntityOwner(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "AddEntityOwner")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_AddPolicyGrant(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.AddPolicyGrant(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "AddPolicyGrant")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_AssociateEnvironmentRole(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.AssociateEnvironmentRole(context.Background(), nil, func(o *Options) {
@@ -170,6 +194,18 @@ func TestCheckSnapshot_CreateAssetType(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_CreateConnection(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateConnection(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "CreateConnection")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_CreateDataProduct(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.CreateDataProduct(context.Background(), nil, func(o *Options) {
@@ -211,6 +247,18 @@ func TestCheckSnapshot_CreateDomain(t *testing.T) {
 	_, err := svc.CreateDomain(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "CreateDomain")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_CreateDomainUnit(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateDomainUnit(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "CreateDomainUnit")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -338,6 +386,30 @@ func TestCheckSnapshot_CreateProjectMembership(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_CreateProjectProfile(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateProjectProfile(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "CreateProjectProfile")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_CreateRule(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateRule(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "CreateRule")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_CreateSubscriptionGrant(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.CreateSubscriptionGrant(context.Background(), nil, func(o *Options) {
@@ -422,6 +494,18 @@ func TestCheckSnapshot_DeleteAssetType(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_DeleteConnection(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteConnection(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DeleteConnection")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_DeleteDataProduct(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.DeleteDataProduct(context.Background(), nil, func(o *Options) {
@@ -451,6 +535,18 @@ func TestCheckSnapshot_DeleteDomain(t *testing.T) {
 	_, err := svc.DeleteDomain(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "DeleteDomain")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_DeleteDomainUnit(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteDomainUnit(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DeleteDomainUnit")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -578,6 +674,30 @@ func TestCheckSnapshot_DeleteProjectMembership(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_DeleteProjectProfile(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteProjectProfile(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DeleteProjectProfile")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_DeleteRule(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteRule(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DeleteRule")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_DeleteSubscriptionGrant(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.DeleteSubscriptionGrant(context.Background(), nil, func(o *Options) {
@@ -674,6 +794,18 @@ func TestCheckSnapshot_GetAssetType(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_GetConnection(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetConnection(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GetConnection")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_GetDataProduct(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.GetDataProduct(context.Background(), nil, func(o *Options) {
@@ -715,6 +847,18 @@ func TestCheckSnapshot_GetDomain(t *testing.T) {
 	_, err := svc.GetDomain(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "GetDomain")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_GetDomainUnit(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetDomainUnit(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GetDomainUnit")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -854,6 +998,30 @@ func TestCheckSnapshot_GetIamPortalLoginUrl(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_GetJobRun(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetJobRun(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GetJobRun")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_GetLineageEvent(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetLineageEvent(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GetLineageEvent")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_GetLineageNode(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.GetLineageNode(context.Background(), nil, func(o *Options) {
@@ -895,6 +1063,30 @@ func TestCheckSnapshot_GetProject(t *testing.T) {
 	_, err := svc.GetProject(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "GetProject")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_GetProjectProfile(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetProjectProfile(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GetProjectProfile")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_GetRule(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetRule(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GetRule")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -998,6 +1190,18 @@ func TestCheckSnapshot_ListAssetRevisions(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_ListConnections(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListConnections(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListConnections")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_ListDataProductRevisions(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ListDataProductRevisions(context.Background(), nil, func(o *Options) {
@@ -1051,6 +1255,30 @@ func TestCheckSnapshot_ListDomains(t *testing.T) {
 	_, err := svc.ListDomains(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "ListDomains")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_ListDomainUnitsForParent(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListDomainUnitsForParent(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListDomainUnitsForParent")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_ListEntityOwners(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListEntityOwners(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListEntityOwners")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -1118,6 +1346,30 @@ func TestCheckSnapshot_ListEnvironments(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_ListJobRuns(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListJobRuns(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListJobRuns")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_ListLineageEvents(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListLineageEvents(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListLineageEvents")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_ListLineageNodeHistory(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ListLineageNodeHistory(context.Background(), nil, func(o *Options) {
@@ -1154,6 +1406,18 @@ func TestCheckSnapshot_ListNotifications(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_ListPolicyGrants(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListPolicyGrants(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListPolicyGrants")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_ListProjectMemberships(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ListProjectMemberships(context.Background(), nil, func(o *Options) {
@@ -1166,11 +1430,35 @@ func TestCheckSnapshot_ListProjectMemberships(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_ListProjectProfiles(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListProjectProfiles(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListProjectProfiles")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_ListProjects(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ListProjects(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "ListProjects")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_ListRules(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListRules(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListRules")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -1310,6 +1598,30 @@ func TestCheckSnapshot_RejectSubscriptionRequest(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_RemoveEntityOwner(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.RemoveEntityOwner(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "RemoveEntityOwner")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_RemovePolicyGrant(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.RemovePolicyGrant(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "RemovePolicyGrant")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_RevokeSubscription(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.RevokeSubscription(context.Background(), nil, func(o *Options) {
@@ -1442,6 +1754,18 @@ func TestCheckSnapshot_UpdateAssetFilter(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_UpdateConnection(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateConnection(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "UpdateConnection")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_UpdateDataSource(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.UpdateDataSource(context.Background(), nil, func(o *Options) {
@@ -1459,6 +1783,18 @@ func TestCheckSnapshot_UpdateDomain(t *testing.T) {
 	_, err := svc.UpdateDomain(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "UpdateDomain")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_UpdateDomainUnit(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateDomainUnit(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "UpdateDomainUnit")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -1550,6 +1886,30 @@ func TestCheckSnapshot_UpdateProject(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_UpdateProjectProfile(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateProjectProfile(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "UpdateProjectProfile")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_UpdateRule(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateRule(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "UpdateRule")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_UpdateSubscriptionGrantStatus(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.UpdateSubscriptionGrantStatus(context.Background(), nil, func(o *Options) {
@@ -1614,6 +1974,30 @@ func TestUpdateSnapshot_AcceptSubscriptionRequest(t *testing.T) {
 	_, err := svc.AcceptSubscriptionRequest(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "AcceptSubscriptionRequest")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_AddEntityOwner(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.AddEntityOwner(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "AddEntityOwner")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_AddPolicyGrant(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.AddPolicyGrant(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "AddPolicyGrant")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -1705,6 +2089,18 @@ func TestUpdateSnapshot_CreateAssetType(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_CreateConnection(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateConnection(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "CreateConnection")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_CreateDataProduct(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.CreateDataProduct(context.Background(), nil, func(o *Options) {
@@ -1746,6 +2142,18 @@ func TestUpdateSnapshot_CreateDomain(t *testing.T) {
 	_, err := svc.CreateDomain(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "CreateDomain")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_CreateDomainUnit(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateDomainUnit(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "CreateDomainUnit")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -1873,6 +2281,30 @@ func TestUpdateSnapshot_CreateProjectMembership(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_CreateProjectProfile(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateProjectProfile(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "CreateProjectProfile")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_CreateRule(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateRule(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "CreateRule")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_CreateSubscriptionGrant(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.CreateSubscriptionGrant(context.Background(), nil, func(o *Options) {
@@ -1957,6 +2389,18 @@ func TestUpdateSnapshot_DeleteAssetType(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_DeleteConnection(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteConnection(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DeleteConnection")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_DeleteDataProduct(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.DeleteDataProduct(context.Background(), nil, func(o *Options) {
@@ -1986,6 +2430,18 @@ func TestUpdateSnapshot_DeleteDomain(t *testing.T) {
 	_, err := svc.DeleteDomain(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "DeleteDomain")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_DeleteDomainUnit(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteDomainUnit(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DeleteDomainUnit")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -2113,6 +2569,30 @@ func TestUpdateSnapshot_DeleteProjectMembership(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_DeleteProjectProfile(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteProjectProfile(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DeleteProjectProfile")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_DeleteRule(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteRule(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DeleteRule")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_DeleteSubscriptionGrant(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.DeleteSubscriptionGrant(context.Background(), nil, func(o *Options) {
@@ -2209,6 +2689,18 @@ func TestUpdateSnapshot_GetAssetType(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_GetConnection(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetConnection(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GetConnection")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_GetDataProduct(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.GetDataProduct(context.Background(), nil, func(o *Options) {
@@ -2250,6 +2742,18 @@ func TestUpdateSnapshot_GetDomain(t *testing.T) {
 	_, err := svc.GetDomain(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "GetDomain")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_GetDomainUnit(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetDomainUnit(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GetDomainUnit")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -2389,6 +2893,30 @@ func TestUpdateSnapshot_GetIamPortalLoginUrl(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_GetJobRun(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetJobRun(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GetJobRun")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_GetLineageEvent(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetLineageEvent(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GetLineageEvent")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_GetLineageNode(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.GetLineageNode(context.Background(), nil, func(o *Options) {
@@ -2430,6 +2958,30 @@ func TestUpdateSnapshot_GetProject(t *testing.T) {
 	_, err := svc.GetProject(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "GetProject")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_GetProjectProfile(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetProjectProfile(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GetProjectProfile")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_GetRule(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetRule(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GetRule")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -2533,6 +3085,18 @@ func TestUpdateSnapshot_ListAssetRevisions(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_ListConnections(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListConnections(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListConnections")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_ListDataProductRevisions(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ListDataProductRevisions(context.Background(), nil, func(o *Options) {
@@ -2586,6 +3150,30 @@ func TestUpdateSnapshot_ListDomains(t *testing.T) {
 	_, err := svc.ListDomains(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "ListDomains")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_ListDomainUnitsForParent(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListDomainUnitsForParent(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListDomainUnitsForParent")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_ListEntityOwners(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListEntityOwners(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListEntityOwners")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -2653,6 +3241,30 @@ func TestUpdateSnapshot_ListEnvironments(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_ListJobRuns(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListJobRuns(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListJobRuns")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_ListLineageEvents(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListLineageEvents(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListLineageEvents")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_ListLineageNodeHistory(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ListLineageNodeHistory(context.Background(), nil, func(o *Options) {
@@ -2689,6 +3301,18 @@ func TestUpdateSnapshot_ListNotifications(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_ListPolicyGrants(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListPolicyGrants(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListPolicyGrants")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_ListProjectMemberships(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ListProjectMemberships(context.Background(), nil, func(o *Options) {
@@ -2701,11 +3325,35 @@ func TestUpdateSnapshot_ListProjectMemberships(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_ListProjectProfiles(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListProjectProfiles(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListProjectProfiles")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_ListProjects(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ListProjects(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "ListProjects")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_ListRules(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListRules(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListRules")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -2845,6 +3493,30 @@ func TestUpdateSnapshot_RejectSubscriptionRequest(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_RemoveEntityOwner(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.RemoveEntityOwner(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "RemoveEntityOwner")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_RemovePolicyGrant(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.RemovePolicyGrant(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "RemovePolicyGrant")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_RevokeSubscription(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.RevokeSubscription(context.Background(), nil, func(o *Options) {
@@ -2977,6 +3649,18 @@ func TestUpdateSnapshot_UpdateAssetFilter(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_UpdateConnection(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateConnection(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "UpdateConnection")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_UpdateDataSource(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.UpdateDataSource(context.Background(), nil, func(o *Options) {
@@ -2994,6 +3678,18 @@ func TestUpdateSnapshot_UpdateDomain(t *testing.T) {
 	_, err := svc.UpdateDomain(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "UpdateDomain")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_UpdateDomainUnit(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateDomainUnit(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "UpdateDomainUnit")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -3078,6 +3774,30 @@ func TestUpdateSnapshot_UpdateProject(t *testing.T) {
 	_, err := svc.UpdateProject(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "UpdateProject")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_UpdateProjectProfile(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateProjectProfile(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "UpdateProjectProfile")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_UpdateRule(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateRule(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "UpdateRule")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {

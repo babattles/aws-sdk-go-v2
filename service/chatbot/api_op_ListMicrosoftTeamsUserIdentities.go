@@ -11,7 +11,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Lists all Microsoft Teams user identities with a mapped role.
+// A list all Microsoft Teams user identities with a mapped role.
 func (c *Client) ListMicrosoftTeamsUserIdentities(ctx context.Context, params *ListMicrosoftTeamsUserIdentitiesInput, optFns ...func(*Options)) (*ListMicrosoftTeamsUserIdentitiesOutput, error) {
 	if params == nil {
 		params = &ListMicrosoftTeamsUserIdentitiesInput{}
@@ -29,8 +29,8 @@ func (c *Client) ListMicrosoftTeamsUserIdentities(ctx context.Context, params *L
 
 type ListMicrosoftTeamsUserIdentitiesInput struct {
 
-	// The ARN of the MicrosoftTeamsChannelConfiguration associated with the user
-	// identities to list.
+	// The Amazon Resource Name (ARN) of the MicrosoftTeamsChannelConfiguration
+	// associated with the user identities to list.
 	ChatConfigurationArn *string
 
 	// The maximum number of results to include in the response. If more results exist
@@ -105,6 +105,9 @@ func (c *Client) addOperationListMicrosoftTeamsUserIdentitiesMiddlewares(stack *
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -123,6 +126,9 @@ func (c *Client) addOperationListMicrosoftTeamsUserIdentitiesMiddlewares(stack *
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListMicrosoftTeamsUserIdentities(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -139,6 +145,18 @@ func (c *Client) addOperationListMicrosoftTeamsUserIdentitiesMiddlewares(stack *
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

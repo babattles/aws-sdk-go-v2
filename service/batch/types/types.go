@@ -515,8 +515,8 @@ type ComputeResource struct {
 
 	// Key-value pair tags to be applied to Amazon EC2 resources that are launched in
 	// the compute environment. For Batch, these take the form of "String1": "String2"
-	// , where String1 is the tag key and String2 is the tag value-for example, {
-	// "Name": "Batch Instance - C4OnDemand" } . This is helpful for recognizing your
+	// , where String1 is the tag key and String2 is the tag value (for example, {
+	// "Name": "Batch Instance - C4OnDemand" } ). This is helpful for recognizing your
 	// Batch instances in the Amazon EC2 console. Updating these tags requires an
 	// infrastructure update to the compute environment. For more information, see [Updating compute environments]in
 	// the Batch User Guide. These tags aren't seen when using the Batch
@@ -803,8 +803,8 @@ type ComputeResourceUpdate struct {
 
 	// Key-value pair tags to be applied to Amazon EC2 resources that are launched in
 	// the compute environment. For Batch, these take the form of "String1": "String2"
-	// , where String1 is the tag key and String2 is the tag value-for example, {
-	// "Name": "Batch Instance - C4OnDemand" } . This is helpful for recognizing your
+	// , where String1 is the tag key and String2 is the tag value (for example, {
+	// "Name": "Batch Instance - C4OnDemand" } ). This is helpful for recognizing your
 	// Batch instances in the Amazon EC2 console. These tags aren't seen when using the
 	// Batch ListTagsForResource API operation.
 	//
@@ -855,6 +855,57 @@ type ComputeResourceUpdate struct {
 	noSmithyDocumentSerde
 }
 
+// Contains a list of consumable resources required by a job.
+type ConsumableResourceProperties struct {
+
+	// The list of consumable resources required by a job.
+	ConsumableResourceList []ConsumableResourceRequirement
+
+	noSmithyDocumentSerde
+}
+
+// Information about a consumable resource required to run a job.
+type ConsumableResourceRequirement struct {
+
+	// The name or ARN of the consumable resource.
+	ConsumableResource *string
+
+	// The quantity of the consumable resource that is needed.
+	Quantity *int64
+
+	noSmithyDocumentSerde
+}
+
+// Current information about a consumable resource.
+type ConsumableResourceSummary struct {
+
+	// The Amazon Resource Name (ARN) of the consumable resource.
+	//
+	// This member is required.
+	ConsumableResourceArn *string
+
+	// The name of the consumable resource.
+	//
+	// This member is required.
+	ConsumableResourceName *string
+
+	// The amount of the consumable resource that is currently in use.
+	InUseQuantity *int64
+
+	// Indicates whether the resource is available to be re-used after a job
+	// completes. Can be one of:
+	//
+	//   - REPLENISHABLE
+	//
+	//   - NON_REPLENISHABLE
+	ResourceType *string
+
+	// The total amount of the consumable resource that is available.
+	TotalQuantity *int64
+
+	noSmithyDocumentSerde
+}
+
 // An object that represents the details of a container that's part of a job.
 type ContainerDetail struct {
 
@@ -864,6 +915,10 @@ type ContainerDetail struct {
 	// The Amazon Resource Name (ARN) of the container instance that the container is
 	// running on.
 	ContainerInstanceArn *string
+
+	// Determines whether execute command functionality is turned on for this task. If
+	// true , execute command functionality is turned on all the containers in the task.
+	EnableExecuteCommand *bool
 
 	// The environment variables to pass to a container.
 	//
@@ -1123,6 +1178,10 @@ type ContainerProperties struct {
 	// [Docker Remote API]: https://docs.docker.com/engine/api/v1.23/
 	// [https://docs.docker.com/engine/reference/builder/#cmd]: https://docs.docker.com/engine/reference/builder/#cmd
 	Command []string
+
+	// Determines whether execute command functionality is turned on for this task. If
+	// true , execute command functionality is turned on all the containers in the task.
+	EnableExecuteCommand *bool
 
 	// The environment variables to pass to a container. This parameter maps to Env in
 	// the [Create a container]section of the [Docker Remote API] and the --env option to [docker run].
@@ -1455,7 +1514,8 @@ type EcsProperties struct {
 	// An object that contains the properties for the Amazon ECS task definition of a
 	// job.
 	//
-	// This object is currently limited to one element.
+	// This object is currently limited to one task element. However, the task element
+	// can run up to 10 containers.
 	//
 	// This member is required.
 	TaskProperties []EcsTaskProperties
@@ -1492,6 +1552,10 @@ type EcsTaskDetails struct {
 
 	// A list of containers that are included in the taskProperties list.
 	Containers []TaskContainerDetails
+
+	// Determines whether execute command functionality is turned on for this task. If
+	// true , execute command functionality is turned on all the containers in the task.
+	EnableExecuteCommand *bool
 
 	// The amount of ephemeral storage allocated for the task.
 	EphemeralStorage *EphemeralStorage
@@ -1548,6 +1612,10 @@ type EcsTaskProperties struct {
 	//
 	// This member is required.
 	Containers []TaskContainerProperties
+
+	// Determines whether execute command functionality is turned on for this task. If
+	// true , execute command functionality is turned on all the containers in the task.
+	EnableExecuteCommand *bool
 
 	// The amount of ephemeral storage to allocate for the task. This parameter is
 	// used to expand the total amount of ephemeral storage available, beyond the
@@ -1704,6 +1772,9 @@ type EFSVolumeConfiguration struct {
 // Amazon EKS container runs.
 type EksAttemptContainerDetail struct {
 
+	// The ID for the container.
+	ContainerID *string
+
 	// The exit code returned for the job attempt. A non-zero exit code is considered
 	// failed.
 	ExitCode *int32
@@ -1736,6 +1807,9 @@ type EksAttemptDetail struct {
 
 	// The name of the pod for this job attempt.
 	PodName *string
+
+	// The namespace of the Amazon EKS cluster that the pod exists in.
+	PodNamespace *string
 
 	// The Unix timestamp (in milliseconds) for when the attempt was started (when the
 	// attempt transitioned from the STARTING state to the RUNNING state).
@@ -2141,6 +2215,9 @@ type EksContainerVolumeMount struct {
 	// Otherwise, the container can write to the volume. The default value is false .
 	ReadOnly *bool
 
+	// A sub-path inside the referenced volume instead of its root.
+	SubPath *string
+
 	noSmithyDocumentSerde
 }
 
@@ -2192,11 +2269,79 @@ type EksHostPath struct {
 // [Understanding Kubernetes Objects]: https://kubernetes.io/docs/concepts/overview/working-with-objects/kubernetes-objects/
 type EksMetadata struct {
 
+	// Key-value pairs used to attach arbitrary, non-identifying metadata to
+	// Kubernetes objects. Valid annotation keys have two segments: an optional prefix
+	// and a name, separated by a slash (/).
+	//
+	//   - The prefix is optional and must be 253 characters or less. If specified,
+	//   the prefix must be a DNS subdomain− a series of DNS labels separated by dots
+	//   (.), and it must end with a slash (/).
+	//
+	//   - The name segment is required and must be 63 characters or less. It can
+	//   include alphanumeric characters ([a-z0-9A-Z]), dashes (-), underscores (_), and
+	//   dots (.), but must begin and end with an alphanumeric character.
+	//
+	// Annotation values must be 255 characters or less.
+	//
+	// Annotations can be added or modified at any time. Each resource can have
+	// multiple annotations.
+	Annotations map[string]string
+
 	// Key-value pairs used to identify, sort, and organize cube resources. Can
 	// contain up to 63 uppercase letters, lowercase letters, numbers, hyphens (-), and
 	// underscores (_). Labels can be added or modified at any time. Each resource can
 	// have multiple labels, but each key must be unique for a given object.
 	Labels map[string]string
+
+	// The namespace of the Amazon EKS cluster. In Kubernetes, namespaces provide a
+	// mechanism for isolating groups of resources within a single cluster. Names of
+	// resources need to be unique within a namespace, but not across namespaces. Batch
+	// places Batch Job pods in this namespace. If this field is provided, the value
+	// can't be empty or null. It must meet the following requirements:
+	//
+	//   - 1-63 characters long
+	//
+	//   - Can't be set to default
+	//
+	//   - Can't start with kube
+	//
+	//   - Must match the following regular expression:
+	//   ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
+	//
+	// For more information, see [Namespaces] in the Kubernetes documentation. This namespace can
+	// be different from the kubernetesNamespace set in the compute environment's
+	// EksConfiguration , but must have identical role-based access control (RBAC)
+	// roles as the compute environment's kubernetesNamespace . For multi-node parallel
+	// jobs, the same value must be provided across all the node ranges.
+	//
+	// [Namespaces]: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+	Namespace *string
+
+	noSmithyDocumentSerde
+}
+
+// A persistentVolumeClaim volume is used to mount a [PersistentVolume] into a Pod.
+// PersistentVolumeClaims are a way for users to "claim" durable storage without
+// knowing the details of the particular cloud environment. See the information
+// about [PersistentVolumes]in the Kubernetes documentation.
+//
+// [PersistentVolumes]: https://kubernetes.io/docs/concepts/storage/persistent-volumes/
+// [PersistentVolume]: https://kubernetes.io/docs/concepts/storage/persistent-volumes/
+type EksPersistentVolumeClaim struct {
+
+	// The name of the persistentVolumeClaim bounded to a persistentVolume . For more
+	// information, see [Persistent Volume Claims]in the Kubernetes documentation.
+	//
+	// [Persistent Volume Claims]: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims
+	//
+	// This member is required.
+	ClaimName *string
+
+	// An optional boolean value indicating if the mount is read only. Default is
+	// false. For more information, see [Read Only Mounts]in the Kubernetes documentation.
+	//
+	// [Read Only Mounts]: https://kubernetes.io/docs/concepts/storage/volumes/#read-only-mounts
+	ReadOnly *bool
 
 	noSmithyDocumentSerde
 }
@@ -2205,6 +2350,8 @@ type EksMetadata struct {
 type EksPodProperties struct {
 
 	// The properties of the container that's used on the Amazon EKS pod.
+	//
+	// This object is limited to 10 elements.
 	Containers []EksContainer
 
 	// The DNS policy for the pod. The default value is ClusterFirst . If the
@@ -2240,7 +2387,7 @@ type EksPodProperties struct {
 	// registration information in the Kubernetes backend data store. For more
 	// information, see [Init Containers]in the Kubernetes documentation.
 	//
-	// This object is limited to 10 elements
+	// This object is limited to 10 elements.
 	//
 	// [Init Containers]: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
 	InitContainers []EksContainer
@@ -2354,14 +2501,12 @@ type EksPodPropertiesOverride struct {
 	// The overrides for the container that's used on the Amazon EKS pod.
 	Containers []EksContainerOverride
 
-	// The overrides for the conatainers defined in the Amazon EKS pod. These
-	// containers run before application containers, always runs to completion, and
-	// must complete successfully before the next container starts. These containers
-	// are registered with the Amazon EKS Connector agent and persists the registration
+	// The overrides for the initContainers defined in the Amazon EKS pod. These
+	// containers run before application containers, always run to completion, and must
+	// complete successfully before the next container starts. These containers are
+	// registered with the Amazon EKS Connector agent and persists the registration
 	// information in the Kubernetes backend data store. For more information, see [Init Containers]in
 	// the Kubernetes documentation.
-	//
-	// This object is limited to 10 elements
 	//
 	// [Init Containers]: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
 	InitContainers []EksContainerOverride
@@ -2443,6 +2588,12 @@ type EksVolume struct {
 	// [hostPath]: https://kubernetes.io/docs/concepts/storage/volumes/#hostpath
 	HostPath *EksHostPath
 
+	// Specifies the configuration of a Kubernetes persistentVolumeClaim bounded to a
+	// persistentVolume . For more information, see [Persistent Volume Claims] in the Kubernetes documentation.
+	//
+	// [Persistent Volume Claims]: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims
+	PersistentVolumeClaim *EksPersistentVolumeClaim
+
 	// Specifies the configuration of a Kubernetes secret volume. For more
 	// information, see [secret]in the Kubernetes documentation.
 	//
@@ -2502,36 +2653,40 @@ type EvaluateOnExit struct {
 	noSmithyDocumentSerde
 }
 
-// The fair share policy for a scheduling policy.
+// The fair-share scheduling policy details.
 type FairsharePolicy struct {
 
-	// A value used to reserve some of the available maximum vCPU for fair share
+	// A value used to reserve some of the available maximum vCPU for share
 	// identifiers that aren't already used.
 	//
 	// The reserved ratio is (computeReservation/100)^ActiveFairShares  where
-	// ActiveFairShares is the number of active fair share identifiers.
+	// ActiveFairShares is the number of active share identifiers.
 	//
 	// For example, a computeReservation value of 50 indicates that Batch reserves 50%
-	// of the maximum available vCPU if there's only one fair share identifier. It
-	// reserves 25% if there are two fair share identifiers. It reserves 12.5% if there
-	// are three fair share identifiers. A computeReservation value of 25 indicates
-	// that Batch should reserve 25% of the maximum available vCPU if there's only one
-	// fair share identifier, 6.25% if there are two fair share identifiers, and 1.56%
-	// if there are three fair share identifiers.
+	// of the maximum available vCPU if there's only one share identifier. It reserves
+	// 25% if there are two share identifiers. It reserves 12.5% if there are three
+	// share identifiers. A computeReservation value of 25 indicates that Batch should
+	// reserve 25% of the maximum available vCPU if there's only one share identifier,
+	// 6.25% if there are two fair share identifiers, and 1.56% if there are three
+	// share identifiers.
 	//
 	// The minimum value is 0 and the maximum value is 99.
 	ComputeReservation *int32
 
-	// The amount of time (in seconds) to use to calculate a fair share percentage for
-	// each fair share identifier in use. A value of zero (0) indicates that only
-	// current usage is measured. The decay allows for more recently run jobs to have
-	// more weight than jobs that ran earlier. The maximum supported value is 604800 (1
-	// week).
+	// The amount of time (in seconds) to use to calculate a fair-share percentage for
+	// each share identifier in use. A value of zero (0) indicates the default minimum
+	// time window (600 seconds). The maximum supported value is 604800 (1 week).
+	//
+	// The decay allows for more recently run jobs to have more weight than jobs that
+	// ran earlier. Consider adjusting this number if you have jobs that (on average)
+	// run longer than ten minutes, or a large difference in job count or job run times
+	// between share identifiers, and the allocation of resources doesn't meet your
+	// needs.
 	ShareDecaySeconds *int32
 
-	// An array of SharedIdentifier objects that contain the weights for the fair
-	// share identifiers for the fair share policy. Fair share identifiers that aren't
-	// included have a default weight of 1.0 .
+	// An array of SharedIdentifier objects that contain the weights for the share
+	// identifiers for the fair-share policy. Share identifiers that aren't included
+	// have a default weight of 1.0 .
 	ShareDistribution []ShareAttributes
 
 	noSmithyDocumentSerde
@@ -2553,12 +2708,38 @@ type FargatePlatformConfiguration struct {
 	noSmithyDocumentSerde
 }
 
+// The FireLens configuration for the container. This is used to specify and
+// configure a log router for container logs. For more information, see [Custom log]routing in
+// the Amazon Elastic Container Service Developer Guide.
+//
+// [Custom log]: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_firelens.html
+type FirelensConfiguration struct {
+
+	// The log router to use. The valid values are fluentd or fluentbit .
+	//
+	// This member is required.
+	Type FirelensConfigurationType
+
+	// The options to use when configuring the log router. This field is optional and
+	// can be used to specify a custom configuration file or to add additional
+	// metadata, such as the task, task definition, cluster, and container instance
+	// details to the log event. If specified, the syntax to use is
+	// "options":{"enable-ecs-log-metadata":"true|false","config-file-type:"s3|file","config-file-value":"arn:aws:s3:::mybucket/fluent.conf|filepath"}
+	// . For more information, see [Creating a task definition that uses a FireLens configuration]in the Amazon Elastic Container Service Developer
+	// Guide.
+	//
+	// [Creating a task definition that uses a FireLens configuration]: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_firelens.html#firelens-taskdef
+	Options map[string]string
+
+	noSmithyDocumentSerde
+}
+
 // Contains a list of the first 100 RUNNABLE jobs associated to a single job queue.
 type FrontOfQueueDetail struct {
 
 	// The Amazon Resource Names (ARNs) of the first 100 RUNNABLE jobs in a named job
 	// queue. For first-in-first-out (FIFO) job queues, jobs are ordered based on their
-	// submission time. For fair share scheduling (FSS) job queues, jobs are ordered
+	// submission time. For fair-share scheduling (FSS) job queues, jobs are ordered
 	// based on their job priority and share usage.
 	Jobs []FrontOfQueueJobSummary
 
@@ -2645,6 +2826,9 @@ type JobDefinition struct {
 	// This member is required.
 	Type *string
 
+	// Contains a list of consumable resources required by the job.
+	ConsumableResourceProperties *ConsumableResourceProperties
+
 	// The orchestration type of the compute environment. The valid values are ECS
 	// (default) or EKS .
 	ContainerOrchestrationType OrchestrationType
@@ -2698,7 +2882,7 @@ type JobDefinition struct {
 	RetryStrategy *RetryStrategy
 
 	// The scheduling priority of the job definition. This only affects jobs in job
-	// queues with a fair share policy. Jobs with a higher scheduling priority are
+	// queues with a fair-share policy. Jobs with a higher scheduling priority are
 	// scheduled before jobs with a lower scheduling priority.
 	SchedulingPriority *int32
 
@@ -2774,6 +2958,9 @@ type JobDetail struct {
 	// A list of job attempts that are associated with this job.
 	Attempts []AttemptDetail
 
+	// Contains a list of consumable resources required by the job.
+	ConsumableResourceProperties *ConsumableResourceProperties
+
 	// An object that represents the details for the container that's associated with
 	// the job. If the details are for a multiple-container job, this object will be
 	// empty.
@@ -2838,7 +3025,7 @@ type JobDetail struct {
 	RetryStrategy *RetryStrategy
 
 	// The scheduling policy of the job definition. This only affects jobs in job
-	// queues with a fair share policy. Jobs with a higher scheduling priority are
+	// queues with a fair-share policy. Jobs with a higher scheduling priority are
 	// scheduled before jobs with a lower scheduling priority.
 	SchedulingPriority *int32
 
@@ -2895,13 +3082,27 @@ type JobQueueDetail struct {
 	// This member is required.
 	JobQueueName *string
 
-	// The priority of the job queue. Job queues with a higher priority (or a higher
-	// integer value for the priority parameter) are evaluated first when associated
-	// with the same compute environment. Priority is determined in descending order.
-	// For example, a job queue with a priority value of 10 is given scheduling
-	// preference over a job queue with a priority value of 1 . All of the compute
-	// environments must be either Amazon EC2 ( EC2 or SPOT ) or Fargate ( FARGATE or
-	// FARGATE_SPOT ). Amazon EC2 and Fargate compute environments can't be mixed.
+	// The priority of the job queue. Job queue priority determines the order that job
+	// queues are evaluated when multiple queues dispatch jobs within a shared compute
+	// environment. A higher value for priority indicates a higher priority. Queues
+	// are evaluated in cycles, in descending order by priority. For example, a job
+	// queue with a priority value of 10 is evaluated before a queue with a priority
+	// value of 1 . All of the compute environments must be either Amazon EC2 ( EC2 or
+	// SPOT ) or Fargate ( FARGATE or FARGATE_SPOT ). Amazon EC2 and Fargate compute
+	// environments can't be mixed.
+	//
+	// Job queue priority doesn't guarantee that a particular job executes before a
+	// job in a lower priority queue. Jobs added to higher priority queues during the
+	// queue evaluation cycle might not be evaluated until the next cycle. A job is
+	// dispatched from a queue only if resources are available when the queue is
+	// evaluated. If there are insufficient resources available at that time, the cycle
+	// proceeds to the next queue. This means that jobs added to higher priority queues
+	// might have to wait for jobs in multiple lower priority queues to complete before
+	// they are dispatched. You can use job dependencies to control the order for jobs
+	// from queues with different priorities. For more information, see [Job Dependencies]in the Batch
+	// User Guide.
+	//
+	// [Job Dependencies]: https://docs.aws.amazon.com/batch/latest/userguide/job_dependencies.html
 	//
 	// This member is required.
 	Priority *int32
@@ -3061,7 +3262,7 @@ type KeyValuePair struct {
 }
 
 // A filter name and value pair that's used to return a more specific list of
-// results from a ListJobs API operation.
+// results from a ListJobs or ListJobsByConsumableResource API operation.
 type KeyValuesPair struct {
 
 	// The name of the filter. Filter names are case sensitive.
@@ -3090,22 +3291,120 @@ type LaunchTemplateSpecification struct {
 	// The name of the launch template.
 	LaunchTemplateName *string
 
-	// The version number of the launch template, $Latest , or $Default .
+	// A launch template to use in place of the default launch template. You must
+	// specify either the launch template ID or launch template name in the request,
+	// but not both.
 	//
-	// If the value is $Latest , the latest version of the launch template is used. If
-	// the value is $Default , the default version of the launch template is used.
+	// You can specify up to ten (10) launch template overrides that are associated to
+	// unique instance types or families for each compute environment.
+	//
+	// To unset all override templates for a compute environment, you can pass an
+	// empty array to the [UpdateComputeEnvironment.overrides]parameter, or not include the overrides parameter when
+	// submitting the UpdateComputeEnvironment API operation.
+	//
+	// [UpdateComputeEnvironment.overrides]: https://docs.aws.amazon.com/batch/latest/APIReference/API_UpdateComputeEnvironment.html
+	Overrides []LaunchTemplateSpecificationOverride
+
+	// The version number of the launch template, $Default , or $Latest .
+	//
+	// If the value is $Default , the default version of the launch template is used.
+	// If the value is $Latest , the latest version of the launch template is used.
 	//
 	// If the AMI ID that's used in a compute environment is from the launch template,
 	// the AMI isn't changed when the compute environment is updated. It's only changed
 	// if the updateToLatestImageVersion parameter for the compute environment is set
-	// to true . During an infrastructure update, if either $Latest or $Default is
+	// to true . During an infrastructure update, if either $Default or $Latest is
 	// specified, Batch re-evaluates the launch template version, and it might use a
 	// different version of the launch template. This is the case even if the launch
 	// template isn't specified in the update. When updating a compute environment,
 	// changing the launch template requires an infrastructure update of the compute
 	// environment. For more information, see [Updating compute environments]in the Batch User Guide.
 	//
-	// Default: $Default .
+	// Default: $Default
+	//
+	// Latest: $Latest
+	//
+	// [Updating compute environments]: https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html
+	Version *string
+
+	noSmithyDocumentSerde
+}
+
+// An object that represents a launch template to use in place of the default
+// launch template. You must specify either the launch template ID or launch
+// template name in the request, but not both.
+//
+// If security groups are specified using both the securityGroupIds parameter of
+// CreateComputeEnvironment and the launch template, the values in the
+// securityGroupIds parameter of CreateComputeEnvironment will be used.
+//
+// You can define up to ten (10) overrides for each compute environment.
+//
+// This object isn't applicable to jobs that are running on Fargate resources.
+//
+// To unset all override templates for a compute environment, you can pass an
+// empty array to the [UpdateComputeEnvironment.overrides]parameter, or not include the overrides parameter when
+// submitting the UpdateComputeEnvironment API operation.
+//
+// [UpdateComputeEnvironment.overrides]: https://docs.aws.amazon.com/batch/latest/APIReference/API_UpdateComputeEnvironment.html
+type LaunchTemplateSpecificationOverride struct {
+
+	// The ID of the launch template.
+	//
+	// Note: If you specify the launchTemplateId you can't specify the
+	// launchTemplateName as well.
+	LaunchTemplateId *string
+
+	// The name of the launch template.
+	//
+	// Note: If you specify the launchTemplateName you can't specify the
+	// launchTemplateId as well.
+	LaunchTemplateName *string
+
+	// The instance type or family that this override launch template should be
+	// applied to.
+	//
+	// This parameter is required when defining a launch template override.
+	//
+	// Information included in this parameter must meet the following requirements:
+	//
+	//   - Must be a valid Amazon EC2 instance type or family.
+	//
+	//   - optimal isn't allowed.
+	//
+	//   - targetInstanceTypes can target only instance types and families that are
+	//   included within the [ComputeResource.instanceTypes]ComputeResource.instanceTypes set. targetInstanceTypes
+	//   doesn't need to include all of the instances from the instanceType set, but at
+	//   least a subset. For example, if ComputeResource.instanceTypes includes [m5,
+	//   g5] , targetInstanceTypes can include [m5.2xlarge] and [m5.large] but not
+	//   [c5.large] .
+	//
+	//   - targetInstanceTypes included within the same launch template override or
+	//   across launch template overrides can't overlap for the same compute environment.
+	//   For example, you can't define one launch template override to target an instance
+	//   family and another define an instance type within this same family.
+	//
+	// [ComputeResource.instanceTypes]: https://docs.aws.amazon.com/batch/latest/APIReference/API_ComputeResource.html#Batch-Type-ComputeResource-instanceTypes
+	TargetInstanceTypes []string
+
+	// The version number of the launch template, $Default , or $Latest .
+	//
+	// If the value is $Default , the default version of the launch template is used.
+	// If the value is $Latest , the latest version of the launch template is used.
+	//
+	// If the AMI ID that's used in a compute environment is from the launch template,
+	// the AMI isn't changed when the compute environment is updated. It's only changed
+	// if the updateToLatestImageVersion parameter for the compute environment is set
+	// to true . During an infrastructure update, if either $Default or $Latest is
+	// specified, Batch re-evaluates the launch template version, and it might use a
+	// different version of the launch template. This is the case even if the launch
+	// template isn't specified in the update. When updating a compute environment,
+	// changing the launch template requires an infrastructure update of the compute
+	// environment. For more information, see [Updating compute environments]in the Batch User Guide.
+	//
+	// Default: $Default
+	//
+	// Latest: $Latest
 	//
 	// [Updating compute environments]: https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html
 	Version *string
@@ -3145,9 +3444,8 @@ type LinuxParameters struct {
 	//
 	// If a maxSwap value of 0 is specified, the container doesn't use swap. Accepted
 	// values are 0 or any positive integer. If the maxSwap parameter is omitted, the
-	// container doesn't use the swap configuration for the container instance that
-	// it's running on. A maxSwap value must be set for the swappiness parameter to be
-	// used.
+	// container doesn't use the swap configuration for the container instance on which
+	// it runs. A maxSwap value must be set for the swappiness parameter to be used.
 	//
 	// This parameter isn't applicable to jobs that are running on Fargate resources.
 	// Don't provide it for these jobs.
@@ -3209,6 +3507,76 @@ type LinuxParameters struct {
 	noSmithyDocumentSerde
 }
 
+// Current information about a consumable resource required by a job.
+type ListJobsByConsumableResourceSummary struct {
+
+	// Contains a list of consumable resources required by the job.
+	//
+	// This member is required.
+	ConsumableResourceProperties *ConsumableResourceProperties
+
+	// The Unix timestamp (in milliseconds) for when the consumable resource was
+	// created.
+	//
+	// This member is required.
+	CreatedAt *int64
+
+	// The Amazon Resource Name (ARN) of the job.
+	//
+	// This member is required.
+	JobArn *string
+
+	// The name of the job.
+	//
+	// This member is required.
+	JobName *string
+
+	// The Amazon Resource Name (ARN) of the job queue.
+	//
+	// This member is required.
+	JobQueueArn *string
+
+	// The status of the job. Can be one of:
+	//
+	//   - SUBMITTED
+	//
+	//   - PENDING
+	//
+	//   - RUNNABLE
+	//
+	//   - STARTING
+	//
+	//   - RUNNING
+	//
+	//   - SUCCEEDED
+	//
+	//   - FAILED
+	//
+	// This member is required.
+	JobStatus *string
+
+	// The total amount of the consumable resource that is available.
+	//
+	// This member is required.
+	Quantity *int64
+
+	// The Amazon Resource Name (ARN) of the job definition.
+	JobDefinitionArn *string
+
+	// The fair-share scheduling policy identifier for the job.
+	ShareIdentifier *string
+
+	// The Unix timestamp for when the job was started. More specifically, it's when
+	// the job transitioned from the STARTING state to the RUNNING state.
+	StartedAt *int64
+
+	// A short, human-readable string to provide more details for the current status
+	// of the job.
+	StatusReason *string
+
+	noSmithyDocumentSerde
+}
+
 // Log configuration options to send to a custom log driver for the container.
 type LogConfiguration struct {
 
@@ -3221,6 +3589,10 @@ type LogConfiguration struct {
 	//
 	// Jobs that are running on Fargate resources are restricted to the awslogs and
 	// splunk log drivers.
+	//
+	// awsfirelens Specifies the firelens logging driver. For more information on
+	// configuring Firelens, see [Send Amazon ECS logs to an Amazon Web Services service or Amazon Web Services Partner]in the Amazon Elastic Container Service Developer
+	// Guide.
 	//
 	// awslogs Specifies the Amazon CloudWatch Logs logging driver. For more
 	// information, see [Using the awslogs log driver]in the Batch User Guide and [Amazon CloudWatch Logs logging driver] in the Docker documentation.
@@ -3258,6 +3630,7 @@ type LogConfiguration struct {
 	// [Syslog logging driver]: https://docs.docker.com/config/containers/logging/syslog/
 	// [JSON File logging driver]: https://docs.docker.com/config/containers/logging/json-file/
 	// [Splunk logging driver]: https://docs.docker.com/config/containers/logging/splunk/
+	// [Send Amazon ECS logs to an Amazon Web Services service or Amazon Web Services Partner]: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_firelens.html
 	// [Amazon CloudWatch Logs logging driver]: https://docs.docker.com/config/containers/logging/awslogs/
 	// [available on GitHub]: https://github.com/aws/amazon-ecs-agent
 	// [Using the awslogs log driver]: https://docs.aws.amazon.com/batch/latest/userguide/using_awslogs.html
@@ -3439,6 +3812,9 @@ type NodePropertyOverride struct {
 	// This member is required.
 	TargetNodes *string
 
+	// An object that contains overrides for the consumable resources of a job.
+	ConsumableResourcePropertiesOverride *ConsumableResourceProperties
+
 	// The overrides that are sent to a node range.
 	ContainerOverrides *ContainerOverrides
 
@@ -3471,6 +3847,9 @@ type NodeRangeProperty struct {
 	//
 	// This member is required.
 	TargetNodes *string
+
+	// Contains a list of consumable resources required by a job.
+	ConsumableResourceProperties *ConsumableResourceProperties
 
 	// The container details for the node range.
 	Container *ContainerProperties
@@ -3686,17 +4065,17 @@ type SchedulingPolicyDetail struct {
 	// This member is required.
 	Arn *string
 
-	// The name of the scheduling policy.
+	// The name of the fair-share scheduling policy.
 	//
 	// This member is required.
 	Name *string
 
-	// The fair share policy for the scheduling policy.
+	// The fair-share scheduling policy details.
 	FairsharePolicy *FairsharePolicy
 
-	// The tags that you apply to the scheduling policy to categorize and organize
-	// your resources. Each tag consists of a key and an optional value. For more
-	// information, see [Tagging Amazon Web Services resources]in Amazon Web Services General Reference.
+	// The tags that you apply to the fair-share scheduling policy to categorize and
+	// organize your resources. Each tag consists of a key and an optional value. For
+	// more information, see [Tagging Amazon Web Services resources]in Amazon Web Services General Reference.
 	//
 	// [Tagging Amazon Web Services resources]: https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html
 	Tags map[string]string
@@ -3750,18 +4129,18 @@ type Secret struct {
 	noSmithyDocumentSerde
 }
 
-// Specifies the weights for the fair share identifiers for the fair share policy.
-// Fair share identifiers that aren't included have a default weight of 1.0 .
+// Specifies the weights for the share identifiers for the fair-share policy.
+// Share identifiers that aren't included have a default weight of 1.0 .
 type ShareAttributes struct {
 
-	// A fair share identifier or fair share identifier prefix. If the string ends
-	// with an asterisk (*), this entry specifies the weight factor to use for fair
-	// share identifiers that start with that prefix. The list of fair share
-	// identifiers in a fair share policy can't overlap. For example, you can't have
-	// one that specifies a shareIdentifier of UserA* and another that specifies a
-	// shareIdentifier of UserA-1 .
+	// A share identifier or share identifier prefix. If the string ends with an
+	// asterisk (*), this entry specifies the weight factor to use for share
+	// identifiers that start with that prefix. The list of share identifiers in a
+	// fair-share policy can't overlap. For example, you can't have one that specifies
+	// a shareIdentifier of UserA* and another that specifies a shareIdentifier of
+	// UserA-1 .
 	//
-	// There can be no more than 500 fair share identifiers active in a job queue.
+	// There can be no more than 500 share identifiers active in a job queue.
 	//
 	// The string is limited to 255 alphanumeric characters, and can be followed by an
 	// asterisk (*).
@@ -3769,10 +4148,10 @@ type ShareAttributes struct {
 	// This member is required.
 	ShareIdentifier *string
 
-	// The weight factor for the fair share identifier. The default value is 1.0. A
-	// lower value has a higher priority for compute resources. For example, jobs that
-	// use a share identifier with a weight factor of 0.125 (1/8) get 8 times the
-	// compute resources of jobs that use a share identifier with a weight factor of 1.
+	// The weight factor for the share identifier. The default value is 1.0. A lower
+	// value has a higher priority for compute resources. For example, jobs that use a
+	// share identifier with a weight factor of 0.125 (1/8) get 8 times the compute
+	// resources of jobs that use a share identifier with a weight factor of 1.
 	//
 	// The smallest supported value is 0.0001, and the largest supported value is
 	// 999.9999.
@@ -3850,6 +4229,13 @@ type TaskContainerDetails struct {
 
 	// The exit code returned upon completion.
 	ExitCode *int32
+
+	// The FireLens configuration for the container. This is used to specify and
+	// configure a log router for container logs. For more information, see [Custom log]routing in
+	// the Amazon Elastic Container Service Developer Guide.
+	//
+	// [Custom log]: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_firelens.html
+	FirelensConfiguration *FirelensConfiguration
 
 	// The image used to start a container. This string is passed directly to the
 	// Docker daemon. By default, images in the Docker Hub registry are available.
@@ -4085,8 +4471,8 @@ type TaskContainerProperties struct {
 	// A list of containers that this container depends on.
 	DependsOn []TaskContainerDependency
 
-	// The environment variables to pass to a container. This parameter maps to Env
-	// inthe [Create a container]section of the [Docker Remote API] and the --env parameter to [docker run].
+	// The environment variables to pass to a container. This parameter maps to Env in
+	// the [Create a container]section of the [Docker Remote API] and the --env parameter to [docker run].
 	//
 	// We don't recommend using plaintext environment variables for sensitive
 	// information, such as credential data.
@@ -4113,6 +4499,13 @@ type TaskContainerProperties struct {
 	//
 	// [Application Architecture]: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/application_architecture.html
 	Essential *bool
+
+	// The FireLens configuration for the container. This is used to specify and
+	// configure a log router for container logs. For more information, see [Custom log]routing in
+	// the Amazon Elastic Container Service Developer Guide.
+	//
+	// [Custom log]: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_firelens.html
+	FirelensConfiguration *FirelensConfiguration
 
 	// Linux-specific modifications that are applied to the container, such as Linux
 	// kernel capabilities. For more information, see [KernelCapabilities].
@@ -4322,8 +4715,9 @@ type Ulimit struct {
 	noSmithyDocumentSerde
 }
 
-// Specifies the infrastructure update policy for the compute environment. For
-// more information about infrastructure updates, see [Updating compute environments]in the Batch User Guide.
+// Specifies the infrastructure update policy for the Amazon EC2 compute
+// environment. For more information about infrastructure updates, see [Updating compute environments]in the
+// Batch User Guide.
 //
 // [Updating compute environments]: https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html
 type UpdatePolicy struct {

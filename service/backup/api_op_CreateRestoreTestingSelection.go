@@ -82,18 +82,18 @@ type CreateRestoreTestingSelectionInput struct {
 
 type CreateRestoreTestingSelectionOutput struct {
 
-	// This is the time the resource testing selection was created successfully.
+	// The time that the resource testing selection was created.
 	//
 	// This member is required.
 	CreationTime *time.Time
 
-	// This is the ARN of the restore testing plan with which the restore testing
-	// selection is associated.
+	// The ARN of the restore testing plan with which the restore testing selection is
+	// associated.
 	//
 	// This member is required.
 	RestoreTestingPlanArn *string
 
-	// Unique string that is the name of the restore testing plan.
+	// The name of the restore testing plan.
 	//
 	// The name cannot be changed after creation. The name consists of only
 	// alphanumeric characters and underscores. Maximum length is 50.
@@ -101,8 +101,7 @@ type CreateRestoreTestingSelectionOutput struct {
 	// This member is required.
 	RestoreTestingPlanName *string
 
-	// This is the unique name of the restore testing selection that belongs to the
-	// related restore testing plan.
+	// The name of the restore testing selection for the related restore testing plan.
 	//
 	// This member is required.
 	RestoreTestingSelectionName *string
@@ -156,6 +155,9 @@ func (c *Client) addOperationCreateRestoreTestingSelectionMiddlewares(stack *mid
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -172,6 +174,9 @@ func (c *Client) addOperationCreateRestoreTestingSelectionMiddlewares(stack *mid
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateRestoreTestingSelectionValidationMiddleware(stack); err != nil {
@@ -193,6 +198,18 @@ func (c *Client) addOperationCreateRestoreTestingSelectionMiddlewares(stack *mid
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

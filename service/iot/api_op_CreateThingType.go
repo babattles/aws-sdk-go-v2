@@ -11,7 +11,10 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Creates a new thing type.
+// Creates a new thing type. If this call is made multiple times using the same
+// thing type name and configuration, the call will succeed. If this call is made
+// with the same thing type name but different configuration a
+// ResourceAlreadyExistsException is thrown.
 //
 // Requires permission to access the [CreateThingType] action.
 //
@@ -111,6 +114,9 @@ func (c *Client) addOperationCreateThingTypeMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -127,6 +133,9 @@ func (c *Client) addOperationCreateThingTypeMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateThingTypeValidationMiddleware(stack); err != nil {
@@ -148,6 +157,18 @@ func (c *Client) addOperationCreateThingTypeMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

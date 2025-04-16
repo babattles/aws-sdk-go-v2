@@ -77,6 +77,9 @@ type CreateExperimentTemplateInput struct {
 	// The experiment options for the experiment template.
 	ExperimentOptions *types.CreateExperimentTemplateExperimentOptionsInput
 
+	// The experiment report configuration for the experiment template.
+	ExperimentReportConfiguration *types.CreateExperimentTemplateReportConfigurationInput
+
 	// The configuration for experiment logging.
 	LogConfiguration *types.CreateExperimentTemplateLogConfigurationInput
 
@@ -143,6 +146,9 @@ func (c *Client) addOperationCreateExperimentTemplateMiddlewares(stack *middlewa
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -159,6 +165,9 @@ func (c *Client) addOperationCreateExperimentTemplateMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateExperimentTemplateMiddleware(stack, options); err != nil {
@@ -183,6 +192,18 @@ func (c *Client) addOperationCreateExperimentTemplateMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

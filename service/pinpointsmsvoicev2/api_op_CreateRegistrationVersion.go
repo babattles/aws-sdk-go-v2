@@ -52,23 +52,25 @@ type CreateRegistrationVersionOutput struct {
 
 	// The status of the registration.
 	//
-	//   - DRAFT : The initial status of a registration version after it’s created.
-	//
-	//   - SUBMITTED : Your registration has been submitted.
-	//
-	//   - REVIEWING : Your registration has been accepted and is being reviewed.
-	//
 	//   - APPROVED : Your registration has been approved.
+	//
+	//   - ARCHIVED : Your previously approved registration version moves into this
+	//   status when a more recently submitted version is approved.
+	//
+	//   - DENIED : You must fix your registration and resubmit it.
 	//
 	//   - DISCARDED : You've abandon this version of their registration to start over
 	//   with a new version.
 	//
-	//   - DENIED : You must fix your registration and resubmit it.
+	//   - DRAFT : The initial status of a registration version after it’s created.
+	//
+	//   - REQUIRES_AUTHENTICATION : You need to complete email authentication.
+	//
+	//   - REVIEWING : Your registration has been accepted and is being reviewed.
 	//
 	//   - REVOKED : Your previously approved registration has been revoked.
 	//
-	//   - ARCHIVED : Your previously approved registration version moves into this
-	//   status when a more recently submitted version is approved.
+	//   - SUBMITTED : Your registration has been submitted.
 	//
 	// This member is required.
 	RegistrationVersionStatus types.RegistrationVersionStatus
@@ -133,6 +135,9 @@ func (c *Client) addOperationCreateRegistrationVersionMiddlewares(stack *middlew
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -149,6 +154,9 @@ func (c *Client) addOperationCreateRegistrationVersionMiddlewares(stack *middlew
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateRegistrationVersionValidationMiddleware(stack); err != nil {
@@ -170,6 +178,18 @@ func (c *Client) addOperationCreateRegistrationVersionMiddlewares(stack *middlew
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

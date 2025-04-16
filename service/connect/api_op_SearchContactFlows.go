@@ -11,8 +11,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Searches the contact flows in an Amazon Connect instance, with optional
-// filtering.
+// Searches the flows in an Amazon Connect instance, with optional filtering.
 func (c *Client) SearchContactFlows(ctx context.Context, params *SearchContactFlowsInput, optFns ...func(*Options)) (*SearchContactFlowsOutput, error) {
 	if params == nil {
 		params = &SearchContactFlowsInput{}
@@ -58,7 +57,7 @@ type SearchContactFlowsInput struct {
 
 type SearchContactFlowsOutput struct {
 
-	// The total number of contact flows which matched your search query.
+	// The total number of flows which matched your search query.
 	ApproximateTotalCount *int64
 
 	// Information about the flows.
@@ -116,6 +115,9 @@ func (c *Client) addOperationSearchContactFlowsMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -132,6 +134,9 @@ func (c *Client) addOperationSearchContactFlowsMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpSearchContactFlowsValidationMiddleware(stack); err != nil {
@@ -153,6 +158,18 @@ func (c *Client) addOperationSearchContactFlowsMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

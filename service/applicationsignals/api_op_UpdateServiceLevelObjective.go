@@ -13,6 +13,9 @@ import (
 
 // Updates an existing service level objective (SLO). If you omit parameters, the
 // previous values of those parameters are retained.
+//
+// You cannot change from a period-based SLO to a request-based SLO, or change
+// from a request-based SLO to a period-based SLO.
 func (c *Client) UpdateServiceLevelObjective(ctx context.Context, params *UpdateServiceLevelObjectiveInput, optFns ...func(*Options)) (*UpdateServiceLevelObjectiveOutput, error) {
 	if params == nil {
 		params = &UpdateServiceLevelObjectiveInput{}
@@ -36,6 +39,11 @@ type UpdateServiceLevelObjectiveInput struct {
 	// This member is required.
 	Id *string
 
+	// Use this array to create burn rates for this SLO. Each burn rate is a metric
+	// that indicates how fast the service is consuming the error budget, relative to
+	// the attainment goal of the SLO.
+	BurnRateConfigurations []types.BurnRateConfiguration
+
 	// An optional description for the SLO.
 	Description *string
 
@@ -43,8 +51,15 @@ type UpdateServiceLevelObjectiveInput struct {
 	// This includes the time period for evaluation and the attainment threshold.
 	Goal *types.Goal
 
-	// A structure that contains information about what performance metric this SLO
-	// will monitor.
+	// If this SLO is a request-based SLO, this structure defines the information
+	// about what performance metric this SLO will monitor.
+	//
+	// You can't specify both SliConfig and RequestBasedSliConfig in the same
+	// operation.
+	RequestBasedSliConfig *types.RequestBasedServiceLevelIndicatorConfig
+
+	// If this SLO is a period-based SLO, this structure defines the information about
+	// what performance metric this SLO will monitor.
 	SliConfig *types.ServiceLevelIndicatorConfig
 
 	noSmithyDocumentSerde
@@ -106,6 +121,9 @@ func (c *Client) addOperationUpdateServiceLevelObjectiveMiddlewares(stack *middl
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -122,6 +140,9 @@ func (c *Client) addOperationUpdateServiceLevelObjectiveMiddlewares(stack *middl
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateServiceLevelObjectiveValidationMiddleware(stack); err != nil {
@@ -143,6 +164,18 @@ func (c *Client) addOperationUpdateServiceLevelObjectiveMiddlewares(stack *middl
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

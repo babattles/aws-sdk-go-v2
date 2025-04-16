@@ -35,38 +35,51 @@ func (c *Client) CreateLocationEfs(ctx context.Context, params *CreateLocationEf
 // CreateLocationEfsRequest
 type CreateLocationEfsInput struct {
 
-	// Specifies the subnet and security groups DataSync uses to access your Amazon
-	// EFS file system.
+	// Specifies the subnet and security groups DataSync uses to connect to one of
+	// your Amazon EFS file system's [mount targets].
+	//
+	// [mount targets]: https://docs.aws.amazon.com/efs/latest/ug/accessing-fs.html
 	//
 	// This member is required.
 	Ec2Config *types.Ec2Config
 
-	// Specifies the ARN for the Amazon EFS file system.
+	// Specifies the ARN for your Amazon EFS file system.
 	//
 	// This member is required.
 	EfsFilesystemArn *string
 
 	// Specifies the Amazon Resource Name (ARN) of the access point that DataSync uses
-	// to access the Amazon EFS file system.
+	// to mount your Amazon EFS file system.
+	//
+	// For more information, see [Accessing restricted file systems].
+	//
+	// [Accessing restricted file systems]: https://docs.aws.amazon.com/datasync/latest/userguide/create-efs-location.html#create-efs-location-iam
 	AccessPointArn *string
 
-	// Specifies an Identity and Access Management (IAM) role that DataSync assumes
-	// when mounting the Amazon EFS file system.
+	// Specifies an Identity and Access Management (IAM) role that allows DataSync to
+	// access your Amazon EFS file system.
+	//
+	// For information on creating this role, see [Creating a DataSync IAM role for file system access].
+	//
+	// [Creating a DataSync IAM role for file system access]: https://docs.aws.amazon.com/datasync/latest/userguide/create-efs-location.html#create-efs-location-iam-role
 	FileSystemAccessRoleArn *string
 
 	// Specifies whether you want DataSync to use Transport Layer Security (TLS) 1.2
-	// encryption when it copies data to or from the Amazon EFS file system.
+	// encryption when it transfers data to or from your Amazon EFS file system.
 	//
 	// If you specify an access point using AccessPointArn or an IAM role using
 	// FileSystemAccessRoleArn , you must set this parameter to TLS1_2 .
 	InTransitEncryption types.EfsInTransitEncryption
 
 	// Specifies a mount path for your Amazon EFS file system. This is where DataSync
-	// reads or writes data (depending on if this is a source or destination location).
-	// By default, DataSync uses the root directory, but you can also include
-	// subdirectories.
+	// reads or writes data on your file system (depending on if this is a source or
+	// destination location).
 	//
-	// You must specify a value with forward slashes (for example, /path/to/folder ).
+	// By default, DataSync uses the root directory (or [access point] if you provide one by using
+	// AccessPointArn ). You can also include subdirectories using forward slashes (for
+	// example, /path/to/folder ).
+	//
+	// [access point]: https://docs.aws.amazon.com/efs/latest/ug/efs-access-points.html
 	Subdirectory *string
 
 	// Specifies the key-value pair that represents a tag that you want to add to the
@@ -134,6 +147,9 @@ func (c *Client) addOperationCreateLocationEfsMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -150,6 +166,9 @@ func (c *Client) addOperationCreateLocationEfsMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateLocationEfsValidationMiddleware(stack); err != nil {
@@ -171,6 +190,18 @@ func (c *Client) addOperationCreateLocationEfsMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

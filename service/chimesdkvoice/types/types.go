@@ -133,6 +133,19 @@ type EmergencyCallingConfiguration struct {
 	noSmithyDocumentSerde
 }
 
+// Contains information about an external systems configuration for a Voice
+// Connector.
+type ExternalSystemsConfiguration struct {
+
+	// The contact center system.
+	ContactCenterSystemTypes []ContactCenterSystemType
+
+	// The session border controllers.
+	SessionBorderControllerTypes []SessionBorderControllerType
+
+	noSmithyDocumentSerde
+}
+
 // The country and area code for a proxy phone number in a proxy phone session.
 type GeoMatchParams struct {
 
@@ -168,7 +181,7 @@ type MediaInsightsConfiguration struct {
 	// The configuration's ARN.
 	ConfigurationArn *string
 
-	// Denotes the configration as enabled or disabled.
+	// Denotes the configuration as enabled or disabled.
 	Disabled *bool
 
 	noSmithyDocumentSerde
@@ -373,6 +386,10 @@ type PhoneNumberOrder struct {
 
 	// The phone number order creation time stamp, in ISO 8601 format.
 	CreatedTimestamp *time.Time
+
+	// The Firm Order Commitment (FOC) date for phone number porting orders. This
+	// field is null if a phone number order is not a porting order.
+	FocDate *time.Time
 
 	// The type of phone number being ordered, local or toll-free.
 	OrderType PhoneNumberOrderType
@@ -781,6 +798,9 @@ type VoiceConnector struct {
 
 	// The Voice Connector's creation timestamp, in ISO 8601 format.
 	CreatedTimestamp *time.Time
+
+	// The connectors for use with Amazon Connect.
+	IntegrationType VoiceConnectorIntegrationType
 
 	// The Voice Connector's name.
 	Name *string

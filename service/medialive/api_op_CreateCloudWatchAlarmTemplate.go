@@ -95,6 +95,10 @@ type CreateCloudWatchAlarmTemplateInput struct {
 	// A resource's optional description.
 	Description *string
 
+	// An ID that you assign to a create request. This ID ensures idempotency when
+	// creating resources.
+	RequestId *string
+
 	// Represents the tags associated with a resource.
 	Tags map[string]string
 
@@ -212,6 +216,9 @@ func (c *Client) addOperationCreateCloudWatchAlarmTemplateMiddlewares(stack *mid
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -228,6 +235,12 @@ func (c *Client) addOperationCreateCloudWatchAlarmTemplateMiddlewares(stack *mid
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
+	if err = addIdempotencyToken_opCreateCloudWatchAlarmTemplateMiddleware(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateCloudWatchAlarmTemplateValidationMiddleware(stack); err != nil {
@@ -251,7 +264,52 @@ func (c *Client) addOperationCreateCloudWatchAlarmTemplateMiddlewares(stack *mid
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
+		return err
+	}
 	return nil
+}
+
+type idempotencyToken_initializeOpCreateCloudWatchAlarmTemplate struct {
+	tokenProvider IdempotencyTokenProvider
+}
+
+func (*idempotencyToken_initializeOpCreateCloudWatchAlarmTemplate) ID() string {
+	return "OperationIdempotencyTokenAutoFill"
+}
+
+func (m *idempotencyToken_initializeOpCreateCloudWatchAlarmTemplate) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	if m.tokenProvider == nil {
+		return next.HandleInitialize(ctx, in)
+	}
+
+	input, ok := in.Parameters.(*CreateCloudWatchAlarmTemplateInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("expected middleware input to be of type *CreateCloudWatchAlarmTemplateInput ")
+	}
+
+	if input.RequestId == nil {
+		t, err := m.tokenProvider.GetIdempotencyToken()
+		if err != nil {
+			return out, metadata, err
+		}
+		input.RequestId = &t
+	}
+	return next.HandleInitialize(ctx, in)
+}
+func addIdempotencyToken_opCreateCloudWatchAlarmTemplateMiddleware(stack *middleware.Stack, cfg Options) error {
+	return stack.Initialize.Add(&idempotencyToken_initializeOpCreateCloudWatchAlarmTemplate{tokenProvider: cfg.IdempotencyTokenProvider}, middleware.Before)
 }
 
 func newServiceMetadataMiddleware_opCreateCloudWatchAlarmTemplate(region string) *awsmiddleware.RegisterServiceMetadata {

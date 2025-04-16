@@ -55,8 +55,13 @@ type DescribeLocationFsxWindowsOutput struct {
 	// location.
 	LocationUri *string
 
-	// The ARNs of the security groups that are configured for the FSx for Windows
-	// File Server file system.
+	// The ARNs of the Amazon EC2 security groups that provide access to your file
+	// system's preferred subnet.
+	//
+	// For information about configuring security groups for file system access, see
+	// the [Amazon FSx for Windows File Server User Guide].
+	//
+	// [Amazon FSx for Windows File Server User Guide]: https://docs.aws.amazon.com/fsx/latest/WindowsGuide/limit-access-security-groups.html
 	SecurityGroupArns []string
 
 	// The user with the permissions to mount and access the FSx for Windows File
@@ -112,6 +117,9 @@ func (c *Client) addOperationDescribeLocationFsxWindowsMiddlewares(stack *middle
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -128,6 +136,9 @@ func (c *Client) addOperationDescribeLocationFsxWindowsMiddlewares(stack *middle
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeLocationFsxWindowsValidationMiddleware(stack); err != nil {
@@ -149,6 +160,18 @@ func (c *Client) addOperationDescribeLocationFsxWindowsMiddlewares(stack *middle
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

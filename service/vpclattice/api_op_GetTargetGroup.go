@@ -30,7 +30,7 @@ func (c *Client) GetTargetGroup(ctx context.Context, params *GetTargetGroupInput
 
 type GetTargetGroupInput struct {
 
-	// The ID or Amazon Resource Name (ARN) of the target group.
+	// The ID or ARN of the target group.
 	//
 	// This member is required.
 	TargetGroupIdentifier *string
@@ -46,8 +46,7 @@ type GetTargetGroupOutput struct {
 	// The target group configuration.
 	Config *types.TargetGroupConfig
 
-	// The date and time that the target group was created, specified in ISO-8601
-	// format.
+	// The date and time that the target group was created, in ISO-8601 format.
 	CreatedAt *time.Time
 
 	// The failure code.
@@ -59,8 +58,7 @@ type GetTargetGroupOutput struct {
 	// The ID of the target group.
 	Id *string
 
-	// The date and time that the target group was last updated, specified in ISO-8601
-	// format.
+	// The date and time that the target group was last updated, in ISO-8601 format.
 	LastUpdatedAt *time.Time
 
 	// The name of the target group.
@@ -124,6 +122,9 @@ func (c *Client) addOperationGetTargetGroupMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -140,6 +141,9 @@ func (c *Client) addOperationGetTargetGroupMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetTargetGroupValidationMiddleware(stack); err != nil {
@@ -161,6 +165,18 @@ func (c *Client) addOperationGetTargetGroupMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

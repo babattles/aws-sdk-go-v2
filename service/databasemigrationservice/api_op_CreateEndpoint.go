@@ -52,7 +52,9 @@ type CreateEndpointInput struct {
 	// value, include "mysql" , "oracle" , "postgres" , "mariadb" , "aurora" ,
 	// "aurora-postgresql" , "opensearch" , "redshift" , "s3" , "db2" , "db2-zos" ,
 	// "azuredb" , "sybase" , "dynamodb" , "mongodb" , "kinesis" , "kafka" ,
-	// "elasticsearch" , "docdb" , "sqlserver" , "neptune" , and "babelfish" .
+	// "elasticsearch" , "docdb" , "sqlserver" , "neptune" , "babelfish" ,
+	// redshift-serverless , aurora-serverless , aurora-postgresql-serverless ,
+	// gcp-mysql , azure-sql-managed-instance , redis , dms-transfer .
 	//
 	// This member is required.
 	EngineName *string
@@ -304,6 +306,9 @@ func (c *Client) addOperationCreateEndpointMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -320,6 +325,9 @@ func (c *Client) addOperationCreateEndpointMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateEndpointValidationMiddleware(stack); err != nil {
@@ -341,6 +349,18 @@ func (c *Client) addOperationCreateEndpointMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

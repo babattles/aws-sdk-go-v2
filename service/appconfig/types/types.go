@@ -8,16 +8,13 @@ import (
 )
 
 // An action defines the tasks that the extension performs during the AppConfig
-// workflow. Each action includes an action point such as
-// ON_CREATE_HOSTED_CONFIGURATION , PRE_DEPLOYMENT , or ON_DEPLOYMENT . Each action
-// also includes a name, a URI to an Lambda function, and an Amazon Resource Name
-// (ARN) for an Identity and Access Management assume role. You specify the name,
-// URI, and ARN for each action point defined in the extension. You can specify the
-// following actions for an extension:
+// workflow. Each action includes an action point, as shown in the following list:
 //
 //   - PRE_CREATE_HOSTED_CONFIGURATION_VERSION
 //
 //   - PRE_START_DEPLOYMENT
+//
+//   - AT_DEPLOYMENT_TICK
 //
 //   - ON_DEPLOYMENT_START
 //
@@ -28,6 +25,10 @@ import (
 //   - ON_DEPLOYMENT_COMPLETE
 //
 //   - ON_DEPLOYMENT_ROLLED_BACK
+//
+// Each action also includes a name, a URI to an Lambda function, and an Amazon
+// Resource Name (ARN) for an Identity and Access Management assume role. You
+// specify the name, URI, and ARN for each action point defined in the extension.
 type Action struct {
 
 	// Information about the action.
@@ -158,6 +159,38 @@ type ConfigurationProfileSummary struct {
 
 	// The types of validators in the configuration profile.
 	ValidatorTypes []ValidatorType
+
+	noSmithyDocumentSerde
+}
+
+// A parameter to configure deletion protection. If enabled, deletion protection
+// prevents a user from deleting a configuration profile or an environment if
+// AppConfig has called either [GetLatestConfiguration]or for the configuration profile or from the
+// environment during the specified interval.
+//
+// This setting uses the following default values:
+//
+//   - Deletion protection is disabled by default.
+//
+//   - The default interval specified by ProtectionPeriodInMinutes is 60.
+//
+//   - DeletionProtectionCheck skips configuration profiles and environments that
+//     were created in the past hour.
+//
+// [GetLatestConfiguration]: https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/API_appconfigdata_GetLatestConfiguration.html
+type DeletionProtectionSettings struct {
+
+	// A parameter that indicates if deletion protection is enabled or not.
+	Enabled *bool
+
+	// The time interval during which AppConfig monitors for calls to [GetLatestConfiguration] or for a
+	// configuration profile or from an environment. AppConfig returns an error if a
+	// user calls or for the designated configuration profile or environment. To bypass
+	// the error and delete a configuration profile or an environment, specify BYPASS
+	// for the DeletionProtectionCheck parameter for either or .
+	//
+	// [GetLatestConfiguration]: https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/API_appconfigdata_GetLatestConfiguration.html
+	ProtectionPeriodInMinutes *int32
 
 	noSmithyDocumentSerde
 }
@@ -433,7 +466,10 @@ type Parameter struct {
 // that you want to deploy functions as intended. To validate your application
 // configuration data, you provide a schema or an Amazon Web Services Lambda
 // function that runs against the configuration. The configuration deployment or
-// update can only proceed when the configuration data is valid.
+// update can only proceed when the configuration data is valid. For more
+// information, see [About validators]in the AppConfig User Guide.
+//
+// [About validators]: https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-creating-configuration-profile.html#appconfig-creating-configuration-and-profile-validators
 type Validator struct {
 
 	// Either the JSON Schema content or the Amazon Resource Name (ARN) of an Lambda

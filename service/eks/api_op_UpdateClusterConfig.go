@@ -13,27 +13,40 @@ import (
 
 // Updates an Amazon EKS cluster configuration. Your cluster continues to function
 // during the update. The response output includes an update ID that you can use to
-// track the status of your cluster update with DescribeUpdate "/>.
+// track the status of your cluster update with DescribeUpdate .
 //
-// You can use this API operation to enable or disable exporting the Kubernetes
-// control plane logs for your cluster to CloudWatch Logs. By default, cluster
-// control plane logs aren't exported to CloudWatch Logs. For more information, see
-// [Amazon EKS Cluster control plane logs]in the Amazon EKS User Guide .
+// You can use this operation to do the following actions:
+//
+//   - You can use this API operation to enable or disable exporting the
+//     Kubernetes control plane logs for your cluster to CloudWatch Logs. By default,
+//     cluster control plane logs aren't exported to CloudWatch Logs. For more
+//     information, see [Amazon EKS Cluster control plane logs]in the Amazon EKS User Guide .
 //
 // CloudWatch Logs ingestion, archive storage, and data scanning rates apply to
-// exported control plane logs. For more information, see [CloudWatch Pricing].
 //
-// You can also use this API operation to enable or disable public and private
-// access to your cluster's Kubernetes API server endpoint. By default, public
-// access is enabled, and private access is disabled. For more information, see [Amazon EKS cluster endpoint access control]in
-// the Amazon EKS User Guide .
+//	exported control plane logs. For more information, see [CloudWatch Pricing].
 //
-// You can also use this API operation to choose different subnets and security
-// groups for the cluster. You must specify at least two subnets that are in
-// different Availability Zones. You can't change which VPC the subnets are from,
-// the subnets must be in the same VPC as the subnets that the cluster was created
-// with. For more information about the VPC requirements, see [https://docs.aws.amazon.com/eks/latest/userguide/network_reqs.html]in the Amazon EKS
-// User Guide .
+//	- You can also use this API operation to enable or disable public and private
+//	access to your cluster's Kubernetes API server endpoint. By default, public
+//	access is enabled, and private access is disabled. For more information, see [Amazon EKS cluster endpoint access control]
+//	in the Amazon EKS User Guide .
+//
+//	- You can also use this API operation to choose different subnets and
+//	security groups for the cluster. You must specify at least two subnets that are
+//	in different Availability Zones. You can't change which VPC the subnets are
+//	from, the subnets must be in the same VPC as the subnets that the cluster was
+//	created with. For more information about the VPC requirements, see [https://docs.aws.amazon.com/eks/latest/userguide/network_reqs.html]in the
+//	Amazon EKS User Guide .
+//
+//	- You can also use this API operation to enable or disable ARC zonal shift.
+//	If zonal shift is enabled, Amazon Web Services configures zonal autoshift for
+//	the cluster.
+//
+//	- You can also use this API operation to add, change, or remove the
+//	configuration in the cluster for EKS Hybrid Nodes. To remove the configuration,
+//	use the remoteNetworkConfig key with an object containing both subkeys with
+//	empty arrays for each. Here is an inline example: "remoteNetworkConfig": {
+//	"remoteNodeNetworks": [], "remotePodNetworks": [] } .
 //
 // Cluster updates are asynchronous, and they should finish within a few minutes.
 // During an update, the cluster status moves to UPDATING (this status transition
@@ -41,6 +54,7 @@ import (
 // Successful ), the cluster status moves to Active .
 //
 // [Amazon EKS Cluster control plane logs]: https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html
+//
 // [CloudWatch Pricing]: http://aws.amazon.com/cloudwatch/pricing/
 // [https://docs.aws.amazon.com/eks/latest/userguide/network_reqs.html]: https://docs.aws.amazon.com/eks/latest/userguide/network_reqs.html
 // [Amazon EKS cluster endpoint access control]: https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html
@@ -73,9 +87,16 @@ type UpdateClusterConfigInput struct {
 	// of the request.
 	ClientRequestToken *string
 
+	// Update the configuration of the compute capability of your EKS Auto Mode
+	// cluster. For example, enable the capability.
+	ComputeConfig *types.ComputeConfigRequest
+
+	// The Kubernetes network configuration for the cluster.
+	KubernetesNetworkConfig *types.KubernetesNetworkConfigRequest
+
 	// Enable or disable exporting the Kubernetes control plane logs for your cluster
-	// to CloudWatch Logs. By default, cluster control plane logs aren't exported to
-	// CloudWatch Logs. For more information, see [Amazon EKS cluster control plane logs]in the Amazon EKS User Guide .
+	// to CloudWatch Logs . By default, cluster control plane logs aren't exported to
+	// CloudWatch Logs . For more information, see [Amazon EKS cluster control plane logs]in the Amazon EKS User Guide .
 	//
 	// CloudWatch Logs ingestion, archive storage, and data scanning rates apply to
 	// exported control plane logs. For more information, see [CloudWatch Pricing].
@@ -84,13 +105,40 @@ type UpdateClusterConfigInput struct {
 	// [Amazon EKS cluster control plane logs]: https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html
 	Logging *types.Logging
 
+	// The configuration in the cluster for EKS Hybrid Nodes. You can add, change, or
+	// remove this configuration after the cluster is created.
+	RemoteNetworkConfig *types.RemoteNetworkConfigRequest
+
 	// An object representing the VPC configuration to use for an Amazon EKS cluster.
 	ResourcesVpcConfig *types.VpcConfigRequest
+
+	// Update the configuration of the block storage capability of your EKS Auto Mode
+	// cluster. For example, enable the capability.
+	StorageConfig *types.StorageConfigRequest
 
 	// You can enable or disable extended support for clusters currently on standard
 	// support. You cannot disable extended support once it starts. You must enable
 	// extended support before your cluster exits standard support.
 	UpgradePolicy *types.UpgradePolicyRequest
+
+	// Enable or disable ARC zonal shift for the cluster. If zonal shift is enabled,
+	// Amazon Web Services configures zonal autoshift for the cluster.
+	//
+	// Zonal shift is a feature of Amazon Application Recovery Controller (ARC). ARC
+	// zonal shift is designed to be a temporary measure that allows you to move
+	// traffic for a resource away from an impaired AZ until the zonal shift expires or
+	// you cancel it. You can extend the zonal shift if necessary.
+	//
+	// You can start a zonal shift for an EKS cluster, or you can allow Amazon Web
+	// Services to do it for you by enabling zonal autoshift. This shift updates the
+	// flow of east-to-west network traffic in your cluster to only consider network
+	// endpoints for Pods running on worker nodes in healthy AZs. Additionally, any ALB
+	// or NLB handling ingress traffic for applications in your EKS cluster will
+	// automatically route traffic to targets in the healthy AZs. For more information
+	// about zonal shift in EKS, see [Learn about Amazon Application Recovery Controller (ARC) Zonal Shift in Amazon EKS]in the Amazon EKS User Guide .
+	//
+	// [Learn about Amazon Application Recovery Controller (ARC) Zonal Shift in Amazon EKS]: https://docs.aws.amazon.com/eks/latest/userguide/zone-shift.html
+	ZonalShiftConfig *types.ZonalShiftConfigRequest
 
 	noSmithyDocumentSerde
 }
@@ -149,6 +197,9 @@ func (c *Client) addOperationUpdateClusterConfigMiddlewares(stack *middleware.St
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -165,6 +216,9 @@ func (c *Client) addOperationUpdateClusterConfigMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opUpdateClusterConfigMiddleware(stack, options); err != nil {
@@ -189,6 +243,18 @@ func (c *Client) addOperationUpdateClusterConfigMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

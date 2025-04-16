@@ -105,6 +105,37 @@ func (InstanceType) Values() []InstanceType {
 	}
 }
 
+type MaxDisplayResolution string
+
+// Enum values for MaxDisplayResolution
+const (
+	MaxDisplayResolutionResolutionDci4k          MaxDisplayResolution = "size4096X2160"
+	MaxDisplayResolutionResolutionUhd4k          MaxDisplayResolution = "size3840X2160"
+	MaxDisplayResolutionResolution1440pUltraWide MaxDisplayResolution = "size3440X1440"
+	MaxDisplayResolutionResolution1440p          MaxDisplayResolution = "size2560X1440"
+	MaxDisplayResolutionResolution1080p          MaxDisplayResolution = "size1920X1080"
+	MaxDisplayResolutionResolution720p           MaxDisplayResolution = "size1280X720"
+	MaxDisplayResolutionResolution768p           MaxDisplayResolution = "size1024X768"
+	MaxDisplayResolutionResolution600p           MaxDisplayResolution = "size800X600"
+)
+
+// Values returns all known values for MaxDisplayResolution. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (MaxDisplayResolution) Values() []MaxDisplayResolution {
+	return []MaxDisplayResolution{
+		"size4096X2160",
+		"size3840X2160",
+		"size3440X1440",
+		"size2560X1440",
+		"size1920X1080",
+		"size1280X720",
+		"size1024X768",
+		"size800X600",
+	}
+}
+
 type PortalStatus string
 
 // Enum values for PortalStatus
@@ -126,6 +157,23 @@ func (PortalStatus) Values() []PortalStatus {
 	}
 }
 
+type RedactionPlaceHolderType string
+
+// Enum values for RedactionPlaceHolderType
+const (
+	RedactionPlaceHolderTypeCustomText RedactionPlaceHolderType = "CustomText"
+)
+
+// Values returns all known values for RedactionPlaceHolderType. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RedactionPlaceHolderType) Values() []RedactionPlaceHolderType {
+	return []RedactionPlaceHolderType{
+		"CustomText",
+	}
+}
+
 type RendererType string
 
 // Enum values for RendererType
@@ -140,6 +188,88 @@ const (
 func (RendererType) Values() []RendererType {
 	return []RendererType{
 		"AppStream",
+	}
+}
+
+type SessionSortBy string
+
+// Enum values for SessionSortBy
+const (
+	SessionSortByStartTimeAscending  SessionSortBy = "StartTimeAscending"
+	SessionSortByStartTimeDescending SessionSortBy = "StartTimeDescending"
+)
+
+// Values returns all known values for SessionSortBy. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (SessionSortBy) Values() []SessionSortBy {
+	return []SessionSortBy{
+		"StartTimeAscending",
+		"StartTimeDescending",
+	}
+}
+
+type SessionStatus string
+
+// Enum values for SessionStatus
+const (
+	SessionStatusActive     SessionStatus = "Active"
+	SessionStatusTerminated SessionStatus = "Terminated"
+)
+
+// Values returns all known values for SessionStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (SessionStatus) Values() []SessionStatus {
+	return []SessionStatus{
+		"Active",
+		"Terminated",
+	}
+}
+
+type ToolbarItem string
+
+// Enum values for ToolbarItem
+const (
+	ToolbarItemWindows     ToolbarItem = "Windows"
+	ToolbarItemDualMonitor ToolbarItem = "DualMonitor"
+	ToolbarItemFullScreen  ToolbarItem = "FullScreen"
+	ToolbarItemWebcam      ToolbarItem = "Webcam"
+	ToolbarItemMicrophone  ToolbarItem = "Microphone"
+)
+
+// Values returns all known values for ToolbarItem. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ToolbarItem) Values() []ToolbarItem {
+	return []ToolbarItem{
+		"Windows",
+		"DualMonitor",
+		"FullScreen",
+		"Webcam",
+		"Microphone",
+	}
+}
+
+type ToolbarType string
+
+// Enum values for ToolbarType
+const (
+	ToolbarTypeFloating ToolbarType = "Floating"
+	ToolbarTypeDocked   ToolbarType = "Docked"
+)
+
+// Values returns all known values for ToolbarType. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ToolbarType) Values() []ToolbarType {
+	return []ToolbarType{
+		"Floating",
+		"Docked",
 	}
 }
 
@@ -163,5 +293,24 @@ func (ValidationExceptionReason) Values() []ValidationExceptionReason {
 		"cannotParse",
 		"fieldValidationFailed",
 		"other",
+	}
+}
+
+type VisualMode string
+
+// Enum values for VisualMode
+const (
+	VisualModeDark  VisualMode = "Dark"
+	VisualModeLight VisualMode = "Light"
+)
+
+// Values returns all known values for VisualMode. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (VisualMode) Values() []VisualMode {
+	return []VisualMode{
+		"Dark",
+		"Light",
 	}
 }

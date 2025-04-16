@@ -18,7 +18,25 @@ import (
 // that Amazon Redshift uses when creating the cluster. For more information about
 // managing clusters, go to [Amazon Redshift Clusters]in the Amazon Redshift Cluster Management Guide.
 //
+// VPC Block Public Access (BPA) enables you to block resources in VPCs and
+// subnets that you own in a Region from reaching or being reached from the
+// internet through internet gateways and egress-only internet gateways. If a
+// subnet group for a provisioned cluster is in an account with VPC BPA turned on,
+// the following capabilities are blocked:
+//
+//   - Creating a public cluster
+//
+//   - Restoring a public cluster
+//
+//   - Modifying a private cluster to be public
+//
+//   - Adding a subnet with VPC BPA turned on to the subnet group when there's at
+//     least one public cluster within the group
+//
+// For more information about VPC BPA, see [Block public access to VPCs and subnets] in the Amazon VPC User Guide.
+//
 // [Amazon Redshift Clusters]: https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html
+// [Block public access to VPCs and subnets]: https://docs.aws.amazon.com/vpc/latest/userguide/security-vpc-bpa.html
 func (c *Client) CreateCluster(ctx context.Context, params *CreateClusterInput, optFns ...func(*Options)) (*CreateClusterOutput, error) {
 	if params == nil {
 		params = &CreateClusterInput{}
@@ -83,7 +101,8 @@ type CreateClusterInput struct {
 	// The node type to be provisioned for the cluster. For information about node
 	// types, go to [Working with Clusters]in the Amazon Redshift Cluster Management Guide.
 	//
-	// Valid Values: dc2.large | dc2.8xlarge | ra3.xlplus | ra3.4xlarge | ra3.16xlarge
+	// Valid Values: dc2.large | dc2.8xlarge | ra3.large | ra3.xlplus | ra3.4xlarge |
+	// ra3.16xlarge
 	//
 	// [Working with Clusters]: https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html#how-many-nodes
 	//
@@ -222,9 +241,10 @@ type CreateClusterInput struct {
 	// [Supported Platforms to Launch Your Cluster]: https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html#cluster-platforms
 	ElasticIp *string
 
-	// If true , the data in the cluster is encrypted at rest.
+	// If true , the data in the cluster is encrypted at rest. If you set the value on
+	// this parameter to false , the request will fail.
 	//
-	// Default: false
+	// Default: true
 	Encrypted *bool
 
 	// An option that specifies whether to create the cluster with enhanced VPC
@@ -364,6 +384,8 @@ type CreateClusterInput struct {
 	PreferredMaintenanceWindow *string
 
 	// If true , the cluster can be accessed from a public network.
+	//
+	// Default: false
 	PubliclyAccessible *bool
 
 	// The Amazon resource name (ARN) of the Amazon Redshift IAM Identity Center
@@ -439,6 +461,9 @@ func (c *Client) addOperationCreateClusterMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -455,6 +480,9 @@ func (c *Client) addOperationCreateClusterMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateClusterValidationMiddleware(stack); err != nil {
@@ -476,6 +504,18 @@ func (c *Client) addOperationCreateClusterMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

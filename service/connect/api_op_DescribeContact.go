@@ -15,10 +15,11 @@ import (
 //
 // Describes the specified contact.
 //
-// Contact information remains available in Amazon Connect for 24 months, and then
-// it is deleted.
+//   - CustomerEndpoint and SystemEndpoint are only populated for EMAIL contacts.
 //
-// Only data from November 12, 2021, and later is returned by this API.
+//   - Contact information remains available in Amazon Connect for 24 months from
+//     the InitiationTimestamp , and then it is deleted. Only contact information
+//     that is available in Amazon Connect is returned by this API.
 func (c *Client) DescribeContact(ctx context.Context, params *DescribeContactInput, optFns ...func(*Options)) (*DescribeContactOutput, error) {
 	if params == nil {
 		params = &DescribeContactInput{}
@@ -106,6 +107,9 @@ func (c *Client) addOperationDescribeContactMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -122,6 +126,9 @@ func (c *Client) addOperationDescribeContactMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeContactValidationMiddleware(stack); err != nil {
@@ -143,6 +150,18 @@ func (c *Client) addOperationDescribeContactMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

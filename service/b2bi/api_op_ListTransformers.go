@@ -11,8 +11,10 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Lists the available transformers. A transformer describes how to process the
-// incoming EDI documents and extract the necessary information to the output file.
+// Lists the available transformers. A transformer can take an EDI file as input
+// and transform it into a JSON-or XML-formatted document. Alternatively, a
+// transformer can take a JSON-or XML-formatted document as input and transform it
+// into an EDI file.
 func (c *Client) ListTransformers(ctx context.Context, params *ListTransformersInput, optFns ...func(*Options)) (*ListTransformersOutput, error) {
 	if params == nil {
 		params = &ListTransformersInput{}
@@ -105,6 +107,9 @@ func (c *Client) addOperationListTransformersMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -123,6 +128,9 @@ func (c *Client) addOperationListTransformersMiddlewares(stack *middleware.Stack
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListTransformers(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -139,6 +147,18 @@ func (c *Client) addOperationListTransformersMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

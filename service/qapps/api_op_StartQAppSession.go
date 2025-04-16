@@ -51,6 +51,9 @@ type StartQAppSessionInput struct {
 	// Optional initial input values to provide for the Q App session.
 	InitialValues []types.CardValue
 
+	// The unique identifier of the a Q App session.
+	SessionId *string
+
 	// Optional tags to associate with the new Q App session.
 	Tags map[string]string
 
@@ -64,7 +67,7 @@ type StartQAppSessionOutput struct {
 	// This member is required.
 	SessionArn *string
 
-	// The unique identifier of the new Q App session.
+	// The unique identifier of the new or retrieved Q App session.
 	//
 	// This member is required.
 	SessionId *string
@@ -118,6 +121,9 @@ func (c *Client) addOperationStartQAppSessionMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -134,6 +140,9 @@ func (c *Client) addOperationStartQAppSessionMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpStartQAppSessionValidationMiddleware(stack); err != nil {
@@ -155,6 +164,18 @@ func (c *Client) addOperationStartQAppSessionMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

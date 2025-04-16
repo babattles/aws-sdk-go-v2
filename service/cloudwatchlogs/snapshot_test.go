@@ -230,6 +230,30 @@ func TestCheckSnapshot_DeleteDestination(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_DeleteIndexPolicy(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteIndexPolicy(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DeleteIndexPolicy")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_DeleteIntegration(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteIntegration(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DeleteIntegration")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_DeleteLogAnomalyDetector(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.DeleteLogAnomalyDetector(context.Background(), nil, func(o *Options) {
@@ -326,11 +350,35 @@ func TestCheckSnapshot_DeleteSubscriptionFilter(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_DeleteTransformer(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteTransformer(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DeleteTransformer")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_DescribeAccountPolicies(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.DescribeAccountPolicies(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "DescribeAccountPolicies")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_DescribeConfigurationTemplates(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DescribeConfigurationTemplates(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DescribeConfigurationTemplates")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -391,6 +439,30 @@ func TestCheckSnapshot_DescribeExportTasks(t *testing.T) {
 	_, err := svc.DescribeExportTasks(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "DescribeExportTasks")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_DescribeFieldIndexes(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DescribeFieldIndexes(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DescribeFieldIndexes")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_DescribeIndexPolicies(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DescribeIndexPolicies(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DescribeIndexPolicies")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -566,6 +638,18 @@ func TestCheckSnapshot_GetDeliverySource(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_GetIntegration(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetIntegration(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GetIntegration")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_GetLogAnomalyDetector(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.GetLogAnomalyDetector(context.Background(), nil, func(o *Options) {
@@ -626,6 +710,18 @@ func TestCheckSnapshot_GetQueryResults(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_GetTransformer(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetTransformer(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GetTransformer")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_ListAnomalies(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ListAnomalies(context.Background(), nil, func(o *Options) {
@@ -638,11 +734,35 @@ func TestCheckSnapshot_ListAnomalies(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_ListIntegrations(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListIntegrations(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListIntegrations")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_ListLogAnomalyDetectors(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ListLogAnomalyDetectors(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "ListLogAnomalyDetectors")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_ListLogGroupsForQuery(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListLogGroupsForQuery(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListLogGroupsForQuery")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -758,6 +878,30 @@ func TestCheckSnapshot_PutDestinationPolicy(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_PutIndexPolicy(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.PutIndexPolicy(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "PutIndexPolicy")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_PutIntegration(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.PutIntegration(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "PutIntegration")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_PutLogEvents(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.PutLogEvents(context.Background(), nil, func(o *Options) {
@@ -823,6 +967,18 @@ func TestCheckSnapshot_PutSubscriptionFilter(t *testing.T) {
 	_, err := svc.PutSubscriptionFilter(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "PutSubscriptionFilter")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_PutTransformer(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.PutTransformer(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "PutTransformer")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -902,6 +1058,18 @@ func TestCheckSnapshot_TestMetricFilter(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_TestTransformer(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.TestTransformer(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "TestTransformer")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_UntagLogGroup(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.UntagLogGroup(context.Background(), nil, func(o *Options) {
@@ -931,6 +1099,18 @@ func TestCheckSnapshot_UpdateAnomaly(t *testing.T) {
 	_, err := svc.UpdateAnomaly(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "UpdateAnomaly")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_UpdateDeliveryConfiguration(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateDeliveryConfiguration(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "UpdateDeliveryConfiguration")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -1117,6 +1297,30 @@ func TestUpdateSnapshot_DeleteDestination(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_DeleteIndexPolicy(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteIndexPolicy(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DeleteIndexPolicy")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_DeleteIntegration(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteIntegration(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DeleteIntegration")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_DeleteLogAnomalyDetector(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.DeleteLogAnomalyDetector(context.Background(), nil, func(o *Options) {
@@ -1213,11 +1417,35 @@ func TestUpdateSnapshot_DeleteSubscriptionFilter(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_DeleteTransformer(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteTransformer(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DeleteTransformer")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_DescribeAccountPolicies(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.DescribeAccountPolicies(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "DescribeAccountPolicies")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_DescribeConfigurationTemplates(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DescribeConfigurationTemplates(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DescribeConfigurationTemplates")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -1278,6 +1506,30 @@ func TestUpdateSnapshot_DescribeExportTasks(t *testing.T) {
 	_, err := svc.DescribeExportTasks(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "DescribeExportTasks")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_DescribeFieldIndexes(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DescribeFieldIndexes(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DescribeFieldIndexes")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_DescribeIndexPolicies(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DescribeIndexPolicies(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DescribeIndexPolicies")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -1453,6 +1705,18 @@ func TestUpdateSnapshot_GetDeliverySource(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_GetIntegration(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetIntegration(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GetIntegration")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_GetLogAnomalyDetector(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.GetLogAnomalyDetector(context.Background(), nil, func(o *Options) {
@@ -1513,6 +1777,18 @@ func TestUpdateSnapshot_GetQueryResults(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_GetTransformer(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetTransformer(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GetTransformer")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_ListAnomalies(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ListAnomalies(context.Background(), nil, func(o *Options) {
@@ -1525,11 +1801,35 @@ func TestUpdateSnapshot_ListAnomalies(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_ListIntegrations(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListIntegrations(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListIntegrations")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_ListLogAnomalyDetectors(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ListLogAnomalyDetectors(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "ListLogAnomalyDetectors")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_ListLogGroupsForQuery(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListLogGroupsForQuery(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListLogGroupsForQuery")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -1645,6 +1945,30 @@ func TestUpdateSnapshot_PutDestinationPolicy(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_PutIndexPolicy(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.PutIndexPolicy(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "PutIndexPolicy")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_PutIntegration(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.PutIntegration(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "PutIntegration")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_PutLogEvents(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.PutLogEvents(context.Background(), nil, func(o *Options) {
@@ -1710,6 +2034,18 @@ func TestUpdateSnapshot_PutSubscriptionFilter(t *testing.T) {
 	_, err := svc.PutSubscriptionFilter(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "PutSubscriptionFilter")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_PutTransformer(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.PutTransformer(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "PutTransformer")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -1789,6 +2125,18 @@ func TestUpdateSnapshot_TestMetricFilter(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_TestTransformer(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.TestTransformer(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "TestTransformer")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_UntagLogGroup(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.UntagLogGroup(context.Background(), nil, func(o *Options) {
@@ -1818,6 +2166,18 @@ func TestUpdateSnapshot_UpdateAnomaly(t *testing.T) {
 	_, err := svc.UpdateAnomaly(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "UpdateAnomaly")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_UpdateDeliveryConfiguration(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateDeliveryConfiguration(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "UpdateDeliveryConfiguration")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {

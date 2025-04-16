@@ -62,6 +62,9 @@ type CreateApplicationInput struct {
 	// The name of the resource group.
 	ResourceGroupName *string
 
+	//  The SNS notification topic ARN.
+	SNSNotificationArn *string
+
 	// List of tags to add to the application. tag key ( Key ) and an associated tag
 	// value ( Value ). The maximum length of a tag key is 128 characters. The maximum
 	// length of a tag value is 256 characters.
@@ -124,6 +127,9 @@ func (c *Client) addOperationCreateApplicationMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -140,6 +146,9 @@ func (c *Client) addOperationCreateApplicationMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateApplicationValidationMiddleware(stack); err != nil {
@@ -161,6 +170,18 @@ func (c *Client) addOperationCreateApplicationMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -14,7 +14,7 @@ import (
 // Stop the service update. For more information on service updates and stopping
 // them, see [Stopping Service Updates].
 //
-// [Stopping Service Updates]: https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/stopping-self-service-updates.html
+// [Stopping Service Updates]: https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/stopping-self-service-updates.html
 func (c *Client) BatchStopUpdateAction(ctx context.Context, params *BatchStopUpdateActionInput, optFns ...func(*Options)) (*BatchStopUpdateActionOutput, error) {
 	if params == nil {
 		params = &BatchStopUpdateActionInput{}
@@ -103,6 +103,9 @@ func (c *Client) addOperationBatchStopUpdateActionMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -119,6 +122,9 @@ func (c *Client) addOperationBatchStopUpdateActionMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpBatchStopUpdateActionValidationMiddleware(stack); err != nil {
@@ -140,6 +146,18 @@ func (c *Client) addOperationBatchStopUpdateActionMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

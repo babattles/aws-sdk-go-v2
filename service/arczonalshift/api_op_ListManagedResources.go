@@ -38,9 +38,9 @@ type ListManagedResourcesInput struct {
 	MaxResults *int32
 
 	// Specifies that you want to receive the next page of results. Valid only if you
-	// received a NextToken response in the previous request. If you did, it indicates
+	// received a nextToken response in the previous request. If you did, it indicates
 	// that more output is available. Set this parameter to the value provided by the
-	// previous call's NextToken response to request the next page of results.
+	// previous call's nextToken response to request the next page of results.
 	NextToken *string
 
 	noSmithyDocumentSerde
@@ -54,9 +54,9 @@ type ListManagedResourcesOutput struct {
 	Items []types.ManagedResourceSummary
 
 	// Specifies that you want to receive the next page of results. Valid only if you
-	// received a NextToken response in the previous request. If you did, it indicates
+	// received a nextToken response in the previous request. If you did, it indicates
 	// that more output is available. Set this parameter to the value provided by the
-	// previous call's NextToken response to request the next page of results.
+	// previous call's nextToken response to request the next page of results.
 	NextToken *string
 
 	// Metadata pertaining to the operation's result.
@@ -108,6 +108,9 @@ func (c *Client) addOperationListManagedResourcesMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -126,6 +129,9 @@ func (c *Client) addOperationListManagedResourcesMiddlewares(stack *middleware.S
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListManagedResources(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -142,6 +148,18 @@ func (c *Client) addOperationListManagedResourcesMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

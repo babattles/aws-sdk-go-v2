@@ -41,7 +41,7 @@ type GetJobQueueSnapshotOutput struct {
 
 	// The list of the first 100 RUNNABLE jobs in each job queue. For
 	// first-in-first-out (FIFO) job queues, jobs are ordered based on their submission
-	// time. For fair share scheduling (FSS) job queues, jobs are ordered based on
+	// time. For fair-share scheduling (FSS) job queues, jobs are ordered based on
 	// their job priority and share usage.
 	FrontOfQueue *types.FrontOfQueueDetail
 
@@ -94,6 +94,9 @@ func (c *Client) addOperationGetJobQueueSnapshotMiddlewares(stack *middleware.St
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -110,6 +113,9 @@ func (c *Client) addOperationGetJobQueueSnapshotMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetJobQueueSnapshotValidationMiddleware(stack); err != nil {
@@ -131,6 +137,18 @@ func (c *Client) addOperationGetJobQueueSnapshotMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -381,6 +381,8 @@ type Cluster struct {
 
 	// A boolean value that, if true , indicates that the cluster can be accessed from
 	// a public network.
+	//
+	// Default: false
 	PubliclyAccessible *bool
 
 	// The status of the reserved-node exchange request. Statuses include in-progress
@@ -686,6 +688,9 @@ type DataShare struct {
 	// and data consumers.
 	DataShareAssociations []DataShareAssociation
 
+	//  The type of the datashare created by RegisterNamespace.
+	DataShareType DataShareType
+
 	// The identifier of a datashare to show its managing entity.
 	ManagedBy *string
 
@@ -801,6 +806,22 @@ type DeleteClusterSnapshotMessage struct {
 	//
 	// Constraints: Must be the name of valid cluster.
 	SnapshotClusterIdentifier *string
+
+	noSmithyDocumentSerde
+}
+
+// A set of elements to filter the returned integrations.
+type DescribeIntegrationsFilter struct {
+
+	// Specifies the type of integration filter.
+	//
+	// This member is required.
+	Name DescribeIntegrationsFilterName
+
+	// Specifies the values to filter on.
+	//
+	// This member is required.
+	Values []string
 
 	noSmithyDocumentSerde
 }
@@ -1134,6 +1155,50 @@ type InboundIntegration struct {
 	noSmithyDocumentSerde
 }
 
+type Integration struct {
+
+	// The encryption context for the integration. For more information, see [Encryption context] in the
+	// Amazon Web Services Key Management Service Developer Guide.
+	//
+	// [Encryption context]: https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#encrypt_context
+	AdditionalEncryptionContext map[string]string
+
+	// The time (UTC) when the integration was created.
+	CreateTime *time.Time
+
+	// The description of the integration.
+	Description *string
+
+	// Any errors associated with the integration.
+	Errors []IntegrationError
+
+	// The Amazon Resource Name (ARN) of the integration.
+	IntegrationArn *string
+
+	// The name of the integration.
+	IntegrationName *string
+
+	// The Key Management Service (KMS) key identifier for the key used to encrypt the
+	// integration.
+	KMSKeyId *string
+
+	// The Amazon Resource Name (ARN) of the database used as the source for
+	// replication.
+	SourceArn *string
+
+	// The current status of the integration.
+	Status ZeroETLIntegrationStatus
+
+	// The list of tags associated with the integration.
+	Tags []Tag
+
+	// The Amazon Resource Name (ARN) of the Amazon Redshift data warehouse to use as
+	// the target for replication.
+	TargetArn *string
+
+	noSmithyDocumentSerde
+}
+
 // The error of an inbound integration.
 type IntegrationError struct {
 
@@ -1210,6 +1275,35 @@ type MaintenanceTrack struct {
 
 	noSmithyDocumentSerde
 }
+
+// Object to store union of values for a provisioned cluster or serverless
+// namespace’s identifier.
+//
+// The following types satisfy this interface:
+//
+//	NamespaceIdentifierUnionMemberProvisionedIdentifier
+//	NamespaceIdentifierUnionMemberServerlessIdentifier
+type NamespaceIdentifierUnion interface {
+	isNamespaceIdentifierUnion()
+}
+
+// The identifier for a provisioned cluster.
+type NamespaceIdentifierUnionMemberProvisionedIdentifier struct {
+	Value ProvisionedIdentifier
+
+	noSmithyDocumentSerde
+}
+
+func (*NamespaceIdentifierUnionMemberProvisionedIdentifier) isNamespaceIdentifierUnion() {}
+
+// The identifier for a serverless namespace.
+type NamespaceIdentifierUnionMemberServerlessIdentifier struct {
+	Value ServerlessIdentifier
+
+	noSmithyDocumentSerde
+}
+
+func (*NamespaceIdentifierUnionMemberServerlessIdentifier) isNamespaceIdentifierUnion() {}
 
 // Describes a network interface.
 type NetworkInterface struct {
@@ -1413,6 +1507,28 @@ type PendingModifiedValues struct {
 	// The pending or in-progress change of the ability to connect to the cluster from
 	// the public network.
 	PubliclyAccessible *bool
+
+	noSmithyDocumentSerde
+}
+
+// The identifier for a provisioned cluster.
+type ProvisionedIdentifier struct {
+
+	// The unique identifier for the provisioned cluster.
+	//
+	// This member is required.
+	ClusterIdentifier *string
+
+	noSmithyDocumentSerde
+}
+
+// The S3 Access Grants scope.
+type ReadWriteAccess struct {
+
+	// Determines whether the read/write scope is enabled or disabled.
+	//
+	// This member is required.
+	Authorization ServiceAuthorization
 
 	noSmithyDocumentSerde
 }
@@ -1820,6 +1936,24 @@ type RevisionTarget struct {
 	noSmithyDocumentSerde
 }
 
+// A list of scopes set up for S3 Access Grants integration.
+//
+// The following types satisfy this interface:
+//
+//	S3AccessGrantsScopeUnionMemberReadWriteAccess
+type S3AccessGrantsScopeUnion interface {
+	isS3AccessGrantsScopeUnion()
+}
+
+// The S3 Access Grants scope.
+type S3AccessGrantsScopeUnionMemberReadWriteAccess struct {
+	Value ReadWriteAccess
+
+	noSmithyDocumentSerde
+}
+
+func (*S3AccessGrantsScopeUnionMemberReadWriteAccess) isS3AccessGrantsScopeUnion() {}
+
 // Describes a scheduled action. You can use a scheduled action to trigger some
 // Amazon Redshift API operations on a schedule. For information about which API
 // operations can be scheduled, see ScheduledActionType.
@@ -1926,11 +2060,29 @@ type SecondaryClusterInfo struct {
 	noSmithyDocumentSerde
 }
 
+// The identifier for a serverless namespace.
+type ServerlessIdentifier struct {
+
+	// The unique identifier for the serverless namespace.
+	//
+	// This member is required.
+	NamespaceIdentifier *string
+
+	// The unique identifier for the workgroup associated with the serverless
+	// namespace.
+	//
+	// This member is required.
+	WorkgroupIdentifier *string
+
+	noSmithyDocumentSerde
+}
+
 // A list of service integrations.
 //
 // The following types satisfy this interface:
 //
 //	ServiceIntegrationsUnionMemberLakeFormation
+//	ServiceIntegrationsUnionMemberS3AccessGrants
 type ServiceIntegrationsUnion interface {
 	isServiceIntegrationsUnion()
 }
@@ -1943,6 +2095,15 @@ type ServiceIntegrationsUnionMemberLakeFormation struct {
 }
 
 func (*ServiceIntegrationsUnionMemberLakeFormation) isServiceIntegrationsUnion() {}
+
+// A list of scopes set up for S3 Access Grants integration.
+type ServiceIntegrationsUnionMemberS3AccessGrants struct {
+	Value []S3AccessGrantsScopeUnion
+
+	noSmithyDocumentSerde
+}
+
+func (*ServiceIntegrationsUnionMemberS3AccessGrants) isServiceIntegrationsUnion() {}
 
 // Describes a snapshot.
 type Snapshot struct {
@@ -2415,4 +2576,6 @@ type UnknownUnionMember struct {
 }
 
 func (*UnknownUnionMember) isLakeFormationScopeUnion()  {}
+func (*UnknownUnionMember) isNamespaceIdentifierUnion() {}
+func (*UnknownUnionMember) isS3AccessGrantsScopeUnion() {}
 func (*UnknownUnionMember) isServiceIntegrationsUnion() {}

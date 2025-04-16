@@ -12,8 +12,8 @@ import (
 )
 
 // Returns current default log levels or log levels by resource types. Based on
-// resource types, log levels can be for wireless device log options or wireless
-// gateway log options.
+// the resource type, log levels can be returned for wireless device, wireless
+// gateway, or FUOTA task log options.
 func (c *Client) GetLogLevelsByResourceTypes(ctx context.Context, params *GetLogLevelsByResourceTypesInput, optFns ...func(*Options)) (*GetLogLevelsByResourceTypesOutput, error) {
 	if params == nil {
 		params = &GetLogLevelsByResourceTypesInput{}
@@ -39,6 +39,9 @@ type GetLogLevelsByResourceTypesOutput struct {
 	// to display less verbose logs containing only error information, or to INFO for
 	// more detailed logs.
 	DefaultLogLevel types.LogLevel
+
+	// The list of FUOTA task log options.
+	FuotaTaskLogOptions []types.FuotaTaskLogOption
 
 	// The list of wireless device log options.
 	WirelessDeviceLogOptions []types.WirelessDeviceLogOption
@@ -95,6 +98,9 @@ func (c *Client) addOperationGetLogLevelsByResourceTypesMiddlewares(stack *middl
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -113,6 +119,9 @@ func (c *Client) addOperationGetLogLevelsByResourceTypesMiddlewares(stack *middl
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opGetLogLevelsByResourceTypes(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -129,6 +138,18 @@ func (c *Client) addOperationGetLogLevelsByResourceTypesMiddlewares(stack *middl
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -13,9 +13,6 @@ import (
 //	Deletes a decoder manifest. You can't delete a decoder manifest if it has
 //
 // vehicles associated with it.
-//
-// If the decoder manifest is successfully deleted, Amazon Web Services IoT
-// FleetWise sends back an HTTP 200 response with an empty body.
 func (c *Client) DeleteDecoderManifest(ctx context.Context, params *DeleteDecoderManifestInput, optFns ...func(*Options)) (*DeleteDecoderManifestOutput, error) {
 	if params == nil {
 		params = &DeleteDecoderManifestInput{}
@@ -102,6 +99,9 @@ func (c *Client) addOperationDeleteDecoderManifestMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -118,6 +118,9 @@ func (c *Client) addOperationDeleteDecoderManifestMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteDecoderManifestValidationMiddleware(stack); err != nil {
@@ -139,6 +142,18 @@ func (c *Client) addOperationDeleteDecoderManifestMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

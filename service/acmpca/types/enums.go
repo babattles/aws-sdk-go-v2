@@ -152,6 +152,25 @@ func (CertificateAuthorityUsageMode) Values() []CertificateAuthorityUsageMode {
 	}
 }
 
+type CrlType string
+
+// Enum values for CrlType
+const (
+	CrlTypeComplete    CrlType = "COMPLETE"
+	CrlTypePartitioned CrlType = "PARTITIONED"
+)
+
+// Values returns all known values for CrlType. Note that this can be expanded in
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CrlType) Values() []CrlType {
+	return []CrlType{
+		"COMPLETE",
+		"PARTITIONED",
+	}
+}
+
 type ExtendedKeyUsageType string
 
 // Enum values for ExtendedKeyUsageType
@@ -211,9 +230,11 @@ type KeyAlgorithm string
 // Enum values for KeyAlgorithm
 const (
 	KeyAlgorithmRsa2048      KeyAlgorithm = "RSA_2048"
+	KeyAlgorithmRsa3072      KeyAlgorithm = "RSA_3072"
 	KeyAlgorithmRsa4096      KeyAlgorithm = "RSA_4096"
 	KeyAlgorithmEcPrime256v1 KeyAlgorithm = "EC_prime256v1"
 	KeyAlgorithmEcSecp384r1  KeyAlgorithm = "EC_secp384r1"
+	KeyAlgorithmEcSecp521r1  KeyAlgorithm = "EC_secp521r1"
 	KeyAlgorithmSm2          KeyAlgorithm = "SM2"
 )
 
@@ -224,9 +245,11 @@ const (
 func (KeyAlgorithm) Values() []KeyAlgorithm {
 	return []KeyAlgorithm{
 		"RSA_2048",
+		"RSA_3072",
 		"RSA_4096",
 		"EC_prime256v1",
 		"EC_secp384r1",
+		"EC_secp521r1",
 		"SM2",
 	}
 }

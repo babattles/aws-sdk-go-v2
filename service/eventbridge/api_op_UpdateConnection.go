@@ -44,6 +44,13 @@ type UpdateConnectionInput struct {
 	// A description for the connection.
 	Description *string
 
+	// For connections to private APIs, the parameters to use for invoking the API.
+	//
+	// For more information, see [Connecting to private APIs] in the Amazon EventBridge User Guide .
+	//
+	// [Connecting to private APIs]: https://docs.aws.amazon.com/eventbridge/latest/userguide/connection-private.html
+	InvocationConnectivityParameters *types.ConnectivityResourceParameters
+
 	noSmithyDocumentSerde
 }
 
@@ -113,6 +120,9 @@ func (c *Client) addOperationUpdateConnectionMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -129,6 +139,9 @@ func (c *Client) addOperationUpdateConnectionMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateConnectionValidationMiddleware(stack); err != nil {
@@ -150,6 +163,18 @@ func (c *Client) addOperationUpdateConnectionMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

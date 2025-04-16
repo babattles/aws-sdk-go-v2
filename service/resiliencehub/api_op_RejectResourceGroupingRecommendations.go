@@ -39,8 +39,8 @@ type RejectResourceGroupingRecommendationsInput struct {
 	// This member is required.
 	AppArn *string
 
-	// Indicates the list of resource grouping recommendations you have selected to
-	// exclude from your application.
+	// List of resource grouping recommendations you have selected to exclude from
+	// your application.
 	//
 	// This member is required.
 	Entries []types.RejectGroupingRecommendationEntry
@@ -60,8 +60,8 @@ type RejectResourceGroupingRecommendationsOutput struct {
 	// This member is required.
 	AppArn *string
 
-	// Indicates the list of resource grouping recommendations that failed to get
-	// excluded in your application.
+	// List of resource grouping recommendations that failed to get excluded in your
+	// application.
 	//
 	// This member is required.
 	FailedEntries []types.FailedGroupingRecommendationEntry
@@ -115,6 +115,9 @@ func (c *Client) addOperationRejectResourceGroupingRecommendationsMiddlewares(st
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -131,6 +134,9 @@ func (c *Client) addOperationRejectResourceGroupingRecommendationsMiddlewares(st
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpRejectResourceGroupingRecommendationsValidationMiddleware(stack); err != nil {
@@ -152,6 +158,18 @@ func (c *Client) addOperationRejectResourceGroupingRecommendationsMiddlewares(st
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

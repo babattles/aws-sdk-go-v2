@@ -294,7 +294,8 @@ type AssetBundleExportJobDataSetPropertyToOverride string
 
 // Enum values for AssetBundleExportJobDataSetPropertyToOverride
 const (
-	AssetBundleExportJobDataSetPropertyToOverrideName AssetBundleExportJobDataSetPropertyToOverride = "Name"
+	AssetBundleExportJobDataSetPropertyToOverrideName                           AssetBundleExportJobDataSetPropertyToOverride = "Name"
+	AssetBundleExportJobDataSetPropertyToOverrideRefreshFailureEmailAlertStatus AssetBundleExportJobDataSetPropertyToOverride = "RefreshFailureEmailAlertStatus"
 )
 
 // Values returns all known values for
@@ -305,6 +306,7 @@ const (
 func (AssetBundleExportJobDataSetPropertyToOverride) Values() []AssetBundleExportJobDataSetPropertyToOverride {
 	return []AssetBundleExportJobDataSetPropertyToOverride{
 		"Name",
+		"RefreshFailureEmailAlertStatus",
 	}
 }
 
@@ -357,6 +359,26 @@ func (AssetBundleExportJobDataSourcePropertyToOverride) Values() []AssetBundleEx
 		"Warehouse",
 		"RoleArn",
 		"ProductType",
+	}
+}
+
+type AssetBundleExportJobFolderPropertyToOverride string
+
+// Enum values for AssetBundleExportJobFolderPropertyToOverride
+const (
+	AssetBundleExportJobFolderPropertyToOverrideName            AssetBundleExportJobFolderPropertyToOverride = "Name"
+	AssetBundleExportJobFolderPropertyToOverrideParentFolderArn AssetBundleExportJobFolderPropertyToOverride = "ParentFolderArn"
+)
+
+// Values returns all known values for
+// AssetBundleExportJobFolderPropertyToOverride. Note that this can be expanded in
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AssetBundleExportJobFolderPropertyToOverride) Values() []AssetBundleExportJobFolderPropertyToOverride {
+	return []AssetBundleExportJobFolderPropertyToOverride{
+		"Name",
+		"ParentFolderArn",
 	}
 }
 
@@ -534,6 +556,27 @@ func (AuthenticationMethodOption) Values() []AuthenticationMethodOption {
 	}
 }
 
+type AuthenticationType string
+
+// Enum values for AuthenticationType
+const (
+	AuthenticationTypePassword AuthenticationType = "PASSWORD"
+	AuthenticationTypeToken    AuthenticationType = "TOKEN"
+	AuthenticationTypeX509     AuthenticationType = "X509"
+)
+
+// Values returns all known values for AuthenticationType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AuthenticationType) Values() []AuthenticationType {
+	return []AuthenticationType{
+		"PASSWORD",
+		"TOKEN",
+		"X509",
+	}
+}
+
 type AuthorSpecifiedAggregation string
 
 // Enum values for AuthorSpecifiedAggregation
@@ -671,6 +714,69 @@ func (BoxPlotFillStyle) Values() []BoxPlotFillStyle {
 	return []BoxPlotFillStyle{
 		"SOLID",
 		"TRANSPARENT",
+	}
+}
+
+type BrandStatus string
+
+// Enum values for BrandStatus
+const (
+	BrandStatusCreateInProgress BrandStatus = "CREATE_IN_PROGRESS"
+	BrandStatusCreateSucceeded  BrandStatus = "CREATE_SUCCEEDED"
+	BrandStatusCreateFailed     BrandStatus = "CREATE_FAILED"
+	BrandStatusDeleteInProgress BrandStatus = "DELETE_IN_PROGRESS"
+	BrandStatusDeleteFailed     BrandStatus = "DELETE_FAILED"
+)
+
+// Values returns all known values for BrandStatus. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (BrandStatus) Values() []BrandStatus {
+	return []BrandStatus{
+		"CREATE_IN_PROGRESS",
+		"CREATE_SUCCEEDED",
+		"CREATE_FAILED",
+		"DELETE_IN_PROGRESS",
+		"DELETE_FAILED",
+	}
+}
+
+type BrandVersionStatus string
+
+// Enum values for BrandVersionStatus
+const (
+	BrandVersionStatusCreateInProgress BrandVersionStatus = "CREATE_IN_PROGRESS"
+	BrandVersionStatusCreateSucceeded  BrandVersionStatus = "CREATE_SUCCEEDED"
+	BrandVersionStatusCreateFailed     BrandVersionStatus = "CREATE_FAILED"
+)
+
+// Values returns all known values for BrandVersionStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (BrandVersionStatus) Values() []BrandVersionStatus {
+	return []BrandVersionStatus{
+		"CREATE_IN_PROGRESS",
+		"CREATE_SUCCEEDED",
+		"CREATE_FAILED",
+	}
+}
+
+type CapabilityState string
+
+// Enum values for CapabilityState
+const (
+	CapabilityStateDeny CapabilityState = "DENY"
+)
+
+// Values returns all known values for CapabilityState. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CapabilityState) Values() []CapabilityState {
+	return []CapabilityState{
+		"DENY",
 	}
 }
 
@@ -915,6 +1021,25 @@ func (ColumnTagName) Values() []ColumnTagName {
 	return []ColumnTagName{
 		"COLUMN_GEOGRAPHIC_ROLE",
 		"COLUMN_DESCRIPTION",
+	}
+}
+
+type CommitMode string
+
+// Enum values for CommitMode
+const (
+	CommitModeAuto   CommitMode = "AUTO"
+	CommitModeManual CommitMode = "MANUAL"
+)
+
+// Values returns all known values for CommitMode. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CommitMode) Values() []CommitMode {
+	return []CommitMode{
+		"AUTO",
+		"MANUAL",
 	}
 }
 
@@ -1242,6 +1367,25 @@ func (DashboardFilterAttribute) Values() []DashboardFilterAttribute {
 	}
 }
 
+type DashboardsQAStatus string
+
+// Enum values for DashboardsQAStatus
+const (
+	DashboardsQAStatusEnabled  DashboardsQAStatus = "ENABLED"
+	DashboardsQAStatusDisabled DashboardsQAStatus = "DISABLED"
+)
+
+// Values returns all known values for DashboardsQAStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DashboardsQAStatus) Values() []DashboardsQAStatus {
+	return []DashboardsQAStatus{
+		"ENABLED",
+		"DISABLED",
+	}
+}
+
 type DashboardUIState string
 
 // Enum values for DashboardUIState
@@ -1390,6 +1534,23 @@ func (DatasetParameterValueType) Values() []DatasetParameterValueType {
 	return []DatasetParameterValueType{
 		"MULTI_VALUED",
 		"SINGLE_VALUED",
+	}
+}
+
+type DataSetUseAs string
+
+// Enum values for DataSetUseAs
+const (
+	DataSetUseAsRlsRules DataSetUseAs = "RLS_RULES"
+)
+
+// Values returns all known values for DataSetUseAs. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DataSetUseAs) Values() []DataSetUseAs {
+	return []DataSetUseAs{
+		"RLS_RULES",
 	}
 }
 
@@ -1635,6 +1796,25 @@ func (DefaultAggregation) Values() []DefaultAggregation {
 		"STDEVP",
 		"VAR",
 		"VARP",
+	}
+}
+
+type DigitGroupingStyle string
+
+// Enum values for DigitGroupingStyle
+const (
+	DigitGroupingStyleDefault DigitGroupingStyle = "DEFAULT"
+	DigitGroupingStyleLakhs   DigitGroupingStyle = "LAKHS"
+)
+
+// Values returns all known values for DigitGroupingStyle. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DigitGroupingStyle) Values() []DigitGroupingStyle {
+	return []DigitGroupingStyle{
+		"DEFAULT",
+		"LAKHS",
 	}
 }
 
@@ -1998,6 +2178,46 @@ func (FunnelChartMeasureDataLabelStyle) Values() []FunnelChartMeasureDataLabelSt
 	}
 }
 
+type GeneratedAnswerStatus string
+
+// Enum values for GeneratedAnswerStatus
+const (
+	GeneratedAnswerStatusAnswerGenerated GeneratedAnswerStatus = "ANSWER_GENERATED"
+	GeneratedAnswerStatusAnswerRetrieved GeneratedAnswerStatus = "ANSWER_RETRIEVED"
+	GeneratedAnswerStatusAnswerDowngrade GeneratedAnswerStatus = "ANSWER_DOWNGRADE"
+)
+
+// Values returns all known values for GeneratedAnswerStatus. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (GeneratedAnswerStatus) Values() []GeneratedAnswerStatus {
+	return []GeneratedAnswerStatus{
+		"ANSWER_GENERATED",
+		"ANSWER_RETRIEVED",
+		"ANSWER_DOWNGRADE",
+	}
+}
+
+type GeospatialColorState string
+
+// Enum values for GeospatialColorState
+const (
+	GeospatialColorStateEnabled  GeospatialColorState = "ENABLED"
+	GeospatialColorStateDisabled GeospatialColorState = "DISABLED"
+)
+
+// Values returns all known values for GeospatialColorState. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (GeospatialColorState) Values() []GeospatialColorState {
+	return []GeospatialColorState{
+		"ENABLED",
+		"DISABLED",
+	}
+}
+
 type GeoSpatialCountryCode string
 
 // Enum values for GeoSpatialCountryCode
@@ -2041,6 +2261,46 @@ func (GeoSpatialDataRole) Values() []GeoSpatialDataRole {
 		"POSTCODE",
 		"LONGITUDE",
 		"LATITUDE",
+	}
+}
+
+type GeospatialLayerType string
+
+// Enum values for GeospatialLayerType
+const (
+	GeospatialLayerTypePoint   GeospatialLayerType = "POINT"
+	GeospatialLayerTypeLine    GeospatialLayerType = "LINE"
+	GeospatialLayerTypePolygon GeospatialLayerType = "POLYGON"
+)
+
+// Values returns all known values for GeospatialLayerType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (GeospatialLayerType) Values() []GeospatialLayerType {
+	return []GeospatialLayerType{
+		"POINT",
+		"LINE",
+		"POLYGON",
+	}
+}
+
+type GeospatialMapNavigation string
+
+// Enum values for GeospatialMapNavigation
+const (
+	GeospatialMapNavigationEnabled  GeospatialMapNavigation = "ENABLED"
+	GeospatialMapNavigationDisabled GeospatialMapNavigation = "DISABLED"
+)
+
+// Values returns all known values for GeospatialMapNavigation. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (GeospatialMapNavigation) Values() []GeospatialMapNavigation {
+	return []GeospatialMapNavigation{
+		"ENABLED",
+		"DISABLED",
 	}
 }
 
@@ -2244,6 +2504,84 @@ func (IdentityType) Values() []IdentityType {
 		"IAM",
 		"QUICKSIGHT",
 		"IAM_IDENTITY_CENTER",
+	}
+}
+
+type ImageCustomActionTrigger string
+
+// Enum values for ImageCustomActionTrigger
+const (
+	ImageCustomActionTriggerClick ImageCustomActionTrigger = "CLICK"
+	ImageCustomActionTriggerMenu  ImageCustomActionTrigger = "MENU"
+)
+
+// Values returns all known values for ImageCustomActionTrigger. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ImageCustomActionTrigger) Values() []ImageCustomActionTrigger {
+	return []ImageCustomActionTrigger{
+		"CLICK",
+		"MENU",
+	}
+}
+
+type IncludeFolderMembers string
+
+// Enum values for IncludeFolderMembers
+const (
+	IncludeFolderMembersRecurse  IncludeFolderMembers = "RECURSE"
+	IncludeFolderMembersOneLevel IncludeFolderMembers = "ONE_LEVEL"
+	IncludeFolderMembersNone     IncludeFolderMembers = "NONE"
+)
+
+// Values returns all known values for IncludeFolderMembers. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (IncludeFolderMembers) Values() []IncludeFolderMembers {
+	return []IncludeFolderMembers{
+		"RECURSE",
+		"ONE_LEVEL",
+		"NONE",
+	}
+}
+
+type IncludeGeneratedAnswer string
+
+// Enum values for IncludeGeneratedAnswer
+const (
+	IncludeGeneratedAnswerInclude IncludeGeneratedAnswer = "INCLUDE"
+	IncludeGeneratedAnswerExclude IncludeGeneratedAnswer = "EXCLUDE"
+)
+
+// Values returns all known values for IncludeGeneratedAnswer. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (IncludeGeneratedAnswer) Values() []IncludeGeneratedAnswer {
+	return []IncludeGeneratedAnswer{
+		"INCLUDE",
+		"EXCLUDE",
+	}
+}
+
+type IncludeQuickSightQIndex string
+
+// Enum values for IncludeQuickSightQIndex
+const (
+	IncludeQuickSightQIndexInclude IncludeQuickSightQIndex = "INCLUDE"
+	IncludeQuickSightQIndexExclude IncludeQuickSightQIndex = "EXCLUDE"
+)
+
+// Values returns all known values for IncludeQuickSightQIndex. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (IncludeQuickSightQIndex) Values() []IncludeQuickSightQIndex {
+	return []IncludeQuickSightQIndex{
+		"INCLUDE",
+		"EXCLUDE",
 	}
 }
 
@@ -2530,6 +2868,25 @@ func (KPIVisualStandardLayoutType) Values() []KPIVisualStandardLayoutType {
 	}
 }
 
+type LayerCustomActionTrigger string
+
+// Enum values for LayerCustomActionTrigger
+const (
+	LayerCustomActionTriggerDataPointClick LayerCustomActionTrigger = "DATA_POINT_CLICK"
+	LayerCustomActionTriggerDataPointMenu  LayerCustomActionTrigger = "DATA_POINT_MENU"
+)
+
+// Values returns all known values for LayerCustomActionTrigger. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (LayerCustomActionTrigger) Values() []LayerCustomActionTrigger {
+	return []LayerCustomActionTrigger{
+		"DATA_POINT_CLICK",
+		"DATA_POINT_MENU",
+	}
+}
+
 type LayoutElementType string
 
 // Enum values for LayoutElementType
@@ -2538,6 +2895,7 @@ const (
 	LayoutElementTypeFilterControl    LayoutElementType = "FILTER_CONTROL"
 	LayoutElementTypeParameterControl LayoutElementType = "PARAMETER_CONTROL"
 	LayoutElementTypeTextBox          LayoutElementType = "TEXT_BOX"
+	LayoutElementTypeImage            LayoutElementType = "IMAGE"
 )
 
 // Values returns all known values for LayoutElementType. Note that this can be
@@ -2550,6 +2908,7 @@ func (LayoutElementType) Values() []LayoutElementType {
 		"FILTER_CONTROL",
 		"PARAMETER_CONTROL",
 		"TEXT_BOX",
+		"IMAGE",
 	}
 }
 
@@ -3004,6 +3363,8 @@ const (
 	NumberScaleMillions  NumberScale = "MILLIONS"
 	NumberScaleBillions  NumberScale = "BILLIONS"
 	NumberScaleTrillions NumberScale = "TRILLIONS"
+	NumberScaleLakhs     NumberScale = "LAKHS"
+	NumberScaleCrores    NumberScale = "CRORES"
 )
 
 // Values returns all known values for NumberScale. Note that this can be expanded
@@ -3018,6 +3379,8 @@ func (NumberScale) Values() []NumberScale {
 		"MILLIONS",
 		"BILLIONS",
 		"TRILLIONS",
+		"LAKHS",
+		"CRORES",
 	}
 }
 
@@ -3195,6 +3558,25 @@ func (ParameterValueType) Values() []ParameterValueType {
 	}
 }
 
+type PersonalizationMode string
+
+// Enum values for PersonalizationMode
+const (
+	PersonalizationModeEnabled  PersonalizationMode = "ENABLED"
+	PersonalizationModeDisabled PersonalizationMode = "DISABLED"
+)
+
+// Values returns all known values for PersonalizationMode. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (PersonalizationMode) Values() []PersonalizationMode {
+	return []PersonalizationMode{
+		"ENABLED",
+		"DISABLED",
+	}
+}
+
 type PivotTableConditionalFormattingScopeRole string
 
 // Enum values for PivotTableConditionalFormattingScopeRole
@@ -3319,6 +3701,25 @@ func (PivotTableSubtotalLevel) Values() []PivotTableSubtotalLevel {
 	}
 }
 
+type PluginVisualAxisName string
+
+// Enum values for PluginVisualAxisName
+const (
+	PluginVisualAxisNameGroupBy PluginVisualAxisName = "GROUP_BY"
+	PluginVisualAxisNameValue   PluginVisualAxisName = "VALUE"
+)
+
+// Values returns all known values for PluginVisualAxisName. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (PluginVisualAxisName) Values() []PluginVisualAxisName {
+	return []PluginVisualAxisName{
+		"GROUP_BY",
+		"VALUE",
+	}
+}
+
 type PrimaryValueDisplayType string
 
 // Enum values for PrimaryValueDisplayType
@@ -3396,6 +3797,65 @@ func (PurchaseMode) Values() []PurchaseMode {
 	return []PurchaseMode{
 		"MANUAL",
 		"AUTO_PURCHASE",
+	}
+}
+
+type QAResultType string
+
+// Enum values for QAResultType
+const (
+	QAResultTypeDashboardVisual QAResultType = "DASHBOARD_VISUAL"
+	QAResultTypeGeneratedAnswer QAResultType = "GENERATED_ANSWER"
+	QAResultTypeNoAnswer        QAResultType = "NO_ANSWER"
+)
+
+// Values returns all known values for QAResultType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (QAResultType) Values() []QAResultType {
+	return []QAResultType{
+		"DASHBOARD_VISUAL",
+		"GENERATED_ANSWER",
+		"NO_ANSWER",
+	}
+}
+
+type QBusinessInsightsStatus string
+
+// Enum values for QBusinessInsightsStatus
+const (
+	QBusinessInsightsStatusEnabled  QBusinessInsightsStatus = "ENABLED"
+	QBusinessInsightsStatusDisabled QBusinessInsightsStatus = "DISABLED"
+)
+
+// Values returns all known values for QBusinessInsightsStatus. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (QBusinessInsightsStatus) Values() []QBusinessInsightsStatus {
+	return []QBusinessInsightsStatus{
+		"ENABLED",
+		"DISABLED",
+	}
+}
+
+type QSearchStatus string
+
+// Enum values for QSearchStatus
+const (
+	QSearchStatusEnabled  QSearchStatus = "ENABLED"
+	QSearchStatusDisabled QSearchStatus = "DISABLED"
+)
+
+// Values returns all known values for QSearchStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (QSearchStatus) Values() []QSearchStatus {
+	return []QSearchStatus{
+		"ENABLED",
+		"DISABLED",
 	}
 }
 
@@ -3557,6 +4017,25 @@ func (ReferenceLineValueLabelRelativePosition) Values() []ReferenceLineValueLabe
 	return []ReferenceLineValueLabelRelativePosition{
 		"BEFORE_CUSTOM_LABEL",
 		"AFTER_CUSTOM_LABEL",
+	}
+}
+
+type RefreshFailureAlertStatus string
+
+// Enum values for RefreshFailureAlertStatus
+const (
+	RefreshFailureAlertStatusEnabled  RefreshFailureAlertStatus = "ENABLED"
+	RefreshFailureAlertStatusDisabled RefreshFailureAlertStatus = "DISABLED"
+)
+
+// Values returns all known values for RefreshFailureAlertStatus. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RefreshFailureAlertStatus) Values() []RefreshFailureAlertStatus {
+	return []RefreshFailureAlertStatus{
+		"ENABLED",
+		"DISABLED",
 	}
 }
 
@@ -3856,7 +4335,8 @@ type ServiceType string
 
 // Enum values for ServiceType
 const (
-	ServiceTypeRedshift ServiceType = "REDSHIFT"
+	ServiceTypeRedshift  ServiceType = "REDSHIFT"
+	ServiceTypeQbusiness ServiceType = "QBUSINESS"
 )
 
 // Values returns all known values for ServiceType. Note that this can be expanded
@@ -3866,6 +4346,7 @@ const (
 func (ServiceType) Values() []ServiceType {
 	return []ServiceType{
 		"REDSHIFT",
+		"QBUSINESS",
 	}
 }
 
@@ -3962,6 +4443,29 @@ func (SheetControlSliderType) Values() []SheetControlSliderType {
 	return []SheetControlSliderType{
 		"SINGLE_POINT",
 		"RANGE",
+	}
+}
+
+type SheetImageScalingType string
+
+// Enum values for SheetImageScalingType
+const (
+	SheetImageScalingTypeScaleToWidth     SheetImageScalingType = "SCALE_TO_WIDTH"
+	SheetImageScalingTypeScaleToHeight    SheetImageScalingType = "SCALE_TO_HEIGHT"
+	SheetImageScalingTypeScaleToContainer SheetImageScalingType = "SCALE_TO_CONTAINER"
+	SheetImageScalingTypeScaleNone        SheetImageScalingType = "SCALE_NONE"
+)
+
+// Values returns all known values for SheetImageScalingType. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (SheetImageScalingType) Values() []SheetImageScalingType {
+	return []SheetImageScalingType{
+		"SCALE_TO_WIDTH",
+		"SCALE_TO_HEIGHT",
+		"SCALE_TO_CONTAINER",
+		"SCALE_NONE",
 	}
 }
 
@@ -4611,6 +5115,54 @@ func (TopBottomSortOrder) Values() []TopBottomSortOrder {
 	}
 }
 
+type TopicFilterAttribute string
+
+// Enum values for TopicFilterAttribute
+const (
+	TopicFilterAttributeQuicksightUser                TopicFilterAttribute = "QUICKSIGHT_USER"
+	TopicFilterAttributeQuicksightViewerOrOwner       TopicFilterAttribute = "QUICKSIGHT_VIEWER_OR_OWNER"
+	TopicFilterAttributeDirectQuicksightViewerOrOwner TopicFilterAttribute = "DIRECT_QUICKSIGHT_VIEWER_OR_OWNER"
+	TopicFilterAttributeQuicksightOwner               TopicFilterAttribute = "QUICKSIGHT_OWNER"
+	TopicFilterAttributeDirectQuicksightOwner         TopicFilterAttribute = "DIRECT_QUICKSIGHT_OWNER"
+	TopicFilterAttributeDirectQuicksightSoleOwner     TopicFilterAttribute = "DIRECT_QUICKSIGHT_SOLE_OWNER"
+	TopicFilterAttributeTopicName                     TopicFilterAttribute = "TOPIC_NAME"
+)
+
+// Values returns all known values for TopicFilterAttribute. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (TopicFilterAttribute) Values() []TopicFilterAttribute {
+	return []TopicFilterAttribute{
+		"QUICKSIGHT_USER",
+		"QUICKSIGHT_VIEWER_OR_OWNER",
+		"DIRECT_QUICKSIGHT_VIEWER_OR_OWNER",
+		"QUICKSIGHT_OWNER",
+		"DIRECT_QUICKSIGHT_OWNER",
+		"DIRECT_QUICKSIGHT_SOLE_OWNER",
+		"TOPIC_NAME",
+	}
+}
+
+type TopicFilterOperator string
+
+// Enum values for TopicFilterOperator
+const (
+	TopicFilterOperatorStringEquals TopicFilterOperator = "StringEquals"
+	TopicFilterOperatorStringLike   TopicFilterOperator = "StringLike"
+)
+
+// Values returns all known values for TopicFilterOperator. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (TopicFilterOperator) Values() []TopicFilterOperator {
+	return []TopicFilterOperator{
+		"StringEquals",
+		"StringLike",
+	}
+}
+
 type TopicIRFilterFunction string
 
 // Enum values for TopicIRFilterFunction
@@ -4838,6 +5390,25 @@ func (TopicUserExperienceVersion) Values() []TopicUserExperienceVersion {
 	return []TopicUserExperienceVersion{
 		"LEGACY",
 		"NEW_READER_EXPERIENCE",
+	}
+}
+
+type TransposedColumnType string
+
+// Enum values for TransposedColumnType
+const (
+	TransposedColumnTypeRowHeaderColumn TransposedColumnType = "ROW_HEADER_COLUMN"
+	TransposedColumnTypeValueColumn     TransposedColumnType = "VALUE_COLUMN"
+)
+
+// Values returns all known values for TransposedColumnType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (TransposedColumnType) Values() []TransposedColumnType {
+	return []TransposedColumnType{
+		"ROW_HEADER_COLUMN",
+		"VALUE_COLUMN",
 	}
 }
 

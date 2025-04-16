@@ -107,6 +107,9 @@ func (c *Client) addOperationDescribeAppsMiddlewares(stack *middleware.Stack, op
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -125,6 +128,9 @@ func (c *Client) addOperationDescribeAppsMiddlewares(stack *middleware.Stack, op
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeApps(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -141,6 +147,18 @@ func (c *Client) addOperationDescribeAppsMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -312,6 +330,9 @@ func appExistsStateRetryable(ctx context.Context, input *DescribeAppsInput, outp
 		return false, fmt.Errorf("waiter state transitioned to Failure")
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 

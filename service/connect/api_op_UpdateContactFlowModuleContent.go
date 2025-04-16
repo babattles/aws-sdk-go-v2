@@ -13,9 +13,8 @@ import (
 // Updates specified flow module for the specified Amazon Connect instance.
 //
 // Use the $SAVED alias in the request to describe the SAVED content of a Flow.
-// For example, arn:aws:.../contact-flow/{id}:$SAVED . Once a contact flow is
-// published, $SAVED needs to be supplied to view saved content that has not been
-// published.
+// For example, arn:aws:.../contact-flow/{id}:$SAVED . After a flow is published,
+// $SAVED needs to be supplied to view saved content that has not been published.
 func (c *Client) UpdateContactFlowModuleContent(ctx context.Context, params *UpdateContactFlowModuleContentInput, optFns ...func(*Options)) (*UpdateContactFlowModuleContentOutput, error) {
 	if params == nil {
 		params = &UpdateContactFlowModuleContentInput{}
@@ -106,6 +105,9 @@ func (c *Client) addOperationUpdateContactFlowModuleContentMiddlewares(stack *mi
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -122,6 +124,9 @@ func (c *Client) addOperationUpdateContactFlowModuleContentMiddlewares(stack *mi
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateContactFlowModuleContentValidationMiddleware(stack); err != nil {
@@ -143,6 +148,18 @@ func (c *Client) addOperationUpdateContactFlowModuleContentMiddlewares(stack *mi
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -44,7 +44,7 @@ type DescribeDomainOutput struct {
 	// PublicInternetOnly .
 	//
 	//   - PublicInternetOnly - Non-EFS traffic is through a VPC managed by Amazon
-	//   SageMaker, which allows direct internet access
+	//   SageMaker AI, which allows direct internet access
 	//
 	//   - VpcOnly - All traffic is through the specified VPC and subnets
 	AppNetworkAccessType types.AppNetworkAccessType
@@ -61,7 +61,7 @@ type DescribeDomainOutput struct {
 	// The creation time.
 	CreationTime *time.Time
 
-	// The default settings used to create a space.
+	// The default settings for shared spaces that users create in the domain.
 	DefaultSpaceSettings *types.DefaultSpaceSettings
 
 	// Settings which are applied to UserProfiles in this domain if settings are not
@@ -102,7 +102,7 @@ type DescribeDomainOutput struct {
 	// apps and the RStudioServerPro app.
 	SecurityGroupIdForDomainBoundary *string
 
-	// The ARN of the application managed by SageMaker in IAM Identity Center. This
+	// The ARN of the application managed by SageMaker AI in IAM Identity Center. This
 	// value is only returned for domains created after October 1, 2023.
 	SingleSignOnApplicationArn *string
 
@@ -114,6 +114,9 @@ type DescribeDomainOutput struct {
 
 	// The VPC subnets that the domain uses for communication.
 	SubnetIds []string
+
+	// Indicates whether custom tag propagation is supported for the domain.
+	TagPropagation types.TagPropagation
 
 	// The domain's URL.
 	Url *string
@@ -171,6 +174,9 @@ func (c *Client) addOperationDescribeDomainMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -187,6 +193,9 @@ func (c *Client) addOperationDescribeDomainMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeDomainValidationMiddleware(stack); err != nil {
@@ -208,6 +217,18 @@ func (c *Client) addOperationDescribeDomainMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

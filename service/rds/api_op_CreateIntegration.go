@@ -55,11 +55,10 @@ type CreateIntegrationInput struct {
 	// [Encryption context]: https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#encrypt_context
 	AdditionalEncryptionContext map[string]string
 
-	// Data filtering options for the integration. For more information, see [Data filtering for Aurora zero-ETL integrations with Amazon Redshift].
-	//
-	// Valid for: Integrations with Aurora MySQL source DB clusters only
+	// Data filtering options for the integration. For more information, see [Data filtering for Aurora zero-ETL integrations with Amazon Redshift] or [Data filtering for Amazon RDS zero-ETL integrations with Amazon Redshift].
 	//
 	// [Data filtering for Aurora zero-ETL integrations with Amazon Redshift]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/zero-etl.filtering.html
+	// [Data filtering for Amazon RDS zero-ETL integrations with Amazon Redshift]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/zero-etl.filtering.html
 	DataFilter *string
 
 	// A description of the integration.
@@ -182,6 +181,9 @@ func (c *Client) addOperationCreateIntegrationMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -198,6 +200,9 @@ func (c *Client) addOperationCreateIntegrationMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateIntegrationValidationMiddleware(stack); err != nil {
@@ -219,6 +224,18 @@ func (c *Client) addOperationCreateIntegrationMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

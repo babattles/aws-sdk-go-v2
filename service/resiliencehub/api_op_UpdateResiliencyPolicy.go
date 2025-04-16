@@ -50,14 +50,14 @@ type UpdateResiliencyPolicyInput struct {
 	// resilience policy data can be stored.
 	DataLocationConstraint types.DataLocationConstraint
 
-	// The type of resiliency policy to be created, including the recovery time
-	// objective (RTO) and recovery point objective (RPO) in seconds.
+	// Resiliency policy to be created, including the recovery time objective (RTO)
+	// and recovery point objective (RPO) in seconds.
 	Policy map[string]types.FailurePolicy
 
-	// The description for the policy.
+	// Description of the resiliency policy.
 	PolicyDescription *string
 
-	// The name of the policy
+	// Name of the resiliency policy.
 	PolicyName *string
 
 	// The tier for this resiliency policy, ranging from the highest severity (
@@ -69,8 +69,8 @@ type UpdateResiliencyPolicyInput struct {
 
 type UpdateResiliencyPolicyOutput struct {
 
-	// The type of resiliency policy that was updated, including the recovery time
-	// objective (RTO) and recovery point objective (RPO) in seconds.
+	// The resiliency policy that was updated, including the recovery time objective
+	// (RTO) and recovery point objective (RPO) in seconds.
 	//
 	// This member is required.
 	Policy *types.ResiliencyPolicy
@@ -124,6 +124,9 @@ func (c *Client) addOperationUpdateResiliencyPolicyMiddlewares(stack *middleware
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -140,6 +143,9 @@ func (c *Client) addOperationUpdateResiliencyPolicyMiddlewares(stack *middleware
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateResiliencyPolicyValidationMiddleware(stack); err != nil {
@@ -161,6 +167,18 @@ func (c *Client) addOperationUpdateResiliencyPolicyMiddlewares(stack *middleware
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

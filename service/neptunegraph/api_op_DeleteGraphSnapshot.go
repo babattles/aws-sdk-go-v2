@@ -60,7 +60,7 @@ type DeleteGraphSnapshotOutput struct {
 	//
 	// The name must contain from 1 to 63 letters, numbers, or hyphens, and its first
 	// character must be a letter. It cannot end with a hyphen or contain two
-	// consecutive hyphens.
+	// consecutive hyphens. Only lowercase letters are allowed.
 	//
 	// This member is required.
 	Name *string
@@ -126,6 +126,9 @@ func (c *Client) addOperationDeleteGraphSnapshotMiddlewares(stack *middleware.St
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -142,6 +145,9 @@ func (c *Client) addOperationDeleteGraphSnapshotMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteGraphSnapshotValidationMiddleware(stack); err != nil {
@@ -163,6 +169,18 @@ func (c *Client) addOperationDeleteGraphSnapshotMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

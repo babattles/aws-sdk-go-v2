@@ -29,11 +29,6 @@ func (c *Client) StartFHIRImportJob(ctx context.Context, params *StartFHIRImport
 
 type StartFHIRImportJobInput struct {
 
-	// Optional user provided token used for ensuring idempotency.
-	//
-	// This member is required.
-	ClientToken *string
-
 	// The Amazon Resource Name (ARN) that gives AWS HealthLake access permission.
 	//
 	// This member is required.
@@ -53,6 +48,9 @@ type StartFHIRImportJobInput struct {
 	//
 	// This member is required.
 	JobOutputDataConfig types.OutputDataConfig
+
+	// Optional user provided token used for ensuring idempotency.
+	ClientToken *string
 
 	// The name of the FHIR Import job in the StartFHIRImport job request.
 	JobName *string
@@ -124,6 +122,9 @@ func (c *Client) addOperationStartFHIRImportJobMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -140,6 +141,9 @@ func (c *Client) addOperationStartFHIRImportJobMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opStartFHIRImportJobMiddleware(stack, options); err != nil {
@@ -164,6 +168,18 @@ func (c *Client) addOperationStartFHIRImportJobMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

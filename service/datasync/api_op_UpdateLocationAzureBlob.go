@@ -11,8 +11,12 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Modifies some configurations of the Microsoft Azure Blob Storage transfer
-// location that you're using with DataSync.
+// Modifies the following configurations of the Microsoft Azure Blob Storage
+// transfer location that you're using with DataSync.
+//
+// For more information, see [Configuring DataSync transfers with Azure Blob Storage].
+//
+// [Configuring DataSync transfers with Azure Blob Storage]: https://docs.aws.amazon.com/datasync/latest/userguide/creating-azure-blob-location.html
 func (c *Client) UpdateLocationAzureBlob(ctx context.Context, params *UpdateLocationAzureBlobInput, optFns ...func(*Options)) (*UpdateLocationAzureBlobOutput, error) {
 	if params == nil {
 		params = &UpdateLocationAzureBlobInput{}
@@ -124,6 +128,9 @@ func (c *Client) addOperationUpdateLocationAzureBlobMiddlewares(stack *middlewar
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -140,6 +147,9 @@ func (c *Client) addOperationUpdateLocationAzureBlobMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateLocationAzureBlobValidationMiddleware(stack); err != nil {
@@ -161,6 +171,18 @@ func (c *Client) addOperationUpdateLocationAzureBlobMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

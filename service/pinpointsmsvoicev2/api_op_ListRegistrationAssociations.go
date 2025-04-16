@@ -11,7 +11,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Retreive all of the origination identies that are associated with a
+// Retrieve all of the origination identities that are associated with a
 // registration.
 func (c *Client) ListRegistrationAssociations(ctx context.Context, params *ListRegistrationAssociationsInput, optFns ...func(*Options)) (*ListRegistrationAssociationsOutput, error) {
 	if params == nil {
@@ -125,6 +125,9 @@ func (c *Client) addOperationListRegistrationAssociationsMiddlewares(stack *midd
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -141,6 +144,9 @@ func (c *Client) addOperationListRegistrationAssociationsMiddlewares(stack *midd
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListRegistrationAssociationsValidationMiddleware(stack); err != nil {
@@ -162,6 +168,18 @@ func (c *Client) addOperationListRegistrationAssociationsMiddlewares(stack *midd
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

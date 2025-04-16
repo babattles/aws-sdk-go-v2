@@ -47,7 +47,7 @@ type CreateFaqInput struct {
 	Name *string
 
 	// The Amazon Resource Name (ARN) of an IAM role with permission to access the S3
-	// bucket that contains the FAQs. For more information, see [IAM access roles for Amazon Kendra].
+	// bucket that contains the FAQ file. For more information, see [IAM access roles for Amazon Kendra].
 	//
 	// [IAM access roles for Amazon Kendra]: https://docs.aws.amazon.com/kendra/latest/dg/iam-roles.html
 	//
@@ -149,6 +149,9 @@ func (c *Client) addOperationCreateFaqMiddlewares(stack *middleware.Stack, optio
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -165,6 +168,9 @@ func (c *Client) addOperationCreateFaqMiddlewares(stack *middleware.Stack, optio
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateFaqMiddleware(stack, options); err != nil {
@@ -189,6 +195,18 @@ func (c *Client) addOperationCreateFaqMiddlewares(stack *middleware.Stack, optio
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

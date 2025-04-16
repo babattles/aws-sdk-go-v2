@@ -10,7 +10,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Removes tags from the specified delivery stream. Removed tags are deleted, and
+// Removes tags from the specified Firehose stream. Removed tags are deleted, and
 // you can't recover them after this operation successfully completes.
 //
 // If you specify a tag that doesn't exist, the operation ignores it.
@@ -33,7 +33,7 @@ func (c *Client) UntagDeliveryStream(ctx context.Context, params *UntagDeliveryS
 
 type UntagDeliveryStreamInput struct {
 
-	// The name of the delivery stream.
+	// The name of the Firehose stream.
 	//
 	// This member is required.
 	DeliveryStreamName *string
@@ -96,6 +96,9 @@ func (c *Client) addOperationUntagDeliveryStreamMiddlewares(stack *middleware.St
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -112,6 +115,9 @@ func (c *Client) addOperationUntagDeliveryStreamMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUntagDeliveryStreamValidationMiddleware(stack); err != nil {
@@ -133,6 +139,18 @@ func (c *Client) addOperationUntagDeliveryStreamMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

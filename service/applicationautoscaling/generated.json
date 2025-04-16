@@ -15,6 +15,7 @@
         "api_op_DescribeScalingActivities.go",
         "api_op_DescribeScalingPolicies.go",
         "api_op_DescribeScheduledActions.go",
+        "api_op_GetPredictiveScalingForecast.go",
         "api_op_ListTagsForResource.go",
         "api_op_PutScalingPolicy.go",
         "api_op_PutScheduledAction.go",
@@ -34,12 +35,13 @@
         "protocol_test.go",
         "serializers.go",
         "snapshot_test.go",
+        "sra_operation_order_test.go",
         "types/enums.go",
         "types/errors.go",
         "types/types.go",
         "validators.go"
     ],
-    "go": "1.15",
+    "go": "1.22",
     "module": "github.com/aws/aws-sdk-go-v2/service/applicationautoscaling",
     "unstable": false
 }

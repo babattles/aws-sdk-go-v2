@@ -45,6 +45,9 @@ type RestartChannelPipelinesInput struct {
 // Placeholder documentation for RestartChannelPipelinesResponse
 type RestartChannelPipelinesOutput struct {
 
+	// Anywhere settings for this channel.
+	AnywhereSettings *types.DescribeAnywhereSettings
+
 	// The unique arn of the channel.
 	Arn *string
 
@@ -54,6 +57,9 @@ type RestartChannelPipelinesOutput struct {
 	// The class for this channel. STANDARD for a channel with two pipelines or
 	// SINGLE_PIPELINE for a channel with one pipeline.
 	ChannelClass types.ChannelClass
+
+	// Requested engine version for this channel.
+	ChannelEngineVersion *types.ChannelEngineVersionResponse
 
 	// A list of destinations of the channel. For UDP outputs, there is one
 	// destination per output. For other types (HLS, for example), there is one
@@ -154,6 +160,9 @@ func (c *Client) addOperationRestartChannelPipelinesMiddlewares(stack *middlewar
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -170,6 +179,9 @@ func (c *Client) addOperationRestartChannelPipelinesMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpRestartChannelPipelinesValidationMiddleware(stack); err != nil {
@@ -191,6 +203,18 @@ func (c *Client) addOperationRestartChannelPipelinesMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

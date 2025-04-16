@@ -12,7 +12,10 @@ import (
 )
 
 // Sets up or modifies the logging configuration of a user pool. User pools can
-// export user notification logs and advanced security features user activity logs.
+// export user notification logs and, when threat protection is active,
+// user-activity logs. For more information, see [Exporting user pool logs].
+//
+// [Exporting user pool logs]: https://docs.aws.amazon.com/cognito/latest/developerguide/exporting-quotas-and-usage.html
 func (c *Client) SetLogDeliveryConfiguration(ctx context.Context, params *SetLogDeliveryConfigurationInput, optFns ...func(*Options)) (*SetLogDeliveryConfigurationOutput, error) {
 	if params == nil {
 		params = &SetLogDeliveryConfigurationInput{}
@@ -45,8 +48,7 @@ type SetLogDeliveryConfigurationInput struct {
 
 type SetLogDeliveryConfigurationOutput struct {
 
-	// The detailed activity logging configuration that you applied to the requested
-	// user pool.
+	// The logging configuration that you applied to the requested user pool.
 	LogDeliveryConfiguration *types.LogDeliveryConfigurationType
 
 	// Metadata pertaining to the operation's result.
@@ -98,6 +100,9 @@ func (c *Client) addOperationSetLogDeliveryConfigurationMiddlewares(stack *middl
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -114,6 +119,9 @@ func (c *Client) addOperationSetLogDeliveryConfigurationMiddlewares(stack *middl
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpSetLogDeliveryConfigurationValidationMiddleware(stack); err != nil {
@@ -135,6 +143,18 @@ func (c *Client) addOperationSetLogDeliveryConfigurationMiddlewares(stack *middl
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

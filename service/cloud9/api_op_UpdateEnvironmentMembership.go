@@ -13,6 +13,11 @@ import (
 
 // Changes the settings of an existing environment member for an Cloud9
 // development environment.
+//
+// Cloud9 is no longer available to new customers. Existing customers of Cloud9
+// can continue to use the service as normal. [Learn more"]
+//
+// [Learn more"]: http://aws.amazon.com/blogs/devops/how-to-migrate-from-aws-cloud9-to-aws-ide-toolkits-or-aws-cloudshell/
 func (c *Client) UpdateEnvironmentMembership(ctx context.Context, params *UpdateEnvironmentMembershipInput, optFns ...func(*Options)) (*UpdateEnvironmentMembershipOutput, error) {
 	if params == nil {
 		params = &UpdateEnvironmentMembershipInput{}
@@ -109,6 +114,9 @@ func (c *Client) addOperationUpdateEnvironmentMembershipMiddlewares(stack *middl
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -125,6 +133,9 @@ func (c *Client) addOperationUpdateEnvironmentMembershipMiddlewares(stack *middl
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateEnvironmentMembershipValidationMiddleware(stack); err != nil {
@@ -146,6 +157,18 @@ func (c *Client) addOperationUpdateEnvironmentMembershipMiddlewares(stack *middl
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

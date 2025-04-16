@@ -1,3 +1,164 @@
+# v1.23.2 (2025-04-03)
+
+* No change notes available for this release.
+
+# v1.23.1 (2025-03-04.2)
+
+* **Bug Fix**: Add assurance test for operation order.
+
+# v1.23.0 (2025-03-04)
+
+* **Feature**: Adds support for the ingestion of audio and video files by Q Business, which can be configured with the mediaExtractionConfiguration parameter.
+
+# v1.22.0 (2025-02-27)
+
+* **Feature**: This release supports deleting attachments from conversations.
+* **Feature**: Track credential providers via User-Agent Feature ids
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.21.3 (2025-02-18)
+
+* **Bug Fix**: Bump go version to 1.22
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.21.2 (2025-02-14)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.21.1 (2025-02-05)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.21.0 (2025-02-04)
+
+* **Feature**: Adds functionality to enable/disable a new Q Business Chat orchestration feature. If enabled, Q Business can orchestrate over datasources and plugins without the need for customers to select specific chat modes.
+
+# v1.20.1 (2025-01-31)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.20.0 (2025-01-30)
+
+* **Feature**: Added APIs to manage QBusiness user subscriptions
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.19.7 (2025-01-24)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+* **Dependency Update**: Upgrade to smithy-go v1.22.2.
+
+# v1.19.6 (2025-01-17)
+
+* **Bug Fix**: Fix bug where credentials weren't refreshed during retry loop.
+
+# v1.19.5 (2025-01-15)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.19.4 (2025-01-14)
+
+* No change notes available for this release.
+
+# v1.19.3 (2025-01-09)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.19.2 (2025-01-08)
+
+* No change notes available for this release.
+
+# v1.19.1 (2024-12-19)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.19.0 (2024-12-05)
+
+* **Feature**: This release removes the deprecated UserId and UserGroups fields from SearchRelevantContent api's request parameters.
+
+# v1.18.0 (2024-12-03.2)
+
+* **Feature**: Amazon Q Business now supports customization options for your web experience, 11 new Plugins, and QuickSight support. Amazon Q index allows software providers to enrich their native generative AI experiences with their customer's enterprise knowledge and user context spanning multiple applications.
+
+# v1.17.0 (2024-12-02)
+
+* **Feature**: Amazon Q Business now supports capabilities to extract insights and answer questions from visual elements embedded within documents, a browser extension for Google Chrome, Mozilla Firefox, and Microsoft Edge, and attachments across conversations.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.16.1 (2024-11-18)
+
+* **Dependency Update**: Update to smithy-go v1.22.1.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.16.0 (2024-11-08)
+
+* **Feature**: Adds S3 path option to pass group member list for PutGroup API.
+
+# v1.15.3 (2024-11-07)
+
+* **Bug Fix**: Adds case-insensitive handling of error message fields in service responses
+
+# v1.15.2 (2024-11-06)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.15.1 (2024-10-28)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.15.0 (2024-10-24)
+
+* **Feature**: Add a new field in chat response. This field can be used to support nested schemas in array fields
+
+# v1.14.0 (2024-10-15)
+
+* **Feature**: Amazon Q Business now supports embedding the Amazon Q Business web experience on third-party websites.
+
+# v1.13.2 (2024-10-08)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.13.1 (2024-10-07)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.13.0 (2024-10-04)
+
+* **Feature**: Add support for HTTP client metrics.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.12.4 (2024-10-03)
+
+* No change notes available for this release.
+
+# v1.12.3 (2024-09-27)
+
+* No change notes available for this release.
+
+# v1.12.2 (2024-09-25)
+
+* No change notes available for this release.
+
+# v1.12.1 (2024-09-23)
+
+* No change notes available for this release.
+
+# v1.12.0 (2024-09-20)
+
+* **Feature**: Add tracing and metrics support to service clients.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.11.3 (2024-09-17)
+
+* **Bug Fix**: **BREAKFIX**: Only generate AccountIDEndpointMode config for services that use it. This is a compiler break, but removes no actual functionality, as no services currently use the account ID in endpoint resolution.
+
+# v1.11.2 (2024-09-04)
+
+* No change notes available for this release.
+
+# v1.11.1 (2024-09-03)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
 # v1.11.0 (2024-08-23)
 
 * **Feature**: Amazon QBusiness: Enable support for SAML and OIDC federation through AWS IAM Identity Provider integration.

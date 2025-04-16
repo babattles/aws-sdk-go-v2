@@ -16,6 +16,9 @@ import (
 // access Amazon S3. In order to vend such credentials, Lake Formation assumes the
 // role associated with a registered location, for example an Amazon S3 bucket,
 // with a scope down policy which restricts the access to a single prefix.
+//
+// To call this API, the role that the service assumes must have
+// lakeformation:GetDataAccess permission on the resource.
 func (c *Client) GetTemporaryGlueTableCredentials(ctx context.Context, params *GetTemporaryGlueTableCredentialsInput, optFns ...func(*Options)) (*GetTemporaryGlueTableCredentialsOutput, error) {
 	if params == nil {
 		params = &GetTemporaryGlueTableCredentialsInput{}
@@ -132,6 +135,9 @@ func (c *Client) addOperationGetTemporaryGlueTableCredentialsMiddlewares(stack *
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -148,6 +154,9 @@ func (c *Client) addOperationGetTemporaryGlueTableCredentialsMiddlewares(stack *
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetTemporaryGlueTableCredentialsValidationMiddleware(stack); err != nil {
@@ -169,6 +178,18 @@ func (c *Client) addOperationGetTemporaryGlueTableCredentialsMiddlewares(stack *
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

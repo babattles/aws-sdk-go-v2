@@ -17,9 +17,9 @@ import (
 // CreateKeyspace is an asynchronous operation. You can monitor the creation
 // status of the new keyspace by using the GetKeyspace operation.
 //
-// For more information, see [Creating keyspaces] in the Amazon Keyspaces Developer Guide.
+// For more information, see [Create a keyspace] in the Amazon Keyspaces Developer Guide.
 //
-// [Creating keyspaces]: https://docs.aws.amazon.com/keyspaces/latest/devguide/working-with-keyspaces.html#keyspaces-create
+// [Create a keyspace]: https://docs.aws.amazon.com/keyspaces/latest/devguide/getting-started.keyspaces.html
 func (c *Client) CreateKeyspace(ctx context.Context, params *CreateKeyspaceInput, optFns ...func(*Options)) (*CreateKeyspaceOutput, error) {
 	if params == nil {
 		params = &CreateKeyspaceInput{}
@@ -48,8 +48,7 @@ type CreateKeyspaceInput struct {
 	//
 	//   - regionList - if the replicationStrategy is MULTI_REGION , the regionList
 	//   requires the current Region and at least one additional Amazon Web Services
-	//   Region where the keyspace is going to be replicated in. The maximum number of
-	//   supported replication Regions including the current Region is six.
+	//   Region where the keyspace is going to be replicated in.
 	ReplicationSpecification *types.ReplicationSpecification
 
 	// A list of key-value pair tags to be attached to the keyspace.
@@ -119,6 +118,9 @@ func (c *Client) addOperationCreateKeyspaceMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -135,6 +137,9 @@ func (c *Client) addOperationCreateKeyspaceMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateKeyspaceValidationMiddleware(stack); err != nil {
@@ -156,6 +161,18 @@ func (c *Client) addOperationCreateKeyspaceMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

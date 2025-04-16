@@ -27,6 +27,22 @@ type AcceptChoice struct {
 	noSmithyDocumentSerde
 }
 
+// The accepted asset scope.
+type AcceptedAssetScope struct {
+
+	// The asset ID of the accepted asset scope.
+	//
+	// This member is required.
+	AssetId *string
+
+	// The filter IDs of the accepted asset scope.
+	//
+	// This member is required.
+	FilterIds []string
+
+	noSmithyDocumentSerde
+}
+
 // Specifies the rule and the threshold under which a prediction can be accepted.
 type AcceptRule struct {
 
@@ -57,6 +73,25 @@ type ActionParametersMemberAwsConsoleLink struct {
 }
 
 func (*ActionParametersMemberAwsConsoleLink) isActionParameters() {}
+
+// The details of the policy grant.
+type AddToProjectMemberPoolPolicyGrantDetail struct {
+
+	// Specifies whether the policy grant is applied to child domain units.
+	IncludeChildDomainUnits *bool
+
+	noSmithyDocumentSerde
+}
+
+// The grant filter for all domain units.
+type AllDomainUnitsGrantFilter struct {
+	noSmithyDocumentSerde
+}
+
+// The all users grant filter.
+type AllUsersGrantFilter struct {
+	noSmithyDocumentSerde
+}
 
 // The configuration details of the asset filter.
 //
@@ -354,6 +389,30 @@ type AssetRevision struct {
 	noSmithyDocumentSerde
 }
 
+// The asset scope.
+type AssetScope struct {
+
+	// The asset ID of the asset scope.
+	//
+	// This member is required.
+	AssetId *string
+
+	// The filter IDs of the asset scope.
+	//
+	// This member is required.
+	FilterIds []string
+
+	// The status of the asset scope.
+	//
+	// This member is required.
+	Status *string
+
+	// The error message of the asset scope.
+	ErrorMessage *string
+
+	noSmithyDocumentSerde
+}
+
 // The name map for assets.
 type AssetTargetNameMap struct {
 
@@ -423,11 +482,173 @@ type AssetTypeItem struct {
 	noSmithyDocumentSerde
 }
 
+// The asset type for the rule details.
+type AssetTypesForRule struct {
+
+	// The selection mode for the rule.
+	//
+	// This member is required.
+	SelectionMode RuleScopeSelectionMode
+
+	// The specific asset types that are included in the rule.
+	SpecificAssetTypes []string
+
+	noSmithyDocumentSerde
+}
+
+// The Amazon Athena properties of a connection.
+type AthenaPropertiesInput struct {
+
+	// The Amazon Athena workgroup name of a connection.
+	WorkgroupName *string
+
+	noSmithyDocumentSerde
+}
+
+// The Amazon Athena properties of a connection.
+type AthenaPropertiesOutput struct {
+
+	// The Amazon Athena workgroup name of a connection.
+	WorkgroupName *string
+
+	noSmithyDocumentSerde
+}
+
+// The Amazon Athena properties patch of a connection.
+type AthenaPropertiesPatch struct {
+
+	// The Amazon Athena workgroup name of a connection.
+	WorkgroupName *string
+
+	noSmithyDocumentSerde
+}
+
+// The authentication configuration of a connection.
+type AuthenticationConfiguration struct {
+
+	// The authentication type of a connection.
+	AuthenticationType AuthenticationType
+
+	// The oAuth2 properties of a connection.
+	OAuth2Properties *OAuth2Properties
+
+	// The secret ARN of a connection.
+	SecretArn *string
+
+	noSmithyDocumentSerde
+}
+
+// The authentication configuration of a connection.
+type AuthenticationConfigurationInput struct {
+
+	// The authentication type of a connection.
+	AuthenticationType AuthenticationType
+
+	// The basic authentication credentials of a connection.
+	BasicAuthenticationCredentials *BasicAuthenticationCredentials
+
+	// The custom authentication credentials of a connection.
+	CustomAuthenticationCredentials map[string]string
+
+	// The KMS key ARN of a connection.
+	KmsKeyArn *string
+
+	// The oAuth2 properties of a connection.
+	OAuth2Properties *OAuth2Properties
+
+	// The secret ARN of a connection.
+	SecretArn *string
+
+	noSmithyDocumentSerde
+}
+
+// The authentication configuration patch of a connection.
+type AuthenticationConfigurationPatch struct {
+
+	// The basic authentication credentials of a connection.
+	BasicAuthenticationCredentials *BasicAuthenticationCredentials
+
+	// The secret ARN of a connection.
+	SecretArn *string
+
+	noSmithyDocumentSerde
+}
+
+// The authorization code properties of a connection.
+type AuthorizationCodeProperties struct {
+
+	// The authorization code of a connection.
+	AuthorizationCode *string
+
+	// The redirect URI of a connection.
+	RedirectUri *string
+
+	noSmithyDocumentSerde
+}
+
+// The account ID of a project.
+//
+// The following types satisfy this interface:
+//
+//	AwsAccountMemberAwsAccountId
+//	AwsAccountMemberAwsAccountIdPath
+type AwsAccount interface {
+	isAwsAccount()
+}
+
+// The account ID of a project.
+type AwsAccountMemberAwsAccountId struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*AwsAccountMemberAwsAccountId) isAwsAccount() {}
+
+// The account ID path of a project.
+type AwsAccountMemberAwsAccountIdPath struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*AwsAccountMemberAwsAccountIdPath) isAwsAccount() {}
+
 // The parameters of the console link specified as part of the environment action.
 type AwsConsoleLinkParameters struct {
 
 	// The URI of the console link specified as part of the environment action.
 	Uri *string
+
+	noSmithyDocumentSerde
+}
+
+// The location of a project.
+type AwsLocation struct {
+
+	// The access role of a connection.
+	AccessRole *string
+
+	// The account ID of a connection.
+	AwsAccountId *string
+
+	// The Region of a connection.
+	AwsRegion *string
+
+	// The IAM connection ID of a connection.
+	IamConnectionId *string
+
+	noSmithyDocumentSerde
+}
+
+// The basic authentication credentials of a connection.
+type BasicAuthenticationCredentials struct {
+
+	// The password for a connection.
+	Password *string
+
+	// The user name for the connecion.
+	UserName *string
 
 	noSmithyDocumentSerde
 }
@@ -490,6 +711,351 @@ type ConfigurableEnvironmentAction struct {
 	// The authentication type of a configurable action of a Amazon DataZone
 	// environment.
 	Auth ConfigurableActionTypeAuthorization
+
+	noSmithyDocumentSerde
+}
+
+// The credentials of a connection.
+type ConnectionCredentials struct {
+
+	// The access key ID of a connection.
+	AccessKeyId *string
+
+	// The expiration of the connection credentials.
+	Expiration *time.Time
+
+	// The secret access key of a connection.
+	SecretAccessKey *string
+
+	// The session token of a connection credentials.
+	SessionToken *string
+
+	noSmithyDocumentSerde
+}
+
+// The properties of a connection.
+//
+// The following types satisfy this interface:
+//
+//	ConnectionPropertiesInputMemberAthenaProperties
+//	ConnectionPropertiesInputMemberGlueProperties
+//	ConnectionPropertiesInputMemberHyperPodProperties
+//	ConnectionPropertiesInputMemberIamProperties
+//	ConnectionPropertiesInputMemberRedshiftProperties
+//	ConnectionPropertiesInputMemberSparkEmrProperties
+//	ConnectionPropertiesInputMemberSparkGlueProperties
+type ConnectionPropertiesInput interface {
+	isConnectionPropertiesInput()
+}
+
+// The Amazon Athena properties of a connection.
+type ConnectionPropertiesInputMemberAthenaProperties struct {
+	Value AthenaPropertiesInput
+
+	noSmithyDocumentSerde
+}
+
+func (*ConnectionPropertiesInputMemberAthenaProperties) isConnectionPropertiesInput() {}
+
+// The Amazon Web Services Glue properties of a connection.
+type ConnectionPropertiesInputMemberGlueProperties struct {
+	Value GluePropertiesInput
+
+	noSmithyDocumentSerde
+}
+
+func (*ConnectionPropertiesInputMemberGlueProperties) isConnectionPropertiesInput() {}
+
+// The hyper pod properties of a connection.
+type ConnectionPropertiesInputMemberHyperPodProperties struct {
+	Value HyperPodPropertiesInput
+
+	noSmithyDocumentSerde
+}
+
+func (*ConnectionPropertiesInputMemberHyperPodProperties) isConnectionPropertiesInput() {}
+
+// The IAM properties of a connection.
+type ConnectionPropertiesInputMemberIamProperties struct {
+	Value IamPropertiesInput
+
+	noSmithyDocumentSerde
+}
+
+func (*ConnectionPropertiesInputMemberIamProperties) isConnectionPropertiesInput() {}
+
+// The Amazon Redshift properties of a connection.
+type ConnectionPropertiesInputMemberRedshiftProperties struct {
+	Value RedshiftPropertiesInput
+
+	noSmithyDocumentSerde
+}
+
+func (*ConnectionPropertiesInputMemberRedshiftProperties) isConnectionPropertiesInput() {}
+
+// The Spark EMR properties of a connection.
+type ConnectionPropertiesInputMemberSparkEmrProperties struct {
+	Value SparkEmrPropertiesInput
+
+	noSmithyDocumentSerde
+}
+
+func (*ConnectionPropertiesInputMemberSparkEmrProperties) isConnectionPropertiesInput() {}
+
+// The Spark Amazon Web Services Glue properties of a connection.
+type ConnectionPropertiesInputMemberSparkGlueProperties struct {
+	Value SparkGluePropertiesInput
+
+	noSmithyDocumentSerde
+}
+
+func (*ConnectionPropertiesInputMemberSparkGlueProperties) isConnectionPropertiesInput() {}
+
+// The properties of a connection.
+//
+// The following types satisfy this interface:
+//
+//	ConnectionPropertiesOutputMemberAthenaProperties
+//	ConnectionPropertiesOutputMemberGlueProperties
+//	ConnectionPropertiesOutputMemberHyperPodProperties
+//	ConnectionPropertiesOutputMemberIamProperties
+//	ConnectionPropertiesOutputMemberRedshiftProperties
+//	ConnectionPropertiesOutputMemberSparkEmrProperties
+//	ConnectionPropertiesOutputMemberSparkGlueProperties
+type ConnectionPropertiesOutput interface {
+	isConnectionPropertiesOutput()
+}
+
+// The Amazon Athena properties of a connection.
+type ConnectionPropertiesOutputMemberAthenaProperties struct {
+	Value AthenaPropertiesOutput
+
+	noSmithyDocumentSerde
+}
+
+func (*ConnectionPropertiesOutputMemberAthenaProperties) isConnectionPropertiesOutput() {}
+
+// The Amazon Web Services Glue properties of a connection.
+type ConnectionPropertiesOutputMemberGlueProperties struct {
+	Value GluePropertiesOutput
+
+	noSmithyDocumentSerde
+}
+
+func (*ConnectionPropertiesOutputMemberGlueProperties) isConnectionPropertiesOutput() {}
+
+// The hyper pod properties of a connection.
+type ConnectionPropertiesOutputMemberHyperPodProperties struct {
+	Value HyperPodPropertiesOutput
+
+	noSmithyDocumentSerde
+}
+
+func (*ConnectionPropertiesOutputMemberHyperPodProperties) isConnectionPropertiesOutput() {}
+
+// The IAM properties of a connection.
+type ConnectionPropertiesOutputMemberIamProperties struct {
+	Value IamPropertiesOutput
+
+	noSmithyDocumentSerde
+}
+
+func (*ConnectionPropertiesOutputMemberIamProperties) isConnectionPropertiesOutput() {}
+
+// The Amazon Redshift properties of a connection.
+type ConnectionPropertiesOutputMemberRedshiftProperties struct {
+	Value RedshiftPropertiesOutput
+
+	noSmithyDocumentSerde
+}
+
+func (*ConnectionPropertiesOutputMemberRedshiftProperties) isConnectionPropertiesOutput() {}
+
+// The Spark EMR properties of a connection.
+type ConnectionPropertiesOutputMemberSparkEmrProperties struct {
+	Value SparkEmrPropertiesOutput
+
+	noSmithyDocumentSerde
+}
+
+func (*ConnectionPropertiesOutputMemberSparkEmrProperties) isConnectionPropertiesOutput() {}
+
+// The Spark Amazon Web Services Glue properties of a connection.
+type ConnectionPropertiesOutputMemberSparkGlueProperties struct {
+	Value SparkGluePropertiesOutput
+
+	noSmithyDocumentSerde
+}
+
+func (*ConnectionPropertiesOutputMemberSparkGlueProperties) isConnectionPropertiesOutput() {}
+
+// The connection properties patch.
+//
+// The following types satisfy this interface:
+//
+//	ConnectionPropertiesPatchMemberAthenaProperties
+//	ConnectionPropertiesPatchMemberGlueProperties
+//	ConnectionPropertiesPatchMemberIamProperties
+//	ConnectionPropertiesPatchMemberRedshiftProperties
+//	ConnectionPropertiesPatchMemberSparkEmrProperties
+type ConnectionPropertiesPatch interface {
+	isConnectionPropertiesPatch()
+}
+
+// The Amazon Athena properties of a connection properties patch.
+type ConnectionPropertiesPatchMemberAthenaProperties struct {
+	Value AthenaPropertiesPatch
+
+	noSmithyDocumentSerde
+}
+
+func (*ConnectionPropertiesPatchMemberAthenaProperties) isConnectionPropertiesPatch() {}
+
+// The Amazon Web Services Glue properties of a connection properties patch.
+type ConnectionPropertiesPatchMemberGlueProperties struct {
+	Value GluePropertiesPatch
+
+	noSmithyDocumentSerde
+}
+
+func (*ConnectionPropertiesPatchMemberGlueProperties) isConnectionPropertiesPatch() {}
+
+// The IAM properties of a connection properties patch.
+type ConnectionPropertiesPatchMemberIamProperties struct {
+	Value IamPropertiesPatch
+
+	noSmithyDocumentSerde
+}
+
+func (*ConnectionPropertiesPatchMemberIamProperties) isConnectionPropertiesPatch() {}
+
+// The Amazon Redshift properties of a connection properties patch.
+type ConnectionPropertiesPatchMemberRedshiftProperties struct {
+	Value RedshiftPropertiesPatch
+
+	noSmithyDocumentSerde
+}
+
+func (*ConnectionPropertiesPatchMemberRedshiftProperties) isConnectionPropertiesPatch() {}
+
+// The Spark EMR properties of a connection properties patch.
+type ConnectionPropertiesPatchMemberSparkEmrProperties struct {
+	Value SparkEmrPropertiesPatch
+
+	noSmithyDocumentSerde
+}
+
+func (*ConnectionPropertiesPatchMemberSparkEmrProperties) isConnectionPropertiesPatch() {}
+
+// The summary of a connection.
+type ConnectionSummary struct {
+
+	// The ID of a connection.
+	//
+	// This member is required.
+	ConnectionId *string
+
+	// The domain ID of a connection.
+	//
+	// This member is required.
+	DomainId *string
+
+	// The domain unit ID of a connection.
+	//
+	// This member is required.
+	DomainUnitId *string
+
+	// The connection name.
+	//
+	// This member is required.
+	Name *string
+
+	// The connection physical endpoints.
+	//
+	// This member is required.
+	PhysicalEndpoints []PhysicalEndpoint
+
+	// The connection type.
+	//
+	// This member is required.
+	Type ConnectionType
+
+	// The environment ID of a connection.
+	EnvironmentId *string
+
+	// The connection project ID.
+	ProjectId *string
+
+	// The connection props.
+	Props ConnectionPropertiesOutput
+
+	noSmithyDocumentSerde
+}
+
+// The details of the policy grant.
+type CreateAssetTypePolicyGrantDetail struct {
+
+	// Specifies whether the policy grant is applied to child domain units.
+	IncludeChildDomainUnits *bool
+
+	noSmithyDocumentSerde
+}
+
+// The details of the policy grant.
+type CreateDomainUnitPolicyGrantDetail struct {
+
+	// Specifies whether the policy grant is applied to child domain units.
+	IncludeChildDomainUnits *bool
+
+	noSmithyDocumentSerde
+}
+
+// The details of the policy grant.
+type CreateEnvironmentProfilePolicyGrantDetail struct {
+
+	// The ID of the domain unit.
+	DomainUnitId *string
+
+	noSmithyDocumentSerde
+}
+
+// The details of the policy grant.
+type CreateFormTypePolicyGrantDetail struct {
+
+	// Specifies whether the policy grant is applied to child domain units.
+	IncludeChildDomainUnits *bool
+
+	noSmithyDocumentSerde
+}
+
+// The details of the policy grant.
+type CreateGlossaryPolicyGrantDetail struct {
+
+	// Specifies whether the policy grant is applied to child domain units.
+	IncludeChildDomainUnits *bool
+
+	noSmithyDocumentSerde
+}
+
+// Specifies whether to create a project from project profile policy grant details.
+type CreateProjectFromProjectProfilePolicyGrantDetail struct {
+
+	// Specifies whether to include child domain units when creating a project from
+	// project profile policy grant details
+	IncludeChildDomainUnits *bool
+
+	// Specifies project profiles when creating a project from project profile policy
+	// grant details
+	ProjectProfiles []string
+
+	noSmithyDocumentSerde
+}
+
+// The details of the policy grant.
+type CreateProjectPolicyGrantDetail struct {
+
+	// Specifies whether the policy grant is applied to child domain units.
+	IncludeChildDomainUnits *bool
 
 	noSmithyDocumentSerde
 }
@@ -696,6 +1262,7 @@ type DataProductRevision struct {
 //
 //	DataSourceConfigurationInputMemberGlueRunConfiguration
 //	DataSourceConfigurationInputMemberRedshiftRunConfiguration
+//	DataSourceConfigurationInputMemberSageMakerRunConfiguration
 type DataSourceConfigurationInput interface {
 	isDataSourceConfigurationInput()
 }
@@ -718,12 +1285,23 @@ type DataSourceConfigurationInputMemberRedshiftRunConfiguration struct {
 
 func (*DataSourceConfigurationInputMemberRedshiftRunConfiguration) isDataSourceConfigurationInput() {}
 
+// The Amazon SageMaker run configuration.
+type DataSourceConfigurationInputMemberSageMakerRunConfiguration struct {
+	Value SageMakerRunConfigurationInput
+
+	noSmithyDocumentSerde
+}
+
+func (*DataSourceConfigurationInputMemberSageMakerRunConfiguration) isDataSourceConfigurationInput() {
+}
+
 // The configuration of the data source.
 //
 // The following types satisfy this interface:
 //
 //	DataSourceConfigurationOutputMemberGlueRunConfiguration
 //	DataSourceConfigurationOutputMemberRedshiftRunConfiguration
+//	DataSourceConfigurationOutputMemberSageMakerRunConfiguration
 type DataSourceConfigurationOutput interface {
 	isDataSourceConfigurationOutput()
 }
@@ -745,6 +1323,16 @@ type DataSourceConfigurationOutputMemberRedshiftRunConfiguration struct {
 }
 
 func (*DataSourceConfigurationOutputMemberRedshiftRunConfiguration) isDataSourceConfigurationOutput() {
+}
+
+// The Amazon SageMaker run configuration.
+type DataSourceConfigurationOutputMemberSageMakerRunConfiguration struct {
+	Value SageMakerRunConfigurationOutput
+
+	noSmithyDocumentSerde
+}
+
+func (*DataSourceConfigurationOutputMemberSageMakerRunConfiguration) isDataSourceConfigurationOutput() {
 }
 
 // The details of the error message that is returned if the operation cannot be
@@ -809,8 +1397,20 @@ type DataSourceRunActivity struct {
 	// successfully completed.
 	ErrorMessage *DataSourceErrorMessage
 
+	// The data lineage summary.
+	LineageSummary *LineageInfo
+
 	// The technical description included in the data source run activity.
 	TechnicalDescription *string
+
+	noSmithyDocumentSerde
+}
+
+// The run lineage summary of a data source.
+type DataSourceRunLineageSummary struct {
+
+	// The import status that's part of the run lineage summary of a data source.
+	ImportStatus LineageImportStatus
 
 	noSmithyDocumentSerde
 }
@@ -857,6 +1457,9 @@ type DataSourceRunSummary struct {
 	// successfully completed.
 	ErrorMessage *DataSourceErrorMessage
 
+	// The run lineage summary of a data source.
+	LineageSummary *DataSourceRunLineageSummary
+
 	// The asset statistics from the data source run.
 	RunStatisticsForAssets *RunStatisticsForAssets
 
@@ -882,11 +1485,6 @@ type DataSourceSummary struct {
 	// This member is required.
 	DomainId *string
 
-	// The ID of the environment in which the data source exists.
-	//
-	// This member is required.
-	EnvironmentId *string
-
 	// The name of the data source.
 	//
 	// This member is required.
@@ -902,11 +1500,20 @@ type DataSourceSummary struct {
 	// This member is required.
 	Type *string
 
+	// The connection ID that's part of the data source summary.
+	ConnectionId *string
+
 	// The timestamp of when the data source was created.
 	CreatedAt *time.Time
 
+	// The data source description.
+	Description *string
+
 	// Specifies whether the data source is enabled.
 	EnableSetting EnableSetting
+
+	// The ID of the environment in which the data source exists.
+	EnvironmentId *string
 
 	// The count of the assets created during the last data source run.
 	LastRunAssetCount *int32
@@ -1014,11 +1621,140 @@ type DomainSummary struct {
 	// A description of an Amazon DataZone domain.
 	Description *string
 
+	// The domain version.
+	DomainVersion DomainVersion
+
 	// A timestamp of when a Amazon DataZone domain was last updated.
 	LastUpdatedAt *time.Time
 
 	// The data portal URL for the Amazon DataZone domain.
 	PortalUrl *string
+
+	noSmithyDocumentSerde
+}
+
+// The domain unit filter of the project grant filter.
+type DomainUnitFilterForProject struct {
+
+	// The domain unit ID to use in the filter.
+	//
+	// This member is required.
+	DomainUnit *string
+
+	// Specifies whether to include child domain units.
+	IncludeChildDomainUnits *bool
+
+	noSmithyDocumentSerde
+}
+
+// The grant filter for the domain unit. In the current release of Amazon
+// DataZone, the only supported filter is the allDomainUnitsGrantFilter .
+//
+// The following types satisfy this interface:
+//
+//	DomainUnitGrantFilterMemberAllDomainUnitsGrantFilter
+type DomainUnitGrantFilter interface {
+	isDomainUnitGrantFilter()
+}
+
+// Specifies a grant filter containing all domain units.
+type DomainUnitGrantFilterMemberAllDomainUnitsGrantFilter struct {
+	Value AllDomainUnitsGrantFilter
+
+	noSmithyDocumentSerde
+}
+
+func (*DomainUnitGrantFilterMemberAllDomainUnitsGrantFilter) isDomainUnitGrantFilter() {}
+
+// The properties of a domain unit group.
+type DomainUnitGroupProperties struct {
+
+	// The ID of the domain unit group.
+	GroupId *string
+
+	noSmithyDocumentSerde
+}
+
+// The properties of the domain unit owner.
+//
+// The following types satisfy this interface:
+//
+//	DomainUnitOwnerPropertiesMemberGroup
+//	DomainUnitOwnerPropertiesMemberUser
+type DomainUnitOwnerProperties interface {
+	isDomainUnitOwnerProperties()
+}
+
+// Indicates that the domain unit owner is a group.
+type DomainUnitOwnerPropertiesMemberGroup struct {
+	Value DomainUnitGroupProperties
+
+	noSmithyDocumentSerde
+}
+
+func (*DomainUnitOwnerPropertiesMemberGroup) isDomainUnitOwnerProperties() {}
+
+// Indicates that the domain unit owner is a user.
+type DomainUnitOwnerPropertiesMemberUser struct {
+	Value DomainUnitUserProperties
+
+	noSmithyDocumentSerde
+}
+
+func (*DomainUnitOwnerPropertiesMemberUser) isDomainUnitOwnerProperties() {}
+
+// The domain unit principal to whom the policy is granted.
+type DomainUnitPolicyGrantPrincipal struct {
+
+	// Specifes the designation of the domain unit users.
+	//
+	// This member is required.
+	DomainUnitDesignation DomainUnitDesignation
+
+	// The grant filter for the domain unit.
+	DomainUnitGrantFilter DomainUnitGrantFilter
+
+	// The ID of the domain unit.
+	DomainUnitIdentifier *string
+
+	noSmithyDocumentSerde
+}
+
+// The summary of the domain unit.
+type DomainUnitSummary struct {
+
+	// The ID of the domain unit summary.
+	//
+	// This member is required.
+	Id *string
+
+	// The name of the domain unit summary.
+	//
+	// This member is required.
+	Name *string
+
+	noSmithyDocumentSerde
+}
+
+// The target for the domain unit.
+type DomainUnitTarget struct {
+
+	// The ID of the domain unit.
+	//
+	// This member is required.
+	DomainUnitId *string
+
+	// Specifies whether to apply a rule to the child domain units.
+	IncludeChildDomainUnits *bool
+
+	noSmithyDocumentSerde
+}
+
+// The properties of the domain unit user.
+type DomainUnitUserProperties struct {
+
+	// The ID of teh domain unit user.
+	UserId *string
 
 	noSmithyDocumentSerde
 }
@@ -1079,6 +1815,9 @@ type EnvironmentBlueprintConfigurationItem struct {
 	// The enabled Amazon Web Services Regions specified in a blueprint configuration.
 	EnabledRegions []string
 
+	// The environment role permission boundary.
+	EnvironmentRolePermissionBoundary *string
+
 	// The ARN of the manage access role specified in the environment blueprint
 	// configuration.
 	ManageAccessRoleArn *string
@@ -1130,6 +1869,104 @@ type EnvironmentBlueprintSummary struct {
 
 	// The timestamp of when the blueprint was enabled.
 	UpdatedAt *time.Time
+
+	noSmithyDocumentSerde
+}
+
+// The configuration of an environment.
+type EnvironmentConfiguration struct {
+
+	// The Amazon Web Services account of the environment.
+	//
+	// This member is required.
+	AwsAccount AwsAccount
+
+	// The Amazon Web Services Region of the environment.
+	//
+	// This member is required.
+	AwsRegion Region
+
+	// The environment blueprint ID.
+	//
+	// This member is required.
+	EnvironmentBlueprintId *string
+
+	// The environment name.
+	//
+	// This member is required.
+	Name *string
+
+	// The configuration parameters of the environment.
+	ConfigurationParameters *EnvironmentConfigurationParametersDetails
+
+	// The deployment mode of the environment.
+	DeploymentMode DeploymentMode
+
+	// The deployment order of the environment.
+	DeploymentOrder *int32
+
+	// The environment description.
+	Description *string
+
+	// The environment ID.
+	Id *string
+
+	noSmithyDocumentSerde
+}
+
+// The environment configuration parameter.
+type EnvironmentConfigurationParameter struct {
+
+	// Specifies whether the environment parameter is editable.
+	IsEditable *bool
+
+	// The name of the environment configuration parameter.
+	Name *string
+
+	// The value of the environment configuration parameter.
+	Value *string
+
+	noSmithyDocumentSerde
+}
+
+// The details of the environment configuration parameter.
+type EnvironmentConfigurationParametersDetails struct {
+
+	// The parameter overrides.
+	ParameterOverrides []EnvironmentConfigurationParameter
+
+	// The resolved environment configuration parameters.
+	ResolvedParameters []EnvironmentConfigurationParameter
+
+	// Ssm path environment configuration parameters.
+	SsmPath *string
+
+	noSmithyDocumentSerde
+}
+
+// The environment configuration user parameters.
+type EnvironmentConfigurationUserParameter struct {
+
+	// The environment configuration name.
+	EnvironmentConfigurationName *string
+
+	// The ID of the environment.
+	EnvironmentId *string
+
+	// The environment parameters.
+	EnvironmentParameters []EnvironmentParameter
+
+	noSmithyDocumentSerde
+}
+
+// The environment deployment details.
+type EnvironmentDeploymentDetails struct {
+
+	// Environment failure reasons.
+	EnvironmentFailureReasons map[string][]EnvironmentError
+
+	// The overall deployment status of the environment.
+	OverallDeploymentStatus OverallDeploymentStatus
 
 	noSmithyDocumentSerde
 }
@@ -1252,6 +2089,9 @@ type EnvironmentSummary struct {
 	// The description of the environment.
 	Description *string
 
+	// The configuration ID with which the environment is created.
+	EnvironmentConfigurationId *string
+
 	// The identifier of the environment profile with which the environment was
 	// created.
 	EnvironmentProfileId *string
@@ -1283,6 +2123,24 @@ type EqualToExpression struct {
 
 	noSmithyDocumentSerde
 }
+
+// The event summary.
+//
+// The following types satisfy this interface:
+//
+//	EventSummaryMemberOpenLineageRunEventSummary
+type EventSummary interface {
+	isEventSummary()
+}
+
+// The open lineage run event summary.
+type EventSummaryMemberOpenLineageRunEventSummary struct {
+	Value OpenLineageRunEventSummary
+
+	noSmithyDocumentSerde
+}
+
+func (*EventSummaryMemberOpenLineageRunEventSummary) isEventSummary() {}
 
 // Specifies the error message that is returned if the operation cannot be
 // successfully completed.
@@ -1591,6 +2449,175 @@ type GlossaryTermItem struct {
 	noSmithyDocumentSerde
 }
 
+// The Amazon Web Services Glue connection.
+type GlueConnection struct {
+
+	// The Amazon Athena properties of the Amazon Web Services Glue connection.
+	AthenaProperties map[string]string
+
+	// The authentication configuration of the Amazon Web Services Glue connection.
+	AuthenticationConfiguration *AuthenticationConfiguration
+
+	// The compatible compute environments of the Amazon Web Services Glue connection.
+	CompatibleComputeEnvironments []ComputeEnvironments
+
+	// The properties of the Amazon Web Services Glue connection.
+	ConnectionProperties map[string]string
+
+	// The connection schema version of the Amazon Web Services Glue connection.
+	ConnectionSchemaVersion *int32
+
+	// The type of the Amazon Web Services Glue connection.
+	ConnectionType ConnectionType
+
+	// The creation time of the Amazon Web Services Glue connection.
+	CreationTime *time.Time
+
+	// The description of the Amazon Web Services Glue connection.
+	Description *string
+
+	// The last validation time of the Amazon Web Services Glue connection.
+	LastConnectionValidationTime *time.Time
+
+	// The user who last updated the Amazon Web Services Glue connection.
+	LastUpdatedBy *string
+
+	// The timestamp at which the Amazon Web Services Glue connection was last updated.
+	LastUpdatedTime *time.Time
+
+	// The match criteria of the Amazon Web Services Glue connection.
+	MatchCriteria []string
+
+	// The name of the Amazon Web Services Glue connection.
+	Name *string
+
+	// The physical connection requirements of the Amazon Web Services Glue connection.
+	PhysicalConnectionRequirements *PhysicalConnectionRequirements
+
+	// The Python properties of the Amazon Web Services Glue connection.
+	PythonProperties map[string]string
+
+	// The Spark properties of the Amazon Web Services Glue connection.
+	SparkProperties map[string]string
+
+	// The status of the Amazon Web Services Glue connection.
+	Status ConnectionStatus
+
+	// The status reason of the Amazon Web Services Glue connection.
+	StatusReason *string
+
+	noSmithyDocumentSerde
+}
+
+// The Amazon Web Services Glue connecton input.
+type GlueConnectionInput struct {
+
+	// The Amazon Athena properties of the Amazon Web Services Glue connection.
+	AthenaProperties map[string]string
+
+	// The authentication configuration of the Amazon Web Services Glue connection.
+	AuthenticationConfiguration *AuthenticationConfigurationInput
+
+	// The connection properties of the Amazon Web Services Glue connection.
+	ConnectionProperties map[string]string
+
+	// The connection type of the Amazon Web Services Glue connection.
+	ConnectionType GlueConnectionType
+
+	// The description of the Amazon Web Services Glue connection.
+	Description *string
+
+	// The match criteria of the Amazon Web Services Glue connection.
+	MatchCriteria *string
+
+	// The name of the Amazon Web Services Glue connection.
+	Name *string
+
+	// The physical connection requirements for the Amazon Web Services Glue
+	// connection.
+	PhysicalConnectionRequirements *PhysicalConnectionRequirements
+
+	// The Python properties of the Amazon Web Services Glue connection.
+	PythonProperties map[string]string
+
+	// The Spark properties of the Amazon Web Services Glue connection.
+	SparkProperties map[string]string
+
+	// Speciefies whether to validate credentials of the Amazon Web Services Glue
+	// connection.
+	ValidateCredentials *bool
+
+	// Speciefies whether to validate for compute environments of the Amazon Web
+	// Services Glue connection.
+	ValidateForComputeEnvironments []ComputeEnvironments
+
+	noSmithyDocumentSerde
+}
+
+// The Amazon Web Services Glue connection patch.
+type GlueConnectionPatch struct {
+
+	// The authentication configuration of the Amazon Web Services Glue connection
+	// patch.
+	AuthenticationConfiguration *AuthenticationConfigurationPatch
+
+	// The properties of the Amazon Web Services Glue connection patch.
+	ConnectionProperties map[string]string
+
+	// The description of the Amazon Web Services Glue connection patch.
+	Description *string
+
+	noSmithyDocumentSerde
+}
+
+// The GlueOAuth2 credentials of a connection.
+type GlueOAuth2Credentials struct {
+
+	// The access token of a connection.
+	AccessToken *string
+
+	// The jwt token of the connection.
+	JwtToken *string
+
+	// The refresh token of the connection.
+	RefreshToken *string
+
+	// The user managed client application client secret of the connection.
+	UserManagedClientApplicationClientSecret *string
+
+	noSmithyDocumentSerde
+}
+
+// The Amazon Web Services Glue properties of a connection.
+type GluePropertiesInput struct {
+
+	// The Amazon Web Services Glue connection.
+	GlueConnectionInput *GlueConnectionInput
+
+	noSmithyDocumentSerde
+}
+
+// The properties of the Amazon Web Services Glue connection.
+type GluePropertiesOutput struct {
+
+	// The error message generated if the action is not completed successfully.
+	ErrorMessage *string
+
+	// The status of a connection.
+	Status ConnectionStatus
+
+	noSmithyDocumentSerde
+}
+
+// The Amazon Web Services Glue properties patch of a connection.
+type GluePropertiesPatch struct {
+
+	// The Amazon Web Services Glue properties patch of a connection.
+	GlueConnectionInput *GlueConnectionPatch
+
+	noSmithyDocumentSerde
+}
+
 // The configuration details of the Amazon Web Services Glue data source.
 type GlueRunConfigurationInput struct {
 
@@ -1603,6 +2630,9 @@ type GlueRunConfigurationInput struct {
 	// Specifies whether to automatically import data quality metrics as part of the
 	// data source run.
 	AutoImportDataQualityResult *bool
+
+	// The catalog name in the Amazon Web Services Glue run configuration.
+	CatalogName *string
 
 	// The data access role included in the configuration details of the Amazon Web
 	// Services Glue data source.
@@ -1627,6 +2657,9 @@ type GlueRunConfigurationOutput struct {
 	// Specifies whether to automatically import data quality metrics as part of the
 	// data source run.
 	AutoImportDataQualityResult *bool
+
+	// The catalog name in the Amazon Web Services Glue run configuration.
+	CatalogName *string
 
 	// The data access role included in the configuration details of the Amazon Web
 	// Services Glue data source.
@@ -1729,6 +2762,24 @@ type GroupDetails struct {
 	noSmithyDocumentSerde
 }
 
+// The group principal to whom the policy is granted.
+//
+// The following types satisfy this interface:
+//
+//	GroupPolicyGrantPrincipalMemberGroupIdentifier
+type GroupPolicyGrantPrincipal interface {
+	isGroupPolicyGrantPrincipal()
+}
+
+// The ID Of the group of the group principal.
+type GroupPolicyGrantPrincipalMemberGroupIdentifier struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*GroupPolicyGrantPrincipalMemberGroupIdentifier) isGroupPolicyGrantPrincipal() {}
+
 // The details of a group profile.
 type GroupProfileSummary struct {
 
@@ -1743,6 +2794,67 @@ type GroupProfileSummary struct {
 
 	// The status of a group profile.
 	Status GroupProfileStatus
+
+	noSmithyDocumentSerde
+}
+
+// The hyper pod properties of a Amazon Web Services Glue properties patch.
+type HyperPodPropertiesInput struct {
+
+	// The cluster name the hyper pod properties.
+	//
+	// This member is required.
+	ClusterName *string
+
+	noSmithyDocumentSerde
+}
+
+// The hyper pod properties of a Amazon Web Services Glue properties patch.
+type HyperPodPropertiesOutput struct {
+
+	// The cluster name the hyper pod properties.
+	//
+	// This member is required.
+	ClusterName *string
+
+	// The cluster ARN of the hyper pod properties.
+	ClusterArn *string
+
+	// The orchestrator of the hyper pod properties.
+	Orchestrator HyperPodOrchestrator
+
+	noSmithyDocumentSerde
+}
+
+// The IAM properties of a connection.
+type IamPropertiesInput struct {
+
+	// Specifies whether Amazon Web Services Glue lineage sync is enabled for a
+	// connection.
+	GlueLineageSyncEnabled *bool
+
+	noSmithyDocumentSerde
+}
+
+// The IAM properties of a connection.
+type IamPropertiesOutput struct {
+
+	// The environment ID of the connection.
+	EnvironmentId *string
+
+	// Specifies whether Amazon Web Services Glue lineage sync is enabled for a
+	// connection.
+	GlueLineageSyncEnabled *bool
+
+	noSmithyDocumentSerde
+}
+
+// The IAM properties patch of a connection.
+type IamPropertiesPatch struct {
+
+	// Specifies whether Amazon Web Services Glue lineage sync is enabled for a
+	// connection.
+	GlueLineageSyncEnabled *bool
 
 	noSmithyDocumentSerde
 }
@@ -1810,6 +2922,74 @@ type IsNullExpression struct {
 	noSmithyDocumentSerde
 }
 
+// The details of a job run.
+//
+// The following types satisfy this interface:
+//
+//	JobRunDetailsMemberLineageRunDetails
+type JobRunDetails interface {
+	isJobRunDetails()
+}
+
+// The data lineage details of a job run.
+type JobRunDetailsMemberLineageRunDetails struct {
+	Value LineageRunDetails
+
+	noSmithyDocumentSerde
+}
+
+func (*JobRunDetailsMemberLineageRunDetails) isJobRunDetails() {}
+
+// The job run error.
+type JobRunError struct {
+
+	// The job run error message.
+	//
+	// This member is required.
+	Message *string
+
+	noSmithyDocumentSerde
+}
+
+// The job run summary.
+type JobRunSummary struct {
+
+	// The timestamp at which job run was created.
+	CreatedAt *time.Time
+
+	// The user who created the job run.
+	CreatedBy *string
+
+	// The domain ID of the job run.
+	DomainId *string
+
+	// The end time of a job run.
+	EndTime *time.Time
+
+	// The error of a job run.
+	Error *JobRunError
+
+	// The job ID of a job run.
+	JobId *string
+
+	// The job type of a job run.
+	JobType JobType
+
+	// The run ID of a job run.
+	RunId *string
+
+	// The run mode of a job run.
+	RunMode JobRunMode
+
+	// The start time of a job run.
+	StartTime *time.Time
+
+	// The status of a job run.
+	Status JobRunStatus
+
+	noSmithyDocumentSerde
+}
+
 // The Lake Formation configuration of the Data Lake blueprint.
 type LakeFormationConfiguration struct {
 
@@ -1818,7 +2998,8 @@ type LakeFormationConfiguration struct {
 	LocationRegistrationExcludeS3Locations []string
 
 	// The role that is used to manage read/write access to the chosen Amazon S3
-	// bucket(s) for Data Lake using AWS Lake Formation hybrid access mode.
+	// bucket(s) for Data Lake using Amazon Web Services Lake Formation hybrid access
+	// mode.
 	LocationRegistrationRole *string
 
 	noSmithyDocumentSerde
@@ -1868,6 +3049,48 @@ type LikeExpression struct {
 	//
 	// This member is required.
 	Value *string
+
+	noSmithyDocumentSerde
+}
+
+// The data lineage event summary.
+type LineageEventSummary struct {
+
+	// The timestamp at which data lineage event was created.
+	CreatedAt *time.Time
+
+	// The user who created the data lineage event.
+	CreatedBy *string
+
+	// The domain ID of the lineage event.
+	DomainId *string
+
+	// The summary of the data lineate event.
+	EventSummary EventSummary
+
+	// The time of the data lineage event.
+	EventTime *time.Time
+
+	// The ID of the data lineage event.
+	Id *string
+
+	// The processing status of the data lineage event.
+	ProcessingStatus LineageEventProcessingStatus
+
+	noSmithyDocumentSerde
+}
+
+// The data lineage information.
+type LineageInfo struct {
+
+	// The data lineage error message.
+	ErrorMessage *string
+
+	// The data lineage event ID.
+	EventId *string
+
+	// The data lineage event status.
+	EventStatus LineageEventProcessingStatus
 
 	noSmithyDocumentSerde
 }
@@ -1967,6 +3190,46 @@ type LineageNodeTypeItem struct {
 
 	// The user who updated the data lineage node type.
 	UpdatedBy *string
+
+	noSmithyDocumentSerde
+}
+
+// The data lineage run details.
+type LineageRunDetails struct {
+
+	// The SQL query run details of a data lineage run.
+	SqlQueryRunDetails *LineageSqlQueryRunDetails
+
+	noSmithyDocumentSerde
+}
+
+// The SQL query run details of a data lineage run.
+type LineageSqlQueryRunDetails struct {
+
+	// The error message of the SQL query run details of a data lineage run.
+	ErrorMessages []string
+
+	// The number of queries that failed in the SQL query run details of a data
+	// lineage run.
+	NumQueriesFailed *int32
+
+	// The query end time in the SQL query run details of a data lineage run.
+	QueryEndTime *time.Time
+
+	// The query start time in the SQL query run details of a data lineage run.
+	QueryStartTime *time.Time
+
+	// The total queries processed in the SQL query run details of a data lineage run.
+	TotalQueriesProcessed *int32
+
+	noSmithyDocumentSerde
+}
+
+// The lineage sync schedule.
+type LineageSyncSchedule struct {
+
+	// The lineage sync schedule.
+	Schedule *string
 
 	noSmithyDocumentSerde
 }
@@ -2119,6 +3382,50 @@ type MemberDetailsMemberUser struct {
 
 func (*MemberDetailsMemberUser) isMemberDetails() {}
 
+// The enforcement details of a metadata form.
+type MetadataFormEnforcementDetail struct {
+
+	// The required metadata forms.
+	RequiredMetadataForms []MetadataFormReference
+
+	noSmithyDocumentSerde
+}
+
+// The reference of a metadata form.
+type MetadataFormReference struct {
+
+	// The type ID of the metadata form reference.
+	//
+	// This member is required.
+	TypeIdentifier *string
+
+	// The type revision of the metadata form reference.
+	//
+	// This member is required.
+	TypeRevision *string
+
+	noSmithyDocumentSerde
+}
+
+// The summary of the metadata form.
+type MetadataFormSummary struct {
+
+	// The type name of the metadata form.
+	//
+	// This member is required.
+	TypeName *string
+
+	// The type revision of the metadata form.
+	//
+	// This member is required.
+	TypeRevision *string
+
+	// The form name of the metadata form.
+	FormName *string
+
+	noSmithyDocumentSerde
+}
+
 // The metadata generation run.
 type MetadataGenerationRunItem struct {
 
@@ -2193,6 +3500,18 @@ type ModelMemberSmithy struct {
 }
 
 func (*ModelMemberSmithy) isModel() {}
+
+// The name identifier.
+type NameIdentifier struct {
+
+	// The name in the name identifier.
+	Name *string
+
+	// The namespace in the name identifier.
+	Namespace *string
+
+	noSmithyDocumentSerde
+}
 
 // Specifies that a value is not equal to the expression.
 type NotEqualToExpression struct {
@@ -2318,6 +3637,427 @@ type NotLikeExpression struct {
 	noSmithyDocumentSerde
 }
 
+// The OAuth2Client application.
+type OAuth2ClientApplication struct {
+
+	// The Amazon Web Services managed client application reference in the
+	// OAuth2Client application.
+	AWSManagedClientApplicationReference *string
+
+	// The user managed client application client ID in the OAuth2Client application.
+	UserManagedClientApplicationClientId *string
+
+	noSmithyDocumentSerde
+}
+
+// The OAuth2 properties.
+type OAuth2Properties struct {
+
+	// The authorization code properties of the OAuth2 properties.
+	AuthorizationCodeProperties *AuthorizationCodeProperties
+
+	// The OAuth2 client application of the OAuth2 properties.
+	OAuth2ClientApplication *OAuth2ClientApplication
+
+	// The OAuth2 credentials of the OAuth2 properties.
+	OAuth2Credentials *GlueOAuth2Credentials
+
+	// The OAuth2 grant type of the OAuth2 properties.
+	OAuth2GrantType OAuth2GrantType
+
+	// The OAuth2 token URL of the OAuth2 properties.
+	TokenUrl *string
+
+	// The OAuth2 token URL parameter map of the OAuth2 properties.
+	TokenUrlParametersMap map[string]string
+
+	noSmithyDocumentSerde
+}
+
+// The open lineage run event summary.
+type OpenLineageRunEventSummary struct {
+
+	// The event type of the open lineage run event summary.
+	EventType OpenLineageRunState
+
+	// The inputs of the open lineage run event summary.
+	Inputs []NameIdentifier
+
+	// The job of the open lineage run event summary.
+	Job *NameIdentifier
+
+	// The outputs of the open lineage run event summary.
+	Outputs []NameIdentifier
+
+	// The runID of the open lineage run event summary.
+	RunId *string
+
+	noSmithyDocumentSerde
+}
+
+// The grant details of the override domain unit owners policy.
+type OverrideDomainUnitOwnersPolicyGrantDetail struct {
+
+	// Specifies whether the policy is inherited by child domain units.
+	IncludeChildDomainUnits *bool
+
+	noSmithyDocumentSerde
+}
+
+// The details of the override project owners policy grant.
+type OverrideProjectOwnersPolicyGrantDetail struct {
+
+	// Specifies whether the policy is inherited by child domain units.
+	IncludeChildDomainUnits *bool
+
+	noSmithyDocumentSerde
+}
+
+// The properties of the domain unit owners group.
+type OwnerGroupProperties struct {
+
+	// The ID of the domain unit owners group.
+	//
+	// This member is required.
+	GroupIdentifier *string
+
+	noSmithyDocumentSerde
+}
+
+// The properties of the domain unit owners group.
+type OwnerGroupPropertiesOutput struct {
+
+	// The ID of the domain unit owners group.
+	GroupId *string
+
+	noSmithyDocumentSerde
+}
+
+// The properties of a domain unit's owner.
+//
+// The following types satisfy this interface:
+//
+//	OwnerPropertiesMemberGroup
+//	OwnerPropertiesMemberUser
+type OwnerProperties interface {
+	isOwnerProperties()
+}
+
+// Specifies that the domain unit owner is a group.
+type OwnerPropertiesMemberGroup struct {
+	Value OwnerGroupProperties
+
+	noSmithyDocumentSerde
+}
+
+func (*OwnerPropertiesMemberGroup) isOwnerProperties() {}
+
+// Specifies that the domain unit owner is a user.
+type OwnerPropertiesMemberUser struct {
+	Value OwnerUserProperties
+
+	noSmithyDocumentSerde
+}
+
+func (*OwnerPropertiesMemberUser) isOwnerProperties() {}
+
+// The ID of the domain unit owners group.
+//
+// The following types satisfy this interface:
+//
+//	OwnerPropertiesOutputMemberGroup
+//	OwnerPropertiesOutputMemberUser
+type OwnerPropertiesOutput interface {
+	isOwnerPropertiesOutput()
+}
+
+// Specifies that the domain unit owner is a group.
+type OwnerPropertiesOutputMemberGroup struct {
+	Value OwnerGroupPropertiesOutput
+
+	noSmithyDocumentSerde
+}
+
+func (*OwnerPropertiesOutputMemberGroup) isOwnerPropertiesOutput() {}
+
+// Specifies that the domain unit owner is a user.
+type OwnerPropertiesOutputMemberUser struct {
+	Value OwnerUserPropertiesOutput
+
+	noSmithyDocumentSerde
+}
+
+func (*OwnerPropertiesOutputMemberUser) isOwnerPropertiesOutput() {}
+
+// The properties of the owner user.
+type OwnerUserProperties struct {
+
+	// The ID of the owner user.
+	//
+	// This member is required.
+	UserIdentifier *string
+
+	noSmithyDocumentSerde
+}
+
+// The properties of the owner user.
+type OwnerUserPropertiesOutput struct {
+
+	// The ID of the owner user.
+	UserId *string
+
+	noSmithyDocumentSerde
+}
+
+// Physical connection requirements of a connection.
+type PhysicalConnectionRequirements struct {
+
+	// The availability zone of the physical connection requirements of a connection.
+	AvailabilityZone *string
+
+	// The group ID list of the physical connection requirements of a connection.
+	SecurityGroupIdList []string
+
+	// The subnet ID of the physical connection requirements of a connection.
+	SubnetId *string
+
+	// The subnet ID list of the physical connection requirements of a connection.
+	SubnetIdList []string
+
+	noSmithyDocumentSerde
+}
+
+// The physical endpoints of a connection.
+type PhysicalEndpoint struct {
+
+	// The location of a connection.
+	AwsLocation *AwsLocation
+
+	// The Amazon Web Services Glue connection.
+	GlueConnection *GlueConnection
+
+	// The Amazon Web Services Glue connection name.
+	GlueConnectionName *string
+
+	// The host in the physical endpoints of a connection.
+	Host *string
+
+	// The port in the physical endpoints of a connection.
+	Port *int32
+
+	// The protocol in the physical endpoints of a connection.
+	Protocol Protocol
+
+	// The stage in the physical endpoints of a connection.
+	Stage *string
+
+	noSmithyDocumentSerde
+}
+
+// The details of the policy grant.
+//
+// The following types satisfy this interface:
+//
+//	PolicyGrantDetailMemberAddToProjectMemberPool
+//	PolicyGrantDetailMemberCreateAssetType
+//	PolicyGrantDetailMemberCreateDomainUnit
+//	PolicyGrantDetailMemberCreateEnvironment
+//	PolicyGrantDetailMemberCreateEnvironmentFromBlueprint
+//	PolicyGrantDetailMemberCreateEnvironmentProfile
+//	PolicyGrantDetailMemberCreateFormType
+//	PolicyGrantDetailMemberCreateGlossary
+//	PolicyGrantDetailMemberCreateProject
+//	PolicyGrantDetailMemberCreateProjectFromProjectProfile
+//	PolicyGrantDetailMemberDelegateCreateEnvironmentProfile
+//	PolicyGrantDetailMemberOverrideDomainUnitOwners
+//	PolicyGrantDetailMemberOverrideProjectOwners
+type PolicyGrantDetail interface {
+	isPolicyGrantDetail()
+}
+
+// Specifies that the policy grant is to be added to the members of the project.
+type PolicyGrantDetailMemberAddToProjectMemberPool struct {
+	Value AddToProjectMemberPoolPolicyGrantDetail
+
+	noSmithyDocumentSerde
+}
+
+func (*PolicyGrantDetailMemberAddToProjectMemberPool) isPolicyGrantDetail() {}
+
+// Specifies that this is a create asset type policy.
+type PolicyGrantDetailMemberCreateAssetType struct {
+	Value CreateAssetTypePolicyGrantDetail
+
+	noSmithyDocumentSerde
+}
+
+func (*PolicyGrantDetailMemberCreateAssetType) isPolicyGrantDetail() {}
+
+// Specifies that this is a create domain unit policy.
+type PolicyGrantDetailMemberCreateDomainUnit struct {
+	Value CreateDomainUnitPolicyGrantDetail
+
+	noSmithyDocumentSerde
+}
+
+func (*PolicyGrantDetailMemberCreateDomainUnit) isPolicyGrantDetail() {}
+
+// Specifies that this is a create environment policy.
+type PolicyGrantDetailMemberCreateEnvironment struct {
+	Value Unit
+
+	noSmithyDocumentSerde
+}
+
+func (*PolicyGrantDetailMemberCreateEnvironment) isPolicyGrantDetail() {}
+
+// The details of the policy of creating an environment.
+type PolicyGrantDetailMemberCreateEnvironmentFromBlueprint struct {
+	Value Unit
+
+	noSmithyDocumentSerde
+}
+
+func (*PolicyGrantDetailMemberCreateEnvironmentFromBlueprint) isPolicyGrantDetail() {}
+
+// Specifies that this is a create environment profile policy.
+type PolicyGrantDetailMemberCreateEnvironmentProfile struct {
+	Value CreateEnvironmentProfilePolicyGrantDetail
+
+	noSmithyDocumentSerde
+}
+
+func (*PolicyGrantDetailMemberCreateEnvironmentProfile) isPolicyGrantDetail() {}
+
+// Specifies that this is a create form type policy.
+type PolicyGrantDetailMemberCreateFormType struct {
+	Value CreateFormTypePolicyGrantDetail
+
+	noSmithyDocumentSerde
+}
+
+func (*PolicyGrantDetailMemberCreateFormType) isPolicyGrantDetail() {}
+
+// Specifies that this is a create glossary policy.
+type PolicyGrantDetailMemberCreateGlossary struct {
+	Value CreateGlossaryPolicyGrantDetail
+
+	noSmithyDocumentSerde
+}
+
+func (*PolicyGrantDetailMemberCreateGlossary) isPolicyGrantDetail() {}
+
+// Specifies that this is a create project policy.
+type PolicyGrantDetailMemberCreateProject struct {
+	Value CreateProjectPolicyGrantDetail
+
+	noSmithyDocumentSerde
+}
+
+func (*PolicyGrantDetailMemberCreateProject) isPolicyGrantDetail() {}
+
+// Specifies whether to create a project from project profile.
+type PolicyGrantDetailMemberCreateProjectFromProjectProfile struct {
+	Value CreateProjectFromProjectProfilePolicyGrantDetail
+
+	noSmithyDocumentSerde
+}
+
+func (*PolicyGrantDetailMemberCreateProjectFromProjectProfile) isPolicyGrantDetail() {}
+
+// Specifies that this is the delegation of the create environment profile policy.
+type PolicyGrantDetailMemberDelegateCreateEnvironmentProfile struct {
+	Value Unit
+
+	noSmithyDocumentSerde
+}
+
+func (*PolicyGrantDetailMemberDelegateCreateEnvironmentProfile) isPolicyGrantDetail() {}
+
+// Specifies whether to override domain unit owners.
+type PolicyGrantDetailMemberOverrideDomainUnitOwners struct {
+	Value OverrideDomainUnitOwnersPolicyGrantDetail
+
+	noSmithyDocumentSerde
+}
+
+func (*PolicyGrantDetailMemberOverrideDomainUnitOwners) isPolicyGrantDetail() {}
+
+// Specifies whether to override project owners.
+type PolicyGrantDetailMemberOverrideProjectOwners struct {
+	Value OverrideProjectOwnersPolicyGrantDetail
+
+	noSmithyDocumentSerde
+}
+
+func (*PolicyGrantDetailMemberOverrideProjectOwners) isPolicyGrantDetail() {}
+
+// A member of the policy grant list.
+type PolicyGrantMember struct {
+
+	// Specifies the timestamp at which policy grant member was created.
+	CreatedAt *time.Time
+
+	// Specifies the user who created the policy grant member.
+	CreatedBy *string
+
+	// The details of the policy grant member.
+	Detail PolicyGrantDetail
+
+	// The principal of the policy grant member.
+	Principal PolicyGrantPrincipal
+
+	noSmithyDocumentSerde
+}
+
+// The policy grant principal.
+//
+// The following types satisfy this interface:
+//
+//	PolicyGrantPrincipalMemberDomainUnit
+//	PolicyGrantPrincipalMemberGroup
+//	PolicyGrantPrincipalMemberProject
+//	PolicyGrantPrincipalMemberUser
+type PolicyGrantPrincipal interface {
+	isPolicyGrantPrincipal()
+}
+
+// The domain unit of the policy grant principal.
+type PolicyGrantPrincipalMemberDomainUnit struct {
+	Value DomainUnitPolicyGrantPrincipal
+
+	noSmithyDocumentSerde
+}
+
+func (*PolicyGrantPrincipalMemberDomainUnit) isPolicyGrantPrincipal() {}
+
+// The group of the policy grant principal.
+type PolicyGrantPrincipalMemberGroup struct {
+	Value GroupPolicyGrantPrincipal
+
+	noSmithyDocumentSerde
+}
+
+func (*PolicyGrantPrincipalMemberGroup) isPolicyGrantPrincipal() {}
+
+// The project of the policy grant principal.
+type PolicyGrantPrincipalMemberProject struct {
+	Value ProjectPolicyGrantPrincipal
+
+	noSmithyDocumentSerde
+}
+
+func (*PolicyGrantPrincipalMemberProject) isPolicyGrantPrincipal() {}
+
+// The user of the policy grant principal.
+type PolicyGrantPrincipalMemberUser struct {
+	Value UserPolicyGrantPrincipal
+
+	noSmithyDocumentSerde
+}
+
+func (*PolicyGrantPrincipalMemberUser) isPolicyGrantPrincipal() {}
+
 // The configuration of the prediction.
 type PredictionConfiguration struct {
 
@@ -2340,6 +4080,24 @@ type ProjectDeletionError struct {
 	noSmithyDocumentSerde
 }
 
+// The project grant filter.
+//
+// The following types satisfy this interface:
+//
+//	ProjectGrantFilterMemberDomainUnitFilter
+type ProjectGrantFilter interface {
+	isProjectGrantFilter()
+}
+
+// The domain unit filter of the project grant filter.
+type ProjectGrantFilterMemberDomainUnitFilter struct {
+	Value DomainUnitFilterForProject
+
+	noSmithyDocumentSerde
+}
+
+func (*ProjectGrantFilterMemberDomainUnitFilter) isProjectGrantFilter() {}
+
 // The details of a project member.
 type ProjectMember struct {
 
@@ -2352,6 +4110,78 @@ type ProjectMember struct {
 	//
 	// This member is required.
 	MemberDetails MemberDetails
+
+	noSmithyDocumentSerde
+}
+
+// The project policy grant principal.
+type ProjectPolicyGrantPrincipal struct {
+
+	// The project designation of the project policy grant principal.
+	//
+	// This member is required.
+	ProjectDesignation ProjectDesignation
+
+	// The project grant filter of the project policy grant principal.
+	ProjectGrantFilter ProjectGrantFilter
+
+	// The project ID of the project policy grant principal.
+	ProjectIdentifier *string
+
+	noSmithyDocumentSerde
+}
+
+// The summary of a project profile.
+type ProjectProfileSummary struct {
+
+	// The user who created the project profile.
+	//
+	// This member is required.
+	CreatedBy *string
+
+	// The domain ID of the project profile.
+	//
+	// This member is required.
+	DomainId *string
+
+	// The ID of the project profile.
+	//
+	// This member is required.
+	Id *string
+
+	// The name of a project profile.
+	//
+	// This member is required.
+	Name *string
+
+	// The timestamp of when the project profile was created.
+	CreatedAt *time.Time
+
+	// The description of the project profile.
+	Description *string
+
+	// The domain unit ID of the project profile.
+	DomainUnitId *string
+
+	// The timestamp at which a project profile was last updated.
+	LastUpdatedAt *time.Time
+
+	// The status of a project profile.
+	Status Status
+
+	noSmithyDocumentSerde
+}
+
+// Specifies projects in which the rule is created.
+type ProjectsForRule struct {
+
+	// The selection mode of the rule.
+	//
+	// This member is required.
+	SelectionMode RuleScopeSelectionMode
+
+	// The specific projects in which the rule is created.
+	SpecificProjects []string
 
 	noSmithyDocumentSerde
 }
@@ -2384,6 +4214,9 @@ type ProjectSummary struct {
 
 	// The description of a project.
 	Description *string
+
+	// The ID of the domain unit.
+	DomainUnitId *string
 
 	// Specifies the error message that is returned if the operation cannot be
 	// successfully completed.
@@ -2467,19 +4300,144 @@ type RedshiftCredentialConfiguration struct {
 	noSmithyDocumentSerde
 }
 
+// Amazon Redshift credentials of a connection.
+//
+// The following types satisfy this interface:
+//
+//	RedshiftCredentialsMemberSecretArn
+//	RedshiftCredentialsMemberUsernamePassword
+type RedshiftCredentials interface {
+	isRedshiftCredentials()
+}
+
+// The secret ARN of the Amazon Redshift credentials of a connection.
+type RedshiftCredentialsMemberSecretArn struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*RedshiftCredentialsMemberSecretArn) isRedshiftCredentials() {}
+
+// The username and password of the Amazon Redshift credentials of a connection.
+type RedshiftCredentialsMemberUsernamePassword struct {
+	Value UsernamePassword
+
+	noSmithyDocumentSerde
+}
+
+func (*RedshiftCredentialsMemberUsernamePassword) isRedshiftCredentials() {}
+
+// The Amaon Redshift lineage sync configuration.
+type RedshiftLineageSyncConfigurationInput struct {
+
+	// Specifies whether the Amaon Redshift lineage sync configuration is enabled.
+	Enabled *bool
+
+	// The schedule of the Amaon Redshift lineage sync configuration.
+	Schedule *LineageSyncSchedule
+
+	noSmithyDocumentSerde
+}
+
+// The Amaon Redshift lineage sync configuration.
+type RedshiftLineageSyncConfigurationOutput struct {
+
+	// Specifies whether the Amaon Redshift lineage sync configuration is enabled.
+	Enabled *bool
+
+	// The lineage job ID of the Amaon Redshift lineage sync configuration.
+	LineageJobId *string
+
+	// The schedule of teh Amaon Redshift lineage sync configuration.
+	Schedule *LineageSyncSchedule
+
+	noSmithyDocumentSerde
+}
+
+// The Amazon Redshift properties.
+type RedshiftPropertiesInput struct {
+
+	// The Amaon Redshift credentials.
+	Credentials RedshiftCredentials
+
+	// The Amazon Redshift database name.
+	DatabaseName *string
+
+	// The Amazon Redshift host.
+	Host *string
+
+	// The lineage sync of the Amazon Redshift.
+	LineageSync *RedshiftLineageSyncConfigurationInput
+
+	// The Amaon Redshift port.
+	Port *int32
+
+	// The Amazon Redshift storage.
+	Storage RedshiftStorageProperties
+
+	noSmithyDocumentSerde
+}
+
+// The Amazon Redshift properties.
+type RedshiftPropertiesOutput struct {
+
+	// The Amazon Redshift credentials.
+	Credentials RedshiftCredentials
+
+	// The Amazon Redshift database name.
+	DatabaseName *string
+
+	// Specifies whether Amaon Redshift properties has a provisioned secret.
+	IsProvisionedSecret *bool
+
+	// The jdbcIam URL of the Amazon Redshift properties.
+	JdbcIamUrl *string
+
+	// The jdbcURL of the Amazon Redshift properties.
+	JdbcUrl *string
+
+	// The lineage syn of the Amazon Redshift properties.
+	LineageSync *RedshiftLineageSyncConfigurationOutput
+
+	// The redshiftTempDir of the Amazon Redshift properties.
+	RedshiftTempDir *string
+
+	// The status in the Amazon Redshift properties.
+	Status ConnectionStatus
+
+	// The storage in the Amazon Redshift properties.
+	Storage RedshiftStorageProperties
+
+	noSmithyDocumentSerde
+}
+
+// Amazon Redshift properties patch.
+type RedshiftPropertiesPatch struct {
+
+	// The credentials in the Amazon Redshift properties patch.
+	Credentials RedshiftCredentials
+
+	// The name in the Amazon Redshift properties patch.
+	DatabaseName *string
+
+	// The host in the Amazon Redshift properties patch.
+	Host *string
+
+	// The lineage sync in the Amazon Redshift properties patch.
+	LineageSync *RedshiftLineageSyncConfigurationInput
+
+	// The port in the Amazon Redshift properties patch.
+	Port *int32
+
+	// The storage in the Amazon Redshift properties patch.
+	Storage RedshiftStorageProperties
+
+	noSmithyDocumentSerde
+}
+
 // The configuration details of the Amazon Redshift data source.
 type RedshiftRunConfigurationInput struct {
-
-	// The details of the credentials required to access an Amazon Redshift cluster.
-	//
-	// This member is required.
-	RedshiftCredentialConfiguration *RedshiftCredentialConfiguration
-
-	// The details of the Amazon Redshift storage as part of the configuration of an
-	// Amazon Redshift data source run.
-	//
-	// This member is required.
-	RedshiftStorage RedshiftStorage
 
 	// The relational filger configurations included in the configuration details of
 	// the Amazon Redshift data source.
@@ -2491,16 +4449,18 @@ type RedshiftRunConfigurationInput struct {
 	// Redshift data source.
 	DataAccessRole *string
 
+	// The details of the credentials required to access an Amazon Redshift cluster.
+	RedshiftCredentialConfiguration *RedshiftCredentialConfiguration
+
+	// The details of the Amazon Redshift storage as part of the configuration of an
+	// Amazon Redshift data source run.
+	RedshiftStorage RedshiftStorage
+
 	noSmithyDocumentSerde
 }
 
 // The configuration details of the Amazon Redshift data source.
 type RedshiftRunConfigurationOutput struct {
-
-	// The details of the credentials required to access an Amazon Redshift cluster.
-	//
-	// This member is required.
-	RedshiftCredentialConfiguration *RedshiftCredentialConfiguration
 
 	// The details of the Amazon Redshift storage as part of the configuration of an
 	// Amazon Redshift data source run.
@@ -2521,6 +4481,9 @@ type RedshiftRunConfigurationOutput struct {
 	// The data access role included in the configuration details of the Amazon
 	// Redshift data source.
 	DataAccessRole *string
+
+	// The details of the credentials required to access an Amazon Redshift cluster.
+	RedshiftCredentialConfiguration *RedshiftCredentialConfiguration
 
 	// The Amazon Web Services region included in the configuration details of the
 	// Amazon Redshift data source.
@@ -2579,6 +4542,62 @@ type RedshiftStorageMemberRedshiftServerlessSource struct {
 }
 
 func (*RedshiftStorageMemberRedshiftServerlessSource) isRedshiftStorage() {}
+
+// The Amazon Redshift storage properties.
+//
+// The following types satisfy this interface:
+//
+//	RedshiftStoragePropertiesMemberClusterName
+//	RedshiftStoragePropertiesMemberWorkgroupName
+type RedshiftStorageProperties interface {
+	isRedshiftStorageProperties()
+}
+
+// The cluster name in the Amazon Redshift storage properties.
+type RedshiftStoragePropertiesMemberClusterName struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*RedshiftStoragePropertiesMemberClusterName) isRedshiftStorageProperties() {}
+
+// The workgroup name in the Amazon Redshift storage properties.
+type RedshiftStoragePropertiesMemberWorkgroupName struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*RedshiftStoragePropertiesMemberWorkgroupName) isRedshiftStorageProperties() {}
+
+// The Amazon Web Services Region.
+//
+// The following types satisfy this interface:
+//
+//	RegionMemberRegionName
+//	RegionMemberRegionNamePath
+type Region interface {
+	isRegion()
+}
+
+// The Amazon Web Services Region name.
+type RegionMemberRegionName struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*RegionMemberRegionName) isRegion() {}
+
+// The region name path.
+type RegionMemberRegionNamePath struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*RegionMemberRegionNamePath) isRegion() {}
 
 // The details of the automatically generated business metadata that is rejected.
 type RejectChoice struct {
@@ -2831,6 +4850,93 @@ type RowFilterExpressionMemberNotLike struct {
 
 func (*RowFilterExpressionMemberNotLike) isRowFilterExpression() {}
 
+// The details of a rule.
+//
+// The following types satisfy this interface:
+//
+//	RuleDetailMemberMetadataFormEnforcementDetail
+type RuleDetail interface {
+	isRuleDetail()
+}
+
+// The enforcement detail of the metadata form.
+type RuleDetailMemberMetadataFormEnforcementDetail struct {
+	Value MetadataFormEnforcementDetail
+
+	noSmithyDocumentSerde
+}
+
+func (*RuleDetailMemberMetadataFormEnforcementDetail) isRuleDetail() {}
+
+// The scope of a rule.
+type RuleScope struct {
+
+	// The asset type included in the rule scope.
+	AssetType *AssetTypesForRule
+
+	// The data product included in the rule scope.
+	DataProduct *bool
+
+	// The project included in the rule scope.
+	Project *ProjectsForRule
+
+	noSmithyDocumentSerde
+}
+
+// The summary of the rule.
+type RuleSummary struct {
+
+	// The action of the rule.
+	Action RuleAction
+
+	// The ID of the rule.
+	Identifier *string
+
+	// The timestamp at which the rule was last updated.
+	LastUpdatedBy *string
+
+	// The name of the rule.
+	Name *string
+
+	// The revision of the rule.
+	Revision *string
+
+	// The type of the rule.
+	RuleType RuleType
+
+	// The scope of the rule.
+	Scope *RuleScope
+
+	// The target of the rule.
+	Target RuleTarget
+
+	// The target type of the rule.
+	TargetType RuleTargetType
+
+	// The timestamp at which the rule was last updated.
+	UpdatedAt *time.Time
+
+	noSmithyDocumentSerde
+}
+
+// The target of the rule.
+//
+// The following types satisfy this interface:
+//
+//	RuleTargetMemberDomainUnitTarget
+type RuleTarget interface {
+	isRuleTarget()
+}
+
+// The ID of the domain unit.
+type RuleTargetMemberDomainUnitTarget struct {
+	Value DomainUnitTarget
+
+	noSmithyDocumentSerde
+}
+
+func (*RuleTargetMemberDomainUnitTarget) isRuleTarget() {}
+
 // The asset statistics from the data source run.
 type RunStatisticsForAssets struct {
 
@@ -2848,6 +4954,34 @@ type RunStatisticsForAssets struct {
 
 	// The updated statistic for the data source run.
 	Updated *int32
+
+	noSmithyDocumentSerde
+}
+
+// The Amazon SageMaker run configuration.
+type SageMakerRunConfigurationInput struct {
+
+	// The tracking assets of the Amazon SageMaker run.
+	//
+	// This member is required.
+	TrackingAssets map[string][]string
+
+	noSmithyDocumentSerde
+}
+
+// The Amazon SageMaker run configuration.
+type SageMakerRunConfigurationOutput struct {
+
+	// The tracking assets of the Amazon SageMaker.
+	//
+	// This member is required.
+	TrackingAssets map[string][]string
+
+	// The Amazon SageMaker account ID.
+	AccountId *string
+
+	// The Amazon SageMaker Region.
+	Region *string
 
 	noSmithyDocumentSerde
 }
@@ -3056,11 +5190,180 @@ func (*SelfGrantStatusOutputMemberRedshiftSelfGrantStatus) isSelfGrantStatusOutp
 // The single sign-on details in Amazon DataZone.
 type SingleSignOn struct {
 
+	// The ARN of the IDC instance.
+	IdcInstanceArn *string
+
 	// The type of single sign-on in Amazon DataZone.
 	Type AuthType
 
 	// The single sign-on user assignment in Amazon DataZone.
 	UserAssignment UserAssignment
+
+	noSmithyDocumentSerde
+}
+
+// The Spark EMR properties.
+type SparkEmrPropertiesInput struct {
+
+	// The compute ARN of Spark EMR.
+	ComputeArn *string
+
+	// The instance profile ARN of Spark EMR.
+	InstanceProfileArn *string
+
+	// The java virtual env of the Spark EMR.
+	JavaVirtualEnv *string
+
+	// The log URI of the Spark EMR.
+	LogUri *string
+
+	// The Python virtual env of the Spark EMR.
+	PythonVirtualEnv *string
+
+	// The runtime role of the Spark EMR.
+	RuntimeRole *string
+
+	// The certificates S3 URI of the Spark EMR.
+	TrustedCertificatesS3Uri *string
+
+	noSmithyDocumentSerde
+}
+
+// The Spark EMR properties.
+type SparkEmrPropertiesOutput struct {
+
+	// The compute ARN of the Spark EMR.
+	ComputeArn *string
+
+	// The credentials of the Spark EMR.
+	Credentials *UsernamePassword
+
+	// The credential expiration of the Spark EMR.
+	CredentialsExpiration *time.Time
+
+	// The governance type of the Spark EMR.
+	GovernanceType GovernanceType
+
+	// The instance profile ARN of the Spark EMR.
+	InstanceProfileArn *string
+
+	// The Java virtual env of the Spark EMR.
+	JavaVirtualEnv *string
+
+	// The livy endpoint of the Spark EMR.
+	LivyEndpoint *string
+
+	// The log URI of the Spark EMR.
+	LogUri *string
+
+	// The Python virtual env of the Spark EMR.
+	PythonVirtualEnv *string
+
+	// The runtime role of the Spark EMR.
+	RuntimeRole *string
+
+	// The trusted certificate S3 URL of the Spark EMR.
+	TrustedCertificatesS3Uri *string
+
+	noSmithyDocumentSerde
+}
+
+// The Spark EMR properties patch.
+type SparkEmrPropertiesPatch struct {
+
+	// The compute ARN in the Spark EMR properties patch.
+	ComputeArn *string
+
+	// The instance profile ARN in the Spark EMR properties patch.
+	InstanceProfileArn *string
+
+	// The Java virtual evn in the Spark EMR properties patch.
+	JavaVirtualEnv *string
+
+	// The log URI in the Spark EMR properties patch.
+	LogUri *string
+
+	// The Python virtual env in the Spark EMR properties patch.
+	PythonVirtualEnv *string
+
+	// The runtime role in the Spark EMR properties patch.
+	RuntimeRole *string
+
+	// The trusted certificates S3 URI in the Spark EMR properties patch.
+	TrustedCertificatesS3Uri *string
+
+	noSmithyDocumentSerde
+}
+
+// The Spark Amazon Web Services Glue args.
+type SparkGlueArgs struct {
+
+	// The connection in the Spark Amazon Web Services Glue args.
+	Connection *string
+
+	noSmithyDocumentSerde
+}
+
+// The Spark Amazon Web Services Glue properties.
+type SparkGluePropertiesInput struct {
+
+	// The additional args in the Spark Amazon Web Services Glue properties.
+	AdditionalArgs *SparkGlueArgs
+
+	// The Amazon Web Services Glue connection name in the Spark Amazon Web Services
+	// Glue properties.
+	GlueConnectionName *string
+
+	// The Amazon Web Services Glue version in the Spark Amazon Web Services Glue
+	// properties.
+	GlueVersion *string
+
+	// The idle timeout in the Spark Amazon Web Services Glue properties.
+	IdleTimeout *int32
+
+	// The Java virtual env in the Spark Amazon Web Services Glue properties.
+	JavaVirtualEnv *string
+
+	// The number of workers in the Spark Amazon Web Services Glue properties.
+	NumberOfWorkers *int32
+
+	// The Python virtual env in the Spark Amazon Web Services Glue properties.
+	PythonVirtualEnv *string
+
+	// The worker type in the Spark Amazon Web Services Glue properties.
+	WorkerType *string
+
+	noSmithyDocumentSerde
+}
+
+// The Spark Amazon Web Services Glue properties.
+type SparkGluePropertiesOutput struct {
+
+	// The additional args in the Spark Amazon Web Services Glue properties.
+	AdditionalArgs *SparkGlueArgs
+
+	// The Amazon Web Services Glue connection name in the Spark Amazon Web Services
+	// Glue properties.
+	GlueConnectionName *string
+
+	// The Amazon Web Services Glue version in the Spark Amazon Web Services Glue
+	// properties.
+	GlueVersion *string
+
+	// The idle timeout in the Spark Amazon Web Services Glue properties.
+	IdleTimeout *int32
+
+	// The Java virtual env in the Spark Amazon Web Services Glue properties.
+	JavaVirtualEnv *string
+
+	// The number of workers in the Spark Amazon Web Services Glue properties.
+	NumberOfWorkers *int32
+
+	// The Python virtual env in the Spark Amazon Web Services Glue properties.
+	PythonVirtualEnv *string
+
+	// The worker type in the Spark Amazon Web Services Glue properties.
+	WorkerType *string
 
 	noSmithyDocumentSerde
 }
@@ -3098,6 +5401,9 @@ type SubscribedAsset struct {
 	// This member is required.
 	Status SubscriptionGrantStatus
 
+	// The asset scope of the subscribed asset.
+	AssetScope *AssetScope
+
 	// The failure cause included in the details of the asset for which the
 	// subscription grant is created.
 	FailureCause *FailureCause
@@ -3117,6 +5423,9 @@ type SubscribedAsset struct {
 
 // The details of the published asset for which the subscription grant is created.
 type SubscribedAssetListing struct {
+
+	// The asset scope of the subscribed asset listing.
+	AssetScope *AssetScope
 
 	// The identifier of the published asset for which the subscription grant is
 	// created.
@@ -3411,6 +5720,12 @@ type SubscriptionRequestSummary struct {
 	// The decision comment of the subscription request.
 	DecisionComment *string
 
+	// The ID of the existing subscription.
+	ExistingSubscriptionId *string
+
+	// The summary of the metadata forms.
+	MetadataFormsSummary []MetadataFormSummary
+
 	// The identifier of the subscription request reviewer.
 	ReviewerId *string
 
@@ -3530,11 +5845,6 @@ type SubscriptionTargetSummary struct {
 	// This member is required.
 	Id *string
 
-	// The manage access role specified in the subscription target.
-	//
-	// This member is required.
-	ManageAccessRole *string
-
 	// The name of the subscription target.
 	//
 	// This member is required.
@@ -3559,6 +5869,9 @@ type SubscriptionTargetSummary struct {
 	//
 	// This member is required.
 	Type *string
+
+	// The manage access role specified in the subscription target.
+	ManageAccessRole *string
 
 	// The timestamp of when the subscription target was updated.
 	UpdatedAt *time.Time
@@ -3689,6 +6002,11 @@ type Topic struct {
 	noSmithyDocumentSerde
 }
 
+// The details of the policy of creating an environment.
+type Unit struct {
+	noSmithyDocumentSerde
+}
+
 // The user details of a project member.
 type UserDetails struct {
 
@@ -3699,6 +6017,50 @@ type UserDetails struct {
 
 	noSmithyDocumentSerde
 }
+
+// The username and password of a connection.
+type UsernamePassword struct {
+
+	// The password of a connection.
+	//
+	// This member is required.
+	Password *string
+
+	// The username of a connection.
+	//
+	// This member is required.
+	Username *string
+
+	noSmithyDocumentSerde
+}
+
+// The user policy grant principal.
+//
+// The following types satisfy this interface:
+//
+//	UserPolicyGrantPrincipalMemberAllUsersGrantFilter
+//	UserPolicyGrantPrincipalMemberUserIdentifier
+type UserPolicyGrantPrincipal interface {
+	isUserPolicyGrantPrincipal()
+}
+
+// The all users grant filter of the user policy grant principal.
+type UserPolicyGrantPrincipalMemberAllUsersGrantFilter struct {
+	Value AllUsersGrantFilter
+
+	noSmithyDocumentSerde
+}
+
+func (*UserPolicyGrantPrincipalMemberAllUsersGrantFilter) isUserPolicyGrantPrincipal() {}
+
+// The user ID of the user policy grant principal.
+type UserPolicyGrantPrincipalMemberUserIdentifier struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*UserPolicyGrantPrincipalMemberUserIdentifier) isUserPolicyGrantPrincipal() {}
 
 // The details of the user profile in Amazon DataZone.
 //
@@ -3762,20 +6124,39 @@ type UnknownUnionMember struct {
 
 func (*UnknownUnionMember) isActionParameters()              {}
 func (*UnknownUnionMember) isAssetFilterConfiguration()      {}
+func (*UnknownUnionMember) isAwsAccount()                    {}
+func (*UnknownUnionMember) isConnectionPropertiesInput()     {}
+func (*UnknownUnionMember) isConnectionPropertiesOutput()    {}
+func (*UnknownUnionMember) isConnectionPropertiesPatch()     {}
 func (*UnknownUnionMember) isDataSourceConfigurationInput()  {}
 func (*UnknownUnionMember) isDataSourceConfigurationOutput() {}
+func (*UnknownUnionMember) isDomainUnitGrantFilter()         {}
+func (*UnknownUnionMember) isDomainUnitOwnerProperties()     {}
+func (*UnknownUnionMember) isEventSummary()                  {}
 func (*UnknownUnionMember) isFilterClause()                  {}
 func (*UnknownUnionMember) isGrantedEntity()                 {}
 func (*UnknownUnionMember) isGrantedEntityInput()            {}
+func (*UnknownUnionMember) isGroupPolicyGrantPrincipal()     {}
+func (*UnknownUnionMember) isJobRunDetails()                 {}
 func (*UnknownUnionMember) isListingItem()                   {}
 func (*UnknownUnionMember) isMember()                        {}
 func (*UnknownUnionMember) isMemberDetails()                 {}
 func (*UnknownUnionMember) isModel()                         {}
+func (*UnknownUnionMember) isOwnerProperties()               {}
+func (*UnknownUnionMember) isOwnerPropertiesOutput()         {}
+func (*UnknownUnionMember) isPolicyGrantDetail()             {}
+func (*UnknownUnionMember) isPolicyGrantPrincipal()          {}
+func (*UnknownUnionMember) isProjectGrantFilter()            {}
 func (*UnknownUnionMember) isProvisioningConfiguration()     {}
 func (*UnknownUnionMember) isProvisioningProperties()        {}
+func (*UnknownUnionMember) isRedshiftCredentials()           {}
 func (*UnknownUnionMember) isRedshiftStorage()               {}
+func (*UnknownUnionMember) isRedshiftStorageProperties()     {}
+func (*UnknownUnionMember) isRegion()                        {}
 func (*UnknownUnionMember) isRowFilter()                     {}
 func (*UnknownUnionMember) isRowFilterExpression()           {}
+func (*UnknownUnionMember) isRuleDetail()                    {}
+func (*UnknownUnionMember) isRuleTarget()                    {}
 func (*UnknownUnionMember) isSearchInventoryResultItem()     {}
 func (*UnknownUnionMember) isSearchResultItem()              {}
 func (*UnknownUnionMember) isSearchTypesResultItem()         {}
@@ -3783,4 +6164,5 @@ func (*UnknownUnionMember) isSelfGrantStatusOutput()         {}
 func (*UnknownUnionMember) isSubscribedListingItem()         {}
 func (*UnknownUnionMember) isSubscribedPrincipal()           {}
 func (*UnknownUnionMember) isSubscribedPrincipalInput()      {}
+func (*UnknownUnionMember) isUserPolicyGrantPrincipal()      {}
 func (*UnknownUnionMember) isUserProfileDetails()            {}

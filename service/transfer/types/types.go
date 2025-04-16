@@ -84,8 +84,39 @@ type As2ConnectorConfig struct {
 	// A unique identifier for the partner profile for the connector.
 	PartnerProfileId *string
 
+	// Allows you to use the Amazon S3 Content-Type that is associated with objects in
+	// S3 instead of having the content type mapped based on the file extension. This
+	// parameter is enabled by default when you create an AS2 connector from the
+	// console, but disabled by default when you create an AS2 connector by calling the
+	// API directly.
+	PreserveContentType PreserveContentType
+
 	// The algorithm that is used to sign the AS2 messages sent with the connector.
 	SigningAlgorithm SigningAlg
+
+	noSmithyDocumentSerde
+}
+
+// A structure that contains the details for files transferred using an SFTP
+// connector, during a single transfer.
+type ConnectorFileTransferResult struct {
+
+	// The filename and path to where the file was sent to or retrieved from.
+	//
+	// This member is required.
+	FilePath *string
+
+	// The current status for the transfer.
+	//
+	// This member is required.
+	StatusCode TransferTableStatus
+
+	// For transfers that fail, this parameter contains a code indicating the reason.
+	// For example, RETRIEVE_FILE_NOT_FOUND
+	FailureCode *string
+
+	// For transfers that fail, this parameter describes the reason for the failure.
+	FailureMessage *string
 
 	noSmithyDocumentSerde
 }
@@ -135,6 +166,37 @@ type CopyStepDetails struct {
 	//   - To use the originally uploaded file location as input for this step, enter
 	//   ${original.file} .
 	SourceFileLocation *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains Amazon S3 locations for storing specific types of AS2 message files.
+type CustomDirectoriesType struct {
+
+	// Specifies a location to store failed AS2 message files.
+	//
+	// This member is required.
+	FailedFilesDirectory *string
+
+	// Specifies a location to store MDN files.
+	//
+	// This member is required.
+	MdnFilesDirectory *string
+
+	// Specifies a location to store the payload for AS2 message files.
+	//
+	// This member is required.
+	PayloadFilesDirectory *string
+
+	// Specifies a location to store AS2 status messages.
+	//
+	// This member is required.
+	StatusFilesDirectory *string
+
+	// Specifies a location to store temporary AS2 message files.
+	//
+	// This member is required.
+	TemporaryFilesDirectory *string
 
 	noSmithyDocumentSerde
 }
@@ -370,14 +432,51 @@ type DescribedAgreement struct {
 	// protocol.
 	BaseDirectory *string
 
+	// A CustomDirectoriesType structure. This structure specifies custom directories
+	// for storing various AS2 message files. You can specify directories for the
+	// following types of files.
+	//
+	//   - Failed files
+	//
+	//   - MDN files
+	//
+	//   - Payload files
+	//
+	//   - Status files
+	//
+	//   - Temporary files
+	CustomDirectories *CustomDirectoriesType
+
 	// The name or short description that's used to identify the agreement.
 	Description *string
+
+	//  Determines whether or not unsigned messages from your trading partners will be
+	// accepted.
+	//
+	//   - ENABLED : Transfer Family rejects unsigned messages from your trading
+	//   partner.
+	//
+	//   - DISABLED (default value): Transfer Family accepts unsigned messages from
+	//   your trading partner.
+	EnforceMessageSigning EnforceMessageSigningType
 
 	// A unique identifier for the AS2 local profile.
 	LocalProfileId *string
 
 	// A unique identifier for the partner profile used in the agreement.
 	PartnerProfileId *string
+
+	//  Determines whether or not Transfer Family appends a unique string of
+	// characters to the end of the AS2 message payload filename when saving it.
+	//
+	//   - ENABLED : the filename provided by your trading parter is preserved when the
+	//   file is saved.
+	//
+	//   - DISABLED (default value): when Transfer Family saves the file, the filename
+	//   is adjusted, as described in [File names and locations].
+	//
+	// [File names and locations]: https://docs.aws.amazon.com/transfer/latest/userguide/send-as2-messages.html#file-names-as2
+	PreserveFilename PreserveFilenameType
 
 	// A system-assigned unique identifier for a server instance. This identifier
 	// indicates the specific server that the agreement uses.
@@ -428,9 +527,8 @@ type DescribedCertificate struct {
 	// The serial number for the certificate.
 	Serial *string
 
-	// The certificate can be either ACTIVE , PENDING_ROTATION , or INACTIVE .
-	// PENDING_ROTATION means that this certificate will replace the current
-	// certificate when it expires.
+	// Currently, the only available status is ACTIVE : all other values are reserved
+	// for future use.
 	Status CertificateStatusType
 
 	// Key-value pairs that can be used to group and search for certificates.
@@ -598,6 +696,23 @@ type DescribedHostKey struct {
 	//
 	//   - ecdsa-sha2-nistp521
 	Type *string
+
+	noSmithyDocumentSerde
+}
+
+// A structure that contains the details of the IAM Identity Center used for your
+// web app. Returned during a call to DescribeWebApp .
+type DescribedIdentityCenterConfig struct {
+
+	// The Amazon Resource Name (ARN) for the IAM Identity Center application: this
+	// value is set automatically when you create your web app.
+	ApplicationArn *string
+
+	// The Amazon Resource Name (ARN) for the IAM Identity Center used for the web app.
+	InstanceArn *string
+
+	// The IAM role in IAM Identity Center used for the web app.
+	Role *string
 
 	noSmithyDocumentSerde
 }
@@ -961,6 +1076,10 @@ type DescribedUser struct {
 
 	// Specifies the public key portion of the Secure Shell (SSH) keys stored for the
 	// described user.
+	//
+	// To delete the public key body, set its value to zero keys, as shown here:
+	//
+	//     SshPublicKeys: []
 	SshPublicKeys []SshPublicKey
 
 	// Specifies the key-value pairs for the user requested. Tag can be used to search
@@ -973,6 +1092,99 @@ type DescribedUser struct {
 	UserName *string
 
 	noSmithyDocumentSerde
+}
+
+// A structure that describes the parameters for the web app, as identified by the
+// WebAppId .
+type DescribedWebApp struct {
+
+	// The Amazon Resource Name (ARN) of the web app.
+	//
+	// This member is required.
+	Arn *string
+
+	// The unique identifier for the web app.
+	//
+	// This member is required.
+	WebAppId *string
+
+	// The AccessEndpoint is the URL that you provide to your users for them to
+	// interact with the Transfer Family web app. You can specify a custom URL or use
+	// the default value.
+	AccessEndpoint *string
+
+	// A structure that contains the details for the identity provider used by the web
+	// app.
+	DescribedIdentityProviderDetails DescribedWebAppIdentityProviderDetails
+
+	// Key-value pairs that can be used to group and search for web apps. Tags are
+	// metadata attached to web apps for any purpose.
+	Tags []Tag
+
+	// The WebAppEndpoint is the unique URL for your Transfer Family web app. This is
+	// the value that you use when you configure Origins on CloudFront.
+	WebAppEndpoint *string
+
+	//  Setting for the type of endpoint policy for the web app. The default value is
+	// STANDARD .
+	//
+	// If your web app was created in an Amazon Web Services GovCloud (US) Region, the
+	// value of this parameter can be FIPS , which indicates the web app endpoint is
+	// FIPS-compliant.
+	WebAppEndpointPolicy WebAppEndpointPolicy
+
+	// A union that contains the value for number of concurrent connections or the
+	// user sessions on your web app.
+	WebAppUnits WebAppUnits
+
+	noSmithyDocumentSerde
+}
+
+// A structure that contains the customization fields for the web app. You can
+// provide a title, logo, and icon to customize the appearance of your web app.
+type DescribedWebAppCustomization struct {
+
+	// Returns the Amazon Resource Name (ARN) for the web app.
+	//
+	// This member is required.
+	Arn *string
+
+	// Returns the unique identifier for your web app.
+	//
+	// This member is required.
+	WebAppId *string
+
+	// Returns an icon file data string (in base64 encoding).
+	FaviconFile []byte
+
+	// Returns a logo file data string (in base64 encoding).
+	LogoFile []byte
+
+	// Returns the page title that you defined for your web app.
+	Title *string
+
+	noSmithyDocumentSerde
+}
+
+// Returns a structure that contains the identity provider details for your web
+// app.
+//
+// The following types satisfy this interface:
+//
+//	DescribedWebAppIdentityProviderDetailsMemberIdentityCenterConfig
+type DescribedWebAppIdentityProviderDetails interface {
+	isDescribedWebAppIdentityProviderDetails()
+}
+
+// Returns a structure for your identity provider details. This structure contains
+// the instance ARN and role being used for the web app.
+type DescribedWebAppIdentityProviderDetailsMemberIdentityCenterConfig struct {
+	Value DescribedIdentityCenterConfig
+
+	noSmithyDocumentSerde
+}
+
+func (*DescribedWebAppIdentityProviderDetailsMemberIdentityCenterConfig) isDescribedWebAppIdentityProviderDetails() {
 }
 
 // Describes the properties of the specified workflow
@@ -1024,13 +1236,19 @@ type EfsFileLocation struct {
 // to your server's endpoint.
 //
 // After May 19, 2021, you won't be able to create a server using
-// EndpointType=VPC_ENDPOINT in your Amazon Web Servicesaccount if your account
+// EndpointType=VPC_ENDPOINT in your Amazon Web Services account if your account
 // hasn't already done so before May 19, 2021. If you have already created servers
-// with EndpointType=VPC_ENDPOINT in your Amazon Web Servicesaccount on or before
+// with EndpointType=VPC_ENDPOINT in your Amazon Web Services account on or before
 // May 19, 2021, you will not be affected. After this date, use EndpointType = VPC .
 //
 // For more information, see
 // https://docs.aws.amazon.com/transfer/latest/userguide/create-server-in-vpc.html#deprecate-vpc-endpoint.
+//
+// It is recommended that you use VPC as the EndpointType . With this endpoint
+// type, you have the option to directly associate up to three Elastic IPv4
+// addresses (BYO IP included) with your server's endpoint and use VPC security
+// groups to restrict traffic by the client's public IP address. This is not
+// possible with EndpointType set to VPC_ENDPOINT .
 type EndpointDetails struct {
 
 	// A list of address allocation IDs that are required to attach an Elastic IP
@@ -1224,6 +1442,19 @@ type HomeDirectoryMapEntry struct {
 	// Transfer Family server. You would need to explicitly set Type to FILE if you
 	// want a mapping to have a file target.
 	Type MapType
+
+	noSmithyDocumentSerde
+}
+
+// A structure that describes the values to use for the IAM Identity Center
+// settings when you create or update a web app.
+type IdentityCenterConfig struct {
+
+	// The Amazon Resource Name (ARN) for the IAM Identity Center used for the web app.
+	InstanceArn *string
+
+	// The IAM role in IAM Identity Center used for the web app.
+	Role *string
 
 	noSmithyDocumentSerde
 }
@@ -1623,6 +1854,31 @@ type ListedUser struct {
 	noSmithyDocumentSerde
 }
 
+// a structure that contains details for the web app.
+type ListedWebApp struct {
+
+	// The Amazon Resource Name (ARN) for the web app.
+	//
+	// This member is required.
+	Arn *string
+
+	// The unique identifier for the web app.
+	//
+	// This member is required.
+	WebAppId *string
+
+	// The AccessEndpoint is the URL that you provide to your users for them to
+	// interact with the Transfer Family web app. You can specify a custom URL or use
+	// the default value.
+	AccessEndpoint *string
+
+	// The WebAppEndpoint is the unique URL for your Transfer Family web app. This is
+	// the value that you use when you configure Origins on CloudFront.
+	WebAppEndpoint *string
+
+	noSmithyDocumentSerde
+}
+
 // Contains the identifier, text description, and Amazon Resource Name (ARN) for
 // the workflow.
 type ListedWorkflow struct {
@@ -1976,6 +2232,36 @@ type TagStepDetails struct {
 	noSmithyDocumentSerde
 }
 
+// A structure that describes the values to use for the IAM Identity Center
+// settings when you update a web app.
+type UpdateWebAppIdentityCenterConfig struct {
+
+	// The IAM role used to access IAM Identity Center.
+	Role *string
+
+	noSmithyDocumentSerde
+}
+
+// A union that contains the UpdateWebAppIdentityCenterConfig object.
+//
+// The following types satisfy this interface:
+//
+//	UpdateWebAppIdentityProviderDetailsMemberIdentityCenterConfig
+type UpdateWebAppIdentityProviderDetails interface {
+	isUpdateWebAppIdentityProviderDetails()
+}
+
+// A structure that describes the values to use for the IAM Identity Center
+// settings when you update a web app.
+type UpdateWebAppIdentityProviderDetailsMemberIdentityCenterConfig struct {
+	Value UpdateWebAppIdentityCenterConfig
+
+	noSmithyDocumentSerde
+}
+
+func (*UpdateWebAppIdentityProviderDetailsMemberIdentityCenterConfig) isUpdateWebAppIdentityProviderDetails() {
+}
+
 // Specifies the user name, server ID, and session ID for a workflow.
 type UserDetails struct {
 
@@ -1995,6 +2281,49 @@ type UserDetails struct {
 
 	noSmithyDocumentSerde
 }
+
+// A union that contains the IdentityCenterConfig object.
+//
+// The following types satisfy this interface:
+//
+//	WebAppIdentityProviderDetailsMemberIdentityCenterConfig
+type WebAppIdentityProviderDetails interface {
+	isWebAppIdentityProviderDetails()
+}
+
+// A structure that describes the values to use for the IAM Identity Center
+// settings when you create a web app.
+type WebAppIdentityProviderDetailsMemberIdentityCenterConfig struct {
+	Value IdentityCenterConfig
+
+	noSmithyDocumentSerde
+}
+
+func (*WebAppIdentityProviderDetailsMemberIdentityCenterConfig) isWebAppIdentityProviderDetails() {}
+
+// Contains an integer value that represents the value for number of concurrent
+// connections or the user sessions on your web app.
+//
+// The following types satisfy this interface:
+//
+//	WebAppUnitsMemberProvisioned
+type WebAppUnits interface {
+	isWebAppUnits()
+}
+
+// An integer that represents the number of units for your desired number of
+// concurrent connections, or the number of user sessions on your web app at the
+// same time.
+//
+// Each increment allows an additional 250 concurrent sessions: a value of 1 sets
+// the number of concurrent sessions to 250; 2 sets a value of 500, and so on.
+type WebAppUnitsMemberProvisioned struct {
+	Value int32
+
+	noSmithyDocumentSerde
+}
+
+func (*WebAppUnitsMemberProvisioned) isWebAppUnits() {}
 
 // Specifies the workflow ID for the workflow to assign and the execution role
 // that's used for executing the workflow.
@@ -2028,6 +2357,8 @@ type WorkflowDetails struct {
 	// attach a workflow to a server that executes whenever there is a partial upload.
 	//
 	// A partial upload occurs when a file is open when the session disconnects.
+	//
+	// OnPartialUpload can contain a maximum of one WorkflowDetail object.
 	OnPartialUpload []WorkflowDetail
 
 	// A trigger that starts a workflow: the workflow begins to execute after a file
@@ -2038,6 +2369,8 @@ type WorkflowDetails struct {
 	//
 	//     aws transfer update-server --server-id s-01234567890abcdef --workflow-details
 	//     '{"OnUpload":[]}'
+	//
+	// OnUpload can contain a maximum of one WorkflowDetail object.
 	OnUpload []WorkflowDetail
 
 	noSmithyDocumentSerde
@@ -2106,3 +2439,17 @@ type WorkflowStep struct {
 }
 
 type noSmithyDocumentSerde = smithydocument.NoSerde
+
+// UnknownUnionMember is returned when a union member is returned over the wire,
+// but has an unknown tag.
+type UnknownUnionMember struct {
+	Tag   string
+	Value []byte
+
+	noSmithyDocumentSerde
+}
+
+func (*UnknownUnionMember) isDescribedWebAppIdentityProviderDetails() {}
+func (*UnknownUnionMember) isUpdateWebAppIdentityProviderDetails()    {}
+func (*UnknownUnionMember) isWebAppIdentityProviderDetails()          {}
+func (*UnknownUnionMember) isWebAppUnits()                            {}

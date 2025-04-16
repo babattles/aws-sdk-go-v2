@@ -11,7 +11,6 @@ import (
 	smithytime "github.com/aws/smithy-go/time"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	smithywaiter "github.com/aws/smithy-go/waiter"
-	jmespath "github.com/jmespath/go-jmespath"
 	"time"
 )
 
@@ -103,6 +102,9 @@ func (c *Client) addOperationGetServiceInstanceMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -119,6 +121,9 @@ func (c *Client) addOperationGetServiceInstanceMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetServiceInstanceValidationMiddleware(stack); err != nil {
@@ -140,6 +145,18 @@ func (c *Client) addOperationGetServiceInstanceMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -307,39 +324,38 @@ func (w *ServiceInstanceDeployedWaiter) WaitForOutput(ctx context.Context, param
 func serviceInstanceDeployedStateRetryable(ctx context.Context, input *GetServiceInstanceInput, output *GetServiceInstanceOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("serviceInstance.deploymentStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.ServiceInstance
+		var v2 types.DeploymentStatus
+		if v1 != nil {
+			v3 := v1.DeploymentStatus
+			v2 = v3
 		}
-
 		expectedValue := "SUCCEEDED"
-		value, ok := pathValue.(types.DeploymentStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.DeploymentStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v2)
+		if pathValue == expectedValue {
 			return false, nil
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("serviceInstance.deploymentStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.ServiceInstance
+		var v2 types.DeploymentStatus
+		if v1 != nil {
+			v3 := v1.DeploymentStatus
+			v2 = v3
 		}
-
 		expectedValue := "FAILED"
-		value, ok := pathValue.(types.DeploymentStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.DeploymentStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v2)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 

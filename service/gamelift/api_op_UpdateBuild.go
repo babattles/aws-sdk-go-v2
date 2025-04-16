@@ -46,12 +46,12 @@ type UpdateBuildInput struct {
 	// This member is required.
 	BuildId *string
 
-	// A descriptive label associated with a build. Build names don't need to be
-	// unique.
+	// A descriptive label that is associated with a build. Build names do not need to
+	// be unique.
 	Name *string
 
-	// Version information associated with a build or script. Version strings don't
-	// need to be unique.
+	// Version information that is associated with a build or script. Version strings
+	// do not need to be unique.
 	Version *string
 
 	noSmithyDocumentSerde
@@ -111,6 +111,9 @@ func (c *Client) addOperationUpdateBuildMiddlewares(stack *middleware.Stack, opt
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -127,6 +130,9 @@ func (c *Client) addOperationUpdateBuildMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateBuildValidationMiddleware(stack); err != nil {
@@ -148,6 +154,18 @@ func (c *Client) addOperationUpdateBuildMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

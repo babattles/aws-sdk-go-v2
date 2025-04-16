@@ -13,7 +13,7 @@ import (
 // Attempts to cancel a job to create a one-time backup of a resource.
 //
 // This action is not supported for the following services: Amazon FSx for Windows
-// File Server, Amazon FSx for Lustre, Amazon FSx for NetApp ONTAP , Amazon FSx for
+// File Server, Amazon FSx for Lustre, Amazon FSx for NetApp ONTAP, Amazon FSx for
 // OpenZFS, Amazon DocumentDB (with MongoDB compatibility), Amazon RDS, Amazon
 // Aurora, and Amazon Neptune.
 func (c *Client) StopBackupJob(ctx context.Context, params *StopBackupJobInput, optFns ...func(*Options)) (*StopBackupJobOutput, error) {
@@ -91,6 +91,9 @@ func (c *Client) addOperationStopBackupJobMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -107,6 +110,9 @@ func (c *Client) addOperationStopBackupJobMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpStopBackupJobValidationMiddleware(stack); err != nil {
@@ -128,6 +134,18 @@ func (c *Client) addOperationStopBackupJobMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

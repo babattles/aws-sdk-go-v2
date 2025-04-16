@@ -34,7 +34,7 @@ type DescribeObservationInput struct {
 	// This member is required.
 	ObservationId *string
 
-	// The AWS account ID for the resource group owner.
+	// The Amazon Web Services account ID for the resource group owner.
 	AccountId *string
 
 	noSmithyDocumentSerde
@@ -94,6 +94,9 @@ func (c *Client) addOperationDescribeObservationMiddlewares(stack *middleware.St
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -110,6 +113,9 @@ func (c *Client) addOperationDescribeObservationMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeObservationValidationMiddleware(stack); err != nil {
@@ -131,6 +137,18 @@ func (c *Client) addOperationDescribeObservationMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

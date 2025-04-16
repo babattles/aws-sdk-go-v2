@@ -39,7 +39,8 @@ type UpdateDataLakeExceptionSubscriptionInput struct {
 	// This member is required.
 	SubscriptionProtocol *string
 
-	// The time-to-live (TTL) for the exception message to remain.
+	// The time-to-live (TTL) for the exception message to remain. It is the duration
+	// of time until which the exception message remains.
 	ExceptionTimeToLive *int64
 
 	noSmithyDocumentSerde
@@ -95,6 +96,9 @@ func (c *Client) addOperationUpdateDataLakeExceptionSubscriptionMiddlewares(stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -111,6 +115,9 @@ func (c *Client) addOperationUpdateDataLakeExceptionSubscriptionMiddlewares(stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateDataLakeExceptionSubscriptionValidationMiddleware(stack); err != nil {
@@ -132,6 +139,18 @@ func (c *Client) addOperationUpdateDataLakeExceptionSubscriptionMiddlewares(stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

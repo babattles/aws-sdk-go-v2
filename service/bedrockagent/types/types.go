@@ -3,6 +3,7 @@
 package types
 
 import (
+	"github.com/aws/aws-sdk-go-v2/service/bedrockagent/document"
 	smithydocument "github.com/aws/smithy-go/document"
 	"time"
 )
@@ -140,12 +141,18 @@ type Agent struct {
 	// This member is required.
 	UpdatedAt *time.Time
 
+	// The agent's collaboration settings.
+	AgentCollaboration AgentCollaboration
+
 	// A unique, case-sensitive identifier to ensure that the API request completes no
 	// more than one time. If this token matches a previous request, Amazon Bedrock
 	// ignores the request, but does not return an error. For more information, see [Ensuring idempotency].
 	//
 	// [Ensuring idempotency]: https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html
 	ClientToken *string
+
+	//  Contains custom orchestration configurations for the agent.
+	CustomOrchestration *CustomOrchestration
 
 	// The Amazon Resource Name (ARN) of the KMS key that encrypts the agent.
 	CustomerEncryptionKeyArn *string
@@ -168,6 +175,9 @@ type Agent struct {
 
 	// Contains memory configuration for the agent.
 	MemoryConfiguration *MemoryConfiguration
+
+	//  Specifies the orchestration strategy for the agent.
+	OrchestrationType OrchestrationType
 
 	// The time at which the agent was last prepared.
 	PreparedAt *time.Time
@@ -252,6 +262,15 @@ type AgentActionGroup struct {
 	// from the user. Each function represents an action in an action group.
 	FunctionSchema FunctionSchema
 
+	// The configuration settings for a computer use action.
+	//
+	// Computer use is a new Anthropic Claude model capability (in beta) available
+	// with Claude 3.7 Sonnet and Claude 3.5 Sonnet v2 only. For more information, see [Configure an Amazon Bedrock Agent to complete tasks with computer use tools]
+	// .
+	//
+	// [Configure an Amazon Bedrock Agent to complete tasks with computer use tools]: https://docs.aws.amazon.com/bedrock/latest/userguide/agent-computer-use.html
+	ParentActionGroupSignatureParams map[string]string
+
 	// If this field is set as AMAZON.UserInput , the agent can request the user for
 	// additional information when trying to complete a task. The description ,
 	// apiSchema , and actionGroupExecutor fields must be blank for this action group.
@@ -298,6 +317,8 @@ type AgentAlias struct {
 	//   - UPDATING – The agent alias is being updated.
 	//
 	//   - DELETING – The agent alias is being deleted.
+	//
+	//   - DISSOCIATED - The agent alias has no version associated with it.
 	//
 	// This member is required.
 	AgentAliasStatus AgentAliasStatus
@@ -405,6 +426,118 @@ type AgentAliasSummary struct {
 	// Contains details about the version of the agent with which the alias is
 	// associated.
 	RoutingConfiguration []AgentAliasRoutingConfigurationListItem
+
+	noSmithyDocumentSerde
+}
+
+// An agent collaborator.
+type AgentCollaborator struct {
+
+	// The collaborator's agent descriptor.
+	//
+	// This member is required.
+	AgentDescriptor *AgentDescriptor
+
+	// The collaborator's agent ID.
+	//
+	// This member is required.
+	AgentId *string
+
+	// The collaborator's agent version.
+	//
+	// This member is required.
+	AgentVersion *string
+
+	// The collaborator's instructions.
+	//
+	// This member is required.
+	CollaborationInstruction *string
+
+	// The collaborator's collaborator ID.
+	//
+	// This member is required.
+	CollaboratorId *string
+
+	// The collaborator's collaborator name.
+	//
+	// This member is required.
+	CollaboratorName *string
+
+	// When the collaborator was created.
+	//
+	// This member is required.
+	CreatedAt *time.Time
+
+	// When the collaborator was updated.
+	//
+	// This member is required.
+	LastUpdatedAt *time.Time
+
+	// The collaborator's client token.
+	ClientToken *string
+
+	// The collaborator's relay conversation history.
+	RelayConversationHistory RelayConversationHistory
+
+	noSmithyDocumentSerde
+}
+
+// An agent collaborator summary.
+type AgentCollaboratorSummary struct {
+
+	// The collaborator's agent descriptor.
+	//
+	// This member is required.
+	AgentDescriptor *AgentDescriptor
+
+	// The collaborator's agent ID.
+	//
+	// This member is required.
+	AgentId *string
+
+	// The collaborator's agent version.
+	//
+	// This member is required.
+	AgentVersion *string
+
+	// The collaborator's collaboration instruction.
+	//
+	// This member is required.
+	CollaborationInstruction *string
+
+	// The collaborator's ID.
+	//
+	// This member is required.
+	CollaboratorId *string
+
+	// The collaborator's name.
+	//
+	// This member is required.
+	CollaboratorName *string
+
+	// When the collaborator was created.
+	//
+	// This member is required.
+	CreatedAt *time.Time
+
+	// When the collaborator was last updated.
+	//
+	// This member is required.
+	LastUpdatedAt *time.Time
+
+	// The collaborator's relay conversation history.
+	//
+	// This member is required.
+	RelayConversationHistory RelayConversationHistory
+
+	noSmithyDocumentSerde
+}
+
+// An agent descriptor.
+type AgentDescriptor struct {
+
+	// The agent's alias ARN.
+	AliasArn *string
 
 	noSmithyDocumentSerde
 }
@@ -585,6 +718,9 @@ type AgentVersion struct {
 	// This member is required.
 	Version *string
 
+	// The agent's collaboration settings.
+	AgentCollaboration AgentCollaboration
+
 	// The Amazon Resource Name (ARN) of the KMS key that encrypts the agent.
 	CustomerEncryptionKeyArn *string
 
@@ -656,6 +792,15 @@ type AgentVersionSummary struct {
 	noSmithyDocumentSerde
 }
 
+// Defines tools, at least one of which must be requested by the model. No text is
+// generated but the results of tool use are sent back to the model to help
+// generate a response. For more information, see [Use a tool to complete an Amazon Bedrock model response].
+//
+// [Use a tool to complete an Amazon Bedrock model response]: https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html
+type AnyToolChoice struct {
+	noSmithyDocumentSerde
+}
+
 // Contains details about the OpenAPI schema for the action group. For more
 // information, see [Action group OpenAPI schemas]. You can either include the schema directly in the payload
 // field or you can upload it to an S3 bucket and specify the S3 bucket location in
@@ -695,6 +840,25 @@ type APISchemaMemberS3 struct {
 
 func (*APISchemaMemberS3) isAPISchema() {}
 
+// Defines tools. The model automatically decides whether to call a tool or to
+// generate text instead. For more information, see [Use a tool to complete an Amazon Bedrock model response].
+//
+// [Use a tool to complete an Amazon Bedrock model response]: https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html
+type AutoToolChoice struct {
+	noSmithyDocumentSerde
+}
+
+// Contains configurations for using Amazon Bedrock Data Automation as the parser
+// for ingesting your data sources.
+type BedrockDataAutomationConfiguration struct {
+
+	// Specifies whether to enable parsing of multimodal data, including both text
+	// and/or images.
+	ParsingModality ParsingModality
+
+	noSmithyDocumentSerde
+}
+
 // The vector configuration details for the Bedrock embeddings model.
 type BedrockEmbeddingModelConfiguration struct {
 
@@ -702,19 +866,148 @@ type BedrockEmbeddingModelConfiguration struct {
 	// embeddings model.
 	Dimensions *int32
 
+	// The data type for the vectors when using a model to convert text into vector
+	// embeddings. The model must support the specified data type for vector
+	// embeddings. Floating-point (float32) is the default data type, and is supported
+	// by most models for vector embeddings. See [Supported embeddings models]for information on the available
+	// models and their vector data types.
+	//
+	// [Supported embeddings models]: https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-supported.html
+	EmbeddingDataType EmbeddingDataType
+
 	noSmithyDocumentSerde
 }
 
 // Settings for a foundation model used to parse documents for a data source.
 type BedrockFoundationModelConfiguration struct {
 
-	// The model's ARN.
+	// The ARN of the foundation model to use for parsing.
 	//
 	// This member is required.
 	ModelArn *string
 
+	// Specifies whether to enable parsing of multimodal data, including both text
+	// and/or images.
+	ParsingModality ParsingModality
+
 	// Instructions for interpreting the contents of a document.
 	ParsingPrompt *ParsingPrompt
+
+	noSmithyDocumentSerde
+}
+
+// Context enrichment configuration is used to provide additional context to the
+// RAG application using Amazon Bedrock foundation models.
+type BedrockFoundationModelContextEnrichmentConfiguration struct {
+
+	// The enrichment stategy used to provide additional context. For example, Neptune
+	// GraphRAG uses Amazon Bedrock foundation models to perform chunk entity
+	// extraction.
+	//
+	// This member is required.
+	EnrichmentStrategyConfiguration *EnrichmentStrategyConfiguration
+
+	// The Amazon Resource Name (ARN) of the model used to create vector embeddings
+	// for the knowledge base.
+	//
+	// This member is required.
+	ModelArn *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about content defined inline in bytes.
+type ByteContentDoc struct {
+
+	// The base64-encoded string of the content.
+	//
+	// This member is required.
+	Data []byte
+
+	// The MIME type of the content. For a list of MIME types, see [Media Types]. The following
+	// MIME types are supported:
+	//
+	//   - text/plain
+	//
+	//   - text/html
+	//
+	//   - text/csv
+	//
+	//   - text/vtt
+	//
+	//   - message/rfc822
+	//
+	//   - application/xhtml+xml
+	//
+	//   - application/pdf
+	//
+	//   - application/msword
+	//
+	//   - application/vnd.ms-word.document.macroenabled.12
+	//
+	//   - application/vnd.ms-word.template.macroenabled.12
+	//
+	//   - application/vnd.ms-excel
+	//
+	//   - application/vnd.ms-excel.addin.macroenabled.12
+	//
+	//   - application/vnd.ms-excel.sheet.macroenabled.12
+	//
+	//   - application/vnd.ms-excel.template.macroenabled.12
+	//
+	//   - application/vnd.ms-excel.sheet.binary.macroenabled.12
+	//
+	//   - application/vnd.ms-spreadsheetml
+	//
+	//   - application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+	//
+	//   - application/vnd.openxmlformats-officedocument.spreadsheetml.template
+	//
+	//   - application/vnd.openxmlformats-officedocument.wordprocessingml.document
+	//
+	//   - application/vnd.openxmlformats-officedocument.wordprocessingml.template
+	//
+	// [Media Types]: https://www.iana.org/assignments/media-types/media-types.xhtml
+	//
+	// This member is required.
+	MimeType *string
+
+	noSmithyDocumentSerde
+}
+
+// Indicates where a cache checkpoint is located. All information before this
+// checkpoint is cached to be accessed on subsequent requests.
+type CachePointBlock struct {
+
+	// Indicates that the CachePointBlock is of the default type
+	//
+	// This member is required.
+	Type CachePointType
+
+	noSmithyDocumentSerde
+}
+
+// Contains configurations to use a prompt in a conversational format. For more
+// information, see [Create a prompt using Prompt management].
+//
+// [Create a prompt using Prompt management]: https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-create.html
+type ChatPromptTemplateConfiguration struct {
+
+	// Contains messages in the chat for the prompt.
+	//
+	// This member is required.
+	Messages []Message
+
+	// An array of the variables in the prompt template.
+	InputVariables []PromptInputVariable
+
+	// Contains system prompts to provide context to the model or to describe how it
+	// should behave.
+	System []SystemContentBlock
+
+	// Configuration information for the tools that the model can use when generating
+	// a response.
+	ToolConfiguration *ToolConfiguration
 
 	noSmithyDocumentSerde
 }
@@ -848,6 +1141,54 @@ type ConfluenceSourceConfiguration struct {
 	noSmithyDocumentSerde
 }
 
+// Contains the content for the message you pass to, or receive from a model. For
+// more information, see [Create a prompt using Prompt management].
+//
+// The following types satisfy this interface:
+//
+//	ContentBlockMemberCachePoint
+//	ContentBlockMemberText
+//
+// [Create a prompt using Prompt management]: https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-create.html
+type ContentBlock interface {
+	isContentBlock()
+}
+
+// Creates a cache checkpoint within a message.
+type ContentBlockMemberCachePoint struct {
+	Value CachePointBlock
+
+	noSmithyDocumentSerde
+}
+
+func (*ContentBlockMemberCachePoint) isContentBlock() {}
+
+// The text in the message.
+type ContentBlockMemberText struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*ContentBlockMemberText) isContentBlock() {}
+
+// Context enrichment configuration is used to provide additional context to the
+// RAG application.
+type ContextEnrichmentConfiguration struct {
+
+	// The method used for context enrichment. It must be Amazon Bedrock foundation
+	// models.
+	//
+	// This member is required.
+	Type ContextEnrichmentType
+
+	// The configuration of the Amazon Bedrock foundation model used for context
+	// enrichment.
+	BedrockFoundationModelConfiguration *BedrockFoundationModelContextEnrichmentConfiguration
+
+	noSmithyDocumentSerde
+}
+
 // The configuration of filtering the data source content. For example,
 // configuring regular expression patterns to include or exclude certain content.
 type CrawlFilterConfiguration struct {
@@ -862,6 +1203,86 @@ type CrawlFilterConfiguration struct {
 	// The configuration of filtering certain objects or content types of the data
 	// source.
 	PatternObjectFilter *PatternObjectFilterConfiguration
+
+	noSmithyDocumentSerde
+}
+
+// Contains configurations for a query, each of which defines information about
+// example queries to help the query engine generate appropriate SQL queries.
+type CuratedQuery struct {
+
+	// An example natural language query.
+	//
+	// This member is required.
+	NaturalLanguage *string
+
+	// The SQL equivalent of the natural language query.
+	//
+	// This member is required.
+	Sql *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about the content to ingest into a knowledge base
+// connected to a custom data source. Choose a sourceType and include the field
+// that corresponds to it.
+type CustomContent struct {
+
+	// A unique identifier for the document.
+	//
+	// This member is required.
+	CustomDocumentIdentifier *CustomDocumentIdentifier
+
+	// The source of the data to ingest.
+	//
+	// This member is required.
+	SourceType CustomSourceType
+
+	// Contains information about content defined inline to ingest into a knowledge
+	// base.
+	InlineContent *InlineContent
+
+	// Contains information about the Amazon S3 location of the file from which to
+	// ingest data.
+	S3Location *CustomS3Location
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about the identifier of the document to ingest into a
+// custom data source.
+type CustomDocumentIdentifier struct {
+
+	// The identifier of the document to ingest into a custom data source.
+	//
+	// This member is required.
+	Id *string
+
+	noSmithyDocumentSerde
+}
+
+// Details of custom orchestration.
+type CustomOrchestration struct {
+
+	//  The structure of the executor invoking the actions in custom orchestration.
+	Executor OrchestrationExecutor
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about the Amazon S3 location of the file containing the
+// content to ingest into a knowledge base connected to a custom data source.
+type CustomS3Location struct {
+
+	// The S3 URI of the file containing the content to ingest.
+	//
+	// This member is required.
+	Uri *string
+
+	// The identifier of the Amazon Web Services account that owns the S3 bucket
+	// containing the content to ingest.
+	BucketOwnerAccountId *string
 
 	noSmithyDocumentSerde
 }
@@ -888,6 +1309,17 @@ type CustomTransformationConfiguration struct {
 	//
 	// This member is required.
 	Transformations []Transformation
+
+	noSmithyDocumentSerde
+}
+
+// Details about a cyclic connection detected in the flow.
+type CyclicConnectionFlowValidationDetails struct {
+
+	// The name of the connection that causes the cycle in the flow.
+	//
+	// This member is required.
+	Connection *string
 
 	noSmithyDocumentSerde
 }
@@ -1023,11 +1455,114 @@ type DataSourceSummary struct {
 	noSmithyDocumentSerde
 }
 
+// Contains information about the content of a document. Choose a dataSourceType
+// and include the field that corresponds to it.
+type DocumentContent struct {
+
+	// The type of data source that is connected to the knowledge base to which to
+	// ingest this document.
+	//
+	// This member is required.
+	DataSourceType ContentDataSourceType
+
+	// Contains information about the content to ingest into a knowledge base
+	// connected to a custom data source.
+	Custom *CustomContent
+
+	// Contains information about the content to ingest into a knowledge base
+	// connected to an Amazon S3 data source
+	S3 *S3Content
+
+	noSmithyDocumentSerde
+}
+
+// Contains information that identifies the document.
+type DocumentIdentifier struct {
+
+	// The type of data source connected to the knowledge base that contains the
+	// document.
+	//
+	// This member is required.
+	DataSourceType ContentDataSourceType
+
+	// Contains information that identifies the document in a custom data source.
+	Custom *CustomDocumentIdentifier
+
+	// Contains information that identifies the document in an S3 data source.
+	S3 *S3Location
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about the metadata associate with the content to ingest
+// into a knowledge base. Choose a type and include the field that corresponds to
+// it.
+type DocumentMetadata struct {
+
+	// The type of the source source from which to add metadata.
+	//
+	// This member is required.
+	Type MetadataSourceType
+
+	// An array of objects, each of which defines a metadata attribute to associate
+	// with the content to ingest. You define the attributes inline.
+	InlineAttributes []MetadataAttribute
+
+	// The Amazon S3 location of the file containing metadata to associate with the
+	// content to ingest.
+	S3Location *CustomS3Location
+
+	noSmithyDocumentSerde
+}
+
+// Details about duplicate condition expressions found in a condition node.
+type DuplicateConditionExpressionFlowValidationDetails struct {
+
+	// The duplicated condition expression.
+	//
+	// This member is required.
+	Expression *string
+
+	// The name of the node containing the duplicate condition expressions.
+	//
+	// This member is required.
+	Node *string
+
+	noSmithyDocumentSerde
+}
+
+// Details about duplicate connections found between two nodes in the flow.
+type DuplicateConnectionsFlowValidationDetails struct {
+
+	// The name of the source node where the duplicate connection starts.
+	//
+	// This member is required.
+	Source *string
+
+	// The name of the target node where the duplicate connection ends.
+	//
+	// This member is required.
+	Target *string
+
+	noSmithyDocumentSerde
+}
+
 // The configuration details for the embeddings model.
 type EmbeddingModelConfiguration struct {
 
 	// The vector configuration details on the Bedrock embeddings model.
 	BedrockEmbeddingModelConfiguration *BedrockEmbeddingModelConfiguration
+
+	noSmithyDocumentSerde
+}
+
+// The strategy used for performing context enrichment.
+type EnrichmentStrategyConfiguration struct {
+
+	// The method used for the context enrichment strategy.
+	//
+	// This member is required.
+	Method EnrichmentStrategyMethod
 
 	noSmithyDocumentSerde
 }
@@ -1531,8 +2066,292 @@ type FlowValidation struct {
 	// This member is required.
 	Severity FlowValidationSeverity
 
+	// Specific details about the validation issue encountered in the flow.
+	Details FlowValidationDetails
+
+	// The type of validation issue encountered in the flow.
+	Type FlowValidationType
+
 	noSmithyDocumentSerde
 }
+
+// A union type containing various possible validation issues in the flow.
+//
+// The following types satisfy this interface:
+//
+//	FlowValidationDetailsMemberCyclicConnection
+//	FlowValidationDetailsMemberDuplicateConditionExpression
+//	FlowValidationDetailsMemberDuplicateConnections
+//	FlowValidationDetailsMemberIncompatibleConnectionDataType
+//	FlowValidationDetailsMemberMalformedConditionExpression
+//	FlowValidationDetailsMemberMalformedNodeInputExpression
+//	FlowValidationDetailsMemberMismatchedNodeInputType
+//	FlowValidationDetailsMemberMismatchedNodeOutputType
+//	FlowValidationDetailsMemberMissingConnectionConfiguration
+//	FlowValidationDetailsMemberMissingDefaultCondition
+//	FlowValidationDetailsMemberMissingEndingNodes
+//	FlowValidationDetailsMemberMissingNodeConfiguration
+//	FlowValidationDetailsMemberMissingNodeInput
+//	FlowValidationDetailsMemberMissingNodeOutput
+//	FlowValidationDetailsMemberMissingStartingNodes
+//	FlowValidationDetailsMemberMultipleNodeInputConnections
+//	FlowValidationDetailsMemberUnfulfilledNodeInput
+//	FlowValidationDetailsMemberUnknownConnectionCondition
+//	FlowValidationDetailsMemberUnknownConnectionSource
+//	FlowValidationDetailsMemberUnknownConnectionSourceOutput
+//	FlowValidationDetailsMemberUnknownConnectionTarget
+//	FlowValidationDetailsMemberUnknownConnectionTargetInput
+//	FlowValidationDetailsMemberUnknownNodeInput
+//	FlowValidationDetailsMemberUnknownNodeOutput
+//	FlowValidationDetailsMemberUnreachableNode
+//	FlowValidationDetailsMemberUnsatisfiedConnectionConditions
+//	FlowValidationDetailsMemberUnspecified
+type FlowValidationDetails interface {
+	isFlowValidationDetails()
+}
+
+// Details about a cyclic connection in the flow.
+type FlowValidationDetailsMemberCyclicConnection struct {
+	Value CyclicConnectionFlowValidationDetails
+
+	noSmithyDocumentSerde
+}
+
+func (*FlowValidationDetailsMemberCyclicConnection) isFlowValidationDetails() {}
+
+// Details about duplicate condition expressions in a node.
+type FlowValidationDetailsMemberDuplicateConditionExpression struct {
+	Value DuplicateConditionExpressionFlowValidationDetails
+
+	noSmithyDocumentSerde
+}
+
+func (*FlowValidationDetailsMemberDuplicateConditionExpression) isFlowValidationDetails() {}
+
+// Details about duplicate connections between nodes.
+type FlowValidationDetailsMemberDuplicateConnections struct {
+	Value DuplicateConnectionsFlowValidationDetails
+
+	noSmithyDocumentSerde
+}
+
+func (*FlowValidationDetailsMemberDuplicateConnections) isFlowValidationDetails() {}
+
+// Details about incompatible data types in a connection.
+type FlowValidationDetailsMemberIncompatibleConnectionDataType struct {
+	Value IncompatibleConnectionDataTypeFlowValidationDetails
+
+	noSmithyDocumentSerde
+}
+
+func (*FlowValidationDetailsMemberIncompatibleConnectionDataType) isFlowValidationDetails() {}
+
+// Details about a malformed condition expression in a node.
+type FlowValidationDetailsMemberMalformedConditionExpression struct {
+	Value MalformedConditionExpressionFlowValidationDetails
+
+	noSmithyDocumentSerde
+}
+
+func (*FlowValidationDetailsMemberMalformedConditionExpression) isFlowValidationDetails() {}
+
+// Details about a malformed input expression in a node.
+type FlowValidationDetailsMemberMalformedNodeInputExpression struct {
+	Value MalformedNodeInputExpressionFlowValidationDetails
+
+	noSmithyDocumentSerde
+}
+
+func (*FlowValidationDetailsMemberMalformedNodeInputExpression) isFlowValidationDetails() {}
+
+// Details about mismatched input data types in a node.
+type FlowValidationDetailsMemberMismatchedNodeInputType struct {
+	Value MismatchedNodeInputTypeFlowValidationDetails
+
+	noSmithyDocumentSerde
+}
+
+func (*FlowValidationDetailsMemberMismatchedNodeInputType) isFlowValidationDetails() {}
+
+// Details about mismatched output data types in a node.
+type FlowValidationDetailsMemberMismatchedNodeOutputType struct {
+	Value MismatchedNodeOutputTypeFlowValidationDetails
+
+	noSmithyDocumentSerde
+}
+
+func (*FlowValidationDetailsMemberMismatchedNodeOutputType) isFlowValidationDetails() {}
+
+// Details about missing configuration for a connection.
+type FlowValidationDetailsMemberMissingConnectionConfiguration struct {
+	Value MissingConnectionConfigurationFlowValidationDetails
+
+	noSmithyDocumentSerde
+}
+
+func (*FlowValidationDetailsMemberMissingConnectionConfiguration) isFlowValidationDetails() {}
+
+// Details about a missing default condition in a conditional node.
+type FlowValidationDetailsMemberMissingDefaultCondition struct {
+	Value MissingDefaultConditionFlowValidationDetails
+
+	noSmithyDocumentSerde
+}
+
+func (*FlowValidationDetailsMemberMissingDefaultCondition) isFlowValidationDetails() {}
+
+// Details about missing ending nodes in the flow.
+type FlowValidationDetailsMemberMissingEndingNodes struct {
+	Value MissingEndingNodesFlowValidationDetails
+
+	noSmithyDocumentSerde
+}
+
+func (*FlowValidationDetailsMemberMissingEndingNodes) isFlowValidationDetails() {}
+
+// Details about missing configuration for a node.
+type FlowValidationDetailsMemberMissingNodeConfiguration struct {
+	Value MissingNodeConfigurationFlowValidationDetails
+
+	noSmithyDocumentSerde
+}
+
+func (*FlowValidationDetailsMemberMissingNodeConfiguration) isFlowValidationDetails() {}
+
+// Details about a missing required input in a node.
+type FlowValidationDetailsMemberMissingNodeInput struct {
+	Value MissingNodeInputFlowValidationDetails
+
+	noSmithyDocumentSerde
+}
+
+func (*FlowValidationDetailsMemberMissingNodeInput) isFlowValidationDetails() {}
+
+// Details about a missing required output in a node.
+type FlowValidationDetailsMemberMissingNodeOutput struct {
+	Value MissingNodeOutputFlowValidationDetails
+
+	noSmithyDocumentSerde
+}
+
+func (*FlowValidationDetailsMemberMissingNodeOutput) isFlowValidationDetails() {}
+
+// Details about missing starting nodes in the flow.
+type FlowValidationDetailsMemberMissingStartingNodes struct {
+	Value MissingStartingNodesFlowValidationDetails
+
+	noSmithyDocumentSerde
+}
+
+func (*FlowValidationDetailsMemberMissingStartingNodes) isFlowValidationDetails() {}
+
+// Details about multiple connections to a single node input.
+type FlowValidationDetailsMemberMultipleNodeInputConnections struct {
+	Value MultipleNodeInputConnectionsFlowValidationDetails
+
+	noSmithyDocumentSerde
+}
+
+func (*FlowValidationDetailsMemberMultipleNodeInputConnections) isFlowValidationDetails() {}
+
+// Details about an unfulfilled node input with no valid connections.
+type FlowValidationDetailsMemberUnfulfilledNodeInput struct {
+	Value UnfulfilledNodeInputFlowValidationDetails
+
+	noSmithyDocumentSerde
+}
+
+func (*FlowValidationDetailsMemberUnfulfilledNodeInput) isFlowValidationDetails() {}
+
+// Details about an unknown condition for a connection.
+type FlowValidationDetailsMemberUnknownConnectionCondition struct {
+	Value UnknownConnectionConditionFlowValidationDetails
+
+	noSmithyDocumentSerde
+}
+
+func (*FlowValidationDetailsMemberUnknownConnectionCondition) isFlowValidationDetails() {}
+
+// Details about an unknown source node for a connection.
+type FlowValidationDetailsMemberUnknownConnectionSource struct {
+	Value UnknownConnectionSourceFlowValidationDetails
+
+	noSmithyDocumentSerde
+}
+
+func (*FlowValidationDetailsMemberUnknownConnectionSource) isFlowValidationDetails() {}
+
+// Details about an unknown source output for a connection.
+type FlowValidationDetailsMemberUnknownConnectionSourceOutput struct {
+	Value UnknownConnectionSourceOutputFlowValidationDetails
+
+	noSmithyDocumentSerde
+}
+
+func (*FlowValidationDetailsMemberUnknownConnectionSourceOutput) isFlowValidationDetails() {}
+
+// Details about an unknown target node for a connection.
+type FlowValidationDetailsMemberUnknownConnectionTarget struct {
+	Value UnknownConnectionTargetFlowValidationDetails
+
+	noSmithyDocumentSerde
+}
+
+func (*FlowValidationDetailsMemberUnknownConnectionTarget) isFlowValidationDetails() {}
+
+// Details about an unknown target input for a connection.
+type FlowValidationDetailsMemberUnknownConnectionTargetInput struct {
+	Value UnknownConnectionTargetInputFlowValidationDetails
+
+	noSmithyDocumentSerde
+}
+
+func (*FlowValidationDetailsMemberUnknownConnectionTargetInput) isFlowValidationDetails() {}
+
+// Details about an unknown input for a node.
+type FlowValidationDetailsMemberUnknownNodeInput struct {
+	Value UnknownNodeInputFlowValidationDetails
+
+	noSmithyDocumentSerde
+}
+
+func (*FlowValidationDetailsMemberUnknownNodeInput) isFlowValidationDetails() {}
+
+// Details about an unknown output for a node.
+type FlowValidationDetailsMemberUnknownNodeOutput struct {
+	Value UnknownNodeOutputFlowValidationDetails
+
+	noSmithyDocumentSerde
+}
+
+func (*FlowValidationDetailsMemberUnknownNodeOutput) isFlowValidationDetails() {}
+
+// Details about an unreachable node in the flow.
+type FlowValidationDetailsMemberUnreachableNode struct {
+	Value UnreachableNodeFlowValidationDetails
+
+	noSmithyDocumentSerde
+}
+
+func (*FlowValidationDetailsMemberUnreachableNode) isFlowValidationDetails() {}
+
+// Details about unsatisfied conditions for a connection.
+type FlowValidationDetailsMemberUnsatisfiedConnectionConditions struct {
+	Value UnsatisfiedConnectionConditionsFlowValidationDetails
+
+	noSmithyDocumentSerde
+}
+
+func (*FlowValidationDetailsMemberUnsatisfiedConnectionConditions) isFlowValidationDetails() {}
+
+// Details about an unspecified validation.
+type FlowValidationDetailsMemberUnspecified struct {
+	Value UnspecifiedFlowValidationDetails
+
+	noSmithyDocumentSerde
+}
+
+func (*FlowValidationDetailsMemberUnspecified) isFlowValidationDetails() {}
 
 // Contains information about a version of a flow.
 //
@@ -1647,7 +2466,7 @@ type FunctionSchemaMemberFunctions struct {
 
 func (*FunctionSchemaMemberFunctions) isFunctionSchema() {}
 
-// Details about the guardrail associated with an agent.
+// Details about a guardrail associated with a resource.
 type GuardrailConfiguration struct {
 
 	// The unique identifier of the guardrail.
@@ -1694,6 +2513,17 @@ type HierarchicalChunkingLevelConfiguration struct {
 	noSmithyDocumentSerde
 }
 
+// Details about incompatible data types in a connection between nodes.
+type IncompatibleConnectionDataTypeFlowValidationDetails struct {
+
+	// The name of the connection with incompatible data types.
+	//
+	// This member is required.
+	Connection *string
+
+	noSmithyDocumentSerde
+}
+
 // Contains inference parameters to use when the agent invokes a foundation model
 // in the part of the agent sequence defined by the promptType . For more
 // information, see [Inference parameters for foundation models].
@@ -1732,8 +2562,8 @@ type InferenceConfiguration struct {
 	noSmithyDocumentSerde
 }
 
-// Contains details about an ingestion job, which converts a data source to
-// embeddings for a vector store in knowledge base.
+// Contains details about a data ingestion job. Data sources are ingested into a
+// knowledge base so that Large Language Models (LLMs) can use your data.
 //
 // This data type is used in the following API operations:
 //
@@ -1748,63 +2578,68 @@ type InferenceConfiguration struct {
 // [GetIngestionJob response]: https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_GetIngestionJob.html#API_agent_GetIngestionJob_ResponseSyntax
 type IngestionJob struct {
 
-	// The unique identifier of the ingested data source.
+	// The unique identifier of the data source for the data ingestion job.
 	//
 	// This member is required.
 	DataSourceId *string
 
-	// The unique identifier of the ingestion job.
+	// The unique identifier of the data ingestion job.
 	//
 	// This member is required.
 	IngestionJobId *string
 
-	// The unique identifier of the knowledge base to which the data source is being
-	// added.
+	// The unique identifier of the knowledge for the data ingestion job.
 	//
 	// This member is required.
 	KnowledgeBaseId *string
 
-	// The time at which the ingestion job started.
+	// The time the data ingestion job started.
+	//
+	// If you stop a data ingestion job, the startedAt time is the time the job was
+	// started before the job was stopped.
 	//
 	// This member is required.
 	StartedAt *time.Time
 
-	// The status of the ingestion job.
+	// The status of the data ingestion job.
 	//
 	// This member is required.
 	Status IngestionJobStatus
 
-	// The time at which the ingestion job was last updated.
+	// The time the data ingestion job was last updated.
+	//
+	// If you stop a data ingestion job, the updatedAt time is the time the job was
+	// stopped.
 	//
 	// This member is required.
 	UpdatedAt *time.Time
 
-	// The description of the ingestion job.
+	// The description of the data ingestion job.
 	Description *string
 
-	// A list of reasons that the ingestion job failed.
+	// A list of reasons that the data ingestion job failed.
 	FailureReasons []string
 
-	// Contains statistics about the ingestion job.
+	// Contains statistics about the data ingestion job.
 	Statistics *IngestionJobStatistics
 
 	noSmithyDocumentSerde
 }
 
-// Defines a filter by which to filter the results.
+// The definition of a filter to filter the data.
 type IngestionJobFilter struct {
 
-	// The attribute by which to filter the results.
+	// The name of field or attribute to apply the filter.
 	//
 	// This member is required.
 	Attribute IngestionJobFilterAttribute
 
-	// The operation to carry out between the attribute and the values.
+	// The operation to apply to the field or attribute.
 	//
 	// This member is required.
 	Operator IngestionJobFilterOperator
 
-	// A list of values for the attribute.
+	// A list of values that belong to the field or attribute.
 	//
 	// This member is required.
 	Values []string
@@ -1812,15 +2647,15 @@ type IngestionJobFilter struct {
 	noSmithyDocumentSerde
 }
 
-// Parameters by which to sort the results.
+// The parameters of sorting the data.
 type IngestionJobSortBy struct {
 
-	// The attribute by which to sort the results.
+	// The name of field or attribute to apply sorting of data.
 	//
 	// This member is required.
 	Attribute IngestionJobSortByAttribute
 
-	// The order by which to sort the results.
+	// The order for sorting the data.
 	//
 	// This member is required.
 	Order SortOrder
@@ -1828,10 +2663,10 @@ type IngestionJobSortBy struct {
 	noSmithyDocumentSerde
 }
 
-// Contains the statistics for the ingestion job.
+// Contains the statistics for the data ingestion job.
 type IngestionJobStatistics struct {
 
-	// The number of source documents that was deleted.
+	// The number of source documents that were deleted.
 	NumberOfDocumentsDeleted int64
 
 	// The number of source documents that failed to be ingested.
@@ -1859,44 +2694,62 @@ type IngestionJobStatistics struct {
 	noSmithyDocumentSerde
 }
 
-// Contains details about an ingestion job.
+// Contains details about a data ingestion job.
 type IngestionJobSummary struct {
 
-	// The unique identifier of the data source in the ingestion job.
+	// The unique identifier of the data source for the data ingestion job.
 	//
 	// This member is required.
 	DataSourceId *string
 
-	// The unique identifier of the ingestion job.
+	// The unique identifier of the data ingestion job.
 	//
 	// This member is required.
 	IngestionJobId *string
 
-	// The unique identifier of the knowledge base to which the data source is added.
+	// The unique identifier of the knowledge base for the data ingestion job.
 	//
 	// This member is required.
 	KnowledgeBaseId *string
 
-	// The time at which the ingestion job was started.
+	// The time the data ingestion job started.
 	//
 	// This member is required.
 	StartedAt *time.Time
 
-	// The status of the ingestion job.
+	// The status of the data ingestion job.
 	//
 	// This member is required.
 	Status IngestionJobStatus
 
-	// The time at which the ingestion job was last updated.
+	// The time the data ingestion job was last updated.
 	//
 	// This member is required.
 	UpdatedAt *time.Time
 
-	// The description of the ingestion job.
+	// The description of the data ingestion job.
 	Description *string
 
-	// Contains statistics for the ingestion job.
+	// Contains statistics for the data ingestion job.
 	Statistics *IngestionJobStatistics
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about content defined inline to ingest into a data source.
+// Choose a type and include the field that corresponds to it.
+type InlineContent struct {
+
+	// The type of inline content to define.
+	//
+	// This member is required.
+	Type InlineContentType
+
+	// Contains information about content defined inline in bytes.
+	ByteContent *ByteContentDoc
+
+	// Contains information about content defined inline in text.
+	TextContent *TextContentDoc
 
 	noSmithyDocumentSerde
 }
@@ -1931,10 +2784,21 @@ type IteratorFlowNodeConfiguration struct {
 	noSmithyDocumentSerde
 }
 
+// Settings for an Amazon Kendra knowledge base.
+type KendraKnowledgeBaseConfiguration struct {
+
+	// The ARN of the Amazon Kendra index.
+	//
+	// This member is required.
+	KendraIndexArn *string
+
+	noSmithyDocumentSerde
+}
+
 // Contains information about a knowledge base.
 type KnowledgeBase struct {
 
-	// The time at which the knowledge base was created.
+	// The time the knowledge base was created.
 	//
 	// This member is required.
 	CreatedAt *time.Time
@@ -1980,12 +2844,7 @@ type KnowledgeBase struct {
 	// This member is required.
 	Status KnowledgeBaseStatus
 
-	// Contains details about the storage configuration of the knowledge base.
-	//
-	// This member is required.
-	StorageConfiguration *StorageConfiguration
-
-	// The time at which the knowledge base was last updated.
+	// The time the knowledge base was last updated.
 	//
 	// This member is required.
 	UpdatedAt *time.Time
@@ -1996,10 +2855,14 @@ type KnowledgeBase struct {
 	// A list of reasons that the API operation on the knowledge base failed.
 	FailureReasons []string
 
+	// Contains details about the storage configuration of the knowledge base.
+	StorageConfiguration *StorageConfiguration
+
 	noSmithyDocumentSerde
 }
 
-// Contains details about the embeddings configuration of the knowledge base.
+// Contains details about the vector embeddings configuration of the knowledge
+// base.
 type KnowledgeBaseConfiguration struct {
 
 	// The type of data that the data source is converted into for the knowledge base.
@@ -2007,9 +2870,90 @@ type KnowledgeBaseConfiguration struct {
 	// This member is required.
 	Type KnowledgeBaseType
 
-	// Contains details about the embeddings model that'sused to convert the data
-	// source.
+	// Settings for an Amazon Kendra knowledge base.
+	KendraKnowledgeBaseConfiguration *KendraKnowledgeBaseConfiguration
+
+	// Specifies configurations for a knowledge base connected to an SQL database.
+	SqlKnowledgeBaseConfiguration *SqlKnowledgeBaseConfiguration
+
+	// Contains details about the model that's used to convert the data source into
+	// vector embeddings.
 	VectorKnowledgeBaseConfiguration *VectorKnowledgeBaseConfiguration
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about a document to ingest into a knowledge base and
+// metadata to associate with it.
+type KnowledgeBaseDocument struct {
+
+	// Contains the content of the document.
+	//
+	// This member is required.
+	Content *DocumentContent
+
+	// Contains the metadata to associate with the document.
+	Metadata *DocumentMetadata
+
+	noSmithyDocumentSerde
+}
+
+// Contains the details for a document that was ingested or deleted.
+type KnowledgeBaseDocumentDetail struct {
+
+	// The identifier of the data source connected to the knowledge base that the
+	// document was ingested into or deleted from.
+	//
+	// This member is required.
+	DataSourceId *string
+
+	// Contains information that identifies the document.
+	//
+	// This member is required.
+	Identifier *DocumentIdentifier
+
+	// The identifier of the knowledge base that the document was ingested into or
+	// deleted from.
+	//
+	// This member is required.
+	KnowledgeBaseId *string
+
+	// The ingestion status of the document. The following statuses are possible:
+	//
+	//   - STARTED – You submitted the ingestion job containing the document.
+	//
+	//   - PENDING – The document is waiting to be ingested.
+	//
+	//   - IN_PROGRESS – The document is being ingested.
+	//
+	//   - INDEXED – The document was successfully indexed.
+	//
+	//   - PARTIALLY_INDEXED – The document was partially indexed.
+	//
+	//   - METADATA_PARTIALLY_INDEXED – You submitted metadata for an existing
+	//   document and it was partially indexed.
+	//
+	//   - METADATA_UPDATE_FAILED – You submitted a metadata update for an existing
+	//   document but it failed.
+	//
+	//   - FAILED – The document failed to be ingested.
+	//
+	//   - NOT_FOUND – The document wasn't found.
+	//
+	//   - IGNORED – The document was ignored during ingestion.
+	//
+	//   - DELETING – You submitted the delete job containing the document.
+	//
+	//   - DELETE_IN_PROGRESS – The document is being deleted.
+	//
+	// This member is required.
+	Status DocumentStatus
+
+	// The reason for the status. Appears alongside the status IGNORED .
+	StatusReason *string
+
+	// The date and time at which the document was last updated.
+	UpdatedAt *time.Time
 
 	noSmithyDocumentSerde
 }
@@ -2027,9 +2971,15 @@ type KnowledgeBaseFlowNodeConfiguration struct {
 	// This member is required.
 	KnowledgeBaseId *string
 
-	// The unique identifier of the model to use to generate a response from the query
-	// results. Omit this field if you want to return the retrieved results as an
+	// Contains configurations for a guardrail to apply during query and response
+	// generation for the knowledge base in this configuration.
+	GuardrailConfiguration *GuardrailConfiguration
+
+	// The unique identifier of the model or [inference profile] to use to generate a response from the
+	// query results. Omit this field if you want to return the retrieved results as an
 	// array.
+	//
+	// [inference profile]: https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html
 	ModelId *string
 
 	noSmithyDocumentSerde
@@ -2053,7 +3003,7 @@ type KnowledgeBaseSummary struct {
 	// This member is required.
 	Status KnowledgeBaseStatus
 
-	// The time at which the knowledge base was last updated.
+	// The time the knowledge base was last updated.
 	//
 	// This member is required.
 	UpdatedAt *time.Time
@@ -2101,6 +3051,48 @@ type LexFlowNodeConfiguration struct {
 	noSmithyDocumentSerde
 }
 
+// Details about a malformed condition expression in a node.
+type MalformedConditionExpressionFlowValidationDetails struct {
+
+	// The error message describing why the condition expression is malformed.
+	//
+	// This member is required.
+	Cause *string
+
+	// The name of the malformed condition.
+	//
+	// This member is required.
+	Condition *string
+
+	// The name of the node containing the malformed condition expression.
+	//
+	// This member is required.
+	Node *string
+
+	noSmithyDocumentSerde
+}
+
+// Details about a malformed input expression in a node.
+type MalformedNodeInputExpressionFlowValidationDetails struct {
+
+	// The error message describing why the input expression is malformed.
+	//
+	// This member is required.
+	Cause *string
+
+	// The name of the input with the malformed expression.
+	//
+	// This member is required.
+	Input *string
+
+	// The name of the node containing the malformed input expression.
+	//
+	// This member is required.
+	Node *string
+
+	noSmithyDocumentSerde
+}
+
 // Details of the memory configuration.
 type MemoryConfiguration struct {
 
@@ -2109,9 +3101,188 @@ type MemoryConfiguration struct {
 	// This member is required.
 	EnabledMemoryTypes []MemoryType
 
+	// Contains the configuration for SESSION_SUMMARY memory type enabled for the
+	// agent.
+	SessionSummaryConfiguration *SessionSummaryConfiguration
+
 	// The number of days the agent is configured to retain the conversational context.
 	StorageDays *int32
 
+	noSmithyDocumentSerde
+}
+
+// A message input or response from a model. For more information, see [Create a prompt using Prompt management].
+//
+// [Create a prompt using Prompt management]: https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-create.html
+type Message struct {
+
+	// The content in the message.
+	//
+	// This member is required.
+	Content []ContentBlock
+
+	// The role that the message belongs to.
+	//
+	// This member is required.
+	Role ConversationRole
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about a metadata attribute.
+type MetadataAttribute struct {
+
+	// The key of the metadata attribute.
+	//
+	// This member is required.
+	Key *string
+
+	// Contains the value of the metadata attribute.
+	//
+	// This member is required.
+	Value *MetadataAttributeValue
+
+	noSmithyDocumentSerde
+}
+
+// Contains the value of the metadata attribute. Choose a type and include the
+// field that corresponds to it.
+type MetadataAttributeValue struct {
+
+	// The type of the metadata attribute.
+	//
+	// This member is required.
+	Type MetadataValueType
+
+	// The value of the Boolean metadata attribute.
+	BooleanValue *bool
+
+	// The value of the numeric metadata attribute.
+	NumberValue *float64
+
+	// An array of strings that define the value of the metadata attribute.
+	StringListValue []string
+
+	// The value of the string metadata attribute.
+	StringValue *string
+
+	noSmithyDocumentSerde
+}
+
+// Details about mismatched input data types in a node.
+type MismatchedNodeInputTypeFlowValidationDetails struct {
+
+	// The expected data type for the node input.
+	//
+	// This member is required.
+	ExpectedType FlowNodeIODataType
+
+	// The name of the input with the mismatched data type.
+	//
+	// This member is required.
+	Input *string
+
+	// The name of the node containing the input with the mismatched data type.
+	//
+	// This member is required.
+	Node *string
+
+	noSmithyDocumentSerde
+}
+
+// Details about mismatched output data types in a node.
+type MismatchedNodeOutputTypeFlowValidationDetails struct {
+
+	// The expected data type for the node output.
+	//
+	// This member is required.
+	ExpectedType FlowNodeIODataType
+
+	// The name of the node containing the output with the mismatched data type.
+	//
+	// This member is required.
+	Node *string
+
+	// The name of the output with the mismatched data type.
+	//
+	// This member is required.
+	Output *string
+
+	noSmithyDocumentSerde
+}
+
+// Details about a connection missing required configuration.
+type MissingConnectionConfigurationFlowValidationDetails struct {
+
+	// The name of the connection missing configuration.
+	//
+	// This member is required.
+	Connection *string
+
+	noSmithyDocumentSerde
+}
+
+// Details about a missing default condition in a conditional node.
+type MissingDefaultConditionFlowValidationDetails struct {
+
+	// The name of the node missing the default condition.
+	//
+	// This member is required.
+	Node *string
+
+	noSmithyDocumentSerde
+}
+
+// Details about missing ending nodes (such as FlowOutputNode) in the flow.
+type MissingEndingNodesFlowValidationDetails struct {
+	noSmithyDocumentSerde
+}
+
+// Details about a node missing required configuration.
+type MissingNodeConfigurationFlowValidationDetails struct {
+
+	// The name of the node missing configuration.
+	//
+	// This member is required.
+	Node *string
+
+	noSmithyDocumentSerde
+}
+
+// Details about a missing required input in a node.
+type MissingNodeInputFlowValidationDetails struct {
+
+	// The name of the missing input.
+	//
+	// This member is required.
+	Input *string
+
+	// The name of the node missing the required input.
+	//
+	// This member is required.
+	Node *string
+
+	noSmithyDocumentSerde
+}
+
+// Details about a missing required output in a node.
+type MissingNodeOutputFlowValidationDetails struct {
+
+	// The name of the node missing the required output.
+	//
+	// This member is required.
+	Node *string
+
+	// The name of the missing output.
+	//
+	// This member is required.
+	Output *string
+
+	noSmithyDocumentSerde
+}
+
+// Details about missing starting nodes (such as FlowInputNode) in the flow.
+type MissingStartingNodesFlowValidationDetails struct {
 	noSmithyDocumentSerde
 }
 
@@ -2155,12 +3326,126 @@ type MongoDbAtlasConfiguration struct {
 	// MongoDB Atlas cluster.
 	EndpointServiceName *string
 
+	// The name of the text search index in the MongoDB collection. This is required
+	// for using the hybrid search feature.
+	TextIndexName *string
+
 	noSmithyDocumentSerde
 }
 
 // Contains the names of the fields to which to map information about the vector
 // store.
 type MongoDbAtlasFieldMapping struct {
+
+	// The name of the field in which Amazon Bedrock stores metadata about the vector
+	// store.
+	//
+	// This member is required.
+	MetadataField *string
+
+	// The name of the field in which Amazon Bedrock stores the raw text from your
+	// data. The text is split according to the chunking strategy you choose.
+	//
+	// This member is required.
+	TextField *string
+
+	// The name of the field in which Amazon Bedrock stores the vector embeddings for
+	// your data sources.
+	//
+	// This member is required.
+	VectorField *string
+
+	noSmithyDocumentSerde
+}
+
+// Details about multiple connections to a single node input.
+type MultipleNodeInputConnectionsFlowValidationDetails struct {
+
+	// The name of the input with multiple connections to it.
+	//
+	// This member is required.
+	Input *string
+
+	// The name of the node containing the input with multiple connections.
+	//
+	// This member is required.
+	Node *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains details about the storage configuration of the knowledge base in
+// Amazon Neptune Analytics. For more information, see [Create a vector index in Amazon Neptune Analytics].
+//
+// [Create a vector index in Amazon Neptune Analytics]: https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-neptune.html
+type NeptuneAnalyticsConfiguration struct {
+
+	// Contains the names of the fields to which to map information about the vector
+	// store.
+	//
+	// This member is required.
+	FieldMapping *NeptuneAnalyticsFieldMapping
+
+	// The Amazon Resource Name (ARN) of the Neptune Analytics vector store.
+	//
+	// This member is required.
+	GraphArn *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains the names of the fields to which to map information about the vector
+// store.
+type NeptuneAnalyticsFieldMapping struct {
+
+	// The name of the field in which Amazon Bedrock stores metadata about the vector
+	// store.
+	//
+	// This member is required.
+	MetadataField *string
+
+	// The name of the field in which Amazon Bedrock stores the raw text from your
+	// data. The text is split according to the chunking strategy you choose.
+	//
+	// This member is required.
+	TextField *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains details about the Managed Cluster configuration of the knowledge base
+// in Amazon OpenSearch Service. For more information, see [Create a vector index in OpenSearch Managed Cluster].
+//
+// [Create a vector index in OpenSearch Managed Cluster]: https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-osm.html
+type OpenSearchManagedClusterConfiguration struct {
+
+	// The Amazon Resource Name (ARN) of the OpenSearch domain.
+	//
+	// This member is required.
+	DomainArn *string
+
+	// The endpoint URL the OpenSearch domain.
+	//
+	// This member is required.
+	DomainEndpoint *string
+
+	// Contains the names of the fields to which to map information about the vector
+	// store.
+	//
+	// This member is required.
+	FieldMapping *OpenSearchManagedClusterFieldMapping
+
+	// The name of the vector store.
+	//
+	// This member is required.
+	VectorIndexName *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains the names of the fields to which to map information about the vector
+// store.
+type OpenSearchManagedClusterFieldMapping struct {
 
 	// The name of the field in which Amazon Bedrock stores metadata about the vector
 	// store.
@@ -2233,6 +3518,28 @@ type OpenSearchServerlessFieldMapping struct {
 	noSmithyDocumentSerde
 }
 
+//	Contains details about the Lambda function containing the orchestration logic
+//
+// carried out upon invoking the custom orchestration.
+//
+// The following types satisfy this interface:
+//
+//	OrchestrationExecutorMemberLambda
+type OrchestrationExecutor interface {
+	isOrchestrationExecutor()
+}
+
+//	The Amazon Resource Name (ARN) of the Lambda function containing the business
+//
+// logic that is carried out upon invoking the action.
+type OrchestrationExecutorMemberLambda struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*OrchestrationExecutorMemberLambda) isOrchestrationExecutor() {}
+
 // Contains configurations for an output flow node in the flow. You specify the
 // data type expected for the input into the node in the type field and how to
 // return the final output in the expression field.
@@ -2277,23 +3584,16 @@ type ParameterDetail struct {
 	noSmithyDocumentSerde
 }
 
-// Settings for parsing document contents. By default, the service converts the
-// contents of each document into text before splitting it into chunks. To improve
-// processing of PDF files with tables and images, you can configure the data
-// source to convert the pages of text into images and use a model to describe the
-// contents of each page.
+// Settings for parsing document contents. If you exclude this field, the default
+// parser converts the contents of each document into text before splitting it into
+// chunks. Specify the parsing strategy to use in the parsingStrategy field and
+// include the relevant configuration, or omit it to use the Amazon Bedrock default
+// parser. For more information, see [Parsing options for your data source].
 //
-// To use a model to parse PDF documents, set the parsing strategy to
-// BEDROCK_FOUNDATION_MODEL and specify the model to use by ARN. You can also
-// override the default parsing prompt with instructions for how to interpret
-// images and tables in your documents. The following models are supported.
+// If you specify BEDROCK_DATA_AUTOMATION or BEDROCK_FOUNDATION_MODEL and it fails
+// to parse a file, the Amazon Bedrock default parser will be used instead.
 //
-//   - Anthropic Claude 3 Sonnet - anthropic.claude-3-sonnet-20240229-v1:0
-//
-//   - Anthropic Claude 3 Haiku - anthropic.claude-3-haiku-20240307-v1:0
-//
-// You can get the ARN of a model with the action. Standard model usage charges
-// apply for the foundation model parsing strategy.
+// [Parsing options for your data source]: https://docs.aws.amazon.com/bedrock/latest/userguide/kb-advanced-parsing.html
 type ParsingConfiguration struct {
 
 	// The parsing strategy for the data source.
@@ -2301,7 +3601,14 @@ type ParsingConfiguration struct {
 	// This member is required.
 	ParsingStrategy ParsingStrategy
 
-	// Settings for a foundation model used to parse documents for a data source.
+	// If you specify BEDROCK_DATA_AUTOMATION as the parsing strategy for ingesting
+	// your data source, use this object to modify configurations for using the Amazon
+	// Bedrock Data Automation parser.
+	BedrockDataAutomationConfiguration *BedrockDataAutomationConfiguration
+
+	// If you specify BEDROCK_FOUNDATION_MODEL as the parsing strategy for ingesting
+	// your data source, use this object to modify configurations for using a
+	// foundation model to parse documents.
 	BedrockFoundationModelConfiguration *BedrockFoundationModelConfiguration
 
 	noSmithyDocumentSerde
@@ -2403,11 +3710,34 @@ type PineconeFieldMapping struct {
 	noSmithyDocumentSerde
 }
 
+// Contains specifications for an Amazon Bedrock agent with which to use the
+// prompt. For more information, see [Create a prompt using Prompt management]and [Automate tasks in your application using conversational agents].
+//
+// [Automate tasks in your application using conversational agents]: https://docs.aws.amazon.com/bedrock/latest/userguide/agents.html
+// [Create a prompt using Prompt management]: https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-create.html
+type PromptAgentResource struct {
+
+	// The ARN of the agent with which to use the prompt.
+	//
+	// This member is required.
+	AgentIdentifier *string
+
+	noSmithyDocumentSerde
+}
+
 // Contains configurations to override a prompt template in one part of an agent
 // sequence. For more information, see [Advanced prompts].
 //
 // [Advanced prompts]: https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts.html
 type PromptConfiguration struct {
+
+	// If the Converse or ConverseStream operations support the model,
+	// additionalModelRequestFields contains additional inference parameters, beyond
+	// the base set of inference parameters in the inferenceConfiguration field.
+	//
+	// For more information, see Inference request parameters and response fields for
+	// foundation models in the Amazon Bedrock user guide.
+	AdditionalModelRequestFields document.Interface
 
 	// Defines the prompt template with which to replace the default prompt template.
 	// You can use placeholder variables in the base prompt template to customize the
@@ -2416,6 +3746,9 @@ type PromptConfiguration struct {
 	// [Configure the prompt templates]: https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts-configure.html
 	// [Prompt template placeholder variables]: https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-placeholders.html
 	BasePromptTemplate *string
+
+	// The agent's foundation model.
+	FoundationModel *string
 
 	// Contains inference parameters to use when the agent invokes a foundation model
 	// in the part of the agent sequence defined by the promptType . For more
@@ -2426,7 +3759,7 @@ type PromptConfiguration struct {
 
 	// Specifies whether to override the default parser Lambda function when parsing
 	// the raw foundation model output in the part of the agent sequence defined by the
-	// promptType . If you set the field as OVERRIDEN , the overrideLambda field in
+	// promptType . If you set the field as OVERRIDDEN , the overrideLambda field in
 	// the [PromptOverrideConfiguration]must be specified with the ARN of a Lambda function.
 	//
 	// [PromptOverrideConfiguration]: https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_PromptOverrideConfiguration.html
@@ -2471,13 +3804,19 @@ type PromptFlowNodeConfiguration struct {
 	// This member is required.
 	SourceConfiguration PromptFlowNodeSourceConfiguration
 
+	// Contains configurations for a guardrail to apply to the prompt in this node and
+	// the response generated from it.
+	GuardrailConfiguration *GuardrailConfiguration
+
 	noSmithyDocumentSerde
 }
 
 // Contains configurations for a prompt defined inline in the node.
 type PromptFlowNodeInlineConfiguration struct {
 
-	// The unique identifier of the model to run inference with.
+	// The unique identifier of the model or [inference profile] to run inference with.
+	//
+	// [inference profile]: https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html
 	//
 	// This member is required.
 	ModelId *string
@@ -2492,6 +3831,9 @@ type PromptFlowNodeInlineConfiguration struct {
 	//
 	// This member is required.
 	TemplateType PromptTemplateType
+
+	// Additional fields to be included in the model request for the Prompt node.
+	AdditionalModelRequestFields document.Interface
 
 	// Contains inference configurations for the prompt.
 	InferenceConfiguration PromptInferenceConfiguration
@@ -2539,6 +3881,27 @@ type PromptFlowNodeSourceConfigurationMemberResource struct {
 
 func (*PromptFlowNodeSourceConfigurationMemberResource) isPromptFlowNodeSourceConfiguration() {}
 
+// Contains specifications for a generative AI resource with which to use the
+// prompt. For more information, see [Create a prompt using Prompt management].
+//
+// The following types satisfy this interface:
+//
+//	PromptGenAiResourceMemberAgent
+//
+// [Create a prompt using Prompt management]: https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-create.html
+type PromptGenAiResource interface {
+	isPromptGenAiResource()
+}
+
+// Specifies an Amazon Bedrock agent with which to use the prompt.
+type PromptGenAiResourceMemberAgent struct {
+	Value PromptAgentResource
+
+	noSmithyDocumentSerde
+}
+
+func (*PromptGenAiResourceMemberAgent) isPromptGenAiResource() {}
+
 // Contains inference configurations for the prompt.
 //
 // The following types satisfy this interface:
@@ -2566,6 +3929,25 @@ type PromptInputVariable struct {
 	noSmithyDocumentSerde
 }
 
+// Contains a key-value pair that defines a metadata tag and value to attach to a
+// prompt variant. For more information, see [Create a prompt using Prompt management].
+//
+// [Create a prompt using Prompt management]: https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-create.html
+type PromptMetadataEntry struct {
+
+	// The key of a metadata tag for a prompt variant.
+	//
+	// This member is required.
+	Key *string
+
+	// The value of a metadata tag for a prompt variant.
+	//
+	// This member is required.
+	Value *string
+
+	noSmithyDocumentSerde
+}
+
 // Contains inference configurations related to model inference for a prompt. For
 // more information, see [Inference parameters].
 //
@@ -2582,10 +3964,6 @@ type PromptModelInferenceConfiguration struct {
 	// Controls the randomness of the response. Choose a lower value for more
 	// predictable outputs and a higher value for more surprising outputs.
 	Temperature *float32
-
-	// The number of most-likely candidates that the model considers for the next
-	// token during generation.
-	TopK *int32
 
 	// The percentage of most-likely candidates that the model considers for the next
 	// token.
@@ -2611,9 +3989,9 @@ type PromptOverrideConfiguration struct {
 	// The ARN of the Lambda function to use when parsing the raw foundation model
 	// output in parts of the agent sequence. If you specify this field, at least one
 	// of the promptConfigurations must contain a parserMode value that is set to
-	// OVERRIDDEN . For more information, see [Parser Lambda function in Agents for Amazon Bedrock].
+	// OVERRIDDEN . For more information, see [Parser Lambda function in Amazon Bedrock Agents].
 	//
-	// [Parser Lambda function in Agents for Amazon Bedrock]: https://docs.aws.amazon.com/bedrock/latest/userguide/lambda-parser.html
+	// [Parser Lambda function in Amazon Bedrock Agents]: https://docs.aws.amazon.com/bedrock/latest/userguide/lambda-parser.html
 	OverrideLambda *string
 
 	noSmithyDocumentSerde
@@ -2665,16 +4043,26 @@ type PromptSummary struct {
 	noSmithyDocumentSerde
 }
 
-// Contains the message for a prompt. For more information, see [Prompt management in Amazon Bedrock].
+// Contains the message for a prompt. For more information, see [Construct and store reusable prompts with Prompt management in Amazon Bedrock].
 //
 // The following types satisfy this interface:
 //
+//	PromptTemplateConfigurationMemberChat
 //	PromptTemplateConfigurationMemberText
 //
-// [Prompt management in Amazon Bedrock]: https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management.html
+// [Construct and store reusable prompts with Prompt management in Amazon Bedrock]: https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management.html
 type PromptTemplateConfiguration interface {
 	isPromptTemplateConfiguration()
 }
+
+// Contains configurations to use the prompt in a conversational format.
+type PromptTemplateConfigurationMemberChat struct {
+	Value ChatPromptTemplateConfiguration
+
+	noSmithyDocumentSerde
+}
+
+func (*PromptTemplateConfigurationMemberChat) isPromptTemplateConfiguration() {}
 
 // Contains configurations for the text in a message for a prompt.
 type PromptTemplateConfigurationMemberText struct {
@@ -2693,19 +4081,109 @@ type PromptVariant struct {
 	// This member is required.
 	Name *string
 
+	// Contains configurations for the prompt template.
+	//
+	// This member is required.
+	TemplateConfiguration PromptTemplateConfiguration
+
 	// The type of prompt template to use.
 	//
 	// This member is required.
 	TemplateType PromptTemplateType
 
+	// Contains model-specific inference configurations that aren't in the
+	// inferenceConfiguration field. To see model-specific inference parameters, see [Inference request parameters and response fields for foundation models].
+	//
+	// [Inference request parameters and response fields for foundation models]: https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html
+	AdditionalModelRequestFields document.Interface
+
+	// Specifies a generative AI resource with which to use the prompt.
+	GenAiResource PromptGenAiResource
+
 	// Contains inference configurations for the prompt variant.
 	InferenceConfiguration PromptInferenceConfiguration
 
-	// The unique identifier of the model with which to run inference on the prompt.
+	// An array of objects, each containing a key-value pair that defines a metadata
+	// tag and value to attach to a prompt variant.
+	Metadata []PromptMetadataEntry
+
+	// The unique identifier of the model or [inference profile] with which to run inference on the
+	// prompt.
+	//
+	// [inference profile]: https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html
 	ModelId *string
 
-	// Contains configurations for the prompt template.
-	TemplateConfiguration PromptTemplateConfiguration
+	noSmithyDocumentSerde
+}
+
+// Contains information about a column in the current table for the query engine
+// to consider.
+type QueryGenerationColumn struct {
+
+	// A description of the column that helps the query engine understand the contents
+	// of the column.
+	Description *string
+
+	// Specifies whether to include or exclude the column during query generation. If
+	// you specify EXCLUDE , the column will be ignored. If you specify INCLUDE , all
+	// other columns in the table will be ignored.
+	Inclusion IncludeExclude
+
+	// The name of the column for which the other fields in this object apply.
+	Name *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains configurations for query generation. For more information, see [Build a knowledge base by connecting to a structured data source] in the
+// Amazon Bedrock User Guide..
+//
+// [Build a knowledge base by connecting to a structured data source]: https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-build-structured.html
+type QueryGenerationConfiguration struct {
+
+	// The time after which query generation will time out.
+	ExecutionTimeoutSeconds *int32
+
+	// Specifies configurations for context to use during query generation.
+	GenerationContext *QueryGenerationContext
+
+	noSmithyDocumentSerde
+}
+
+// >Contains configurations for context to use during query generation.
+type QueryGenerationContext struct {
+
+	// An array of objects, each of which defines information about example queries to
+	// help the query engine generate appropriate SQL queries.
+	CuratedQueries []CuratedQuery
+
+	// An array of objects, each of which defines information about a table in the
+	// database.
+	Tables []QueryGenerationTable
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about a table for the query engine to consider.
+type QueryGenerationTable struct {
+
+	// The name of the table for which the other fields in this object apply.
+	//
+	// This member is required.
+	Name *string
+
+	// An array of objects, each of which defines information about a column in the
+	// table.
+	Columns []QueryGenerationColumn
+
+	// A description of the table that helps the query engine understand the contents
+	// of the table.
+	Description *string
+
+	// Specifies whether to include or exclude the table during query generation. If
+	// you specify EXCLUDE , the table will be ignored. If you specify INCLUDE , all
+	// other tables will be ignored.
+	Inclusion IncludeExclude
 
 	noSmithyDocumentSerde
 }
@@ -2773,6 +4251,10 @@ type RdsFieldMapping struct {
 	// This member is required.
 	VectorField *string
 
+	// Provide a name for the universal metadata field where Amazon Bedrock will store
+	// any custom metadata from your data source.
+	CustomMetadataField *string
+
 	noSmithyDocumentSerde
 }
 
@@ -2832,6 +4314,163 @@ type RedisEnterpriseCloudFieldMapping struct {
 	noSmithyDocumentSerde
 }
 
+// Contains configurations for an Amazon Redshift database. For more information,
+// see [Build a knowledge base by connecting to a structured data source]in the Amazon Bedrock User Guide.
+//
+// [Build a knowledge base by connecting to a structured data source]: https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-build-structured.html
+type RedshiftConfiguration struct {
+
+	// Specifies configurations for an Amazon Redshift query engine.
+	//
+	// This member is required.
+	QueryEngineConfiguration *RedshiftQueryEngineConfiguration
+
+	// Specifies configurations for Amazon Redshift database storage.
+	//
+	// This member is required.
+	StorageConfigurations []RedshiftQueryEngineStorageConfiguration
+
+	// Specifies configurations for generating queries.
+	QueryGenerationConfiguration *QueryGenerationConfiguration
+
+	noSmithyDocumentSerde
+}
+
+// Contains configurations for authentication to an Amazon Redshift provisioned
+// data warehouse. Specify the type of authentication to use in the type field and
+// include the corresponding field. If you specify IAM authentication, you don't
+// need to include another field.
+type RedshiftProvisionedAuthConfiguration struct {
+
+	// The type of authentication to use.
+	//
+	// This member is required.
+	Type RedshiftProvisionedAuthType
+
+	// The database username for authentication to an Amazon Redshift provisioned data
+	// warehouse.
+	DatabaseUser *string
+
+	// The ARN of an Secrets Manager secret for authentication.
+	UsernamePasswordSecretArn *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains configurations for a provisioned Amazon Redshift query engine.
+type RedshiftProvisionedConfiguration struct {
+
+	// Specifies configurations for authentication to Amazon Redshift.
+	//
+	// This member is required.
+	AuthConfiguration *RedshiftProvisionedAuthConfiguration
+
+	// The ID of the Amazon Redshift cluster.
+	//
+	// This member is required.
+	ClusterIdentifier *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains configurations for storage in Glue Data Catalog.
+type RedshiftQueryEngineAwsDataCatalogStorageConfiguration struct {
+
+	// A list of names of the tables to use.
+	//
+	// This member is required.
+	TableNames []string
+
+	noSmithyDocumentSerde
+}
+
+// Contains configurations for an Amazon Redshift query engine. Specify the type
+// of query engine in type and include the corresponding field. For more
+// information, see [Build a knowledge base by connecting to a structured data source]in the Amazon Bedrock User Guide.
+//
+// [Build a knowledge base by connecting to a structured data source]: https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-build-structured.html
+type RedshiftQueryEngineConfiguration struct {
+
+	// The type of query engine.
+	//
+	// This member is required.
+	Type RedshiftQueryEngineType
+
+	// Specifies configurations for a provisioned Amazon Redshift query engine.
+	ProvisionedConfiguration *RedshiftProvisionedConfiguration
+
+	// Specifies configurations for a serverless Amazon Redshift query engine.
+	ServerlessConfiguration *RedshiftServerlessConfiguration
+
+	noSmithyDocumentSerde
+}
+
+// Contains configurations for storage in Amazon Redshift.
+type RedshiftQueryEngineRedshiftStorageConfiguration struct {
+
+	// The name of the Amazon Redshift database.
+	//
+	// This member is required.
+	DatabaseName *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains configurations for Amazon Redshift data storage. Specify the data
+// storage service to use in the type field and include the corresponding field.
+// For more information, see [Build a knowledge base by connecting to a structured data source]in the Amazon Bedrock User Guide.
+//
+// [Build a knowledge base by connecting to a structured data source]: https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-build-structured.html
+type RedshiftQueryEngineStorageConfiguration struct {
+
+	// The data storage service to use.
+	//
+	// This member is required.
+	Type RedshiftQueryEngineStorageType
+
+	// Specifies configurations for storage in Glue Data Catalog.
+	AwsDataCatalogConfiguration *RedshiftQueryEngineAwsDataCatalogStorageConfiguration
+
+	// Specifies configurations for storage in Amazon Redshift.
+	RedshiftConfiguration *RedshiftQueryEngineRedshiftStorageConfiguration
+
+	noSmithyDocumentSerde
+}
+
+// Specifies configurations for authentication to a Redshift Serverless. Specify
+// the type of authentication to use in the type field and include the
+// corresponding field. If you specify IAM authentication, you don't need to
+// include another field.
+type RedshiftServerlessAuthConfiguration struct {
+
+	// The type of authentication to use.
+	//
+	// This member is required.
+	Type RedshiftServerlessAuthType
+
+	// The ARN of an Secrets Manager secret for authentication.
+	UsernamePasswordSecretArn *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains configurations for authentication to Amazon Redshift Serverless.
+type RedshiftServerlessConfiguration struct {
+
+	// Specifies configurations for authentication to an Amazon Redshift provisioned
+	// data warehouse.
+	//
+	// This member is required.
+	AuthConfiguration *RedshiftServerlessAuthConfiguration
+
+	// The ARN of the Amazon Redshift workgroup.
+	//
+	// This member is required.
+	WorkgroupArn *string
+
+	noSmithyDocumentSerde
+}
+
 // Contains configurations for a Retrieval node in a flow. This node retrieves
 // data from the Amazon S3 location that you specify and returns it as the output.
 type RetrievalFlowNodeConfiguration struct {
@@ -2876,6 +4515,18 @@ type RetrievalFlowNodeServiceConfigurationMemberS3 struct {
 }
 
 func (*RetrievalFlowNodeServiceConfigurationMemberS3) isRetrievalFlowNodeServiceConfiguration() {}
+
+// Contains information about the content to ingest into a knowledge base
+// connected to an Amazon S3 data source.
+type S3Content struct {
+
+	// The S3 location of the file containing the content to ingest.
+	//
+	// This member is required.
+	S3Location *S3Location
+
+	noSmithyDocumentSerde
+}
 
 // The configuration information to connect to Amazon S3 as your data source.
 type S3DataSourceConfiguration struct {
@@ -3028,6 +4679,16 @@ type ServerSideEncryptionConfiguration struct {
 	noSmithyDocumentSerde
 }
 
+// Configuration for SESSION_SUMMARY memory type enabled for the agent.
+type SessionSummaryConfiguration struct {
+
+	// Maximum number of recent session summaries to include in the agent's prompt
+	// context.
+	MaxRecentSessions *int32
+
+	noSmithyDocumentSerde
+}
+
 // The configuration of the SharePoint content. For example, configuring specific
 // types of SharePoint content.
 type SharePointCrawlerConfiguration struct {
@@ -3094,6 +4755,40 @@ type SharePointSourceConfiguration struct {
 	noSmithyDocumentSerde
 }
 
+// Defines a specific tool that the model must request. No text is generated but
+// the results of tool use are sent back to the model to help generate a response.
+// For more information, see [Use a tool to complete an Amazon Bedrock model response].
+//
+// [Use a tool to complete an Amazon Bedrock model response]: https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html
+type SpecificToolChoice struct {
+
+	// The name of the tool.
+	//
+	// This member is required.
+	Name *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains configurations for a knowledge base connected to an SQL database.
+// Specify the SQL database type in the type field and include the corresponding
+// field. For more information, see [Build a knowledge base by connecting to a structured data source]in the Amazon Bedrock User Guide.
+//
+// [Build a knowledge base by connecting to a structured data source]: https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-build-structured.html
+type SqlKnowledgeBaseConfiguration struct {
+
+	// The type of SQL database to connect to the knowledge base.
+	//
+	// This member is required.
+	Type QueryEngineType
+
+	// Specifies configurations for a knowledge base connected to an Amazon Redshift
+	// database.
+	RedshiftConfiguration *RedshiftConfiguration
+
+	noSmithyDocumentSerde
+}
+
 // Contains the storage configuration of the knowledge base.
 type StorageConfiguration struct {
 
@@ -3104,6 +4799,18 @@ type StorageConfiguration struct {
 
 	// Contains the storage configuration of the knowledge base in MongoDB Atlas.
 	MongoDbAtlasConfiguration *MongoDbAtlasConfiguration
+
+	// Contains details about the Neptune Analytics configuration of the knowledge
+	// base in Amazon Neptune. For more information, see [Create a vector index in Amazon Neptune Analytics.].
+	//
+	// [Create a vector index in Amazon Neptune Analytics.]: https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-neptune.html
+	NeptuneAnalyticsConfiguration *NeptuneAnalyticsConfiguration
+
+	// Contains details about the storage configuration of the knowledge base in
+	// OpenSearch Managed Cluster. For more information, see [Create a vector index in Amazon OpenSearch Service].
+	//
+	// [Create a vector index in Amazon OpenSearch Service]: https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-osm.html
+	OpensearchManagedClusterConfiguration *OpenSearchManagedClusterConfiguration
 
 	// Contains the storage configuration of the knowledge base in Amazon OpenSearch
 	// Service.
@@ -3170,6 +4877,77 @@ type StorageFlowNodeServiceConfigurationMemberS3 struct {
 
 func (*StorageFlowNodeServiceConfigurationMemberS3) isStorageFlowNodeServiceConfiguration() {}
 
+// Specifies configurations for the storage location of the images extracted from
+// multimodal documents in your data source. These images can be retrieved and
+// returned to the end user.
+type SupplementalDataStorageConfiguration struct {
+
+	// A list of objects specifying storage locations for images extracted from
+	// multimodal documents in your data source.
+	//
+	// This member is required.
+	StorageLocations []SupplementalDataStorageLocation
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about a storage location for images extracted from
+// multimodal documents in your data source.
+type SupplementalDataStorageLocation struct {
+
+	// Specifies the storage service used for this location.
+	//
+	// This member is required.
+	Type SupplementalDataStorageLocationType
+
+	// Contains information about the Amazon S3 location for the extracted images.
+	S3Location *S3Location
+
+	noSmithyDocumentSerde
+}
+
+// Contains a system prompt to provide context to the model or to describe how it
+// should behave. For more information, see [Create a prompt using Prompt management].
+//
+// The following types satisfy this interface:
+//
+//	SystemContentBlockMemberCachePoint
+//	SystemContentBlockMemberText
+//
+// [Create a prompt using Prompt management]: https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-create.html
+type SystemContentBlock interface {
+	isSystemContentBlock()
+}
+
+// Creates a cache checkpoint within a tool designation
+type SystemContentBlockMemberCachePoint struct {
+	Value CachePointBlock
+
+	noSmithyDocumentSerde
+}
+
+func (*SystemContentBlockMemberCachePoint) isSystemContentBlock() {}
+
+// The text in the system prompt.
+type SystemContentBlockMemberText struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*SystemContentBlockMemberText) isSystemContentBlock() {}
+
+// Contains information about content defined inline in text.
+type TextContentDoc struct {
+
+	// The text of the content.
+	//
+	// This member is required.
+	Data *string
+
+	noSmithyDocumentSerde
+}
+
 // Contains configurations for a text prompt template. To include a variable,
 // enclose a word in double curly braces as in {{variable}} .
 type TextPromptTemplateConfiguration struct {
@@ -3179,8 +4957,145 @@ type TextPromptTemplateConfiguration struct {
 	// This member is required.
 	Text *string
 
+	// A cache checkpoint within a template configuration.
+	CachePoint *CachePointBlock
+
 	// An array of the variables in the prompt template.
 	InputVariables []PromptInputVariable
+
+	noSmithyDocumentSerde
+}
+
+// Contains configurations for a tool that a model can use when generating a
+// response. For more information, see [Use a tool to complete an Amazon Bedrock model response].
+//
+// The following types satisfy this interface:
+//
+//	ToolMemberCachePoint
+//	ToolMemberToolSpec
+//
+// [Use a tool to complete an Amazon Bedrock model response]: https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html
+type Tool interface {
+	isTool()
+}
+
+// Creates a cache checkpoint within a tool designation
+type ToolMemberCachePoint struct {
+	Value CachePointBlock
+
+	noSmithyDocumentSerde
+}
+
+func (*ToolMemberCachePoint) isTool() {}
+
+// The specification for the tool.
+type ToolMemberToolSpec struct {
+	Value ToolSpecification
+
+	noSmithyDocumentSerde
+}
+
+func (*ToolMemberToolSpec) isTool() {}
+
+// Defines which tools the model should request when invoked. For more
+// information, see [Use a tool to complete an Amazon Bedrock model response].
+//
+// The following types satisfy this interface:
+//
+//	ToolChoiceMemberAny
+//	ToolChoiceMemberAuto
+//	ToolChoiceMemberTool
+//
+// [Use a tool to complete an Amazon Bedrock model response]: https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html
+type ToolChoice interface {
+	isToolChoice()
+}
+
+// Defines tools, at least one of which must be requested by the model. No text is
+// generated but the results of tool use are sent back to the model to help
+// generate a response.
+type ToolChoiceMemberAny struct {
+	Value AnyToolChoice
+
+	noSmithyDocumentSerde
+}
+
+func (*ToolChoiceMemberAny) isToolChoice() {}
+
+// Defines tools. The model automatically decides whether to call a tool or to
+// generate text instead.
+type ToolChoiceMemberAuto struct {
+	Value AutoToolChoice
+
+	noSmithyDocumentSerde
+}
+
+func (*ToolChoiceMemberAuto) isToolChoice() {}
+
+// Defines a specific tool that the model must request. No text is generated but
+// the results of tool use are sent back to the model to help generate a response.
+type ToolChoiceMemberTool struct {
+	Value SpecificToolChoice
+
+	noSmithyDocumentSerde
+}
+
+func (*ToolChoiceMemberTool) isToolChoice() {}
+
+// Configuration information for the tools that the model can use when generating
+// a response. For more information, see [Use a tool to complete an Amazon Bedrock model response].
+//
+// [Use a tool to complete an Amazon Bedrock model response]: https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html
+type ToolConfiguration struct {
+
+	// An array of tools to pass to a model.
+	//
+	// This member is required.
+	Tools []Tool
+
+	// Defines which tools the model should request when invoked.
+	ToolChoice ToolChoice
+
+	noSmithyDocumentSerde
+}
+
+// The input schema for the tool. For more information, see [Use a tool to complete an Amazon Bedrock model response].
+//
+// The following types satisfy this interface:
+//
+//	ToolInputSchemaMemberJson
+//
+// [Use a tool to complete an Amazon Bedrock model response]: https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html
+type ToolInputSchema interface {
+	isToolInputSchema()
+}
+
+// A JSON object defining the input schema for the tool.
+type ToolInputSchemaMemberJson struct {
+	Value document.Interface
+
+	noSmithyDocumentSerde
+}
+
+func (*ToolInputSchemaMemberJson) isToolInputSchema() {}
+
+// Contains a specification for a tool. For more information, see [Use a tool to complete an Amazon Bedrock model response].
+//
+// [Use a tool to complete an Amazon Bedrock model response]: https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html
+type ToolSpecification struct {
+
+	// The input schema for the tool.
+	//
+	// This member is required.
+	InputSchema ToolInputSchema
+
+	// The name of the tool.
+	//
+	// This member is required.
+	Name *string
+
+	// The description of the tool.
+	Description *string
 
 	noSmithyDocumentSerde
 }
@@ -3225,6 +5140,140 @@ type TransformationLambdaConfiguration struct {
 	noSmithyDocumentSerde
 }
 
+// Details about an unfulfilled node input with no valid connections.
+type UnfulfilledNodeInputFlowValidationDetails struct {
+
+	// The name of the unfulfilled input. An input is unfulfilled if there are no data
+	// connections to it.
+	//
+	// This member is required.
+	Input *string
+
+	// The name of the node containing the unfulfilled input.
+	//
+	// This member is required.
+	Node *string
+
+	noSmithyDocumentSerde
+}
+
+// Details about an unknown condition for a connection.
+type UnknownConnectionConditionFlowValidationDetails struct {
+
+	// The name of the connection with the unknown condition.
+	//
+	// This member is required.
+	Connection *string
+
+	noSmithyDocumentSerde
+}
+
+// Details about an unknown source node for a connection.
+type UnknownConnectionSourceFlowValidationDetails struct {
+
+	// The name of the connection with the unknown source.
+	//
+	// This member is required.
+	Connection *string
+
+	noSmithyDocumentSerde
+}
+
+// Details about an unknown source output for a connection.
+type UnknownConnectionSourceOutputFlowValidationDetails struct {
+
+	// The name of the connection with the unknown source output.
+	//
+	// This member is required.
+	Connection *string
+
+	noSmithyDocumentSerde
+}
+
+// Details about an unknown target node for a connection.
+type UnknownConnectionTargetFlowValidationDetails struct {
+
+	// The name of the connection with the unknown target.
+	//
+	// This member is required.
+	Connection *string
+
+	noSmithyDocumentSerde
+}
+
+// Details about an unknown target input for a connection.
+type UnknownConnectionTargetInputFlowValidationDetails struct {
+
+	// The name of the connection with the unknown target input.
+	//
+	// This member is required.
+	Connection *string
+
+	noSmithyDocumentSerde
+}
+
+// Details about an unknown input for a node.
+type UnknownNodeInputFlowValidationDetails struct {
+
+	// The name of the node with the unknown input.
+	//
+	// This member is required.
+	Input *string
+
+	// The name of the unknown input.
+	//
+	// This member is required.
+	Node *string
+
+	noSmithyDocumentSerde
+}
+
+// Details about an unknown output for a node.
+type UnknownNodeOutputFlowValidationDetails struct {
+
+	// The name of the node with the unknown output.
+	//
+	// This member is required.
+	Node *string
+
+	// The name of the unknown output.
+	//
+	// This member is required.
+	Output *string
+
+	noSmithyDocumentSerde
+}
+
+// Details about an unreachable node in the flow. A node is unreachable when there
+// are no paths to it from any starting node.
+type UnreachableNodeFlowValidationDetails struct {
+
+	// The name of the unreachable node.
+	//
+	// This member is required.
+	Node *string
+
+	noSmithyDocumentSerde
+}
+
+// Details about unsatisfied conditions for a connection. A condition is
+// unsatisfied if it can never be true, for example two branches of condition node
+// cannot be simultaneously true.
+type UnsatisfiedConnectionConditionsFlowValidationDetails struct {
+
+	// The name of the connection with unsatisfied conditions.
+	//
+	// This member is required.
+	Connection *string
+
+	noSmithyDocumentSerde
+}
+
+// Details about an unspecified validation that doesn't fit other categories.
+type UnspecifiedFlowValidationDetails struct {
+	noSmithyDocumentSerde
+}
+
 // The configuration of web URLs that you want to crawl. You should be authorized
 // to crawl the URLs.
 type UrlConfiguration struct {
@@ -3260,10 +5309,15 @@ type VectorIngestionConfiguration struct {
 	// belongs to is queried.
 	ChunkingConfiguration *ChunkingConfiguration
 
+	// The context enrichment configuration used for ingestion of the data into the
+	// vector store.
+	ContextEnrichmentConfiguration *ContextEnrichmentConfiguration
+
 	// A custom document transformer for parsed data source documents.
 	CustomTransformationConfiguration *CustomTransformationConfiguration
 
-	// A custom parser for data source documents.
+	// Configurations for a parser to use for parsing documents in your data source.
+	// If you exclude this field, the default parser will be used.
 	ParsingConfiguration *ParsingConfiguration
 
 	noSmithyDocumentSerde
@@ -3282,6 +5336,14 @@ type VectorKnowledgeBaseConfiguration struct {
 	// The embeddings model configuration details for the vector model used in
 	// Knowledge Base.
 	EmbeddingModelConfiguration *EmbeddingModelConfiguration
+
+	// If you include multimodal data from your data source, use this object to
+	// specify configurations for the storage location of the images extracted from
+	// your documents. These images can be retrieved and returned to the end user. They
+	// can also be used in generation when using [RetrieveAndGenerate].
+	//
+	// [RetrieveAndGenerate]: https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html
+	SupplementalDataStorageConfiguration *SupplementalDataStorageConfiguration
 
 	noSmithyDocumentSerde
 }
@@ -3315,12 +5377,27 @@ type WebCrawlerConfiguration struct {
 	// "docs.aws.amazon.com".
 	Scope WebScopeType
 
+	// Returns the user agent suffix for your web crawler.
+	UserAgent *string
+
+	// A string used for identifying the crawler or bot when it accesses a web server.
+	// The user agent header value consists of the bedrockbot , UUID, and a user agent
+	// suffix for your crawler (if one is provided). By default, it is set to
+	// bedrockbot_UUID . You can optionally append a custom suffix to bedrockbot_UUID
+	// to allowlist a specific user agent permitted to access your source URLs.
+	UserAgentHeader *string
+
 	noSmithyDocumentSerde
 }
 
 // The rate limits for the URLs that you want to crawl. You should be authorized
 // to crawl the URLs.
 type WebCrawlerLimits struct {
+
+	//  The max number of web pages crawled from your source URLs, up to 25,000 pages.
+	// If the web pages exceed this limit, the data source sync will fail and no web
+	// pages will be ingested.
+	MaxPages *int32
 
 	// The max rate at which pages are crawled, up to 300 per minute per host.
 	RateLimit *int32
@@ -3367,11 +5444,19 @@ type UnknownUnionMember struct {
 
 func (*UnknownUnionMember) isActionGroupExecutor()                   {}
 func (*UnknownUnionMember) isAPISchema()                             {}
+func (*UnknownUnionMember) isContentBlock()                          {}
 func (*UnknownUnionMember) isFlowConnectionConfiguration()           {}
 func (*UnknownUnionMember) isFlowNodeConfiguration()                 {}
+func (*UnknownUnionMember) isFlowValidationDetails()                 {}
 func (*UnknownUnionMember) isFunctionSchema()                        {}
+func (*UnknownUnionMember) isOrchestrationExecutor()                 {}
 func (*UnknownUnionMember) isPromptFlowNodeSourceConfiguration()     {}
+func (*UnknownUnionMember) isPromptGenAiResource()                   {}
 func (*UnknownUnionMember) isPromptInferenceConfiguration()          {}
 func (*UnknownUnionMember) isPromptTemplateConfiguration()           {}
 func (*UnknownUnionMember) isRetrievalFlowNodeServiceConfiguration() {}
 func (*UnknownUnionMember) isStorageFlowNodeServiceConfiguration()   {}
+func (*UnknownUnionMember) isSystemContentBlock()                    {}
+func (*UnknownUnionMember) isTool()                                  {}
+func (*UnknownUnionMember) isToolChoice()                            {}
+func (*UnknownUnionMember) isToolInputSchema()                       {}

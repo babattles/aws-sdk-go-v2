@@ -10,7 +10,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Deletes an Amazon SageMaker model bias job definition.
+// Deletes an Amazon SageMaker AI model bias job definition.
 func (c *Client) DeleteModelBiasJobDefinition(ctx context.Context, params *DeleteModelBiasJobDefinitionInput, optFns ...func(*Options)) (*DeleteModelBiasJobDefinitionOutput, error) {
 	if params == nil {
 		params = &DeleteModelBiasJobDefinitionInput{}
@@ -86,6 +86,9 @@ func (c *Client) addOperationDeleteModelBiasJobDefinitionMiddlewares(stack *midd
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -102,6 +105,9 @@ func (c *Client) addOperationDeleteModelBiasJobDefinitionMiddlewares(stack *midd
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteModelBiasJobDefinitionValidationMiddleware(stack); err != nil {
@@ -123,6 +129,18 @@ func (c *Client) addOperationDeleteModelBiasJobDefinitionMiddlewares(stack *midd
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

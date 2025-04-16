@@ -86,8 +86,8 @@ type DescribeDataSourceOutput struct {
 	// The name for the data source connector.
 	Name *string
 
-	// The Amazon Resource Name (ARN) of the role with permission to access the data
-	// source and required resources.
+	// The Amazon Resource Name (ARN) of the IAM role with permission to access the
+	// data source and required resources.
 	RoleArn *string
 
 	// The schedule for Amazon Kendra to update the index.
@@ -159,6 +159,9 @@ func (c *Client) addOperationDescribeDataSourceMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -175,6 +178,9 @@ func (c *Client) addOperationDescribeDataSourceMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeDataSourceValidationMiddleware(stack); err != nil {
@@ -196,6 +202,18 @@ func (c *Client) addOperationDescribeDataSourceMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

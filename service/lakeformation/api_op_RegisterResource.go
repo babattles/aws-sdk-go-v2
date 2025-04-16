@@ -13,7 +13,7 @@ import (
 // Registers the resource as managed by the Data Catalog.
 //
 // To add or update data, Lake Formation needs read/write access to the chosen
-// Amazon S3 path. Choose a role that you know has permission to do this, or choose
+// data location. Choose a role that you know has permission to do this, or choose
 // the AWSServiceRoleForLakeFormationDataAccess service-linked role. When you
 // register the first Amazon S3 path, the service-linked role and a new inline
 // policy are created on your behalf. Lake Formation adds the first path to the
@@ -23,7 +23,7 @@ import (
 // The following request registers a new location and gives Lake Formation
 // permission to use the service-linked role to access that location.
 //
-//	ResourceArn = arn:aws:s3:::my-bucket UseServiceLinkedRole = true
+//	ResourceArn = arn:aws:s3:::my-bucket/ UseServiceLinkedRole = true
 //
 // If UseServiceLinkedRole is not set to true, you must provide or set the RoleArn :
 //
@@ -68,6 +68,10 @@ type RegisterResourceInput struct {
 
 	// Whether or not the resource is a federated resource.
 	WithFederation *bool
+
+	// Grants the calling principal the permissions to perform all supported Lake
+	// Formation operations on the registered data location.
+	WithPrivilegedAccess bool
 
 	noSmithyDocumentSerde
 }
@@ -122,6 +126,9 @@ func (c *Client) addOperationRegisterResourceMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -138,6 +145,9 @@ func (c *Client) addOperationRegisterResourceMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpRegisterResourceValidationMiddleware(stack); err != nil {
@@ -159,6 +169,18 @@ func (c *Client) addOperationRegisterResourceMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

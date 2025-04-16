@@ -60,6 +60,9 @@ type CreateClusterInput struct {
 	// An optional description of the cluster.
 	Description *string
 
+	// The name of the engine to be used for the cluster.
+	Engine *string
+
 	// The version number of the Redis OSS engine to be used for the cluster.
 	EngineVersion *string
 
@@ -88,6 +91,9 @@ type CreateClusterInput struct {
 	//
 	// Example: sun:23:00-mon:01:30
 	MaintenanceWindow *string
+
+	// The name of the multi-Region cluster to be created.
+	MultiRegionClusterName *string
 
 	// The number of replicas to apply to each shard. The default value is 1. The
 	// maximum is 5.
@@ -200,6 +206,9 @@ func (c *Client) addOperationCreateClusterMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -216,6 +225,9 @@ func (c *Client) addOperationCreateClusterMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateClusterValidationMiddleware(stack); err != nil {
@@ -237,6 +249,18 @@ func (c *Client) addOperationCreateClusterMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

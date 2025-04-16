@@ -6,11 +6,13 @@ import (
 	"context"
 	"fmt"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
+	"github.com/aws/aws-sdk-go-v2/service/mediatailor/types"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Amazon CloudWatch log settings for a playback configuration.
+// Defines where AWS Elemental MediaTailor sends logs for the playback
+// configuration.
 func (c *Client) ConfigureLogsForPlaybackConfiguration(ctx context.Context, params *ConfigureLogsForPlaybackConfigurationInput, optFns ...func(*Options)) (*ConfigureLogsForPlaybackConfigurationOutput, error) {
 	if params == nil {
 		params = &ConfigureLogsForPlaybackConfigurationInput{}
@@ -29,7 +31,7 @@ func (c *Client) ConfigureLogsForPlaybackConfiguration(ctx context.Context, para
 // Configures Amazon CloudWatch log settings for a playback configuration.
 type ConfigureLogsForPlaybackConfigurationInput struct {
 
-	// The percentage of session logs that MediaTailor sends to your Cloudwatch Logs
+	// The percentage of session logs that MediaTailor sends to your CloudWatch Logs
 	// account. For example, if your playback configuration has 1000 sessions and
 	// percentEnabled is set to 60 , MediaTailor sends logs for 600 of the sessions to
 	// CloudWatch Logs. MediaTailor decides at random which of the playback
@@ -48,6 +50,26 @@ type ConfigureLogsForPlaybackConfigurationInput struct {
 	// This member is required.
 	PlaybackConfigurationName *string
 
+	// The event types that MediaTailor emits in logs for interactions with the ADS.
+	AdsInteractionLog *types.AdsInteractionLog
+
+	// The method used for collecting logs from AWS Elemental MediaTailor. To
+	// configure MediaTailor to send logs directly to Amazon CloudWatch Logs, choose
+	// LEGACY_CLOUDWATCH . To configure MediaTailor to send logs to CloudWatch, which
+	// then vends the logs to your destination of choice, choose VENDED_LOGS .
+	// Supported destinations are CloudWatch Logs log group, Amazon S3 bucket, and
+	// Amazon Data Firehose stream.
+	//
+	// To use vended logs, you must configure the delivery destination in Amazon
+	// CloudWatch, as described in [Enable logging from AWS services, Logging that requires additional permissions [V2]].
+	//
+	// [Enable logging from AWS services, Logging that requires additional permissions [V2]]: https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/AWS-logs-and-resource-policy.html#AWS-vended-logs-permissions-V2
+	EnabledLoggingStrategies []types.LoggingStrategy
+
+	// The event types that MediaTailor emits in logs for interactions with the origin
+	// server.
+	ManifestServiceInteractionLog *types.ManifestServiceInteractionLog
+
 	noSmithyDocumentSerde
 }
 
@@ -58,6 +80,21 @@ type ConfigureLogsForPlaybackConfigurationOutput struct {
 	//
 	// This member is required.
 	PercentEnabled int32
+
+	// The event types that MediaTailor emits in logs for interactions with the ADS.
+	AdsInteractionLog *types.AdsInteractionLog
+
+	// The method used for collecting logs from AWS Elemental MediaTailor.
+	// LEGACY_CLOUDWATCH indicates that MediaTailor is sending logs directly to Amazon
+	// CloudWatch Logs. VENDED_LOGS indicates that MediaTailor is sending logs to
+	// CloudWatch, which then vends the logs to your destination of choice. Supported
+	// destinations are CloudWatch Logs log group, Amazon S3 bucket, and Amazon Data
+	// Firehose stream.
+	EnabledLoggingStrategies []types.LoggingStrategy
+
+	// The event types that MediaTailor emits in logs for interactions with the origin
+	// server.
+	ManifestServiceInteractionLog *types.ManifestServiceInteractionLog
 
 	// The name of the playback configuration.
 	PlaybackConfigurationName *string
@@ -111,6 +148,9 @@ func (c *Client) addOperationConfigureLogsForPlaybackConfigurationMiddlewares(st
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -127,6 +167,9 @@ func (c *Client) addOperationConfigureLogsForPlaybackConfigurationMiddlewares(st
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpConfigureLogsForPlaybackConfigurationValidationMiddleware(stack); err != nil {
@@ -148,6 +191,18 @@ func (c *Client) addOperationConfigureLogsForPlaybackConfigurationMiddlewares(st
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

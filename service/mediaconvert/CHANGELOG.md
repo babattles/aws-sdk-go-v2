@@ -1,3 +1,166 @@
+# v1.71.1 (2025-04-03)
+
+* No change notes available for this release.
+
+# v1.71.0 (2025-03-26)
+
+* **Feature**: This release adds a configurable Quality Level setting for the top rendition of Auto ABR jobs
+
+# v1.70.0 (2025-03-18)
+
+* **Feature**: This release adds support for AVC passthrough, the ability to specify PTS offset without padding, and an A/V segment matching feature.
+
+# v1.69.1 (2025-03-04.2)
+
+* **Bug Fix**: Add assurance test for operation order.
+
+# v1.69.0 (2025-02-28)
+
+* **Feature**: The AWS MediaConvert Probe API allows you to analyze media files and retrieve detailed metadata about their content, format, and structure.
+
+# v1.68.0 (2025-02-27)
+
+* **Feature**: Track credential providers via User-Agent Feature ids
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.67.1 (2025-02-18)
+
+* **Bug Fix**: Bump go version to 1.22
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.67.0 (2025-02-07)
+
+* **Feature**: This release adds support for Animated GIF output, forced chroma sample positioning metadata, and Extensible Wave Container format
+
+# v1.66.3 (2025-02-05)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.66.2 (2025-01-31)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.66.1 (2025-01-30)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.66.0 (2025-01-27)
+
+* **Feature**: This release adds support for dynamic audio configuration and the ability to disable the deblocking filter for h265 encodes.
+
+# v1.65.4 (2025-01-24)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+* **Dependency Update**: Upgrade to smithy-go v1.22.2.
+
+# v1.65.3 (2025-01-17)
+
+* **Bug Fix**: Fix bug where credentials weren't refreshed during retry loop.
+
+# v1.65.2 (2025-01-15)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.65.1 (2025-01-09)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.65.0 (2025-01-02)
+
+* **Feature**: This release adds support for the AVC3 codec and fixes an alignment issue with Japanese vertical captions.
+
+# v1.64.1 (2024-12-23)
+
+* No change notes available for this release.
+
+# v1.64.0 (2024-12-19)
+
+* **Feature**: This release adds support for inserting timecode tracks into MP4 container outputs.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.63.1 (2024-12-02)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.63.0 (2024-11-20)
+
+* **Feature**: This release adds the ability to reconfigure concurrent job settings for existing queues and create queues with custom concurrent job settings.
+
+# v1.62.1 (2024-11-18)
+
+* **Dependency Update**: Update to smithy-go v1.22.1.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.62.0 (2024-11-13)
+
+* **Feature**: This release adds support for ARN inputs in the Kantar credentials secrets name field and the MSPR field to the manifests for PlayReady DRM protected outputs.
+
+# v1.61.5 (2024-11-07)
+
+* **Bug Fix**: Adds case-insensitive handling of error message fields in service responses
+
+# v1.61.4 (2024-11-06)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.61.3 (2024-10-28)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.61.2 (2024-10-08)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.61.1 (2024-10-07)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.61.0 (2024-10-04)
+
+* **Feature**: Add support for HTTP client metrics.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.60.4 (2024-10-03)
+
+* No change notes available for this release.
+
+# v1.60.3 (2024-09-27)
+
+* No change notes available for this release.
+
+# v1.60.2 (2024-09-25)
+
+* No change notes available for this release.
+
+# v1.60.1 (2024-09-23)
+
+* No change notes available for this release.
+
+# v1.60.0 (2024-09-20)
+
+* **Feature**: Add tracing and metrics support to service clients.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.59.0 (2024-09-19)
+
+* **Feature**: This release provides support for additional DRM configurations per SPEKE Version 2.0.
+
+# v1.58.1 (2024-09-17)
+
+* **Bug Fix**: **BREAKFIX**: Only generate AccountIDEndpointMode config for services that use it. This is a compiler break, but removes no actual functionality, as no services currently use the account ID in endpoint resolution.
+
+# v1.58.0 (2024-09-12)
+
+* **Feature**: This release includes support for dynamic video overlay workflows, including picture-in-picture and squeezeback
+
+# v1.57.6 (2024-09-04)
+
+* No change notes available for this release.
+
+# v1.57.5 (2024-09-03)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
 # v1.57.4 (2024-08-15)
 
 * **Dependency Update**: Bump minimum Go version to 1.21.

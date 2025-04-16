@@ -14,12 +14,13 @@ import (
 
 // Invokes an alias of a flow to run the inputs that you specify and return the
 // output of each node as a stream. If there's an error, the error is returned. For
-// more information, see [Test a flow in Amazon Bedrock]in the Amazon Bedrock User Guide.
+// more information, see [Test a flow in Amazon Bedrock]in the [Amazon Bedrock User Guide].
 //
 // The CLI doesn't support streaming operations in Amazon Bedrock, including
 // InvokeFlow .
 //
 // [Test a flow in Amazon Bedrock]: https://docs.aws.amazon.com/bedrock/latest/userguide/flows-test.html
+// [Amazon Bedrock User Guide]: https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html
 func (c *Client) InvokeFlow(ctx context.Context, params *InvokeFlowInput, optFns ...func(*Options)) (*InvokeFlowOutput, error) {
 	if params == nil {
 		params = &InvokeFlowInput{}
@@ -52,10 +53,27 @@ type InvokeFlowInput struct {
 	// This member is required.
 	Inputs []types.FlowInput
 
+	// Specifies whether to return the trace for the flow or not. Traces track inputs
+	// and outputs for nodes in the flow. For more information, see [Track each step in your prompt flow by viewing its trace in Amazon Bedrock].
+	//
+	// [Track each step in your prompt flow by viewing its trace in Amazon Bedrock]: https://docs.aws.amazon.com/bedrock/latest/userguide/flows-trace.html
+	EnableTrace *bool
+
+	// The unique identifier for the current flow execution. If you don't provide a
+	// value, Amazon Bedrock creates the identifier for you.
+	ExecutionId *string
+
+	// Model performance settings for the request.
+	ModelPerformanceConfiguration *types.ModelPerformanceConfiguration
+
 	noSmithyDocumentSerde
 }
 
 type InvokeFlowOutput struct {
+
+	// The unique identifier for the current flow execution.
+	ExecutionId *string
+
 	eventStream *InvokeFlowEventStream
 
 	// Metadata pertaining to the operation's result.
@@ -115,6 +133,9 @@ func (c *Client) addOperationInvokeFlowMiddlewares(stack *middleware.Stack, opti
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -125,6 +146,9 @@ func (c *Client) addOperationInvokeFlowMiddlewares(stack *middleware.Stack, opti
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpInvokeFlowValidationMiddleware(stack); err != nil {
@@ -146,6 +170,18 @@ func (c *Client) addOperationInvokeFlowMiddlewares(stack *middleware.Stack, opti
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

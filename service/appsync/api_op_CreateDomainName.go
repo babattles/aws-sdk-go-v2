@@ -44,6 +44,9 @@ type CreateDomainNameInput struct {
 	// A description of the DomainName .
 	Description *string
 
+	// A map with keys of TagKey objects and values of TagValue objects.
+	Tags map[string]string
+
 	noSmithyDocumentSerde
 }
 
@@ -101,6 +104,9 @@ func (c *Client) addOperationCreateDomainNameMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -117,6 +123,9 @@ func (c *Client) addOperationCreateDomainNameMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateDomainNameValidationMiddleware(stack); err != nil {
@@ -138,6 +147,18 @@ func (c *Client) addOperationCreateDomainNameMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

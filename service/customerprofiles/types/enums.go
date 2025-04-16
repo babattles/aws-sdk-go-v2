@@ -2,6 +2,51 @@
 
 package types
 
+type AttributeDimensionType string
+
+// Enum values for AttributeDimensionType
+const (
+	AttributeDimensionTypeInclusive          AttributeDimensionType = "INCLUSIVE"
+	AttributeDimensionTypeExclusive          AttributeDimensionType = "EXCLUSIVE"
+	AttributeDimensionTypeContains           AttributeDimensionType = "CONTAINS"
+	AttributeDimensionTypeBeginsWith         AttributeDimensionType = "BEGINS_WITH"
+	AttributeDimensionTypeEndsWith           AttributeDimensionType = "ENDS_WITH"
+	AttributeDimensionTypeBefore             AttributeDimensionType = "BEFORE"
+	AttributeDimensionTypeAfter              AttributeDimensionType = "AFTER"
+	AttributeDimensionTypeBetween            AttributeDimensionType = "BETWEEN"
+	AttributeDimensionTypeNotBetween         AttributeDimensionType = "NOT_BETWEEN"
+	AttributeDimensionTypeOn                 AttributeDimensionType = "ON"
+	AttributeDimensionTypeGreaterThan        AttributeDimensionType = "GREATER_THAN"
+	AttributeDimensionTypeLessThan           AttributeDimensionType = "LESS_THAN"
+	AttributeDimensionTypeGreaterThanOrEqual AttributeDimensionType = "GREATER_THAN_OR_EQUAL"
+	AttributeDimensionTypeLessThanOrEqual    AttributeDimensionType = "LESS_THAN_OR_EQUAL"
+	AttributeDimensionTypeEqual              AttributeDimensionType = "EQUAL"
+)
+
+// Values returns all known values for AttributeDimensionType. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AttributeDimensionType) Values() []AttributeDimensionType {
+	return []AttributeDimensionType{
+		"INCLUSIVE",
+		"EXCLUSIVE",
+		"CONTAINS",
+		"BEGINS_WITH",
+		"ENDS_WITH",
+		"BEFORE",
+		"AFTER",
+		"BETWEEN",
+		"NOT_BETWEEN",
+		"ON",
+		"GREATER_THAN",
+		"LESS_THAN",
+		"GREATER_THAN_OR_EQUAL",
+		"LESS_THAN_OR_EQUAL",
+		"EQUAL",
+	}
+}
+
 type AttributeMatchingModel string
 
 // Enum values for AttributeMatchingModel
@@ -18,6 +63,51 @@ func (AttributeMatchingModel) Values() []AttributeMatchingModel {
 	return []AttributeMatchingModel{
 		"ONE_TO_ONE",
 		"MANY_TO_MANY",
+	}
+}
+
+type ComparisonOperator string
+
+// Enum values for ComparisonOperator
+const (
+	ComparisonOperatorInclusive          ComparisonOperator = "INCLUSIVE"
+	ComparisonOperatorExclusive          ComparisonOperator = "EXCLUSIVE"
+	ComparisonOperatorContains           ComparisonOperator = "CONTAINS"
+	ComparisonOperatorBeginsWith         ComparisonOperator = "BEGINS_WITH"
+	ComparisonOperatorEndsWith           ComparisonOperator = "ENDS_WITH"
+	ComparisonOperatorGreaterThan        ComparisonOperator = "GREATER_THAN"
+	ComparisonOperatorLessThan           ComparisonOperator = "LESS_THAN"
+	ComparisonOperatorGreaterThanOrEqual ComparisonOperator = "GREATER_THAN_OR_EQUAL"
+	ComparisonOperatorLessThanOrEqual    ComparisonOperator = "LESS_THAN_OR_EQUAL"
+	ComparisonOperatorEqual              ComparisonOperator = "EQUAL"
+	ComparisonOperatorBefore             ComparisonOperator = "BEFORE"
+	ComparisonOperatorAfter              ComparisonOperator = "AFTER"
+	ComparisonOperatorOn                 ComparisonOperator = "ON"
+	ComparisonOperatorBetween            ComparisonOperator = "BETWEEN"
+	ComparisonOperatorNotBetween         ComparisonOperator = "NOT_BETWEEN"
+)
+
+// Values returns all known values for ComparisonOperator. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ComparisonOperator) Values() []ComparisonOperator {
+	return []ComparisonOperator{
+		"INCLUSIVE",
+		"EXCLUSIVE",
+		"CONTAINS",
+		"BEGINS_WITH",
+		"ENDS_WITH",
+		"GREATER_THAN",
+		"LESS_THAN",
+		"GREATER_THAN_OR_EQUAL",
+		"LESS_THAN_OR_EQUAL",
+		"EQUAL",
+		"BEFORE",
+		"AFTER",
+		"ON",
+		"BETWEEN",
+		"NOT_BETWEEN",
 	}
 }
 
@@ -40,6 +130,27 @@ func (ConflictResolvingModel) Values() []ConflictResolvingModel {
 	}
 }
 
+type DataFormat string
+
+// Enum values for DataFormat
+const (
+	DataFormatCsv   DataFormat = "CSV"
+	DataFormatJsonl DataFormat = "JSONL"
+	DataFormatOrc   DataFormat = "ORC"
+)
+
+// Values returns all known values for DataFormat. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DataFormat) Values() []DataFormat {
+	return []DataFormat{
+		"CSV",
+		"JSONL",
+		"ORC",
+	}
+}
+
 type DataPullMode string
 
 // Enum values for DataPullMode
@@ -56,6 +167,52 @@ func (DataPullMode) Values() []DataPullMode {
 	return []DataPullMode{
 		"Incremental",
 		"Complete",
+	}
+}
+
+type DateDimensionType string
+
+// Enum values for DateDimensionType
+const (
+	DateDimensionTypeBefore     DateDimensionType = "BEFORE"
+	DateDimensionTypeAfter      DateDimensionType = "AFTER"
+	DateDimensionTypeBetween    DateDimensionType = "BETWEEN"
+	DateDimensionTypeNotBetween DateDimensionType = "NOT_BETWEEN"
+	DateDimensionTypeOn         DateDimensionType = "ON"
+)
+
+// Values returns all known values for DateDimensionType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DateDimensionType) Values() []DateDimensionType {
+	return []DateDimensionType{
+		"BEFORE",
+		"AFTER",
+		"BETWEEN",
+		"NOT_BETWEEN",
+		"ON",
+	}
+}
+
+type EstimateStatus string
+
+// Enum values for EstimateStatus
+const (
+	EstimateStatusRunning   EstimateStatus = "RUNNING"
+	EstimateStatusSucceeded EstimateStatus = "SUCCEEDED"
+	EstimateStatusFailed    EstimateStatus = "FAILED"
+)
+
+// Values returns all known values for EstimateStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (EstimateStatus) Values() []EstimateStatus {
+	return []EstimateStatus{
+		"RUNNING",
+		"SUCCEEDED",
+		"FAILED",
 	}
 }
 
@@ -98,6 +255,27 @@ func (EventStreamState) Values() []EventStreamState {
 	}
 }
 
+type EventTriggerLogicalOperator string
+
+// Enum values for EventTriggerLogicalOperator
+const (
+	EventTriggerLogicalOperatorAny  EventTriggerLogicalOperator = "ANY"
+	EventTriggerLogicalOperatorAll  EventTriggerLogicalOperator = "ALL"
+	EventTriggerLogicalOperatorNone EventTriggerLogicalOperator = "NONE"
+)
+
+// Values returns all known values for EventTriggerLogicalOperator. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (EventTriggerLogicalOperator) Values() []EventTriggerLogicalOperator {
+	return []EventTriggerLogicalOperator{
+		"ANY",
+		"ALL",
+		"NONE",
+	}
+}
+
 type FieldContentType string
 
 // Enum values for FieldContentType
@@ -120,6 +298,51 @@ func (FieldContentType) Values() []FieldContentType {
 		"PHONE_NUMBER",
 		"EMAIL_ADDRESS",
 		"NAME",
+	}
+}
+
+type FilterDimensionType string
+
+// Enum values for FilterDimensionType
+const (
+	FilterDimensionTypeInclusive          FilterDimensionType = "INCLUSIVE"
+	FilterDimensionTypeExclusive          FilterDimensionType = "EXCLUSIVE"
+	FilterDimensionTypeContains           FilterDimensionType = "CONTAINS"
+	FilterDimensionTypeBeginsWith         FilterDimensionType = "BEGINS_WITH"
+	FilterDimensionTypeEndsWith           FilterDimensionType = "ENDS_WITH"
+	FilterDimensionTypeBefore             FilterDimensionType = "BEFORE"
+	FilterDimensionTypeAfter              FilterDimensionType = "AFTER"
+	FilterDimensionTypeBetween            FilterDimensionType = "BETWEEN"
+	FilterDimensionTypeNotBetween         FilterDimensionType = "NOT_BETWEEN"
+	FilterDimensionTypeOn                 FilterDimensionType = "ON"
+	FilterDimensionTypeGreaterThan        FilterDimensionType = "GREATER_THAN"
+	FilterDimensionTypeLessThan           FilterDimensionType = "LESS_THAN"
+	FilterDimensionTypeGreaterThanOrEqual FilterDimensionType = "GREATER_THAN_OR_EQUAL"
+	FilterDimensionTypeLessThanOrEqual    FilterDimensionType = "LESS_THAN_OR_EQUAL"
+	FilterDimensionTypeEqual              FilterDimensionType = "EQUAL"
+)
+
+// Values returns all known values for FilterDimensionType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (FilterDimensionType) Values() []FilterDimensionType {
+	return []FilterDimensionType{
+		"INCLUSIVE",
+		"EXCLUSIVE",
+		"CONTAINS",
+		"BEGINS_WITH",
+		"ENDS_WITH",
+		"BEFORE",
+		"AFTER",
+		"BETWEEN",
+		"NOT_BETWEEN",
+		"ON",
+		"GREATER_THAN",
+		"LESS_THAN",
+		"GREATER_THAN_OR_EQUAL",
+		"LESS_THAN_OR_EQUAL",
+		"EQUAL",
 	}
 }
 
@@ -170,6 +393,48 @@ func (IdentityResolutionJobStatus) Values() []IdentityResolutionJobStatus {
 		"COMPLETED",
 		"PARTIAL_SUCCESS",
 		"FAILED",
+	}
+}
+
+type Include string
+
+// Enum values for Include
+const (
+	IncludeAll  Include = "ALL"
+	IncludeAny  Include = "ANY"
+	IncludeNone Include = "NONE"
+)
+
+// Values returns all known values for Include. Note that this can be expanded in
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (Include) Values() []Include {
+	return []Include{
+		"ALL",
+		"ANY",
+		"NONE",
+	}
+}
+
+type IncludeOptions string
+
+// Enum values for IncludeOptions
+const (
+	IncludeOptionsAll  IncludeOptions = "ALL"
+	IncludeOptionsAny  IncludeOptions = "ANY"
+	IncludeOptionsNone IncludeOptions = "NONE"
+)
+
+// Values returns all known values for IncludeOptions. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (IncludeOptions) Values() []IncludeOptions {
+	return []IncludeOptions{
+		"ALL",
+		"ANY",
+		"NONE",
 	}
 }
 
@@ -374,6 +639,65 @@ func (PartyType) Values() []PartyType {
 	}
 }
 
+type PeriodUnit string
+
+// Enum values for PeriodUnit
+const (
+	PeriodUnitHours  PeriodUnit = "HOURS"
+	PeriodUnitDays   PeriodUnit = "DAYS"
+	PeriodUnitWeeks  PeriodUnit = "WEEKS"
+	PeriodUnitMonths PeriodUnit = "MONTHS"
+)
+
+// Values returns all known values for PeriodUnit. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (PeriodUnit) Values() []PeriodUnit {
+	return []PeriodUnit{
+		"HOURS",
+		"DAYS",
+		"WEEKS",
+		"MONTHS",
+	}
+}
+
+type QueryResult string
+
+// Enum values for QueryResult
+const (
+	QueryResultPresent QueryResult = "PRESENT"
+	QueryResultAbsent  QueryResult = "ABSENT"
+)
+
+// Values returns all known values for QueryResult. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (QueryResult) Values() []QueryResult {
+	return []QueryResult{
+		"PRESENT",
+		"ABSENT",
+	}
+}
+
+type RangeUnit string
+
+// Enum values for RangeUnit
+const (
+	RangeUnitDays RangeUnit = "DAYS"
+)
+
+// Values returns all known values for RangeUnit. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RangeUnit) Values() []RangeUnit {
+	return []RangeUnit{
+		"DAYS",
+	}
+}
+
 type RuleBasedMatchingStatus string
 
 // Enum values for RuleBasedMatchingStatus
@@ -507,6 +831,27 @@ func (SalesforceConnectorOperator) Values() []SalesforceConnectorOperator {
 	}
 }
 
+type SegmentSnapshotStatus string
+
+// Enum values for SegmentSnapshotStatus
+const (
+	SegmentSnapshotStatusCompleted  SegmentSnapshotStatus = "COMPLETED"
+	SegmentSnapshotStatusInProgress SegmentSnapshotStatus = "IN_PROGRESS"
+	SegmentSnapshotStatusFailed     SegmentSnapshotStatus = "FAILED"
+)
+
+// Values returns all known values for SegmentSnapshotStatus. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (SegmentSnapshotStatus) Values() []SegmentSnapshotStatus {
+	return []SegmentSnapshotStatus{
+		"COMPLETED",
+		"IN_PROGRESS",
+		"FAILED",
+	}
+}
+
 type ServiceNowConnectorOperator string
 
 // Enum values for ServiceNowConnectorOperator
@@ -593,14 +938,15 @@ type StandardIdentifier string
 
 // Enum values for StandardIdentifier
 const (
-	StandardIdentifierProfile    StandardIdentifier = "PROFILE"
-	StandardIdentifierAsset      StandardIdentifier = "ASSET"
-	StandardIdentifierCase       StandardIdentifier = "CASE"
-	StandardIdentifierUnique     StandardIdentifier = "UNIQUE"
-	StandardIdentifierSecondary  StandardIdentifier = "SECONDARY"
-	StandardIdentifierLookupOnly StandardIdentifier = "LOOKUP_ONLY"
-	StandardIdentifierNewOnly    StandardIdentifier = "NEW_ONLY"
-	StandardIdentifierOrder      StandardIdentifier = "ORDER"
+	StandardIdentifierProfile             StandardIdentifier = "PROFILE"
+	StandardIdentifierAsset               StandardIdentifier = "ASSET"
+	StandardIdentifierCase                StandardIdentifier = "CASE"
+	StandardIdentifierOrder               StandardIdentifier = "ORDER"
+	StandardIdentifierCommunicationRecord StandardIdentifier = "COMMUNICATION_RECORD"
+	StandardIdentifierUnique              StandardIdentifier = "UNIQUE"
+	StandardIdentifierSecondary           StandardIdentifier = "SECONDARY"
+	StandardIdentifierLookupOnly          StandardIdentifier = "LOOKUP_ONLY"
+	StandardIdentifierNewOnly             StandardIdentifier = "NEW_ONLY"
 )
 
 // Values returns all known values for StandardIdentifier. Note that this can be
@@ -612,11 +958,12 @@ func (StandardIdentifier) Values() []StandardIdentifier {
 		"PROFILE",
 		"ASSET",
 		"CASE",
+		"ORDER",
+		"COMMUNICATION_RECORD",
 		"UNIQUE",
 		"SECONDARY",
 		"LOOKUP_ONLY",
 		"NEW_ONLY",
-		"ORDER",
 	}
 }
 
@@ -680,6 +1027,31 @@ func (Status) Values() []Status {
 	}
 }
 
+type StringDimensionType string
+
+// Enum values for StringDimensionType
+const (
+	StringDimensionTypeInclusive  StringDimensionType = "INCLUSIVE"
+	StringDimensionTypeExclusive  StringDimensionType = "EXCLUSIVE"
+	StringDimensionTypeContains   StringDimensionType = "CONTAINS"
+	StringDimensionTypeBeginsWith StringDimensionType = "BEGINS_WITH"
+	StringDimensionTypeEndsWith   StringDimensionType = "ENDS_WITH"
+)
+
+// Values returns all known values for StringDimensionType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (StringDimensionType) Values() []StringDimensionType {
+	return []StringDimensionType{
+		"INCLUSIVE",
+		"EXCLUSIVE",
+		"CONTAINS",
+		"BEGINS_WITH",
+		"ENDS_WITH",
+	}
+}
+
 type TaskType string
 
 // Enum values for TaskType
@@ -727,6 +1099,27 @@ func (TriggerType) Values() []TriggerType {
 		"Scheduled",
 		"Event",
 		"OnDemand",
+	}
+}
+
+type Type string
+
+// Enum values for Type
+const (
+	TypeAll  Type = "ALL"
+	TypeAny  Type = "ANY"
+	TypeNone Type = "NONE"
+)
+
+// Values returns all known values for Type. Note that this can be expanded in the
+// future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (Type) Values() []Type {
+	return []Type{
+		"ALL",
+		"ANY",
+		"NONE",
 	}
 }
 

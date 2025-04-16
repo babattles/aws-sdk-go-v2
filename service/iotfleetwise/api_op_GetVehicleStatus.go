@@ -11,9 +11,9 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-//	Retrieves information about the status of a vehicle with any associated
+//	Retrieves information about the status of campaigns, decoder manifests, or
 //
-// campaigns.
+// state templates associated with a vehicle.
 func (c *Client) GetVehicleStatus(ctx context.Context, params *GetVehicleStatusInput, optFns ...func(*Options)) (*GetVehicleStatusOutput, error) {
 	if params == nil {
 		params = &GetVehicleStatusInput{}
@@ -36,7 +36,8 @@ type GetVehicleStatusInput struct {
 	// This member is required.
 	VehicleName *string
 
-	//  The maximum number of items to return, between 1 and 100, inclusive.
+	// The maximum number of items to return, between 1 and 100, inclusive. This
+	// parameter is only supported for resources of type CAMPAIGN .
 	MaxResults *int32
 
 	// A pagination token for the next set of results.
@@ -45,7 +46,8 @@ type GetVehicleStatusInput struct {
 	// returned, and a nextToken pagination token is returned in the response. To
 	// retrieve the next set of results, reissue the search request and include the
 	// returned token. When all results have been returned, the response does not
-	// contain a pagination token value.
+	// contain a pagination token value. This parameter is only supported for resources
+	// of type CAMPAIGN .
 	NextToken *string
 
 	noSmithyDocumentSerde
@@ -109,6 +111,9 @@ func (c *Client) addOperationGetVehicleStatusMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -125,6 +130,9 @@ func (c *Client) addOperationGetVehicleStatusMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetVehicleStatusValidationMiddleware(stack); err != nil {
@@ -148,12 +156,25 @@ func (c *Client) addOperationGetVehicleStatusMiddlewares(stack *middleware.Stack
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
+		return err
+	}
 	return nil
 }
 
 // GetVehicleStatusPaginatorOptions is the paginator options for GetVehicleStatus
 type GetVehicleStatusPaginatorOptions struct {
-	//  The maximum number of items to return, between 1 and 100, inclusive.
+	// The maximum number of items to return, between 1 and 100, inclusive. This
+	// parameter is only supported for resources of type CAMPAIGN .
 	Limit int32
 
 	// Set to true if pagination should stop if the service returns a pagination token

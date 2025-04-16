@@ -11,8 +11,8 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Deletes an existing serverless cache snapshot. Available for Redis OSS and
-// Serverless Memcached only.
+// Deletes an existing serverless cache snapshot. Available for Valkey, Redis OSS
+// and Serverless Memcached only.
 func (c *Client) DeleteServerlessCacheSnapshot(ctx context.Context, params *DeleteServerlessCacheSnapshotInput, optFns ...func(*Options)) (*DeleteServerlessCacheSnapshotOutput, error) {
 	if params == nil {
 		params = &DeleteServerlessCacheSnapshotInput{}
@@ -30,7 +30,7 @@ func (c *Client) DeleteServerlessCacheSnapshot(ctx context.Context, params *Dele
 
 type DeleteServerlessCacheSnapshotInput struct {
 
-	// Idenfitier of the snapshot to be deleted. Available for Redis OSS and
+	// Idenfitier of the snapshot to be deleted. Available for Valkey, Redis OSS and
 	// Serverless Memcached only.
 	//
 	// This member is required.
@@ -41,8 +41,8 @@ type DeleteServerlessCacheSnapshotInput struct {
 
 type DeleteServerlessCacheSnapshotOutput struct {
 
-	// The snapshot to be deleted. Available for Redis OSS and Serverless Memcached
-	// only.
+	// The snapshot to be deleted. Available for Valkey, Redis OSS and Serverless
+	// Memcached only.
 	ServerlessCacheSnapshot *types.ServerlessCacheSnapshot
 
 	// Metadata pertaining to the operation's result.
@@ -94,6 +94,9 @@ func (c *Client) addOperationDeleteServerlessCacheSnapshotMiddlewares(stack *mid
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -110,6 +113,9 @@ func (c *Client) addOperationDeleteServerlessCacheSnapshotMiddlewares(stack *mid
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteServerlessCacheSnapshotValidationMiddleware(stack); err != nil {
@@ -131,6 +137,18 @@ func (c *Client) addOperationDeleteServerlessCacheSnapshotMiddlewares(stack *mid
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

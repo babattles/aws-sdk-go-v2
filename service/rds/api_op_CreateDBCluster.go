@@ -102,7 +102,7 @@ type CreateDBClusterInput struct {
 	// cluster during the maintenance window. By default, minor engine upgrades are
 	// applied automatically.
 	//
-	// Valid for Cluster Type: Multi-AZ DB clusters only
+	// Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB cluster
 	AutoMinorVersionUpgrade *bool
 
 	// A list of Availability Zones (AZs) where you specifically want to create DB
@@ -157,6 +157,15 @@ type CreateDBClusterInput struct {
 	// Valid for Cluster Type: Aurora DB clusters only
 	CharacterSetName *string
 
+	// Specifies the scalability mode of the Aurora DB cluster. When set to limitless ,
+	// the cluster operates as an Aurora Limitless Database. When set to standard (the
+	// default), the cluster uses normal DB instance creation.
+	//
+	// Valid for: Aurora DB clusters only
+	//
+	// You can't modify this setting after you create the DB cluster.
+	ClusterScalabilityType types.ClusterScalabilityType
+
 	// Specifies whether to copy all tags from the DB cluster to snapshots of the DB
 	// cluster. The default is not to copy them.
 	//
@@ -204,6 +213,15 @@ type CreateDBClusterInput struct {
 	// Reserved for future use.
 	DBSystemId *string
 
+	// The mode of Database Insights to enable for the DB cluster.
+	//
+	// If you set this value to advanced , you must also set the
+	// PerformanceInsightsEnabled parameter to true and the
+	// PerformanceInsightsRetentionPeriod parameter to 465.
+	//
+	// Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters
+	DatabaseInsightsMode types.DatabaseInsightsMode
+
 	// The name for your database of up to 64 alphanumeric characters. A database
 	// named postgres is always created. If this parameter is specified, an additional
 	// database with this name is created.
@@ -241,13 +259,14 @@ type CreateDBClusterInput struct {
 	//
 	// The following values are valid for each DB engine:
 	//
-	//   - Aurora MySQL - audit | error | general | slowquery
+	//   - Aurora MySQL - audit | error | general | instance | slowquery |
+	//   iam-db-auth-error
 	//
-	//   - Aurora PostgreSQL - postgresql
+	//   - Aurora PostgreSQL - instance | postgresql | iam-db-auth-error
 	//
-	//   - RDS for MySQL - error | general | slowquery
+	//   - RDS for MySQL - error | general | slowquery | iam-db-auth-error
 	//
-	//   - RDS for PostgreSQL - postgresql | upgrade
+	//   - RDS for PostgreSQL - postgresql | upgrade | iam-db-auth-error
 	//
 	// For more information about exporting CloudWatch Logs for Amazon RDS, see [Publishing Database Logs to Amazon CloudWatch Logs] in
 	// the Amazon RDS User Guide.
@@ -280,12 +299,6 @@ type CreateDBClusterInput struct {
 	// Data API) for running SQL queries on the DB cluster. You can also query your
 	// database from inside the RDS console with the RDS query editor.
 	//
-	// RDS Data API is supported with the following DB clusters:
-	//
-	//   - Aurora PostgreSQL Serverless v2 and provisioned
-	//
-	//   - Aurora PostgreSQL and Aurora MySQL Serverless v1
-	//
 	// For more information, see [Using RDS Data API] in the Amazon Aurora User Guide.
 	//
 	// Valid for Cluster Type: Aurora DB clusters only
@@ -297,17 +310,21 @@ type CreateDBClusterInput struct {
 	// Management (IAM) accounts to database accounts. By default, mapping isn't
 	// enabled.
 	//
-	// For more information, see [IAM Database Authentication] in the Amazon Aurora User Guide.
+	// For more information, see [IAM Database Authentication] in the Amazon Aurora User Guide or [IAM database authentication for MariaDB, MySQL, and PostgreSQL] in the Amazon
+	// RDS User Guide.
 	//
-	// Valid for Cluster Type: Aurora DB clusters only
+	// Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters
 	//
 	// [IAM Database Authentication]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.IAMDBAuth.html
+	// [IAM database authentication for MariaDB, MySQL, and PostgreSQL]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.html
 	EnableIAMDatabaseAuthentication *bool
 
 	// Specifies whether to enable Aurora Limitless Database. You must enable Aurora
 	// Limitless Database to create a DB shard group.
 	//
 	// Valid for: Aurora DB clusters only
+	//
+	// This setting is no longer used. Instead use the ClusterScalabilityType setting.
 	EnableLimitlessDatabase *bool
 
 	// Specifies whether read replicas can forward write operations to the writer DB
@@ -321,7 +338,7 @@ type CreateDBClusterInput struct {
 	//
 	// For more information, see [Using Amazon Performance Insights] in the Amazon RDS User Guide.
 	//
-	// Valid for Cluster Type: Multi-AZ DB clusters only
+	// Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters
 	//
 	// [Using Amazon Performance Insights]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PerfInsights.html
 	EnablePerformanceInsights *bool
@@ -340,7 +357,7 @@ type CreateDBClusterInput struct {
 	// version on your DB cluster past the end of standard support for that engine
 	// version. For more information, see the following sections:
 	//
-	//   - Amazon Aurora (PostgreSQL only) - [Using Amazon RDS Extended Support]in the Amazon Aurora User Guide
+	//   - Amazon Aurora - [Using Amazon RDS Extended Support]in the Amazon Aurora User Guide
 	//
 	//   - Amazon RDS - [Using Amazon RDS Extended Support]in the Amazon RDS User Guide
 	//
@@ -541,7 +558,7 @@ type CreateDBClusterInput struct {
 	// If MonitoringRoleArn is specified, also set MonitoringInterval to a value other
 	// than 0 .
 	//
-	// Valid for Cluster Type: Multi-AZ DB clusters only
+	// Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters
 	//
 	// Valid Values: 0 | 1 | 5 | 10 | 15 | 30 | 60
 	//
@@ -556,7 +573,7 @@ type CreateDBClusterInput struct {
 	// If MonitoringInterval is set to a value other than 0 , supply a
 	// MonitoringRoleArn value.
 	//
-	// Valid for Cluster Type: Multi-AZ DB clusters only
+	// Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters
 	//
 	// [Setting up and enabling Enhanced Monitoring]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Monitoring.OS.html#USER_Monitoring.OS.Enabling
 	MonitoringRoleArn *string
@@ -592,12 +609,12 @@ type CreateDBClusterInput struct {
 	// Services account. Your Amazon Web Services account has a different default KMS
 	// key for each Amazon Web Services Region.
 	//
-	// Valid for Cluster Type: Multi-AZ DB clusters only
+	// Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters
 	PerformanceInsightsKMSKeyId *string
 
 	// The number of days to retain Performance Insights data.
 	//
-	// Valid for Cluster Type: Multi-AZ DB clusters only
+	// Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters
 	//
 	// Valid Values:
 	//
@@ -903,6 +920,9 @@ func (c *Client) addOperationCreateDBClusterMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -924,6 +944,9 @@ func (c *Client) addOperationCreateDBClusterMiddlewares(stack *middleware.Stack,
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = addOpCreateDBClusterValidationMiddleware(stack); err != nil {
 		return err
 	}
@@ -943,6 +966,18 @@ func (c *Client) addOperationCreateDBClusterMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

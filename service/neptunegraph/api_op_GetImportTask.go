@@ -12,7 +12,6 @@ import (
 	smithytime "github.com/aws/smithy-go/time"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	smithywaiter "github.com/aws/smithy-go/waiter"
-	jmespath "github.com/jmespath/go-jmespath"
 	"strconv"
 	"time"
 )
@@ -99,7 +98,7 @@ type GetImportTaskOutput struct {
 	// This member is required.
 	TaskId *string
 
-	// The number of the current attempt to execute the import task.
+	// The number of the current attempts to execute the import task.
 	AttemptNumber *int32
 
 	// Specifies the format of S3 data to be imported. Valid values are CSV , which
@@ -120,6 +119,9 @@ type GetImportTaskOutput struct {
 
 	// Contains details about the specified import task.
 	ImportTaskDetails *types.ImportTaskDetails
+
+	// The parquet type of the import task.
+	ParquetType types.ParquetType
 
 	// The reason that the import task has this status value.
 	StatusReason *string
@@ -173,6 +175,9 @@ func (c *Client) addOperationGetImportTaskMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -189,6 +194,9 @@ func (c *Client) addOperationGetImportTaskMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetImportTaskValidationMiddleware(stack); err != nil {
@@ -210,6 +218,18 @@ func (c *Client) addOperationGetImportTaskMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -377,90 +397,58 @@ func (w *ImportTaskSuccessfulWaiter) WaitForOutput(ctx context.Context, params *
 func importTaskSuccessfulStateRetryable(ctx context.Context, input *GetImportTaskInput, output *GetImportTaskOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("status", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.Status
 		expectedValue := "CANCELLING"
-		value, ok := pathValue.(types.ImportTaskStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.ImportTaskStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("status", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.Status
 		expectedValue := "CANCELLED"
-		value, ok := pathValue.(types.ImportTaskStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.ImportTaskStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("status", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.Status
 		expectedValue := "ROLLING_BACK"
-		value, ok := pathValue.(types.ImportTaskStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.ImportTaskStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("status", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.Status
 		expectedValue := "FAILED"
-		value, ok := pathValue.(types.ImportTaskStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.ImportTaskStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("status", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.Status
 		expectedValue := "SUCCEEDED"
-		value, ok := pathValue.(types.ImportTaskStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.ImportTaskStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, nil
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 
@@ -626,43 +614,36 @@ func (w *ImportTaskCancelledWaiter) WaitForOutput(ctx context.Context, params *G
 func importTaskCancelledStateRetryable(ctx context.Context, input *GetImportTaskInput, output *GetImportTaskOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("status != 'CANCELLING' && status != 'CANCELLED'", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.Status
+		v2 := "CANCELLING"
+		v3 := string(v1) != string(v2)
+		v4 := output.Status
+		v5 := "CANCELLED"
+		v6 := string(v4) != string(v5)
+		v7 := v3 && v6
 		expectedValue := "true"
 		bv, err := strconv.ParseBool(expectedValue)
 		if err != nil {
 			return false, fmt.Errorf("error parsing boolean from string %w", err)
 		}
-		value, ok := pathValue.(bool)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected bool value got %T", pathValue)
-		}
-
-		if value == bv {
+		if v7 == bv {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("status", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.Status
 		expectedValue := "CANCELLED"
-		value, ok := pathValue.(types.ImportTaskStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.ImportTaskStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, nil
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 

@@ -65,7 +65,7 @@ type CreateNFSFileShareInput struct {
 	//
 	// Bucket ARN:
 	//
-	//     arn:aws:s3:::my-bucket/prefix/
+	//     arn:aws:s3:::amzn-s3-demo-bucket/prefix/
 	//
 	// Access point ARN:
 	//
@@ -114,10 +114,25 @@ type CreateNFSFileShareInput struct {
 	// S3_ONEZONE_IA
 	DefaultStorageClass *string
 
+	// A value that specifies the type of server-side encryption that the file share
+	// will use for the data that it stores in Amazon S3.
+	//
+	// We recommend using EncryptionType instead of KMSEncrypted to set the file share
+	// encryption method. You do not need to provide values for both parameters.
+	//
+	// If values for both parameters exist in the same request, then the specified
+	// encryption methods must not conflict. For example, if EncryptionType is SseS3 ,
+	// then KMSEncrypted must be false . If EncryptionType is SseKms or DsseKms , then
+	// KMSEncrypted must be true .
+	EncryptionType types.EncryptionType
+
 	// The name of the file share. Optional.
 	//
 	// FileShareName must be set if an S3 prefix name is set in LocationARN , or if an
 	// access point or access point alias is used.
+	//
+	// A valid NFS file share name can only contain the following characters: a - z , A
+	// - Z , 0 - 9 , - , . , and _ .
 	FileShareName *string
 
 	// A value that enables guessing of the MIME type for uploaded objects based on
@@ -127,15 +142,27 @@ type CreateNFSFileShareInput struct {
 	// Valid Values: true | false
 	GuessMIMETypeEnabled *bool
 
-	// Set to true to use Amazon S3 server-side encryption with your own KMS key, or
-	// false to use a key managed by Amazon S3. Optional.
+	// Optional. Set to true to use Amazon S3 server-side encryption with your own KMS
+	// key (SSE-KMS), or false to use a key managed by Amazon S3 (SSE-S3). To use
+	// dual-layer encryption (DSSE-KMS), set the EncryptionType parameter instead.
+	//
+	// We recommend using EncryptionType instead of KMSEncrypted to set the file share
+	// encryption method. You do not need to provide values for both parameters.
+	//
+	// If values for both parameters exist in the same request, then the specified
+	// encryption methods must not conflict. For example, if EncryptionType is SseS3 ,
+	// then KMSEncrypted must be false . If EncryptionType is SseKms or DsseKms , then
+	// KMSEncrypted must be true .
 	//
 	// Valid Values: true | false
+	//
+	// Deprecated: KMSEncrypted is deprecated, use EncryptionType instead.
 	KMSEncrypted *bool
 
-	// The Amazon Resource Name (ARN) of a symmetric customer master key (CMK) used
-	// for Amazon S3 server-side encryption. Storage Gateway does not support
-	// asymmetric CMKs. This value can only be set when KMSEncrypted is true . Optional.
+	// Optional. The Amazon Resource Name (ARN) of a symmetric customer master key
+	// (CMK) used for Amazon S3 server-side encryption. Storage Gateway does not
+	// support asymmetric CMKs. This value must be set if KMSEncrypted is true , or if
+	// EncryptionType is SseKms or DsseKms .
 	KMSKey *string
 
 	// File share default values. Optional.
@@ -150,6 +177,10 @@ type CreateNFSFileShareInput struct {
 	//
 	// SettlingTimeInSeconds has no effect on the timing of the object uploading to
 	// Amazon S3, only the timing of the notification.
+	//
+	// This setting is not meant to specify an exact time at which the notification
+	// will be sent. In some cases, the gateway might require more than the specified
+	// delay time to generate and send notifications.
 	//
 	// The following example sets NotificationPolicy on with SettlingTimeInSeconds set
 	// to 60.
@@ -270,6 +301,9 @@ func (c *Client) addOperationCreateNFSFileShareMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -286,6 +320,9 @@ func (c *Client) addOperationCreateNFSFileShareMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateNFSFileShareValidationMiddleware(stack); err != nil {
@@ -307,6 +344,18 @@ func (c *Client) addOperationCreateNFSFileShareMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

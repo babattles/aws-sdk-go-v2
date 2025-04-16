@@ -80,6 +80,29 @@ func (AlertTargetType) Values() []AlertTargetType {
 	}
 }
 
+type ApplicationProtocol string
+
+// Enum values for ApplicationProtocol
+const (
+	ApplicationProtocolSecureMqtt ApplicationProtocol = "SECURE_MQTT"
+	ApplicationProtocolMqttWss    ApplicationProtocol = "MQTT_WSS"
+	ApplicationProtocolHttps      ApplicationProtocol = "HTTPS"
+	ApplicationProtocolDefault    ApplicationProtocol = "DEFAULT"
+)
+
+// Values returns all known values for ApplicationProtocol. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ApplicationProtocol) Values() []ApplicationProtocol {
+	return []ApplicationProtocol{
+		"SECURE_MQTT",
+		"MQTT_WSS",
+		"HTTPS",
+		"DEFAULT",
+	}
+}
+
 type AuditCheckRunStatus string
 
 // Enum values for AuditCheckRunStatus
@@ -282,6 +305,31 @@ func (AuthDecision) Values() []AuthDecision {
 		"ALLOWED",
 		"EXPLICIT_DENY",
 		"IMPLICIT_DENY",
+	}
+}
+
+type AuthenticationType string
+
+// Enum values for AuthenticationType
+const (
+	AuthenticationTypeCustomAuthX509 AuthenticationType = "CUSTOM_AUTH_X509"
+	AuthenticationTypeCustomAuth     AuthenticationType = "CUSTOM_AUTH"
+	AuthenticationTypeAwsX509        AuthenticationType = "AWS_X509"
+	AuthenticationTypeAwsSigv4       AuthenticationType = "AWS_SIGV4"
+	AuthenticationTypeDefault        AuthenticationType = "DEFAULT"
+)
+
+// Values returns all known values for AuthenticationType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AuthenticationType) Values() []AuthenticationType {
+	return []AuthenticationType{
+		"CUSTOM_AUTH_X509",
+		"CUSTOM_AUTH",
+		"AWS_X509",
+		"AWS_SIGV4",
+		"DEFAULT",
 	}
 }
 
@@ -517,6 +565,52 @@ func (CertificateStatus) Values() []CertificateStatus {
 	}
 }
 
+type CommandExecutionStatus string
+
+// Enum values for CommandExecutionStatus
+const (
+	CommandExecutionStatusCreated    CommandExecutionStatus = "CREATED"
+	CommandExecutionStatusInProgress CommandExecutionStatus = "IN_PROGRESS"
+	CommandExecutionStatusSucceeded  CommandExecutionStatus = "SUCCEEDED"
+	CommandExecutionStatusFailed     CommandExecutionStatus = "FAILED"
+	CommandExecutionStatusRejected   CommandExecutionStatus = "REJECTED"
+	CommandExecutionStatusTimedOut   CommandExecutionStatus = "TIMED_OUT"
+)
+
+// Values returns all known values for CommandExecutionStatus. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CommandExecutionStatus) Values() []CommandExecutionStatus {
+	return []CommandExecutionStatus{
+		"CREATED",
+		"IN_PROGRESS",
+		"SUCCEEDED",
+		"FAILED",
+		"REJECTED",
+		"TIMED_OUT",
+	}
+}
+
+type CommandNamespace string
+
+// Enum values for CommandNamespace
+const (
+	CommandNamespaceAWSIoT          CommandNamespace = "AWS-IoT"
+	CommandNamespaceAWSIoTFleetWise CommandNamespace = "AWS-IoT-FleetWise"
+)
+
+// Values returns all known values for CommandNamespace. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CommandNamespace) Values() []CommandNamespace {
+	return []CommandNamespace{
+		"AWS-IoT",
+		"AWS-IoT-FleetWise",
+	}
+}
+
 type ComparisonOperator string
 
 // Enum values for ComparisonOperator
@@ -570,6 +664,25 @@ func (ConfidenceLevel) Values() []ConfidenceLevel {
 		"LOW",
 		"MEDIUM",
 		"HIGH",
+	}
+}
+
+type ConfigName string
+
+// Enum values for ConfigName
+const (
+	ConfigNameCertAgeThresholdInDays        ConfigName = "CERT_AGE_THRESHOLD_IN_DAYS"
+	ConfigNameCertExpirationThresholdInDays ConfigName = "CERT_EXPIRATION_THRESHOLD_IN_DAYS"
+)
+
+// Values returns all known values for ConfigName. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ConfigName) Values() []ConfigName {
+	return []ConfigName{
+		"CERT_AGE_THRESHOLD_IN_DAYS",
+		"CERT_EXPIRATION_THRESHOLD_IN_DAYS",
 	}
 }
 
@@ -743,6 +856,49 @@ func (DimensionValueOperator) Values() []DimensionValueOperator {
 	return []DimensionValueOperator{
 		"IN",
 		"NOT_IN",
+	}
+}
+
+type DisconnectReasonValue string
+
+// Enum values for DisconnectReasonValue
+const (
+	DisconnectReasonValueAuthError                 DisconnectReasonValue = "AUTH_ERROR"
+	DisconnectReasonValueClientInitiatedDisconnect DisconnectReasonValue = "CLIENT_INITIATED_DISCONNECT"
+	DisconnectReasonValueClientError               DisconnectReasonValue = "CLIENT_ERROR"
+	DisconnectReasonValueConnectionLost            DisconnectReasonValue = "CONNECTION_LOST"
+	DisconnectReasonValueDuplicateClientid         DisconnectReasonValue = "DUPLICATE_CLIENTID"
+	DisconnectReasonValueForbiddenAccess           DisconnectReasonValue = "FORBIDDEN_ACCESS"
+	DisconnectReasonValueMqttKeepAliveTimeout      DisconnectReasonValue = "MQTT_KEEP_ALIVE_TIMEOUT"
+	DisconnectReasonValueServerError               DisconnectReasonValue = "SERVER_ERROR"
+	DisconnectReasonValueServerInitiatedDisconnect DisconnectReasonValue = "SERVER_INITIATED_DISCONNECT"
+	DisconnectReasonValueThrottled                 DisconnectReasonValue = "THROTTLED"
+	DisconnectReasonValueWebsocketTtlExpiration    DisconnectReasonValue = "WEBSOCKET_TTL_EXPIRATION"
+	DisconnectReasonValueCustomauthTtlExpiration   DisconnectReasonValue = "CUSTOMAUTH_TTL_EXPIRATION"
+	DisconnectReasonValueUnknown                   DisconnectReasonValue = "UNKNOWN"
+	DisconnectReasonValueNone                      DisconnectReasonValue = "NONE"
+)
+
+// Values returns all known values for DisconnectReasonValue. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DisconnectReasonValue) Values() []DisconnectReasonValue {
+	return []DisconnectReasonValue{
+		"AUTH_ERROR",
+		"CLIENT_INITIATED_DISCONNECT",
+		"CLIENT_ERROR",
+		"CONNECTION_LOST",
+		"DUPLICATE_CLIENTID",
+		"FORBIDDEN_ACCESS",
+		"MQTT_KEEP_ALIVE_TIMEOUT",
+		"SERVER_ERROR",
+		"SERVER_INITIATED_DISCONNECT",
+		"THROTTLED",
+		"WEBSOCKET_TTL_EXPIRATION",
+		"CUSTOMAUTH_TTL_EXPIRATION",
+		"UNKNOWN",
+		"NONE",
 	}
 }
 
@@ -1386,6 +1542,65 @@ func (RetryableFailureType) Values() []RetryableFailureType {
 	}
 }
 
+type SbomValidationErrorCode string
+
+// Enum values for SbomValidationErrorCode
+const (
+	SbomValidationErrorCodeIncompatibleFormat    SbomValidationErrorCode = "INCOMPATIBLE_FORMAT"
+	SbomValidationErrorCodeFileSizeLimitExceeded SbomValidationErrorCode = "FILE_SIZE_LIMIT_EXCEEDED"
+)
+
+// Values returns all known values for SbomValidationErrorCode. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (SbomValidationErrorCode) Values() []SbomValidationErrorCode {
+	return []SbomValidationErrorCode{
+		"INCOMPATIBLE_FORMAT",
+		"FILE_SIZE_LIMIT_EXCEEDED",
+	}
+}
+
+type SbomValidationResult string
+
+// Enum values for SbomValidationResult
+const (
+	SbomValidationResultFailed    SbomValidationResult = "FAILED"
+	SbomValidationResultSucceeded SbomValidationResult = "SUCCEEDED"
+)
+
+// Values returns all known values for SbomValidationResult. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (SbomValidationResult) Values() []SbomValidationResult {
+	return []SbomValidationResult{
+		"FAILED",
+		"SUCCEEDED",
+	}
+}
+
+type SbomValidationStatus string
+
+// Enum values for SbomValidationStatus
+const (
+	SbomValidationStatusInProgress SbomValidationStatus = "IN_PROGRESS"
+	SbomValidationStatusFailed     SbomValidationStatus = "FAILED"
+	SbomValidationStatusSucceeded  SbomValidationStatus = "SUCCEEDED"
+)
+
+// Values returns all known values for SbomValidationStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (SbomValidationStatus) Values() []SbomValidationStatus {
+	return []SbomValidationStatus{
+		"IN_PROGRESS",
+		"FAILED",
+		"SUCCEEDED",
+	}
+}
+
 type ServerCertificateStatus string
 
 // Enum values for ServerCertificateStatus
@@ -1423,6 +1638,25 @@ func (ServiceType) Values() []ServiceType {
 		"DATA",
 		"CREDENTIAL_PROVIDER",
 		"JOBS",
+	}
+}
+
+type SortOrder string
+
+// Enum values for SortOrder
+const (
+	SortOrderAscending  SortOrder = "ASCENDING"
+	SortOrderDescending SortOrder = "DESCENDING"
+)
+
+// Values returns all known values for SortOrder. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (SortOrder) Values() []SortOrder {
+	return []SortOrder{
+		"ASCENDING",
+		"DESCENDING",
 	}
 }
 
@@ -1565,6 +1799,25 @@ func (ThingIndexingMode) Values() []ThingIndexingMode {
 		"OFF",
 		"REGISTRY",
 		"REGISTRY_AND_SHADOW",
+	}
+}
+
+type ThingPrincipalType string
+
+// Enum values for ThingPrincipalType
+const (
+	ThingPrincipalTypeExclusiveThing    ThingPrincipalType = "EXCLUSIVE_THING"
+	ThingPrincipalTypeNonExclusiveThing ThingPrincipalType = "NON_EXCLUSIVE_THING"
+)
+
+// Values returns all known values for ThingPrincipalType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ThingPrincipalType) Values() []ThingPrincipalType {
+	return []ThingPrincipalType{
+		"EXCLUSIVE_THING",
+		"NON_EXCLUSIVE_THING",
 	}
 }
 

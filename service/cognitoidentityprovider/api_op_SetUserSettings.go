@@ -14,7 +14,7 @@ import (
 //	This action is no longer supported. You can use it to configure only SMS MFA.
 //
 // You can't use it to configure time-based one-time password (TOTP) software token
-// MFA. To configure either type of MFA, use [SetUserMFAPreference]instead.
+// or email MFA.
 //
 // Authorize this action with a signed-in user's access token. It must include the
 // scope aws.cognito.signin.user.admin .
@@ -26,7 +26,6 @@ import (
 // [Using the Amazon Cognito user pools API and user pool endpoints].
 //
 // [Using the Amazon Cognito user pools API and user pool endpoints]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html
-// [SetUserMFAPreference]: https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SetUserMFAPreference.html
 func (c *Client) SetUserSettings(ctx context.Context, params *SetUserSettingsInput, optFns ...func(*Options)) (*SetUserSettingsOutput, error) {
 	if params == nil {
 		params = &SetUserSettingsInput{}
@@ -45,8 +44,8 @@ func (c *Client) SetUserSettings(ctx context.Context, params *SetUserSettingsInp
 // Represents the request to set user settings.
 type SetUserSettingsInput struct {
 
-	// A valid access token that Amazon Cognito issued to the user whose user settings
-	// you want to configure.
+	// A valid access token that Amazon Cognito issued to the currently signed-in
+	// user. Must include a scope claim for aws.cognito.signin.user.admin .
 	//
 	// This member is required.
 	AccessToken *string
@@ -108,6 +107,9 @@ func (c *Client) addOperationSetUserSettingsMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -124,6 +126,9 @@ func (c *Client) addOperationSetUserSettingsMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpSetUserSettingsValidationMiddleware(stack); err != nil {
@@ -145,6 +150,18 @@ func (c *Client) addOperationSetUserSettingsMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

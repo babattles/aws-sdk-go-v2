@@ -54,6 +54,11 @@ type CreateFuotaTaskInput struct {
 	// The description of the new resource.
 	Description *string
 
+	// The descriptor is the metadata about the file that is transferred to the device
+	// using FUOTA, such as the software version. It is a binary field encoded in
+	// base64.
+	Descriptor *string
+
 	// The interval for sending fragments in milliseconds, rounded to the nearest
 	// second.
 	//
@@ -143,6 +148,9 @@ func (c *Client) addOperationCreateFuotaTaskMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -159,6 +167,9 @@ func (c *Client) addOperationCreateFuotaTaskMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateFuotaTaskMiddleware(stack, options); err != nil {
@@ -183,6 +194,18 @@ func (c *Client) addOperationCreateFuotaTaskMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

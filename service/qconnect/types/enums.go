@@ -2,6 +2,106 @@
 
 package types
 
+type AIAgentAssociationConfigurationType string
+
+// Enum values for AIAgentAssociationConfigurationType
+const (
+	AIAgentAssociationConfigurationTypeKnowledgeBase AIAgentAssociationConfigurationType = "KNOWLEDGE_BASE"
+)
+
+// Values returns all known values for AIAgentAssociationConfigurationType. Note
+// that this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AIAgentAssociationConfigurationType) Values() []AIAgentAssociationConfigurationType {
+	return []AIAgentAssociationConfigurationType{
+		"KNOWLEDGE_BASE",
+	}
+}
+
+type AIAgentType string
+
+// Enum values for AIAgentType
+const (
+	AIAgentTypeManualSearch         AIAgentType = "MANUAL_SEARCH"
+	AIAgentTypeAnswerRecommendation AIAgentType = "ANSWER_RECOMMENDATION"
+	AIAgentTypeSelfService          AIAgentType = "SELF_SERVICE"
+)
+
+// Values returns all known values for AIAgentType. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AIAgentType) Values() []AIAgentType {
+	return []AIAgentType{
+		"MANUAL_SEARCH",
+		"ANSWER_RECOMMENDATION",
+		"SELF_SERVICE",
+	}
+}
+
+type AIPromptAPIFormat string
+
+// Enum values for AIPromptAPIFormat
+const (
+	AIPromptAPIFormatAnthropicClaudeMessages        AIPromptAPIFormat = "ANTHROPIC_CLAUDE_MESSAGES"
+	AIPromptAPIFormatAnthropicClaudeTextCompletions AIPromptAPIFormat = "ANTHROPIC_CLAUDE_TEXT_COMPLETIONS"
+)
+
+// Values returns all known values for AIPromptAPIFormat. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AIPromptAPIFormat) Values() []AIPromptAPIFormat {
+	return []AIPromptAPIFormat{
+		"ANTHROPIC_CLAUDE_MESSAGES",
+		"ANTHROPIC_CLAUDE_TEXT_COMPLETIONS",
+	}
+}
+
+type AIPromptTemplateType string
+
+// Enum values for AIPromptTemplateType
+const (
+	AIPromptTemplateTypeText AIPromptTemplateType = "TEXT"
+)
+
+// Values returns all known values for AIPromptTemplateType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AIPromptTemplateType) Values() []AIPromptTemplateType {
+	return []AIPromptTemplateType{
+		"TEXT",
+	}
+}
+
+type AIPromptType string
+
+// Enum values for AIPromptType
+const (
+	AIPromptTypeAnswerGeneration            AIPromptType = "ANSWER_GENERATION"
+	AIPromptTypeIntentLabelingGeneration    AIPromptType = "INTENT_LABELING_GENERATION"
+	AIPromptTypeQueryReformulation          AIPromptType = "QUERY_REFORMULATION"
+	AIPromptTypeSelfServicePreProcessing    AIPromptType = "SELF_SERVICE_PRE_PROCESSING"
+	AIPromptTypeSelfServiceAnswerGeneration AIPromptType = "SELF_SERVICE_ANSWER_GENERATION"
+)
+
+// Values returns all known values for AIPromptType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AIPromptType) Values() []AIPromptType {
+	return []AIPromptType{
+		"ANSWER_GENERATION",
+		"INTENT_LABELING_GENERATION",
+		"QUERY_REFORMULATION",
+		"SELF_SERVICE_PRE_PROCESSING",
+		"SELF_SERVICE_ANSWER_GENERATION",
+	}
+}
+
 type AssistantCapabilityType string
 
 // Enum values for AssistantCapabilityType
@@ -82,6 +182,48 @@ func (AssociationType) Values() []AssociationType {
 	}
 }
 
+type ChannelSubtype string
+
+// Enum values for ChannelSubtype
+const (
+	ChannelSubtypeEmail ChannelSubtype = "EMAIL"
+	ChannelSubtypeSms   ChannelSubtype = "SMS"
+)
+
+// Values returns all known values for ChannelSubtype. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ChannelSubtype) Values() []ChannelSubtype {
+	return []ChannelSubtype{
+		"EMAIL",
+		"SMS",
+	}
+}
+
+type ChunkingStrategy string
+
+// Enum values for ChunkingStrategy
+const (
+	ChunkingStrategyFixedSize    ChunkingStrategy = "FIXED_SIZE"
+	ChunkingStrategyNone         ChunkingStrategy = "NONE"
+	ChunkingStrategyHierarchical ChunkingStrategy = "HIERARCHICAL"
+	ChunkingStrategySemantic     ChunkingStrategy = "SEMANTIC"
+)
+
+// Values returns all known values for ChunkingStrategy. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ChunkingStrategy) Values() []ChunkingStrategy {
+	return []ChunkingStrategy{
+		"FIXED_SIZE",
+		"NONE",
+		"HIERARCHICAL",
+		"SEMANTIC",
+	}
+}
+
 type ContentAssociationType string
 
 // Enum values for ContentAssociationType
@@ -96,6 +238,23 @@ const (
 func (ContentAssociationType) Values() []ContentAssociationType {
 	return []ContentAssociationType{
 		"AMAZON_CONNECT_GUIDE",
+	}
+}
+
+type ContentDisposition string
+
+// Enum values for ContentDisposition
+const (
+	ContentDispositionAttachment ContentDisposition = "ATTACHMENT"
+)
+
+// Values returns all known values for ContentDisposition. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ContentDisposition) Values() []ContentDisposition {
+	return []ContentDisposition{
+		"ATTACHMENT",
 	}
 }
 
@@ -125,6 +284,48 @@ func (ContentStatus) Values() []ContentStatus {
 		"DELETE_FAILED",
 		"DELETED",
 		"UPDATE_FAILED",
+	}
+}
+
+type ConversationStatus string
+
+// Enum values for ConversationStatus
+const (
+	ConversationStatusClosed     ConversationStatus = "CLOSED"
+	ConversationStatusReady      ConversationStatus = "READY"
+	ConversationStatusProcessing ConversationStatus = "PROCESSING"
+)
+
+// Values returns all known values for ConversationStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ConversationStatus) Values() []ConversationStatus {
+	return []ConversationStatus{
+		"CLOSED",
+		"READY",
+		"PROCESSING",
+	}
+}
+
+type ConversationStatusReason string
+
+// Enum values for ConversationStatusReason
+const (
+	ConversationStatusReasonSuccess  ConversationStatusReason = "SUCCESS"
+	ConversationStatusReasonFailed   ConversationStatusReason = "FAILED"
+	ConversationStatusReasonRejected ConversationStatusReason = "REJECTED"
+)
+
+// Values returns all known values for ConversationStatusReason. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ConversationStatusReason) Values() []ConversationStatusReason {
+	return []ConversationStatusReason{
+		"SUCCESS",
+		"FAILED",
+		"REJECTED",
 	}
 }
 
@@ -179,6 +380,207 @@ func (FilterOperator) Values() []FilterOperator {
 	}
 }
 
+type GuardrailContentFilterType string
+
+// Enum values for GuardrailContentFilterType
+const (
+	GuardrailContentFilterTypeSexual       GuardrailContentFilterType = "SEXUAL"
+	GuardrailContentFilterTypeViolence     GuardrailContentFilterType = "VIOLENCE"
+	GuardrailContentFilterTypeHate         GuardrailContentFilterType = "HATE"
+	GuardrailContentFilterTypeInsults      GuardrailContentFilterType = "INSULTS"
+	GuardrailContentFilterTypeMisconduct   GuardrailContentFilterType = "MISCONDUCT"
+	GuardrailContentFilterTypePromptAttack GuardrailContentFilterType = "PROMPT_ATTACK"
+)
+
+// Values returns all known values for GuardrailContentFilterType. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (GuardrailContentFilterType) Values() []GuardrailContentFilterType {
+	return []GuardrailContentFilterType{
+		"SEXUAL",
+		"VIOLENCE",
+		"HATE",
+		"INSULTS",
+		"MISCONDUCT",
+		"PROMPT_ATTACK",
+	}
+}
+
+type GuardrailContextualGroundingFilterType string
+
+// Enum values for GuardrailContextualGroundingFilterType
+const (
+	GuardrailContextualGroundingFilterTypeGrounding GuardrailContextualGroundingFilterType = "GROUNDING"
+	GuardrailContextualGroundingFilterTypeRelevance GuardrailContextualGroundingFilterType = "RELEVANCE"
+)
+
+// Values returns all known values for GuardrailContextualGroundingFilterType.
+// Note that this can be expanded in the future, and so it is only as up to date as
+// the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (GuardrailContextualGroundingFilterType) Values() []GuardrailContextualGroundingFilterType {
+	return []GuardrailContextualGroundingFilterType{
+		"GROUNDING",
+		"RELEVANCE",
+	}
+}
+
+type GuardrailFilterStrength string
+
+// Enum values for GuardrailFilterStrength
+const (
+	GuardrailFilterStrengthNone   GuardrailFilterStrength = "NONE"
+	GuardrailFilterStrengthLow    GuardrailFilterStrength = "LOW"
+	GuardrailFilterStrengthMedium GuardrailFilterStrength = "MEDIUM"
+	GuardrailFilterStrengthHigh   GuardrailFilterStrength = "HIGH"
+)
+
+// Values returns all known values for GuardrailFilterStrength. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (GuardrailFilterStrength) Values() []GuardrailFilterStrength {
+	return []GuardrailFilterStrength{
+		"NONE",
+		"LOW",
+		"MEDIUM",
+		"HIGH",
+	}
+}
+
+type GuardrailManagedWordsType string
+
+// Enum values for GuardrailManagedWordsType
+const (
+	GuardrailManagedWordsTypeProfanity GuardrailManagedWordsType = "PROFANITY"
+)
+
+// Values returns all known values for GuardrailManagedWordsType. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (GuardrailManagedWordsType) Values() []GuardrailManagedWordsType {
+	return []GuardrailManagedWordsType{
+		"PROFANITY",
+	}
+}
+
+type GuardrailPiiEntityType string
+
+// Enum values for GuardrailPiiEntityType
+const (
+	GuardrailPiiEntityTypeAddress                             GuardrailPiiEntityType = "ADDRESS"
+	GuardrailPiiEntityTypeAge                                 GuardrailPiiEntityType = "AGE"
+	GuardrailPiiEntityTypeAwsAccessKey                        GuardrailPiiEntityType = "AWS_ACCESS_KEY"
+	GuardrailPiiEntityTypeAwsSecretKey                        GuardrailPiiEntityType = "AWS_SECRET_KEY"
+	GuardrailPiiEntityTypeCaHealthNumber                      GuardrailPiiEntityType = "CA_HEALTH_NUMBER"
+	GuardrailPiiEntityTypeCaSocialInsuranceNumber             GuardrailPiiEntityType = "CA_SOCIAL_INSURANCE_NUMBER"
+	GuardrailPiiEntityTypeCreditDebitCardCvv                  GuardrailPiiEntityType = "CREDIT_DEBIT_CARD_CVV"
+	GuardrailPiiEntityTypeCreditDebitCardExpiry               GuardrailPiiEntityType = "CREDIT_DEBIT_CARD_EXPIRY"
+	GuardrailPiiEntityTypeCreditDebitCardNumber               GuardrailPiiEntityType = "CREDIT_DEBIT_CARD_NUMBER"
+	GuardrailPiiEntityTypeDriverId                            GuardrailPiiEntityType = "DRIVER_ID"
+	GuardrailPiiEntityTypeEmail                               GuardrailPiiEntityType = "EMAIL"
+	GuardrailPiiEntityTypeInternationalBankAccountNumber      GuardrailPiiEntityType = "INTERNATIONAL_BANK_ACCOUNT_NUMBER"
+	GuardrailPiiEntityTypeIpAddress                           GuardrailPiiEntityType = "IP_ADDRESS"
+	GuardrailPiiEntityTypeLicensePlate                        GuardrailPiiEntityType = "LICENSE_PLATE"
+	GuardrailPiiEntityTypeMacAddress                          GuardrailPiiEntityType = "MAC_ADDRESS"
+	GuardrailPiiEntityTypeName                                GuardrailPiiEntityType = "NAME"
+	GuardrailPiiEntityTypePassword                            GuardrailPiiEntityType = "PASSWORD"
+	GuardrailPiiEntityTypePhone                               GuardrailPiiEntityType = "PHONE"
+	GuardrailPiiEntityTypePin                                 GuardrailPiiEntityType = "PIN"
+	GuardrailPiiEntityTypeSwiftCode                           GuardrailPiiEntityType = "SWIFT_CODE"
+	GuardrailPiiEntityTypeUkNationalHealthServiceNumber       GuardrailPiiEntityType = "UK_NATIONAL_HEALTH_SERVICE_NUMBER"
+	GuardrailPiiEntityTypeUkNationalInsuranceNumber           GuardrailPiiEntityType = "UK_NATIONAL_INSURANCE_NUMBER"
+	GuardrailPiiEntityTypeUkUniqueTaxpayerReferenceNumber     GuardrailPiiEntityType = "UK_UNIQUE_TAXPAYER_REFERENCE_NUMBER"
+	GuardrailPiiEntityTypeUrl                                 GuardrailPiiEntityType = "URL"
+	GuardrailPiiEntityTypeUsername                            GuardrailPiiEntityType = "USERNAME"
+	GuardrailPiiEntityTypeUsBankAccountNumber                 GuardrailPiiEntityType = "US_BANK_ACCOUNT_NUMBER"
+	GuardrailPiiEntityTypeUsBankRoutingNumber                 GuardrailPiiEntityType = "US_BANK_ROUTING_NUMBER"
+	GuardrailPiiEntityTypeUsIndividualTaxIdentificationNumber GuardrailPiiEntityType = "US_INDIVIDUAL_TAX_IDENTIFICATION_NUMBER"
+	GuardrailPiiEntityTypeUsPassportNumber                    GuardrailPiiEntityType = "US_PASSPORT_NUMBER"
+	GuardrailPiiEntityTypeUsSocialSecurityNumber              GuardrailPiiEntityType = "US_SOCIAL_SECURITY_NUMBER"
+	GuardrailPiiEntityTypeVehicleIdentificationNumber         GuardrailPiiEntityType = "VEHICLE_IDENTIFICATION_NUMBER"
+)
+
+// Values returns all known values for GuardrailPiiEntityType. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (GuardrailPiiEntityType) Values() []GuardrailPiiEntityType {
+	return []GuardrailPiiEntityType{
+		"ADDRESS",
+		"AGE",
+		"AWS_ACCESS_KEY",
+		"AWS_SECRET_KEY",
+		"CA_HEALTH_NUMBER",
+		"CA_SOCIAL_INSURANCE_NUMBER",
+		"CREDIT_DEBIT_CARD_CVV",
+		"CREDIT_DEBIT_CARD_EXPIRY",
+		"CREDIT_DEBIT_CARD_NUMBER",
+		"DRIVER_ID",
+		"EMAIL",
+		"INTERNATIONAL_BANK_ACCOUNT_NUMBER",
+		"IP_ADDRESS",
+		"LICENSE_PLATE",
+		"MAC_ADDRESS",
+		"NAME",
+		"PASSWORD",
+		"PHONE",
+		"PIN",
+		"SWIFT_CODE",
+		"UK_NATIONAL_HEALTH_SERVICE_NUMBER",
+		"UK_NATIONAL_INSURANCE_NUMBER",
+		"UK_UNIQUE_TAXPAYER_REFERENCE_NUMBER",
+		"URL",
+		"USERNAME",
+		"US_BANK_ACCOUNT_NUMBER",
+		"US_BANK_ROUTING_NUMBER",
+		"US_INDIVIDUAL_TAX_IDENTIFICATION_NUMBER",
+		"US_PASSPORT_NUMBER",
+		"US_SOCIAL_SECURITY_NUMBER",
+		"VEHICLE_IDENTIFICATION_NUMBER",
+	}
+}
+
+type GuardrailSensitiveInformationAction string
+
+// Enum values for GuardrailSensitiveInformationAction
+const (
+	GuardrailSensitiveInformationActionBlock     GuardrailSensitiveInformationAction = "BLOCK"
+	GuardrailSensitiveInformationActionAnonymize GuardrailSensitiveInformationAction = "ANONYMIZE"
+)
+
+// Values returns all known values for GuardrailSensitiveInformationAction. Note
+// that this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (GuardrailSensitiveInformationAction) Values() []GuardrailSensitiveInformationAction {
+	return []GuardrailSensitiveInformationAction{
+		"BLOCK",
+		"ANONYMIZE",
+	}
+}
+
+type GuardrailTopicType string
+
+// Enum values for GuardrailTopicType
+const (
+	GuardrailTopicTypeDeny GuardrailTopicType = "DENY"
+)
+
+// Values returns all known values for GuardrailTopicType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (GuardrailTopicType) Values() []GuardrailTopicType {
+	return []GuardrailTopicType{
+		"DENY",
+	}
+}
+
 type ImportJobStatus string
 
 // Enum values for ImportJobStatus
@@ -223,6 +625,25 @@ func (ImportJobType) Values() []ImportJobType {
 	}
 }
 
+type KnowledgeBaseSearchType string
+
+// Enum values for KnowledgeBaseSearchType
+const (
+	KnowledgeBaseSearchTypeHybrid   KnowledgeBaseSearchType = "HYBRID"
+	KnowledgeBaseSearchTypeSemantic KnowledgeBaseSearchType = "SEMANTIC"
+)
+
+// Values returns all known values for KnowledgeBaseSearchType. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (KnowledgeBaseSearchType) Values() []KnowledgeBaseSearchType {
+	return []KnowledgeBaseSearchType{
+		"HYBRID",
+		"SEMANTIC",
+	}
+}
+
 type KnowledgeBaseStatus string
 
 // Enum values for KnowledgeBaseStatus
@@ -254,9 +675,11 @@ type KnowledgeBaseType string
 
 // Enum values for KnowledgeBaseType
 const (
-	KnowledgeBaseTypeExternal       KnowledgeBaseType = "EXTERNAL"
-	KnowledgeBaseTypeCustom         KnowledgeBaseType = "CUSTOM"
-	KnowledgeBaseTypeQuickResponses KnowledgeBaseType = "QUICK_RESPONSES"
+	KnowledgeBaseTypeExternal         KnowledgeBaseType = "EXTERNAL"
+	KnowledgeBaseTypeCustom           KnowledgeBaseType = "CUSTOM"
+	KnowledgeBaseTypeQuickResponses   KnowledgeBaseType = "QUICK_RESPONSES"
+	KnowledgeBaseTypeMessageTemplates KnowledgeBaseType = "MESSAGE_TEMPLATES"
+	KnowledgeBaseTypeManaged          KnowledgeBaseType = "MANAGED"
 )
 
 // Values returns all known values for KnowledgeBaseType. Note that this can be
@@ -268,6 +691,89 @@ func (KnowledgeBaseType) Values() []KnowledgeBaseType {
 		"EXTERNAL",
 		"CUSTOM",
 		"QUICK_RESPONSES",
+		"MESSAGE_TEMPLATES",
+		"MANAGED",
+	}
+}
+
+type MessageTemplateAttributeType string
+
+// Enum values for MessageTemplateAttributeType
+const (
+	MessageTemplateAttributeTypeSystem          MessageTemplateAttributeType = "SYSTEM"
+	MessageTemplateAttributeTypeAgent           MessageTemplateAttributeType = "AGENT"
+	MessageTemplateAttributeTypeCustomerProfile MessageTemplateAttributeType = "CUSTOMER_PROFILE"
+	MessageTemplateAttributeTypeCustom          MessageTemplateAttributeType = "CUSTOM"
+)
+
+// Values returns all known values for MessageTemplateAttributeType. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (MessageTemplateAttributeType) Values() []MessageTemplateAttributeType {
+	return []MessageTemplateAttributeType{
+		"SYSTEM",
+		"AGENT",
+		"CUSTOMER_PROFILE",
+		"CUSTOM",
+	}
+}
+
+type MessageTemplateFilterOperator string
+
+// Enum values for MessageTemplateFilterOperator
+const (
+	MessageTemplateFilterOperatorEquals MessageTemplateFilterOperator = "EQUALS"
+	MessageTemplateFilterOperatorPrefix MessageTemplateFilterOperator = "PREFIX"
+)
+
+// Values returns all known values for MessageTemplateFilterOperator. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (MessageTemplateFilterOperator) Values() []MessageTemplateFilterOperator {
+	return []MessageTemplateFilterOperator{
+		"EQUALS",
+		"PREFIX",
+	}
+}
+
+type MessageTemplateQueryOperator string
+
+// Enum values for MessageTemplateQueryOperator
+const (
+	MessageTemplateQueryOperatorContains          MessageTemplateQueryOperator = "CONTAINS"
+	MessageTemplateQueryOperatorContainsAndPrefix MessageTemplateQueryOperator = "CONTAINS_AND_PREFIX"
+)
+
+// Values returns all known values for MessageTemplateQueryOperator. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (MessageTemplateQueryOperator) Values() []MessageTemplateQueryOperator {
+	return []MessageTemplateQueryOperator{
+		"CONTAINS",
+		"CONTAINS_AND_PREFIX",
+	}
+}
+
+type MessageType string
+
+// Enum values for MessageType
+const (
+	MessageTypeText MessageType = "TEXT"
+)
+
+// Values returns all known values for MessageType. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (MessageType) Values() []MessageType {
+	return []MessageType{
+		"TEXT",
 	}
 }
 
@@ -287,6 +793,63 @@ func (Order) Values() []Order {
 	return []Order{
 		"ASC",
 		"DESC",
+	}
+}
+
+type Origin string
+
+// Enum values for Origin
+const (
+	OriginSystem   Origin = "SYSTEM"
+	OriginCustomer Origin = "CUSTOMER"
+)
+
+// Values returns all known values for Origin. Note that this can be expanded in
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (Origin) Values() []Origin {
+	return []Origin{
+		"SYSTEM",
+		"CUSTOMER",
+	}
+}
+
+type ParsingStrategy string
+
+// Enum values for ParsingStrategy
+const (
+	ParsingStrategyBedrockFoundationModel ParsingStrategy = "BEDROCK_FOUNDATION_MODEL"
+)
+
+// Values returns all known values for ParsingStrategy. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ParsingStrategy) Values() []ParsingStrategy {
+	return []ParsingStrategy{
+		"BEDROCK_FOUNDATION_MODEL",
+	}
+}
+
+type Participant string
+
+// Enum values for Participant
+const (
+	ParticipantCustomer Participant = "CUSTOMER"
+	ParticipantAgent    Participant = "AGENT"
+	ParticipantBot      Participant = "BOT"
+)
+
+// Values returns all known values for Participant. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (Participant) Values() []Participant {
+	return []Participant{
+		"CUSTOMER",
+		"AGENT",
+		"BOT",
 	}
 }
 
@@ -351,6 +914,7 @@ type QueryResultType string
 // Enum values for QueryResultType
 const (
 	QueryResultTypeKnowledgeContent QueryResultType = "KNOWLEDGE_CONTENT"
+	QueryResultTypeIntentAnswer     QueryResultType = "INTENT_ANSWER"
 	QueryResultTypeGenerativeAnswer QueryResultType = "GENERATIVE_ANSWER"
 )
 
@@ -361,6 +925,7 @@ const (
 func (QueryResultType) Values() []QueryResultType {
 	return []QueryResultType{
 		"KNOWLEDGE_CONTENT",
+		"INTENT_ANSWER",
 		"GENERATIVE_ANSWER",
 	}
 }
@@ -481,6 +1046,7 @@ const (
 	RecommendationTypeKnowledgeContent   RecommendationType = "KNOWLEDGE_CONTENT"
 	RecommendationTypeGenerativeResponse RecommendationType = "GENERATIVE_RESPONSE"
 	RecommendationTypeGenerativeAnswer   RecommendationType = "GENERATIVE_ANSWER"
+	RecommendationTypeDetectedIntent     RecommendationType = "DETECTED_INTENT"
 )
 
 // Values returns all known values for RecommendationType. Note that this can be
@@ -492,6 +1058,26 @@ func (RecommendationType) Values() []RecommendationType {
 		"KNOWLEDGE_CONTENT",
 		"GENERATIVE_RESPONSE",
 		"GENERATIVE_ANSWER",
+		"DETECTED_INTENT",
+	}
+}
+
+type ReferenceType string
+
+// Enum values for ReferenceType
+const (
+	ReferenceTypeWebCrawler    ReferenceType = "WEB_CRAWLER"
+	ReferenceTypeKnowledgeBase ReferenceType = "KNOWLEDGE_BASE"
+)
+
+// Values returns all known values for ReferenceType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ReferenceType) Values() []ReferenceType {
+	return []ReferenceType{
+		"WEB_CRAWLER",
+		"KNOWLEDGE_BASE",
 	}
 }
 
@@ -535,6 +1121,23 @@ func (RelevanceLevel) Values() []RelevanceLevel {
 	}
 }
 
+type SessionDataNamespace string
+
+// Enum values for SessionDataNamespace
+const (
+	SessionDataNamespaceCustom SessionDataNamespace = "Custom"
+)
+
+// Values returns all known values for SessionDataNamespace. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (SessionDataNamespace) Values() []SessionDataNamespace {
+	return []SessionDataNamespace{
+		"Custom",
+	}
+}
+
 type SourceContentType string
 
 // Enum values for SourceContentType
@@ -549,6 +1152,56 @@ const (
 func (SourceContentType) Values() []SourceContentType {
 	return []SourceContentType{
 		"KNOWLEDGE_CONTENT",
+	}
+}
+
+type Status string
+
+// Enum values for Status
+const (
+	StatusCreateInProgress Status = "CREATE_IN_PROGRESS"
+	StatusCreateFailed     Status = "CREATE_FAILED"
+	StatusActive           Status = "ACTIVE"
+	StatusDeleteInProgress Status = "DELETE_IN_PROGRESS"
+	StatusDeleteFailed     Status = "DELETE_FAILED"
+	StatusDeleted          Status = "DELETED"
+)
+
+// Values returns all known values for Status. Note that this can be expanded in
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (Status) Values() []Status {
+	return []Status{
+		"CREATE_IN_PROGRESS",
+		"CREATE_FAILED",
+		"ACTIVE",
+		"DELETE_IN_PROGRESS",
+		"DELETE_FAILED",
+		"DELETED",
+	}
+}
+
+type SyncStatus string
+
+// Enum values for SyncStatus
+const (
+	SyncStatusSyncFailed        SyncStatus = "SYNC_FAILED"
+	SyncStatusSyncingInProgress SyncStatus = "SYNCING_IN_PROGRESS"
+	SyncStatusSyncSuccess       SyncStatus = "SYNC_SUCCESS"
+	SyncStatusCreateInProgress  SyncStatus = "CREATE_IN_PROGRESS"
+)
+
+// Values returns all known values for SyncStatus. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (SyncStatus) Values() []SyncStatus {
+	return []SyncStatus{
+		"SYNC_FAILED",
+		"SYNCING_IN_PROGRESS",
+		"SYNC_SUCCESS",
+		"CREATE_IN_PROGRESS",
 	}
 }
 
@@ -568,5 +1221,43 @@ func (TargetType) Values() []TargetType {
 	return []TargetType{
 		"RECOMMENDATION",
 		"RESULT",
+	}
+}
+
+type VisibilityStatus string
+
+// Enum values for VisibilityStatus
+const (
+	VisibilityStatusSaved     VisibilityStatus = "SAVED"
+	VisibilityStatusPublished VisibilityStatus = "PUBLISHED"
+)
+
+// Values returns all known values for VisibilityStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (VisibilityStatus) Values() []VisibilityStatus {
+	return []VisibilityStatus{
+		"SAVED",
+		"PUBLISHED",
+	}
+}
+
+type WebScopeType string
+
+// Enum values for WebScopeType
+const (
+	WebScopeTypeHostOnly   WebScopeType = "HOST_ONLY"
+	WebScopeTypeSubdomains WebScopeType = "SUBDOMAINS"
+)
+
+// Values returns all known values for WebScopeType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (WebScopeType) Values() []WebScopeType {
+	return []WebScopeType{
+		"HOST_ONLY",
+		"SUBDOMAINS",
 	}
 }

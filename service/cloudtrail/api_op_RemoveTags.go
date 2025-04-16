@@ -11,7 +11,8 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Removes the specified tags from a trail, event data store, or channel.
+// Removes the specified tags from a trail, event data store, dashboard, or
+// channel.
 func (c *Client) RemoveTags(ctx context.Context, params *RemoveTagsInput, optFns ...func(*Options)) (*RemoveTagsOutput, error) {
 	if params == nil {
 		params = &RemoveTagsInput{}
@@ -27,17 +28,21 @@ func (c *Client) RemoveTags(ctx context.Context, params *RemoveTagsInput, optFns
 	return out, nil
 }
 
-// Specifies the tags to remove from a trail, event data store, or channel.
+// Specifies the tags to remove from a trail, event data store, dashboard, or
+// channel.
 type RemoveTagsInput struct {
 
-	// Specifies the ARN of the trail, event data store, or channel from which tags
-	// should be removed.
+	// Specifies the ARN of the trail, event data store, dashboard, or channel from
+	// which tags should be removed.
 	//
 	// Example trail ARN format:
 	// arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail
 	//
 	// Example event data store ARN format:
 	// arn:aws:cloudtrail:us-east-2:123456789012:eventdatastore/EXAMPLE-f852-4e8f-8bd1-bcf6cEXAMPLE
+	//
+	// Example dashboard ARN format:
+	// arn:aws:cloudtrail:us-east-1:123456789012:dashboard/exampleDash
 	//
 	// Example channel ARN format:
 	// arn:aws:cloudtrail:us-east-2:123456789012:channel/01234567890
@@ -105,6 +110,9 @@ func (c *Client) addOperationRemoveTagsMiddlewares(stack *middleware.Stack, opti
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -121,6 +129,9 @@ func (c *Client) addOperationRemoveTagsMiddlewares(stack *middleware.Stack, opti
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpRemoveTagsValidationMiddleware(stack); err != nil {
@@ -142,6 +153,18 @@ func (c *Client) addOperationRemoveTagsMiddlewares(stack *middleware.Stack, opti
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

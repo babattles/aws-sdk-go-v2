@@ -137,6 +137,9 @@ type DescribeModelPackageOutput struct {
 	// [View the Details of a Model Version]: https://docs.aws.amazon.com/sagemaker/latest/dg/model-registry-details.html
 	ModelCard *types.ModelPackageModelCard
 
+	//  A structure describing the current state of the model in its life cycle.
+	ModelLifeCycle *types.ModelLifeCycle
+
 	// Metrics for the model.
 	ModelMetrics *types.ModelMetrics
 
@@ -224,6 +227,9 @@ func (c *Client) addOperationDescribeModelPackageMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -240,6 +246,9 @@ func (c *Client) addOperationDescribeModelPackageMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeModelPackageValidationMiddleware(stack); err != nil {
@@ -261,6 +270,18 @@ func (c *Client) addOperationDescribeModelPackageMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

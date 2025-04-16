@@ -18,7 +18,7 @@ import (
 // changes to applied in subsequent GetInstance or GetInstances API calls. For
 // more information, see [Use IMDSv2 with an Amazon Lightsail instance]in the Amazon Lightsail Developer Guide.
 //
-// [Use IMDSv2 with an Amazon Lightsail instance]: https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-configuring-instance-metadata-service
+// [Use IMDSv2 with an Amazon Lightsail instance]: https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-configuring-instance-metadata-service
 func (c *Client) UpdateInstanceMetadataOptions(ctx context.Context, params *UpdateInstanceMetadataOptionsInput, optFns ...func(*Options)) (*UpdateInstanceMetadataOptionsOutput, error) {
 	if params == nil {
 		params = &UpdateInstanceMetadataOptionsInput{}
@@ -133,6 +133,9 @@ func (c *Client) addOperationUpdateInstanceMetadataOptionsMiddlewares(stack *mid
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -149,6 +152,9 @@ func (c *Client) addOperationUpdateInstanceMetadataOptionsMiddlewares(stack *mid
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateInstanceMetadataOptionsValidationMiddleware(stack); err != nil {
@@ -170,6 +176,18 @@ func (c *Client) addOperationUpdateInstanceMetadataOptionsMiddlewares(stack *mid
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

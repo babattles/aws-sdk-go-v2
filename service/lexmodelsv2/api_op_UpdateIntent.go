@@ -93,6 +93,9 @@ type UpdateIntentInput struct {
 	// The signature of the new built-in intent to use as the parent of this intent.
 	ParentIntentSignature *string
 
+	// Qinconnect intent configuration details for the update intent request.
+	QInConnectIntentConfiguration *types.QInConnectIntentConfiguration
+
 	// Specifies the configuration of the built-in Amazon.QnAIntent . The
 	// AMAZON.QnAIntent intent is called when Amazon Lex can't determine another intent
 	// to invoke. If you specify this field, you can't specify the kendraConfiguration
@@ -167,6 +170,9 @@ type UpdateIntentOutput struct {
 	// The updated built-in intent that is the parent of this intent.
 	ParentIntentSignature *string
 
+	// Qinconnect intent configuration details for the update intent response.
+	QInConnectIntentConfiguration *types.QInConnectIntentConfiguration
+
 	// Details about the configuration of the built-in Amazon.QnAIntent .
 	QnAIntentConfiguration *types.QnAIntentConfiguration
 
@@ -226,6 +232,9 @@ func (c *Client) addOperationUpdateIntentMiddlewares(stack *middleware.Stack, op
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -242,6 +251,9 @@ func (c *Client) addOperationUpdateIntentMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateIntentValidationMiddleware(stack); err != nil {
@@ -263,6 +275,18 @@ func (c *Client) addOperationUpdateIntentMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

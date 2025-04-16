@@ -88,10 +88,9 @@ type CreateFileSystemFromBackupInput struct {
 	// Sets the version for the Amazon FSx for Lustre file system that you're creating
 	// from a backup. Valid values are 2.10 , 2.12 , and 2.15 .
 	//
-	// You don't need to specify FileSystemTypeVersion because it will be applied
-	// using the backup's FileSystemTypeVersion setting. If you choose to specify
-	// FileSystemTypeVersion when creating from backup, the value must match the
-	// backup's FileSystemTypeVersion setting.
+	// You can enter a Lustre version that is newer than the backup's
+	// FileSystemTypeVersion setting. If you don't enter a newer Lustre version, it
+	// defaults to the backup's setting.
 	FileSystemTypeVersion *string
 
 	// Specifies the ID of the Key Management Service (KMS) key to use for encrypting
@@ -145,7 +144,7 @@ type CreateFileSystemFromBackupInput struct {
 	//
 	// If used to create a file system other than OpenZFS, you must provide a value
 	// that matches the backup's StorageCapacity value. If you provide any other
-	// value, Amazon FSx responds with with an HTTP status code 400 Bad Request.
+	// value, Amazon FSx responds with an HTTP status code 400 Bad Request.
 	StorageCapacity *int32
 
 	// Sets the storage type for the Windows or OpenZFS file system that you're
@@ -231,6 +230,9 @@ func (c *Client) addOperationCreateFileSystemFromBackupMiddlewares(stack *middle
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -247,6 +249,9 @@ func (c *Client) addOperationCreateFileSystemFromBackupMiddlewares(stack *middle
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateFileSystemFromBackupMiddleware(stack, options); err != nil {
@@ -271,6 +276,18 @@ func (c *Client) addOperationCreateFileSystemFromBackupMiddlewares(stack *middle
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

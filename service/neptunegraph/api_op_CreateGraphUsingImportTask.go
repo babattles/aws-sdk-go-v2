@@ -41,7 +41,7 @@ type CreateGraphUsingImportTaskInput struct {
 	//
 	// The name must contain from 1 to 63 letters, numbers, or hyphens, and its first
 	// character must be a letter. It cannot end with a hyphen or contain two
-	// consecutive hyphens.
+	// consecutive hyphens. Only lowercase letters are allowed.
 	//
 	// This member is required.
 	GraphName *string
@@ -74,10 +74,12 @@ type CreateGraphUsingImportTaskInput struct {
 	FailOnError *bool
 
 	// Specifies the format of S3 data to be imported. Valid values are CSV , which
-	// identifies the [Gremlin CSV format]or OPENCYPHER , which identies the [openCypher load format].
+	// identifies the [Gremlin CSV format], OPEN_CYPHER , which identifies the [openCypher load format], or ntriples , which
+	// identifies the [RDF n-triples]format.
 	//
 	// [Gremlin CSV format]: https://docs.aws.amazon.com/neptune/latest/userguide/bulk-load-tutorial-format-gremlin.html
 	// [openCypher load format]: https://docs.aws.amazon.com/neptune/latest/userguide/bulk-load-tutorial-format-opencypher.html
+	// [RDF n-triples]: https://docs.aws.amazon.com/neptune-analytics/latest/userguide/using-rdf-data.html
 	Format types.Format
 
 	// Contains options for controlling the import process. For example, if the
@@ -92,14 +94,17 @@ type CreateGraphUsingImportTaskInput struct {
 	// The maximum provisioned memory-optimized Neptune Capacity Units (m-NCUs) to use
 	// for the graph. Default: 1024, or the approved upper limit for your account.
 	//
-	// If both the minimum and maximum values are specified, the max of the
-	// min-provisioned-memory and max-provisioned memory is used to create the graph.
-	// If neither value is specified 128 m-NCUs are used.
+	// If both the minimum and maximum values are specified, the final
+	// provisioned-memory will be chosen per the actual size of your imported data. If
+	// neither value is specified, 128 m-NCUs are used.
 	MaxProvisionedMemory *int32
 
 	// The minimum provisioned memory-optimized Neptune Capacity Units (m-NCUs) to use
-	// for the graph. Default: 128
+	// for the graph. Default: 16
 	MinProvisionedMemory *int32
+
+	// The parquet type of the import task.
+	ParquetType types.ParquetType
 
 	// Specifies whether or not the graph can be reachable over the internet. All
 	// access to graphs is IAM authenticated. ( true to enable, or false to disable).
@@ -170,6 +175,9 @@ type CreateGraphUsingImportTaskOutput struct {
 	// operation halts immediately when an error is encountered.
 	ImportOptions types.ImportOptions
 
+	// The parquet type of the import task.
+	ParquetType types.ParquetType
+
 	// Metadata pertaining to the operation's result.
 	ResultMetadata middleware.Metadata
 
@@ -219,6 +227,9 @@ func (c *Client) addOperationCreateGraphUsingImportTaskMiddlewares(stack *middle
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -235,6 +246,9 @@ func (c *Client) addOperationCreateGraphUsingImportTaskMiddlewares(stack *middle
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateGraphUsingImportTaskValidationMiddleware(stack); err != nil {
@@ -256,6 +270,18 @@ func (c *Client) addOperationCreateGraphUsingImportTaskMiddlewares(stack *middle
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

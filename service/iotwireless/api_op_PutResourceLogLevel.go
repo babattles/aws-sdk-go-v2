@@ -11,9 +11,8 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Sets the log-level override for a resource-ID and resource-type. This option
-// can be specified for a wireless gateway or a wireless device. A limit of 200 log
-// level override can be set per account.
+// Sets the log-level override for a resource ID and resource type. A limit of 200
+// log level override can be set per account.
 func (c *Client) PutResourceLogLevel(ctx context.Context, params *PutResourceLogLevelInput, optFns ...func(*Options)) (*PutResourceLogLevelOutput, error) {
 	if params == nil {
 		params = &PutResourceLogLevelInput{}
@@ -38,13 +37,14 @@ type PutResourceLogLevelInput struct {
 	// This member is required.
 	LogLevel types.LogLevel
 
-	// The identifier of the resource. For a Wireless Device, it is the wireless
-	// device ID. For a wireless gateway, it is the wireless gateway ID.
+	// The unique identifier of the resource, which can be the wireless gateway ID,
+	// the wireless device ID, or the FUOTA task ID.
 	//
 	// This member is required.
 	ResourceIdentifier *string
 
-	// The type of the resource, which can be WirelessDevice or WirelessGateway .
+	// The type of resource, which can be WirelessDevice , WirelessGateway , or
+	// FuotaTask .
 	//
 	// This member is required.
 	ResourceType *string
@@ -102,6 +102,9 @@ func (c *Client) addOperationPutResourceLogLevelMiddlewares(stack *middleware.St
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -118,6 +121,9 @@ func (c *Client) addOperationPutResourceLogLevelMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpPutResourceLogLevelValidationMiddleware(stack); err != nil {
@@ -139,6 +145,18 @@ func (c *Client) addOperationPutResourceLogLevelMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

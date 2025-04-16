@@ -10,10 +10,11 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Deletes all rule groups that are managed by Firewall Manager for the specified
-// web ACL.
+// Deletes all rule groups that are managed by Firewall Manager from the specified WebACL
+// .
 //
-// You can only use this if ManagedByFirewallManager is false in the specified WebACL.
+// You can only use this if ManagedByFirewallManager and
+// RetrofittedByFirewallManager are both false in the web ACL.
 func (c *Client) DeleteFirewallManagerRuleGroups(ctx context.Context, params *DeleteFirewallManagerRuleGroupsInput, optFns ...func(*Options)) (*DeleteFirewallManagerRuleGroupsOutput, error) {
 	if params == nil {
 		params = &DeleteFirewallManagerRuleGroupsInput{}
@@ -110,6 +111,9 @@ func (c *Client) addOperationDeleteFirewallManagerRuleGroupsMiddlewares(stack *m
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -126,6 +130,9 @@ func (c *Client) addOperationDeleteFirewallManagerRuleGroupsMiddlewares(stack *m
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteFirewallManagerRuleGroupsValidationMiddleware(stack); err != nil {
@@ -147,6 +154,18 @@ func (c *Client) addOperationDeleteFirewallManagerRuleGroupsMiddlewares(stack *m
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

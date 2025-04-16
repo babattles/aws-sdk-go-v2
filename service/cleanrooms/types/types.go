@@ -105,6 +105,13 @@ type AnalysisRule struct {
 	// This member is required.
 	UpdateTime *time.Time
 
+	//  Controls on the query specifications that can be run on an associated
+	// configured table.
+	CollaborationPolicy ConfiguredTableAssociationAnalysisRulePolicy
+
+	//  The consolidated policy for the analysis rule.
+	ConsolidatedPolicy ConsolidatedPolicy
+
 	noSmithyDocumentSerde
 }
 
@@ -307,10 +314,20 @@ type AnalysisSchema struct {
 //
 // The following types satisfy this interface:
 //
+//	AnalysisSourceMemberArtifacts
 //	AnalysisSourceMemberText
 type AnalysisSource interface {
 	isAnalysisSource()
 }
+
+// The artifacts of the analysis source.
+type AnalysisSourceMemberArtifacts struct {
+	Value AnalysisTemplateArtifacts
+
+	noSmithyDocumentSerde
+}
+
+func (*AnalysisSourceMemberArtifacts) isAnalysisSource() {}
 
 // The query text.
 type AnalysisSourceMemberText struct {
@@ -320,6 +337,24 @@ type AnalysisSourceMemberText struct {
 }
 
 func (*AnalysisSourceMemberText) isAnalysisSource() {}
+
+// The analysis source metadata.
+//
+// The following types satisfy this interface:
+//
+//	AnalysisSourceMetadataMemberArtifacts
+type AnalysisSourceMetadata interface {
+	isAnalysisSourceMetadata()
+}
+
+// The artifacts of the analysis source metadata.
+type AnalysisSourceMetadataMemberArtifacts struct {
+	Value AnalysisTemplateArtifactMetadata
+
+	noSmithyDocumentSerde
+}
+
+func (*AnalysisSourceMetadataMemberArtifacts) isAnalysisSourceMetadata() {}
 
 // The analysis template.
 type AnalysisTemplate struct {
@@ -390,8 +425,55 @@ type AnalysisTemplate struct {
 	// The description of the analysis template.
 	Description *string
 
+	//  The source metadata for the analysis template.
+	SourceMetadata AnalysisSourceMetadata
+
 	// Information about the validations performed on the analysis template.
 	Validations []AnalysisTemplateValidationStatusDetail
+
+	noSmithyDocumentSerde
+}
+
+// The analysis template artifact.
+type AnalysisTemplateArtifact struct {
+
+	//  The artifact location.
+	//
+	// This member is required.
+	Location *S3Location
+
+	noSmithyDocumentSerde
+}
+
+// The analysis template artifact metadata.
+type AnalysisTemplateArtifactMetadata struct {
+
+	//  The hash of the entry point for the analysis template artifact metadata.
+	//
+	// This member is required.
+	EntryPointHash *Hash
+
+	//  Additional artifact hashes for the analysis template.
+	AdditionalArtifactHashes []Hash
+
+	noSmithyDocumentSerde
+}
+
+// The analysis template artifacts.
+type AnalysisTemplateArtifacts struct {
+
+	//  The entry point for the analysis template artifacts.
+	//
+	// This member is required.
+	EntryPoint *AnalysisTemplateArtifact
+
+	//  The role ARN for the analysis template artifacts.
+	//
+	// This member is required.
+	RoleArn *string
+
+	//  Additional artifacts for the analysis template.
+	AdditionalArtifacts []AnalysisTemplateArtifact
 
 	noSmithyDocumentSerde
 }
@@ -491,6 +573,30 @@ type AnalysisTemplateValidationStatusReason struct {
 	noSmithyDocumentSerde
 }
 
+// A reference to a table within Athena.
+type AthenaTableReference struct {
+
+	//  The database name.
+	//
+	// This member is required.
+	DatabaseName *string
+
+	//  The table reference.
+	//
+	// This member is required.
+	TableName *string
+
+	//  The workgroup of the Athena table reference.
+	//
+	// This member is required.
+	WorkGroup *string
+
+	//  The output location for the Athena table.
+	OutputLocation *string
+
+	noSmithyDocumentSerde
+}
+
 // Details of errors thrown by the call to retrieve multiple analysis templates
 // within a collaboration by their identifiers.
 type BatchGetCollaborationAnalysisTemplateError struct {
@@ -560,6 +666,32 @@ type BatchGetSchemaError struct {
 	noSmithyDocumentSerde
 }
 
+//	Information related to the utilization of resources that have been billed or
+//
+// charged for in a given context, such as a protected job.
+type BilledJobResourceUtilization struct {
+
+	//  The number of Clean Rooms Processing Unit (CRPU) hours that have been billed.
+	//
+	// This member is required.
+	Units *float64
+
+	noSmithyDocumentSerde
+}
+
+//	Information related to the utilization of resources that have been billed or
+//
+// charged for in a given context, such as a protected query.
+type BilledResourceUtilization struct {
+
+	//  The number of Clean Rooms Processing Unit (CRPU) hours that have been billed.
+	//
+	// This member is required.
+	Units *float64
+
+	noSmithyDocumentSerde
+}
+
 // The multi-party data share environment. The collaboration contains metadata
 // about its purpose and participants.
 type Collaboration struct {
@@ -604,6 +736,10 @@ type Collaboration struct {
 	// An indicator as to whether query logging has been enabled or disabled for the
 	// collaboration.
 	//
+	// When ENABLED , Clean Rooms logs details about queries run within this
+	// collaboration and those logs can be viewed in Amazon CloudWatch Logs. The
+	// default value is DISABLED .
+	//
 	// This member is required.
 	QueryLogStatus CollaborationQueryLogStatus
 
@@ -612,11 +748,22 @@ type Collaboration struct {
 	// This member is required.
 	UpdateTime *time.Time
 
+	//  The analytics engine for the collaboration.
+	AnalyticsEngine AnalyticsEngine
+
 	// The settings for client-side encryption for cryptographic computing.
 	DataEncryptionMetadata *DataEncryptionMetadata
 
 	// A description of the collaboration provided by the collaboration owner.
 	Description *string
+
+	// An indicator as to whether job logging has been enabled or disabled for the
+	// collaboration.
+	//
+	// When ENABLED , Clean Rooms logs details about jobs run within this collaboration
+	// and those logs can be viewed in Amazon CloudWatch Logs. The default value is
+	// DISABLED .
+	JobLogStatus CollaborationJobLogStatus
 
 	// The unique ARN for your membership within the collaboration.
 	MembershipArn *string
@@ -677,11 +824,6 @@ type CollaborationAnalysisTemplate struct {
 	// This member is required.
 	Schema *AnalysisSchema
 
-	// The source of the analysis template within a collaboration.
-	//
-	// This member is required.
-	Source AnalysisSource
-
 	// The time that the analysis template in the collaboration was last updated.
 	//
 	// This member is required.
@@ -692,6 +834,12 @@ type CollaborationAnalysisTemplate struct {
 
 	// The description of the analysis template.
 	Description *string
+
+	// The source of the analysis template within a collaboration.
+	Source AnalysisSource
+
+	//  The source metadata for the collaboration analysis template.
+	SourceMetadata AnalysisSourceMetadata
 
 	// The validations that were performed.
 	Validations []AnalysisTemplateValidationStatusDetail
@@ -782,7 +930,7 @@ type CollaborationConfiguredAudienceModelAssociation struct {
 	CreateTime *time.Time
 
 	// The identifier used to reference members of the collaboration. Only supports
-	// AWS account ID.
+	// Amazon Web Services account ID.
 	//
 	// This member is required.
 	CreatorAccountId *string
@@ -834,7 +982,7 @@ type CollaborationConfiguredAudienceModelAssociationSummary struct {
 	CreateTime *time.Time
 
 	// The identifier used to reference members of the collaboration. Only supports
-	// AWS account ID.
+	// Amazon Web Services account ID.
 	//
 	// This member is required.
 	CreatorAccountId *string
@@ -1216,6 +1364,9 @@ type CollaborationSummary struct {
 	// This member is required.
 	UpdateTime *time.Time
 
+	//  The analytics engine.
+	AnalyticsEngine AnalyticsEngine
+
 	// The ARN of a member in a collaboration.
 	MembershipArn *string
 
@@ -1225,7 +1376,7 @@ type CollaborationSummary struct {
 	noSmithyDocumentSerde
 }
 
-// A column within a schema relation, derived from the underlying Glue table.
+// A column within a schema relation, derived from the underlying table.
 type Column struct {
 
 	// The name of the column.
@@ -1240,6 +1391,26 @@ type Column struct {
 
 	noSmithyDocumentSerde
 }
+
+//	The configuration of the compute resources for an analysis with the Spark
+//
+// analytics engine.
+//
+// The following types satisfy this interface:
+//
+//	ComputeConfigurationMemberWorker
+type ComputeConfiguration interface {
+	isComputeConfiguration()
+}
+
+// The worker configuration for the compute environment.
+type ComputeConfigurationMemberWorker struct {
+	Value WorkerComputeConfiguration
+
+	noSmithyDocumentSerde
+}
+
+func (*ComputeConfigurationMemberWorker) isComputeConfiguration() {}
 
 //	The configuration details.
 //
@@ -1407,8 +1578,14 @@ type ConfiguredTable struct {
 	// This member is required.
 	AllowedColumns []string
 
-	// The analysis method for the configured table. The only valid value is currently
-	// `DIRECT_QUERY`.
+	// The analysis method for the configured table.
+	//
+	// DIRECT_QUERY allows SQL queries to be run directly on this table.
+	//
+	// DIRECT_JOB allows PySpark jobs to be run directly on this table.
+	//
+	// MULTIPLE allows both SQL queries and PySpark jobs to be run directly on this
+	// table.
 	//
 	// This member is required.
 	AnalysisMethod AnalysisMethod
@@ -1439,7 +1616,7 @@ type ConfiguredTable struct {
 	// This member is required.
 	Name *string
 
-	// The Glue table that this configured table represents.
+	// The table that this configured table represents.
 	//
 	// This member is required.
 	TableReference TableReference
@@ -1451,6 +1628,9 @@ type ConfiguredTable struct {
 
 	// A description for the configured table.
 	Description *string
+
+	//  The selected analysis methods for the configured table.
+	SelectedAnalysisMethods []SelectedAnalysisMethod
 
 	noSmithyDocumentSerde
 }
@@ -1823,14 +2003,24 @@ type ConfiguredTableAssociationSummary struct {
 	// This member is required.
 	UpdateTime *time.Time
 
+	// The analysis rule types that are associated with the configured table
+	// associations in this summary.
+	AnalysisRuleTypes []ConfiguredTableAssociationAnalysisRuleType
+
 	noSmithyDocumentSerde
 }
 
 // The configured table summary for the objects listed by the request.
 type ConfiguredTableSummary struct {
 
-	// The analysis method for the configured tables. The only valid value is
-	// currently `DIRECT_QUERY`.
+	// The analysis method for the configured tables.
+	//
+	// DIRECT_QUERY allows SQL queries to be run directly on this table.
+	//
+	// DIRECT_JOB allows PySpark jobs to be run directly on this table.
+	//
+	// MULTIPLE allows both SQL queries and PySpark jobs to be run directly on this
+	// table.
 	//
 	// This member is required.
 	AnalysisMethod AnalysisMethod
@@ -1865,8 +2055,170 @@ type ConfiguredTableSummary struct {
 	// This member is required.
 	UpdateTime *time.Time
 
+	//  The selected analysis methods for the configured table summary.
+	SelectedAnalysisMethods []SelectedAnalysisMethod
+
 	noSmithyDocumentSerde
 }
+
+// Controls on the analysis specifications that can be run on a configured table.
+//
+// The following types satisfy this interface:
+//
+//	ConsolidatedPolicyMemberV1
+type ConsolidatedPolicy interface {
+	isConsolidatedPolicy()
+}
+
+// The consolidated policy version 1.
+type ConsolidatedPolicyMemberV1 struct {
+	Value ConsolidatedPolicyV1
+
+	noSmithyDocumentSerde
+}
+
+func (*ConsolidatedPolicyMemberV1) isConsolidatedPolicy() {}
+
+// Controls on the analysis specifications that can be run on a configured table.
+type ConsolidatedPolicyAggregation struct {
+
+	//  Aggregate columns in consolidated policy aggregation.
+	//
+	// This member is required.
+	AggregateColumns []AggregateColumn
+
+	//  The dimension columns of the consolidated policy aggregation.
+	//
+	// This member is required.
+	DimensionColumns []string
+
+	//  The columns to join on.
+	//
+	// This member is required.
+	JoinColumns []string
+
+	//  The output constraints of the consolidated policy aggregation.
+	//
+	// This member is required.
+	OutputConstraints []AggregationConstraint
+
+	//  The scalar functions.
+	//
+	// This member is required.
+	ScalarFunctions []ScalarFunctions
+
+	//  Additional analyses for the consolidated policy aggregation.
+	AdditionalAnalyses AdditionalAnalyses
+
+	//  The additional analyses allowed by the consolidated policy aggregation.
+	AllowedAdditionalAnalyses []string
+
+	//  The allowed join operators.
+	AllowedJoinOperators []JoinOperator
+
+	//  The allowed result receivers.
+	AllowedResultReceivers []string
+
+	//  Join required
+	JoinRequired JoinRequiredOption
+
+	noSmithyDocumentSerde
+}
+
+// Controls on the analysis specifications that can be run on a configured table.
+type ConsolidatedPolicyCustom struct {
+
+	//  The allowed analyses.
+	//
+	// This member is required.
+	AllowedAnalyses []string
+
+	//  Additional analyses for the consolidated policy.
+	AdditionalAnalyses AdditionalAnalyses
+
+	//  The additional analyses allowed by the consolidated policy.
+	AllowedAdditionalAnalyses []string
+
+	//  The allowed analysis providers.
+	AllowedAnalysisProviders []string
+
+	//  The allowed result receivers.
+	AllowedResultReceivers []string
+
+	// Specifies the unique identifier for your users.
+	DifferentialPrivacy *DifferentialPrivacyConfiguration
+
+	//  Disallowed output columns
+	DisallowedOutputColumns []string
+
+	noSmithyDocumentSerde
+}
+
+// Controls on the analysis specifications that can be run on a configured table.
+type ConsolidatedPolicyList struct {
+
+	//  The columns to join on.
+	//
+	// This member is required.
+	JoinColumns []string
+
+	//  The columns in the consolidated policy list.
+	//
+	// This member is required.
+	ListColumns []string
+
+	//  Additional analyses for the consolidated policy list.
+	AdditionalAnalyses AdditionalAnalyses
+
+	//  The additional analyses allowed by the consolidated policy list.
+	AllowedAdditionalAnalyses []string
+
+	//  The allowed join operators in the consolidated policy list.
+	AllowedJoinOperators []JoinOperator
+
+	//  The allowed result receivers.
+	AllowedResultReceivers []string
+
+	noSmithyDocumentSerde
+}
+
+// Controls on the analysis specifications that can be run on a configured table.
+//
+// The following types satisfy this interface:
+//
+//	ConsolidatedPolicyV1MemberAggregation
+//	ConsolidatedPolicyV1MemberCustom
+//	ConsolidatedPolicyV1MemberList
+type ConsolidatedPolicyV1 interface {
+	isConsolidatedPolicyV1()
+}
+
+// The aggregation setting for the consolidated policy.
+type ConsolidatedPolicyV1MemberAggregation struct {
+	Value ConsolidatedPolicyAggregation
+
+	noSmithyDocumentSerde
+}
+
+func (*ConsolidatedPolicyV1MemberAggregation) isConsolidatedPolicyV1() {}
+
+// Custom policy
+type ConsolidatedPolicyV1MemberCustom struct {
+	Value ConsolidatedPolicyCustom
+
+	noSmithyDocumentSerde
+}
+
+func (*ConsolidatedPolicyV1MemberCustom) isConsolidatedPolicyV1() {}
+
+// The list of consolidated policies.
+type ConsolidatedPolicyV1MemberList struct {
+	Value ConsolidatedPolicyList
+
+	noSmithyDocumentSerde
+}
+
+func (*ConsolidatedPolicyV1MemberList) isConsolidatedPolicyV1() {}
 
 // The settings for client-side encryption for cryptographic computing.
 type DataEncryptionMetadata struct {
@@ -2131,6 +2483,15 @@ type GlueTableReference struct {
 	//
 	// This member is required.
 	TableName *string
+
+	noSmithyDocumentSerde
+}
+
+// Hash
+type Hash struct {
+
+	//  The SHA-256 hash value.
+	Sha256 *string
 
 	noSmithyDocumentSerde
 }
@@ -2529,6 +2890,27 @@ type IdNamespaceAssociationSummary struct {
 	noSmithyDocumentSerde
 }
 
+// An object representing the collaboration member's payment responsibilities set
+// by the collaboration creator for query and job compute costs.
+type JobComputePaymentConfig struct {
+
+	// Indicates whether the collaboration creator has configured the collaboration
+	// member to pay for query and job compute costs ( TRUE ) or has not configured the
+	// collaboration member to pay for query and job compute costs ( FALSE ).
+	//
+	// Exactly one member can be configured to pay for query and job compute costs. An
+	// error is returned if the collaboration creator sets a TRUE value for more than
+	// one member in the collaboration.
+	//
+	// An error is returned if the collaboration creator sets a FALSE value for the
+	// member who can run queries and jobs.
+	//
+	// This member is required.
+	IsResponsible *bool
+
+	noSmithyDocumentSerde
+}
+
 // The membership object.
 type Membership struct {
 
@@ -2586,6 +2968,10 @@ type Membership struct {
 	// An indicator as to whether query logging has been enabled or disabled for the
 	// membership.
 	//
+	// When ENABLED , Clean Rooms logs details about queries run within this
+	// collaboration and those logs can be viewed in Amazon CloudWatch Logs. The
+	// default value is DISABLED .
+	//
 	// This member is required.
 	QueryLogStatus MembershipQueryLogStatus
 
@@ -2599,9 +2985,110 @@ type Membership struct {
 	// This member is required.
 	UpdateTime *time.Time
 
+	//  The default job result configuration for the membership.
+	DefaultJobResultConfiguration *MembershipProtectedJobResultConfiguration
+
 	// The default protected query result configuration as specified by the member who
 	// can receive results.
 	DefaultResultConfiguration *MembershipProtectedQueryResultConfiguration
+
+	// An indicator as to whether job logging has been enabled or disabled for the
+	// collaboration.
+	//
+	// When ENABLED , Clean Rooms logs details about jobs run within this collaboration
+	// and those logs can be viewed in Amazon CloudWatch Logs. The default value is
+	// DISABLED .
+	JobLogStatus MembershipJobLogStatus
+
+	// Specifies the ML member abilities that are granted to a collaboration member.
+	MlMemberAbilities *MLMemberAbilities
+
+	noSmithyDocumentSerde
+}
+
+// An object representing the payment responsibilities accepted by the
+// collaboration member for query and job compute costs.
+type MembershipJobComputePaymentConfig struct {
+
+	// Indicates whether the collaboration member has accepted to pay for job compute
+	// costs ( TRUE ) or has not accepted to pay for query and job compute costs ( FALSE
+	// ).
+	//
+	// There is only one member who pays for queries and jobs.
+	//
+	// An error message is returned for the following reasons:
+	//
+	//   - If you set the value to FALSE but you are responsible to pay for query and
+	//   job compute costs.
+	//
+	//   - If you set the value to TRUE but you are not responsible to pay for query
+	//   and job compute costs.
+	//
+	// This member is required.
+	IsResponsible *bool
+
+	noSmithyDocumentSerde
+}
+
+// An object representing the collaboration member's machine learning payment
+// responsibilities set by the collaboration creator.
+type MembershipMLPaymentConfig struct {
+
+	// The payment responsibilities accepted by the member for model inference.
+	ModelInference *MembershipModelInferencePaymentConfig
+
+	// The payment responsibilities accepted by the member for model training.
+	ModelTraining *MembershipModelTrainingPaymentConfig
+
+	noSmithyDocumentSerde
+}
+
+// An object representing the collaboration member's model inference payment
+// responsibilities set by the collaboration creator.
+type MembershipModelInferencePaymentConfig struct {
+
+	// Indicates whether the collaboration member has accepted to pay for model
+	// inference costs ( TRUE ) or has not accepted to pay for model inference costs (
+	// FALSE ).
+	//
+	// If the collaboration creator has not specified anyone to pay for model
+	// inference costs, then the member who can query is the default payer.
+	//
+	// An error message is returned for the following reasons:
+	//
+	//   - If you set the value to FALSE but you are responsible to pay for model
+	//   inference costs.
+	//
+	//   - If you set the value to TRUE but you are not responsible to pay for model
+	//   inference costs.
+	//
+	// This member is required.
+	IsResponsible *bool
+
+	noSmithyDocumentSerde
+}
+
+// An object representing the collaboration member's model training payment
+// responsibilities set by the collaboration creator.
+type MembershipModelTrainingPaymentConfig struct {
+
+	// Indicates whether the collaboration member has accepted to pay for model
+	// training costs ( TRUE ) or has not accepted to pay for model training costs (
+	// FALSE ).
+	//
+	// If the collaboration creator has not specified anyone to pay for model training
+	// costs, then the member who can query is the default payer.
+	//
+	// An error message is returned for the following reasons:
+	//
+	//   - If you set the value to FALSE but you are responsible to pay for model
+	//   training costs.
+	//
+	//   - If you set the value to TRUE but you are not responsible to pay for model
+	//   training costs.
+	//
+	// This member is required.
+	IsResponsible *bool
 
 	noSmithyDocumentSerde
 }
@@ -2615,6 +3102,50 @@ type MembershipPaymentConfiguration struct {
 	//
 	// This member is required.
 	QueryCompute *MembershipQueryComputePaymentConfig
+
+	// The payment responsibilities accepted by the collaboration member for job
+	// compute costs.
+	JobCompute *MembershipJobComputePaymentConfig
+
+	// The payment responsibilities accepted by the collaboration member for machine
+	// learning costs.
+	MachineLearning *MembershipMLPaymentConfig
+
+	noSmithyDocumentSerde
+}
+
+// Contains configurations for protected job results.
+//
+// The following types satisfy this interface:
+//
+//	MembershipProtectedJobOutputConfigurationMemberS3
+type MembershipProtectedJobOutputConfiguration interface {
+	isMembershipProtectedJobOutputConfiguration()
+}
+
+// Contains the configuration to write the job results to S3.
+type MembershipProtectedJobOutputConfigurationMemberS3 struct {
+	Value ProtectedJobS3OutputConfigurationInput
+
+	noSmithyDocumentSerde
+}
+
+func (*MembershipProtectedJobOutputConfigurationMemberS3) isMembershipProtectedJobOutputConfiguration() {
+}
+
+// Contains configurations for protected job results.
+type MembershipProtectedJobResultConfiguration struct {
+
+	//  The output configuration for a protected job result.
+	//
+	// This member is required.
+	OutputConfiguration MembershipProtectedJobOutputConfiguration
+
+	// The unique ARN for an IAM role that is used by Clean Rooms to write protected
+	// job results to the result location, given by the member who can receive results.
+	//
+	// This member is required.
+	RoleArn *string
 
 	noSmithyDocumentSerde
 }
@@ -2743,6 +3274,9 @@ type MembershipSummary struct {
 	// This member is required.
 	UpdateTime *time.Time
 
+	// Provides a summary of the ML abilities for the collaboration member.
+	MlMemberAbilities *MLMemberAbilities
+
 	noSmithyDocumentSerde
 }
 
@@ -2764,6 +3298,9 @@ type MemberSpecification struct {
 	//
 	// This member is required.
 	MemberAbilities []MemberAbility
+
+	// The ML abilities granted to the collaboration member.
+	MlMemberAbilities *MLMemberAbilities
 
 	// The collaboration member's payment responsibilities set by the collaboration
 	// creator.
@@ -2821,6 +3358,79 @@ type MemberSummary struct {
 	// The unique ID for the member's associated membership, if present.
 	MembershipId *string
 
+	// Provides a summary of the ML abilities for the collaboration member.
+	MlAbilities *MLMemberAbilities
+
+	noSmithyDocumentSerde
+}
+
+// The ML member abilities for a collaboration member.
+type MLMemberAbilities struct {
+
+	// The custom ML member abilities for a collaboration member.
+	//
+	// This member is required.
+	CustomMLMemberAbilities []CustomMLMemberAbility
+
+	noSmithyDocumentSerde
+}
+
+// An object representing the collaboration member's machine learning payment
+// responsibilities set by the collaboration creator.
+type MLPaymentConfig struct {
+
+	// The payment responsibilities accepted by the member for model inference.
+	ModelInference *ModelInferencePaymentConfig
+
+	// The payment responsibilities accepted by the member for model training.
+	ModelTraining *ModelTrainingPaymentConfig
+
+	noSmithyDocumentSerde
+}
+
+// An object representing the collaboration member's model inference payment
+// responsibilities set by the collaboration creator.
+type ModelInferencePaymentConfig struct {
+
+	// Indicates whether the collaboration creator has configured the collaboration
+	// member to pay for model inference costs ( TRUE ) or has not configured the
+	// collaboration member to pay for model inference costs ( FALSE ).
+	//
+	// Exactly one member can be configured to pay for model inference costs. An error
+	// is returned if the collaboration creator sets a TRUE value for more than one
+	// member in the collaboration.
+	//
+	// If the collaboration creator hasn't specified anyone as the member paying for
+	// model inference costs, then the member who can query is the default payer. An
+	// error is returned if the collaboration creator sets a FALSE value for the
+	// member who can query.
+	//
+	// This member is required.
+	IsResponsible *bool
+
+	noSmithyDocumentSerde
+}
+
+// An object representing the collaboration member's model training payment
+// responsibilities set by the collaboration creator.
+type ModelTrainingPaymentConfig struct {
+
+	// Indicates whether the collaboration creator has configured the collaboration
+	// member to pay for model training costs ( TRUE ) or has not configured the
+	// collaboration member to pay for model training costs ( FALSE ).
+	//
+	// Exactly one member can be configured to pay for model training costs. An error
+	// is returned if the collaboration creator sets a TRUE value for more than one
+	// member in the collaboration.
+	//
+	// If the collaboration creator hasn't specified anyone as the member paying for
+	// model training costs, then the member who can query is the default payer. An
+	// error is returned if the collaboration creator sets a FALSE value for the
+	// member who can query.
+	//
+	// This member is required.
+	IsResponsible *bool
+
 	noSmithyDocumentSerde
 }
 
@@ -2833,6 +3443,13 @@ type PaymentConfiguration struct {
 	//
 	// This member is required.
 	QueryCompute *QueryComputePaymentConfig
+
+	//  The compute configuration for the job.
+	JobCompute *JobComputePaymentConfig
+
+	// An object representing the collaboration member's machine learning payment
+	// responsibilities set by the collaboration creator.
+	MachineLearning *MLPaymentConfig
 
 	noSmithyDocumentSerde
 }
@@ -3143,6 +3760,349 @@ type PrivacyImpactMemberDifferentialPrivacy struct {
 
 func (*PrivacyImpactMemberDifferentialPrivacy) isPrivacyImpact() {}
 
+// The parameters for an Clean Rooms protected job.
+type ProtectedJob struct {
+
+	//  The creation time of the protected job.
+	//
+	// This member is required.
+	CreateTime *time.Time
+
+	// The identifier for a protected job instance.
+	//
+	// This member is required.
+	Id *string
+
+	// The ARN of the membership.
+	//
+	// This member is required.
+	MembershipArn *string
+
+	// he identifier for the membership.
+	//
+	// This member is required.
+	MembershipId *string
+
+	//  The status of the protected job.
+	//
+	// This member is required.
+	Status ProtectedJobStatus
+
+	//  The error from the protected job.
+	Error *ProtectedJobError
+
+	//  The job parameters for the protected job.
+	JobParameters *ProtectedJobParameters
+
+	//  The result of the protected job.
+	Result *ProtectedJobResult
+
+	// Contains any details needed to write the job results.
+	ResultConfiguration *ProtectedJobResultConfigurationOutput
+
+	//  The statistics of the protected job.
+	Statistics *ProtectedJobStatistics
+
+	noSmithyDocumentSerde
+}
+
+// The protected job configuration details.
+//
+// The following types satisfy this interface:
+//
+//	ProtectedJobConfigurationDetailsMemberDirectAnalysisConfigurationDetails
+type ProtectedJobConfigurationDetails interface {
+	isProtectedJobConfigurationDetails()
+}
+
+// The details needed to configure the direct analysis.
+type ProtectedJobConfigurationDetailsMemberDirectAnalysisConfigurationDetails struct {
+	Value ProtectedJobDirectAnalysisConfigurationDetails
+
+	noSmithyDocumentSerde
+}
+
+func (*ProtectedJobConfigurationDetailsMemberDirectAnalysisConfigurationDetails) isProtectedJobConfigurationDetails() {
+}
+
+// The protected job direct analysis configuration details.
+type ProtectedJobDirectAnalysisConfigurationDetails struct {
+
+	//  The receiver account IDs.
+	ReceiverAccountIds []string
+
+	noSmithyDocumentSerde
+}
+
+// The protected job error.
+type ProtectedJobError struct {
+
+	//  The error code for the protected job.
+	//
+	// This member is required.
+	Code *string
+
+	//  The message for the protected job error.
+	//
+	// This member is required.
+	Message *string
+
+	noSmithyDocumentSerde
+}
+
+// The protected job member output configuration input.
+type ProtectedJobMemberOutputConfigurationInput struct {
+
+	//  The account ID.
+	//
+	// This member is required.
+	AccountId *string
+
+	noSmithyDocumentSerde
+}
+
+// The protected job member output configuration output.
+type ProtectedJobMemberOutputConfigurationOutput struct {
+
+	//  The account ID.
+	//
+	// This member is required.
+	AccountId *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains details about the protected job output.
+//
+// The following types satisfy this interface:
+//
+//	ProtectedJobOutputMemberMemberList
+//	ProtectedJobOutputMemberS3
+type ProtectedJobOutput interface {
+	isProtectedJobOutput()
+}
+
+// The list of member Amazon Web Services account(s) that received the results of
+// the job.
+type ProtectedJobOutputMemberMemberList struct {
+	Value []ProtectedJobSingleMemberOutput
+
+	noSmithyDocumentSerde
+}
+
+func (*ProtectedJobOutputMemberMemberList) isProtectedJobOutput() {}
+
+// If present, the output for a protected job with an `S3` output type.
+type ProtectedJobOutputMemberS3 struct {
+	Value ProtectedJobS3Output
+
+	noSmithyDocumentSerde
+}
+
+func (*ProtectedJobOutputMemberS3) isProtectedJobOutput() {}
+
+//	The protected job output configuration input.
+//
+// The following types satisfy this interface:
+//
+//	ProtectedJobOutputConfigurationInputMemberMember
+type ProtectedJobOutputConfigurationInput interface {
+	isProtectedJobOutputConfigurationInput()
+}
+
+// The member of the protected job output configuration input.
+type ProtectedJobOutputConfigurationInputMemberMember struct {
+	Value ProtectedJobMemberOutputConfigurationInput
+
+	noSmithyDocumentSerde
+}
+
+func (*ProtectedJobOutputConfigurationInputMemberMember) isProtectedJobOutputConfigurationInput() {}
+
+//	The protected job output configuration output.
+//
+// The following types satisfy this interface:
+//
+//	ProtectedJobOutputConfigurationOutputMemberMember
+//	ProtectedJobOutputConfigurationOutputMemberS3
+type ProtectedJobOutputConfigurationOutput interface {
+	isProtectedJobOutputConfigurationOutput()
+}
+
+// The member output configuration for a protected job.
+type ProtectedJobOutputConfigurationOutputMemberMember struct {
+	Value ProtectedJobMemberOutputConfigurationOutput
+
+	noSmithyDocumentSerde
+}
+
+func (*ProtectedJobOutputConfigurationOutputMemberMember) isProtectedJobOutputConfigurationOutput() {}
+
+// If present, the output for a protected job with an `S3` output type.
+type ProtectedJobOutputConfigurationOutputMemberS3 struct {
+	Value ProtectedJobS3OutputConfigurationOutput
+
+	noSmithyDocumentSerde
+}
+
+func (*ProtectedJobOutputConfigurationOutputMemberS3) isProtectedJobOutputConfigurationOutput() {}
+
+// The parameters for the protected job.
+type ProtectedJobParameters struct {
+
+	//  The ARN of the analysis template.
+	AnalysisTemplateArn *string
+
+	noSmithyDocumentSerde
+}
+
+// The protected job receiver configuration.
+type ProtectedJobReceiverConfiguration struct {
+
+	//  The analysis type for the protected job receiver configuration.
+	//
+	// This member is required.
+	AnalysisType ProtectedJobAnalysisType
+
+	//  The configuration details for the protected job receiver.
+	ConfigurationDetails ProtectedJobConfigurationDetails
+
+	noSmithyDocumentSerde
+}
+
+// Details about the job results.
+type ProtectedJobResult struct {
+
+	//  The output of the protected job.
+	//
+	// This member is required.
+	Output ProtectedJobOutput
+
+	noSmithyDocumentSerde
+}
+
+// The protected job result configuration input.
+type ProtectedJobResultConfigurationInput struct {
+
+	//  The output configuration for a protected job result.
+	//
+	// This member is required.
+	OutputConfiguration ProtectedJobOutputConfigurationInput
+
+	noSmithyDocumentSerde
+}
+
+// The output configuration for a protected job result.
+type ProtectedJobResultConfigurationOutput struct {
+
+	// The output configuration.
+	//
+	// This member is required.
+	OutputConfiguration ProtectedJobOutputConfigurationOutput
+
+	noSmithyDocumentSerde
+}
+
+// Contains output information for protected jobs with an S3 output type.
+type ProtectedJobS3Output struct {
+
+	//  The S3 location for the protected job output.
+	//
+	// This member is required.
+	Location *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains input information for protected jobs with an S3 output type.
+type ProtectedJobS3OutputConfigurationInput struct {
+
+	//  The S3 bucket for job output.
+	//
+	// This member is required.
+	Bucket *string
+
+	// The S3 prefix to unload the protected job results.
+	KeyPrefix *string
+
+	noSmithyDocumentSerde
+}
+
+// The output configuration for a protected job's S3 output.
+type ProtectedJobS3OutputConfigurationOutput struct {
+
+	//  The S3 bucket for job output.
+	//
+	// This member is required.
+	Bucket *string
+
+	// The S3 prefix to unload the protected job results.
+	KeyPrefix *string
+
+	noSmithyDocumentSerde
+}
+
+// Details about the member who received the job result.
+type ProtectedJobSingleMemberOutput struct {
+
+	// The Amazon Web Services account ID of the member in the collaboration who can
+	// receive results from analyses.
+	//
+	// This member is required.
+	AccountId *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains statistics about the execution of the protected job.
+type ProtectedJobStatistics struct {
+
+	//  The billed resource utilization for the protected job.
+	BilledResourceUtilization *BilledJobResourceUtilization
+
+	// The duration of the protected job, from creation until job completion, in
+	// milliseconds.
+	TotalDurationInMillis *int64
+
+	noSmithyDocumentSerde
+}
+
+// The protected job summary for the objects listed by the request.
+type ProtectedJobSummary struct {
+
+	// The time the protected job was created.
+	//
+	// This member is required.
+	CreateTime *time.Time
+
+	//  The ID of the protected job.
+	//
+	// This member is required.
+	Id *string
+
+	// The unique ARN for the membership that initiated the protected job.
+	//
+	// This member is required.
+	MembershipArn *string
+
+	// The unique ID for the membership that initiated the protected job.
+	//
+	// This member is required.
+	MembershipId *string
+
+	//  The receiver configurations for the protected job.
+	//
+	// This member is required.
+	ReceiverConfigurations []ProtectedJobReceiverConfiguration
+
+	// The status of the protected job.
+	//
+	// This member is required.
+	Status ProtectedJobStatus
+
+	noSmithyDocumentSerde
+}
+
 // The parameters for an Clean Rooms protected query.
 type ProtectedQuery struct {
 
@@ -3170,6 +4130,9 @@ type ProtectedQuery struct {
 	//
 	// This member is required.
 	Status ProtectedQueryStatus
+
+	//  The compute configuration for the protected query.
+	ComputeConfiguration ComputeConfiguration
 
 	// The sensitivity parameters of the differential privacy results of the protected
 	// query.
@@ -3326,6 +4289,11 @@ type ProtectedQueryS3OutputConfiguration struct {
 	// The S3 prefix to unload the protected query results.
 	KeyPrefix *string
 
+	// Indicates whether files should be output as a single file ( TRUE ) or output as
+	// multiple files ( FALSE ). This parameter is only supported for analyses with the
+	// Spark analytics engine.
+	SingleFileOutput *bool
+
 	noSmithyDocumentSerde
 }
 
@@ -3360,7 +4328,11 @@ type ProtectedQuerySQLParameters struct {
 // Contains statistics about the execution of the protected query.
 type ProtectedQueryStatistics struct {
 
-	// The duration of the protected query, from creation until query completion.
+	//  The billed resource utilization.
+	BilledResourceUtilization *BilledResourceUtilization
+
+	// The duration of the protected query, from creation until query completion, in
+	// milliseconds.
 	TotalDurationInMillis *int64
 
 	noSmithyDocumentSerde
@@ -3394,8 +4366,7 @@ type ProtectedQuerySummary struct {
 	// This member is required.
 	ReceiverConfigurations []ReceiverConfiguration
 
-	// The status of the protected query. Value values are `SUBMITTED`, `STARTED`,
-	// `CANCELLED`, `CANCELLING`, `FAILED`, `SUCCESS`, `TIMED_OUT`.
+	// The status of the protected query.
 	//
 	// This member is required.
 	Status ProtectedQueryStatus
@@ -3470,16 +4441,33 @@ type ReceiverConfiguration struct {
 	noSmithyDocumentSerde
 }
 
+// The S3 location.
+type S3Location struct {
+
+	//  The bucket name.
+	//
+	// This member is required.
+	Bucket *string
+
+	//  The object key.
+	//
+	// This member is required.
+	Key *string
+
+	noSmithyDocumentSerde
+}
+
 // A schema is a relation within a collaboration.
 type Schema struct {
 
-	// The analysis rule types associated with the schema. Currently, only one entry
-	// is present.
+	// The analysis rule types that are associated with the schema. Currently, only
+	// one entry is present.
 	//
 	// This member is required.
 	AnalysisRuleTypes []AnalysisRuleType
 
-	// The unique ARN for the collaboration that the schema belongs to.
+	// The unique Amazon Resource Name (ARN) for the collaboration that the schema
+	// belongs to.
 	//
 	// This member is required.
 	CollaborationArn *string
@@ -3489,12 +4477,12 @@ type Schema struct {
 	// This member is required.
 	CollaborationId *string
 
-	// The columns for the relation this schema represents.
+	// The columns for the relation that this schema represents.
 	//
 	// This member is required.
 	Columns []Column
 
-	// The time the schema was created.
+	// The time at which the schema was created.
 	//
 	// This member is required.
 	CreateTime *time.Time
@@ -3525,22 +4513,31 @@ type Schema struct {
 	// This member is required.
 	SchemaStatusDetails []SchemaStatusDetail
 
-	// The type of schema. The only valid value is currently `TABLE`.
+	// The type of schema.
 	//
 	// This member is required.
 	Type SchemaType
 
-	// The time the schema was last updated.
+	// The most recent time at which the schema was updated.
 	//
 	// This member is required.
 	UpdateTime *time.Time
 
-	// The analysis method for the schema. The only valid value is currently
-	// DIRECT_QUERY.
+	// The analysis method for the schema.
+	//
+	// DIRECT_QUERY allows SQL queries to be run directly on this table.
+	//
+	// DIRECT_JOB allows PySpark jobs to be run directly on this table.
+	//
+	// MULTIPLE allows both SQL queries and PySpark jobs to be run directly on this
+	// table.
 	AnalysisMethod AnalysisMethod
 
 	// The schema type properties.
 	SchemaTypeProperties SchemaTypeProperties
+
+	//  The selected analysis methods for the schema.
+	SelectedAnalysisMethods []SelectedAnalysisMethod
 
 	noSmithyDocumentSerde
 }
@@ -3643,7 +4640,7 @@ type SchemaSummary struct {
 	// This member is required.
 	Name *string
 
-	// The type of schema object. The only valid schema type is currently `TABLE`.
+	// The type of schema object.
 	//
 	// This member is required.
 	Type SchemaType
@@ -3653,9 +4650,18 @@ type SchemaSummary struct {
 	// This member is required.
 	UpdateTime *time.Time
 
-	// The analysis method for the associated schema. The only valid value is
-	// currently `DIRECT_QUERY`.
+	// The analysis method for the associated schema.
+	//
+	// DIRECT_QUERY allows SQL queries to be run directly on this table.
+	//
+	// DIRECT_JOB allows PySpark jobs to be run directly on this table.
+	//
+	// MULTIPLE allows both SQL queries and PySpark jobs to be run directly on this
+	// table.
 	AnalysisMethod AnalysisMethod
+
+	//  The selected analysis methods for the schema.
+	SelectedAnalysisMethods []SelectedAnalysisMethod
 
 	noSmithyDocumentSerde
 }
@@ -3678,15 +4684,100 @@ type SchemaTypePropertiesMemberIdMappingTable struct {
 
 func (*SchemaTypePropertiesMemberIdMappingTable) isSchemaTypeProperties() {}
 
-// A pointer to the dataset that underlies this table. Currently, this can only be
-// an Glue table.
+// A reference to a table within Snowflake.
+type SnowflakeTableReference struct {
+
+	//  The account identifier for the Snowflake table reference.
+	//
+	// This member is required.
+	AccountIdentifier *string
+
+	//  The name of the database the Snowflake table belongs to.
+	//
+	// This member is required.
+	DatabaseName *string
+
+	//  The schema name of the Snowflake table reference.
+	//
+	// This member is required.
+	SchemaName *string
+
+	//  The secret ARN of the Snowflake table reference.
+	//
+	// This member is required.
+	SecretArn *string
+
+	//  The name of the Snowflake table.
+	//
+	// This member is required.
+	TableName *string
+
+	//  The schema of the Snowflake table.
+	//
+	// This member is required.
+	TableSchema SnowflakeTableSchema
+
+	noSmithyDocumentSerde
+}
+
+//	The schema of a Snowflake table.
 //
 // The following types satisfy this interface:
 //
+//	SnowflakeTableSchemaMemberV1
+type SnowflakeTableSchema interface {
+	isSnowflakeTableSchema()
+}
+
+// The schema of a Snowflake table.
+type SnowflakeTableSchemaMemberV1 struct {
+	Value []SnowflakeTableSchemaV1
+
+	noSmithyDocumentSerde
+}
+
+func (*SnowflakeTableSchemaMemberV1) isSnowflakeTableSchema() {}
+
+// The Snowflake table schema.
+type SnowflakeTableSchemaV1 struct {
+
+	//  The column name.
+	//
+	// This member is required.
+	ColumnName *string
+
+	//  The column's data type. Supported data types: ARRAY , BIGINT , BOOLEAN , CHAR ,
+	// DATE , DECIMAL , DOUBLE , DOUBLE PRECISION , FLOAT , FLOAT4 , INT , INTEGER ,
+	// MAP , NUMERIC , NUMBER , REAL , SMALLINT , STRING , TIMESTAMP , TIMESTAMP_LTZ ,
+	// TIMESTAMP_NTZ , DATETIME , TINYINT , VARCHAR , TEXT , CHARACTER .
+	//
+	// This member is required.
+	ColumnType *string
+
+	noSmithyDocumentSerde
+}
+
+// A pointer to the dataset that underlies this table.
+//
+// The following types satisfy this interface:
+//
+//	TableReferenceMemberAthena
 //	TableReferenceMemberGlue
+//	TableReferenceMemberSnowflake
 type TableReference interface {
 	isTableReference()
 }
+
+//	If present, a reference to the Athena table referred to by this table
+//
+// reference.
+type TableReferenceMemberAthena struct {
+	Value AthenaTableReference
+
+	noSmithyDocumentSerde
+}
+
+func (*TableReferenceMemberAthena) isTableReference() {}
 
 // If present, a reference to the Glue table referred to by this table reference.
 type TableReferenceMemberGlue struct {
@@ -3696,6 +4787,17 @@ type TableReferenceMemberGlue struct {
 }
 
 func (*TableReferenceMemberGlue) isTableReference() {}
+
+//	If present, a reference to the Snowflake table referred to by this table
+//
+// reference.
+type TableReferenceMemberSnowflake struct {
+	Value SnowflakeTableReference
+
+	noSmithyDocumentSerde
+}
+
+func (*TableReferenceMemberSnowflake) isTableReference() {}
 
 // Describes validation errors for specific input parameters.
 type ValidationExceptionField struct {
@@ -3709,6 +4811,20 @@ type ValidationExceptionField struct {
 	//
 	// This member is required.
 	Name *string
+
+	noSmithyDocumentSerde
+}
+
+//	The configuration of the compute resources for workers running an analysis
+//
+// with the Clean Rooms SQL analytics engine.
+type WorkerComputeConfiguration struct {
+
+	//  The number of workers.
+	Number *int32
+
+	//  The worker compute configuration type.
+	Type WorkerComputeType
 
 	noSmithyDocumentSerde
 }
@@ -3727,11 +4843,16 @@ type UnknownUnionMember struct {
 func (*UnknownUnionMember) isAnalysisRulePolicy()                             {}
 func (*UnknownUnionMember) isAnalysisRulePolicyV1()                           {}
 func (*UnknownUnionMember) isAnalysisSource()                                 {}
+func (*UnknownUnionMember) isAnalysisSourceMetadata()                         {}
+func (*UnknownUnionMember) isComputeConfiguration()                           {}
 func (*UnknownUnionMember) isConfigurationDetails()                           {}
 func (*UnknownUnionMember) isConfiguredTableAnalysisRulePolicy()              {}
 func (*UnknownUnionMember) isConfiguredTableAnalysisRulePolicyV1()            {}
 func (*UnknownUnionMember) isConfiguredTableAssociationAnalysisRulePolicy()   {}
 func (*UnknownUnionMember) isConfiguredTableAssociationAnalysisRulePolicyV1() {}
+func (*UnknownUnionMember) isConsolidatedPolicy()                             {}
+func (*UnknownUnionMember) isConsolidatedPolicyV1()                           {}
+func (*UnknownUnionMember) isMembershipProtectedJobOutputConfiguration()      {}
 func (*UnknownUnionMember) isMembershipProtectedQueryOutputConfiguration()    {}
 func (*UnknownUnionMember) isPreviewPrivacyImpactParametersInput()            {}
 func (*UnknownUnionMember) isPrivacyBudget()                                  {}
@@ -3739,8 +4860,13 @@ func (*UnknownUnionMember) isPrivacyBudgetTemplateParametersInput()           {}
 func (*UnknownUnionMember) isPrivacyBudgetTemplateParametersOutput()          {}
 func (*UnknownUnionMember) isPrivacyBudgetTemplateUpdateParameters()          {}
 func (*UnknownUnionMember) isPrivacyImpact()                                  {}
+func (*UnknownUnionMember) isProtectedJobConfigurationDetails()               {}
+func (*UnknownUnionMember) isProtectedJobOutput()                             {}
+func (*UnknownUnionMember) isProtectedJobOutputConfigurationInput()           {}
+func (*UnknownUnionMember) isProtectedJobOutputConfigurationOutput()          {}
 func (*UnknownUnionMember) isProtectedQueryOutput()                           {}
 func (*UnknownUnionMember) isProtectedQueryOutputConfiguration()              {}
 func (*UnknownUnionMember) isQueryConstraint()                                {}
 func (*UnknownUnionMember) isSchemaTypeProperties()                           {}
+func (*UnknownUnionMember) isSnowflakeTableSchema()                           {}
 func (*UnknownUnionMember) isTableReference()                                 {}

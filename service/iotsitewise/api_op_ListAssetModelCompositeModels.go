@@ -38,6 +38,13 @@ type ListAssetModelCompositeModelsInput struct {
 	// This member is required.
 	AssetModelId *string
 
+	// The version alias that specifies the latest or active version of the asset
+	// model. The details are returned in the response. The default value is LATEST .
+	// See [Asset model versions]in the IoT SiteWise User Guide.
+	//
+	// [Asset model versions]: https://docs.aws.amazon.com/iot-sitewise/latest/userguide/model-active-version.html
+	AssetModelVersion *string
+
 	// The maximum number of results to return for each paginated request.
 	//
 	// Default: 50
@@ -109,6 +116,9 @@ func (c *Client) addOperationListAssetModelCompositeModelsMiddlewares(stack *mid
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -125,6 +135,9 @@ func (c *Client) addOperationListAssetModelCompositeModelsMiddlewares(stack *mid
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addEndpointPrefix_opListAssetModelCompositeModelsMiddleware(stack); err != nil {
@@ -149,6 +162,18 @@ func (c *Client) addOperationListAssetModelCompositeModelsMiddlewares(stack *mid
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

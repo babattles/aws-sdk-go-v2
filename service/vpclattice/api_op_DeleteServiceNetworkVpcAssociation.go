@@ -30,7 +30,7 @@ func (c *Client) DeleteServiceNetworkVpcAssociation(ctx context.Context, params 
 
 type DeleteServiceNetworkVpcAssociationInput struct {
 
-	// The ID or Amazon Resource Name (ARN) of the association.
+	// The ID or ARN of the association.
 	//
 	// This member is required.
 	ServiceNetworkVpcAssociationIdentifier *string
@@ -100,6 +100,9 @@ func (c *Client) addOperationDeleteServiceNetworkVpcAssociationMiddlewares(stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -116,6 +119,9 @@ func (c *Client) addOperationDeleteServiceNetworkVpcAssociationMiddlewares(stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteServiceNetworkVpcAssociationValidationMiddleware(stack); err != nil {
@@ -137,6 +143,18 @@ func (c *Client) addOperationDeleteServiceNetworkVpcAssociationMiddlewares(stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

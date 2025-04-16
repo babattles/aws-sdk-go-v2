@@ -63,6 +63,17 @@ type StartQueryInput struct {
 	//   - TOP_LOCATION_DETAILS : Provides TTFB for Amazon CloudFront, your current
 	//   configuration, and the best performing EC2 configuration, at 1 hour intervals.
 	//
+	//   - OVERALL_TRAFFIC_SUGGESTIONS : Provides TTFB, using a 30-day weighted
+	//   average, for all traffic in each Amazon Web Services location that is monitored.
+	//
+	//   - OVERALL_TRAFFIC_SUGGESTIONS_DETAILS : Provides TTFB, using a 30-day weighted
+	//   average, for each top location, for a proposed Amazon Web Services location.
+	//   Must provide an Amazon Web Services location to search.
+	//
+	//   - ROUTING_SUGGESTIONS : Provides the predicted average round-trip time (RTT)
+	//   from an IP prefix toward an Amazon Web Services location for a DNS resolver. The
+	//   RTT is calculated at one hour intervals, over a one hour period.
+	//
 	// For lists of the fields returned with each query type and more information
 	// about how each type of query is performed, see [Using the Amazon CloudWatch Internet Monitor query interface]in the Amazon CloudWatch
 	// Internet Monitor User Guide.
@@ -156,6 +167,9 @@ func (c *Client) addOperationStartQueryMiddlewares(stack *middleware.Stack, opti
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -172,6 +186,9 @@ func (c *Client) addOperationStartQueryMiddlewares(stack *middleware.Stack, opti
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpStartQueryValidationMiddleware(stack); err != nil {
@@ -193,6 +210,18 @@ func (c *Client) addOperationStartQueryMiddlewares(stack *middleware.Stack, opti
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -35,6 +35,9 @@ type UpdateAccountSettingsInput struct {
 
 	// Specifies whether you want to turn [group lifecycle events] on or off.
 	//
+	// You can't turn on group lifecycle events if your resource groups quota is
+	// greater than 2,000.
+	//
 	// [group lifecycle events]: https://docs.aws.amazon.com/ARG/latest/userguide/monitor-groups.html
 	GroupLifecycleEventsDesiredStatus types.GroupLifecycleEventsDesiredStatus
 
@@ -95,6 +98,9 @@ func (c *Client) addOperationUpdateAccountSettingsMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -113,6 +119,9 @@ func (c *Client) addOperationUpdateAccountSettingsMiddlewares(stack *middleware.
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opUpdateAccountSettings(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -129,6 +138,18 @@ func (c *Client) addOperationUpdateAccountSettingsMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -38,8 +38,8 @@ func (c *Client) GetGroupConfiguration(ctx context.Context, params *GetGroupConf
 
 type GetGroupConfigurationInput struct {
 
-	// The name or the ARN of the resource group for which you want to retrive the
-	// service configuration.
+	// The name or the Amazon resource name (ARN) of the resource group for which you
+	// want to retrive the service configuration.
 	Group *string
 
 	noSmithyDocumentSerde
@@ -102,6 +102,9 @@ func (c *Client) addOperationGetGroupConfigurationMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -120,6 +123,9 @@ func (c *Client) addOperationGetGroupConfigurationMiddlewares(stack *middleware.
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opGetGroupConfiguration(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -136,6 +142,18 @@ func (c *Client) addOperationGetGroupConfigurationMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

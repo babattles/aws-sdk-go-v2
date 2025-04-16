@@ -65,8 +65,8 @@ type GetRestApiOutput struct {
 	// endpoint.
 	DisableExecuteApiEndpoint bool
 
-	// The endpoint configuration of this RestApi showing the endpoint types of the
-	// API.
+	// The endpoint configuration of this RestApi showing the endpoint types and IP
+	// address types of the API.
 	EndpointConfiguration *types.EndpointConfiguration
 
 	// The API's identifier. This identifier is unique across all of your APIs in API
@@ -149,6 +149,9 @@ func (c *Client) addOperationGetRestApiMiddlewares(stack *middleware.Stack, opti
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -165,6 +168,9 @@ func (c *Client) addOperationGetRestApiMiddlewares(stack *middleware.Stack, opti
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetRestApiValidationMiddleware(stack); err != nil {
@@ -189,6 +195,18 @@ func (c *Client) addOperationGetRestApiMiddlewares(stack *middleware.Stack, opti
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

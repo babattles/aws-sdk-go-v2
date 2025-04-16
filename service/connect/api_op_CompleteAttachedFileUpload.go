@@ -30,12 +30,13 @@ func (c *Client) CompleteAttachedFileUpload(ctx context.Context, params *Complet
 // Request to CompleteAttachedFileUpload API
 type CompleteAttachedFileUploadInput struct {
 
-	// The resource to which the attached file is (being) uploaded to. [Cases] are the only
-	// current supported resource.
+	// The resource to which the attached file is (being) uploaded to. The supported
+	// resources are [Cases]and [Email].
 	//
 	// This value must be a valid ARN.
 	//
-	// [Cases]: https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_CreateCase.html
+	// [Email]: https://docs.aws.amazon.com/connect/latest/adminguide/setup-email-channel.html
+	// [Cases]: https://docs.aws.amazon.com/connect/latest/adminguide/cases.html
 	//
 	// This member is required.
 	AssociatedResourceArn *string
@@ -104,6 +105,9 @@ func (c *Client) addOperationCompleteAttachedFileUploadMiddlewares(stack *middle
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -120,6 +124,9 @@ func (c *Client) addOperationCompleteAttachedFileUploadMiddlewares(stack *middle
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCompleteAttachedFileUploadValidationMiddleware(stack); err != nil {
@@ -141,6 +148,18 @@ func (c *Client) addOperationCompleteAttachedFileUploadMiddlewares(stack *middle
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

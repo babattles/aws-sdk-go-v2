@@ -125,8 +125,8 @@ type CreateTrailInput struct {
 	// [Finding Your CloudTrail Log Files]: https://docs.aws.amazon.com/awscloudtrail/latest/userguide/get-and-view-cloudtrail-log-files.html#cloudtrail-find-log-files
 	S3KeyPrefix *string
 
-	// Specifies the name of the Amazon SNS topic defined for notification of log file
-	// delivery. The maximum length is 256 characters.
+	// Specifies the name or ARN of the Amazon SNS topic defined for notification of
+	// log file delivery. The maximum length is 256 characters.
 	SnsTopicName *string
 
 	// A list of tags.
@@ -243,6 +243,9 @@ func (c *Client) addOperationCreateTrailMiddlewares(stack *middleware.Stack, opt
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -259,6 +262,9 @@ func (c *Client) addOperationCreateTrailMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateTrailValidationMiddleware(stack); err != nil {
@@ -280,6 +286,18 @@ func (c *Client) addOperationCreateTrailMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

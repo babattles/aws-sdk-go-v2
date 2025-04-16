@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-// A list of backup options for each resource type.
+// The backup options for each resource type.
 type AdvancedBackupSetting struct {
 
 	// Specifies the backup option for a selected resource. This option is only
@@ -66,13 +66,12 @@ type BackupJob struct {
 	BackupType *string
 
 	// An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for
-	// example, arn:aws:backup:us-east-1:123456789012:vault:aBackupVault .
+	// example, arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault .
 	BackupVaultArn *string
 
 	// The name of a logical container where backups are stored. Backup vaults are
 	// identified by names that are unique to the account used to create them and the
-	// Amazon Web Services Region where they are created. They consist of lowercase
-	// letters, numbers, and hyphens.
+	// Amazon Web Services Region where they are created.
 	BackupVaultName *string
 
 	// The size in bytes transferred to a backup vault at the time that the job status
@@ -108,7 +107,7 @@ type BackupJob struct {
 	// names without those strings lack permissions to perform backup jobs.
 	IamRoleArn *string
 
-	// This is the date on which the backup job was initiated.
+	// The date on which the backup job was initiated.
 	InitiationDate *time.Time
 
 	// This is a boolean value indicating this is a parent (composite) backup job.
@@ -144,8 +143,7 @@ type BackupJob struct {
 	// the resource type.
 	ResourceArn *string
 
-	// This is the non-unique name of the resource that belongs to the specified
-	// backup.
+	// The non-unique name of the resource that belongs to the specified backup.
 	ResourceName *string
 
 	// The type of Amazon Web Services resource to be backed up; for example, an
@@ -230,8 +228,11 @@ type BackupJobSummary struct {
 // Services resources.
 type BackupPlan struct {
 
-	// The display name of a backup plan. Must contain 1 to 50 alphanumeric or '-_.'
-	// characters.
+	// The display name of a backup plan. Must contain only alphanumeric or '-_.'
+	// special characters.
+	//
+	// If this is set in the console, it can contain 1 to 50 characters; if this is
+	// set through CLI or API, it can contain 1 to 200 characters.
 	//
 	// This member is required.
 	BackupPlanName *string
@@ -308,10 +309,10 @@ type BackupPlansListMember struct {
 	// 12:11:30.087 AM.
 	DeletionDate *time.Time
 
-	// The last time a job to back up resources was run with this rule. A date and
-	// time, in Unix format and Coordinated Universal Time (UTC). The value of
-	// LastExecutionDate is accurate to milliseconds. For example, the value
-	// 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.
+	// The last time this backup plan was run. A date and time, in Unix format and
+	// Coordinated Universal Time (UTC). The value of LastExecutionDate is accurate to
+	// milliseconds. For example, the value 1516925490.087 represents Friday, January
+	// 26, 2018 12:11:30.087 AM.
 	LastExecutionDate *time.Time
 
 	// Unique, randomly generated, Unicode, UTF-8 encoded strings that are at most
@@ -344,8 +345,7 @@ type BackupRule struct {
 
 	// The name of a logical container where backups are stored. Backup vaults are
 	// identified by names that are unique to the account used to create them and the
-	// Amazon Web Services Region where they are created. They consist of lowercase
-	// letters, numbers, and hyphens.
+	// Amazon Web Services Region where they are created.
 	//
 	// This member is required.
 	TargetBackupVaultName *string
@@ -363,6 +363,14 @@ type BackupRule struct {
 	// specified) causes Backup to create snapshot backups.
 	EnableContinuousBackup *bool
 
+	// IndexActions is an array you use to specify how backup data should be indexed.
+	//
+	// eEach BackupRule can have 0 or 1 IndexAction, as each backup can have up to one
+	// index associated with it.
+	//
+	// Within the array is ResourceType. Only one will be accepted for each BackupRule.
+	IndexActions []IndexAction
+
 	// The lifecycle defines when a protected resource is transitioned to cold storage
 	// and when it expires. Backup transitions and expires backups automatically
 	// according to the lifecycle that you define.
@@ -372,15 +380,14 @@ type BackupRule struct {
 	// than the “transition to cold after days” setting. The “transition to cold after
 	// days” setting cannot be changed after a backup has been transitioned to cold.
 	//
-	// Resource types that are able to be transitioned to cold storage are listed in
-	// the "Lifecycle to cold storage" section of the [Feature availability by resource]table. Backup ignores this
-	// expression for other resource types.
+	// Resource types that can transition to cold storage are listed in the [Feature availability by resource] table.
+	// Backup ignores this expression for other resource types.
 	//
-	// [Feature availability by resource]: https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource
+	// [Feature availability by resource]: https://docs.aws.amazon.com/aws-backup/latest/devguide/backup-feature-availability.html#features-by-resource
 	Lifecycle *Lifecycle
 
-	// An array of key-value pair strings that are assigned to resources that are
-	// associated with this rule when restored from backup.
+	// The tags that are assigned to resources that are associated with this rule when
+	// restored from backup.
 	RecoveryPointTags map[string]string
 
 	// Uniquely identifies a rule that is used to schedule the backup of a selection
@@ -397,7 +404,7 @@ type BackupRule struct {
 	// [Schedule Expressions for Rules]: https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html
 	ScheduleExpression *string
 
-	// This is the timezone in which the schedule expression is set. By default,
+	// The timezone in which the schedule expression is set. By default,
 	// ScheduleExpressions are in UTC. You can modify this to a specified timezone.
 	ScheduleExpressionTimezone *string
 
@@ -428,8 +435,7 @@ type BackupRuleInput struct {
 
 	// The name of a logical container where backups are stored. Backup vaults are
 	// identified by names that are unique to the account used to create them and the
-	// Amazon Web Services Region where they are created. They consist of lowercase
-	// letters, numbers, and hyphens.
+	// Amazon Web Services Region where they are created.
 	//
 	// This member is required.
 	TargetBackupVaultName *string
@@ -447,6 +453,17 @@ type BackupRuleInput struct {
 	// specified) causes Backup to create snapshot backups.
 	EnableContinuousBackup *bool
 
+	// There can up to one IndexAction in each BackupRule, as each backup can have 0
+	// or 1 backup index associated with it.
+	//
+	// Within the array is ResourceTypes. Only 1 resource type will be accepted for
+	// each BackupRule. Valid values:
+	//
+	//   - EBS for Amazon Elastic Block Store
+	//
+	//   - S3 for Amazon Simple Storage Service (Amazon S3)
+	IndexActions []IndexAction
+
 	// The lifecycle defines when a protected resource is transitioned to cold storage
 	// and when it expires. Backup will transition and expire backups automatically
 	// according to the lifecycle that you define.
@@ -454,25 +471,24 @@ type BackupRuleInput struct {
 	// Backups transitioned to cold storage must be stored in cold storage for a
 	// minimum of 90 days. Therefore, the “retention” setting must be 90 days greater
 	// than the “transition to cold after days” setting. The “transition to cold after
-	// days” setting cannot be changed after a backup has been transitioned to cold.
+	// days” setting cannot be changed after a backup has been transitioned to cold
+	// storage.
 	//
-	// Resource types that are able to be transitioned to cold storage are listed in
-	// the "Lifecycle to cold storage" section of the [Feature availability by resource]table. Backup ignores this
-	// expression for other resource types.
+	// Resource types that can transition to cold storage are listed in the [Feature availability by resource] table.
+	// Backup ignores this expression for other resource types.
 	//
 	// This parameter has a maximum value of 100 years (36,500 days).
 	//
-	// [Feature availability by resource]: https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource
+	// [Feature availability by resource]: https://docs.aws.amazon.com/aws-backup/latest/devguide/backup-feature-availability.html#features-by-resource
 	Lifecycle *Lifecycle
 
-	// To help organize your resources, you can assign your own metadata to the
-	// resources that you create. Each tag is a key-value pair.
+	// The tags to assign to the resources.
 	RecoveryPointTags map[string]string
 
 	// A CRON expression in UTC specifying when Backup initiates a backup job.
 	ScheduleExpression *string
 
-	// This is the timezone in which the schedule expression is set. By default,
+	// The timezone in which the schedule expression is set. By default,
 	// ScheduleExpressions are in UTC. You can modify this to a specified timezone.
 	ScheduleExpressionTimezone *string
 
@@ -496,10 +512,13 @@ type BackupRuleInput struct {
 
 // Used to specify a set of resources to a backup plan.
 //
-// Specifying your desired Conditions , ListOfTags , NotResources , and/or
-// Resources is recommended. If none of these are specified, Backup will attempt to
-// select all supported and opted-in storage resources, which could have unintended
-// cost implications.
+// We recommend that you specify conditions, tags, or resources to include or
+// exclude. Otherwise, Backup attempts to select all supported and opted-in storage
+// resources, which could have unintended cost implications.
+//
+// For more information, see [Assigning resources programmatically].
+//
+// [Assigning resources programmatically]: https://docs.aws.amazon.com/aws-backup/latest/devguide/assigning-resources.html#assigning-resources-json
 type BackupSelection struct {
 
 	// The ARN of the IAM role that Backup uses to authenticate when backing up the
@@ -514,48 +533,45 @@ type BackupSelection struct {
 	// This member is required.
 	SelectionName *string
 
-	// A list of conditions that you define to assign resources to your backup plans
-	// using tags. For example, "StringEquals": { "Key":
-	// "aws:ResourceTag/CreatedByCryo", "Value": "true" }, . Condition operators are
-	// case sensitive.
+	// The conditions that you define to assign resources to your backup plans using
+	// tags. For example, "StringEquals": { "ConditionKey": "aws:ResourceTag/backup",
+	// "ConditionValue": "daily" } .
 	//
-	// Conditions differs from ListOfTags as follows:
+	// Conditions supports StringEquals , StringLike , StringNotEquals , and
+	// StringNotLike . Condition operators are case sensitive.
 	//
-	//   - When you specify more than one condition, you only assign the resources
-	//   that match ALL conditions (using AND logic).
-	//
-	//   - Conditions supports StringEquals , StringLike , StringNotEquals , and
-	//   StringNotLike . ListOfTags only supports StringEquals .
+	// If you specify multiple conditions, the resources much match all conditions
+	// (AND logic).
 	Conditions *Conditions
 
-	// A list of conditions that you define to assign resources to your backup plans
-	// using tags. For example, "StringEquals": { "Key":
-	// "aws:ResourceTag/CreatedByCryo", "Value": "true" }, . Condition operators are
-	// case sensitive.
+	// The conditions that you define to assign resources to your backup plans using
+	// tags. For example, "StringEquals": { "ConditionKey": "backup",
+	// "ConditionValue": "daily"} .
 	//
-	// ListOfTags differs from Conditions as follows:
+	// ListOfTags supports only StringEquals . Condition operators are case sensitive.
 	//
-	//   - When you specify more than one condition, you assign all resources that
-	//   match AT LEAST ONE condition (using OR logic).
-	//
-	//   - ListOfTags only supports StringEquals . Conditions supports StringEquals ,
-	//   StringLike , StringNotEquals , and StringNotLike .
+	// If you specify multiple conditions, the resources much match any of the
+	// conditions (OR logic).
 	ListOfTags []Condition
 
-	// A list of Amazon Resource Names (ARNs) to exclude from a backup plan. The
-	// maximum number of ARNs is 500 without wildcards, or 30 ARNs with wildcards.
+	// The Amazon Resource Names (ARNs) of the resources to exclude from a backup
+	// plan. The maximum number of ARNs is 500 without wildcards, or 30 ARNs with
+	// wildcards.
 	//
 	// If you need to exclude many resources from a backup plan, consider a different
 	// resource selection strategy, such as assigning only one or a few resource types
 	// or refining your resource selection using tags.
 	NotResources []string
 
-	// A list of Amazon Resource Names (ARNs) to assign to a backup plan. The maximum
-	// number of ARNs is 500 without wildcards, or 30 ARNs with wildcards.
+	// The Amazon Resource Names (ARNs) of the resources to assign to a backup plan.
+	// The maximum number of ARNs is 500 without wildcards, or 30 ARNs with wildcards.
 	//
 	// If you need to assign many resources to a backup plan, consider a different
 	// resource selection strategy, such as assigning all resources of a resource type
 	// or refining your resource selection using tags.
+	//
+	// If you specify multiple ARNs, the resources much match any of the ARNs (OR
+	// logic).
 	Resources []string
 
 	noSmithyDocumentSerde
@@ -597,13 +613,12 @@ type BackupSelectionsListMember struct {
 type BackupVaultListMember struct {
 
 	// An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for
-	// example, arn:aws:backup:us-east-1:123456789012:vault:aBackupVault .
+	// example, arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault .
 	BackupVaultArn *string
 
 	// The name of a logical container where backups are stored. Backup vaults are
 	// identified by names that are unique to the account used to create them and the
-	// Amazon Web Services Region where they are created. They consist of lowercase
-	// letters, numbers, and hyphens.
+	// Amazon Web Services Region where they are created.
 	BackupVaultName *string
 
 	// The date and time a resource backup is created, in Unix format and Coordinated
@@ -677,6 +692,12 @@ type BackupVaultListMember struct {
 	// The number of recovery points that are stored in a backup vault.
 	NumberOfRecoveryPoints int64
 
+	// The current state of the vault.
+	VaultState VaultState
+
+	// The type of vault in which the described recovery point is stored.
+	VaultType VaultType
+
 	noSmithyDocumentSerde
 }
 
@@ -692,11 +713,10 @@ type BackupVaultListMember struct {
 // than the “transition to cold after days” setting. The “transition to cold after
 // days” setting cannot be changed after a backup has been transitioned to cold.
 //
-// Resource types that are able to be transitioned to cold storage are listed in
-// the "Lifecycle to cold storage" section of the [Feature availability by resource]table. Backup ignores this
-// expression for other resource types.
+// Resource types that can transition to cold storage are listed in the [Feature availability by resource] table.
+// Backup ignores this expression for other resource types.
 //
-// [Feature availability by resource]: https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource
+// [Feature availability by resource]: https://docs.aws.amazon.com/aws-backup/latest/devguide/backup-feature-availability.html#features-by-resource
 type CalculatedLifecycle struct {
 
 	// A timestamp that specifies when to delete a recovery point.
@@ -740,6 +760,9 @@ type Condition struct {
 
 // Includes information about tags you define to assign tagged resources to a
 // backup plan.
+//
+// Include the prefix aws:ResourceTag in your tags. For example,
+// "aws:ResourceTag/TagKey1": "Value1" .
 type ConditionParameter struct {
 
 	// The key in a key-value pair. For example, in the tag Department: Accounting ,
@@ -777,8 +800,8 @@ type Conditions struct {
 	noSmithyDocumentSerde
 }
 
-// A list of parameters for a control. A control can have zero, one, or more than
-// one parameter. An example of a control with two parameters is: "backup plan
+// The parameters for a control. A control can have zero, one, or more than one
+// parameter. An example of a control with two parameters is: "backup plan
 // frequency is at least daily and the retention period is at least 1 year ". The
 // first parameter is daily . The second parameter is 1 year .
 type ControlInputParameter struct {
@@ -812,8 +835,11 @@ type ControlScope struct {
 
 	// The tag key-value pair applied to those Amazon Web Services resources that you
 	// want to trigger an evaluation for a rule. A maximum of one key-value pair can be
-	// provided. The tag value is optional, but it cannot be an empty string. The
-	// structure to assign a tag is: [{"Key":"string","Value":"string"}] .
+	// provided. The tag value is optional, but it cannot be an empty string if you are
+	// creating or editing a framework from the console (though the value can be an
+	// empty string when included in a CloudFormation template).
+	//
+	// The structure to assign a tag is: [{"Key":"string","Value":"string"}] .
 	Tags map[string]string
 
 	noSmithyDocumentSerde
@@ -824,25 +850,28 @@ type CopyAction struct {
 
 	// An Amazon Resource Name (ARN) that uniquely identifies the destination backup
 	// vault for the copied backup. For example,
-	// arn:aws:backup:us-east-1:123456789012:vault:aBackupVault .
+	// arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault .
 	//
 	// This member is required.
 	DestinationBackupVaultArn *string
 
-	// Contains an array of Transition objects specifying how long in days before a
-	// recovery point transitions to cold storage or is deleted.
+	// Specifies the time period, in days, before a recovery point transitions to cold
+	// storage or is deleted.
 	//
 	// Backups transitioned to cold storage must be stored in cold storage for a
-	// minimum of 90 days. Therefore, on the console, the “retention” setting must be
-	// 90 days greater than the “transition to cold after days” setting. The
-	// “transition to cold after days” setting cannot be changed after a backup has
-	// been transitioned to cold.
+	// minimum of 90 days. Therefore, on the console, the retention setting must be 90
+	// days greater than the transition to cold after days setting. The transition to
+	// cold after days setting can't be changed after a backup has been transitioned to
+	// cold.
 	//
-	// Resource types that are able to be transitioned to cold storage are listed in
-	// the "Lifecycle to cold storage" section of the [Feature availability by resource]table. Backup ignores this
-	// expression for other resource types.
+	// Resource types that can transition to cold storage are listed in the [Feature availability by resource] table.
+	// Backup ignores this expression for other resource types.
 	//
-	// [Feature availability by resource]: https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource
+	// To remove the existing lifecycle and retention periods and keep your recovery
+	// points indefinitely, specify -1 for MoveToColdStorageAfterDays and
+	// DeleteAfterDays .
+	//
+	// [Feature availability by resource]: https://docs.aws.amazon.com/aws-backup/latest/devguide/backup-feature-availability.html#features-by-resource
 	Lifecycle *Lifecycle
 
 	noSmithyDocumentSerde
@@ -866,9 +895,9 @@ type CopyJob struct {
 	// 12:11:30.087 AM.
 	CompletionDate *time.Time
 
-	// This is the identifier of a resource within a composite group, such as nested
-	// (child) recovery point belonging to a composite (parent) stack. The ID is
-	// transferred from the [logical ID]within a stack.
+	// The identifier of a resource within a composite group, such as nested (child)
+	// recovery point belonging to a composite (parent) stack. The ID is transferred
+	// from the [logical ID]within a stack.
 	//
 	// [logical ID]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html#resources-section-structure-syntax
 	CompositeMemberIdentifier *string
@@ -887,7 +916,8 @@ type CopyJob struct {
 	CreationDate *time.Time
 
 	// An Amazon Resource Name (ARN) that uniquely identifies a destination copy
-	// vault; for example, arn:aws:backup:us-east-1:123456789012:vault:aBackupVault .
+	// vault; for example,
+	// arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault .
 	DestinationBackupVaultArn *string
 
 	// An ARN that uniquely identifies a destination recovery point; for example,
@@ -915,7 +945,7 @@ type CopyJob struct {
 	// [Monitoring]: https://docs.aws.amazon.com/aws-backup/latest/devguide/monitoring.html
 	MessageCategory *string
 
-	// This is the number of child (nested) copy jobs.
+	// The number of child (nested) copy jobs.
 	NumberOfChildJobs *int64
 
 	// This uniquely identifies a request to Backup to copy a resource. The return
@@ -927,8 +957,7 @@ type CopyJob struct {
 	// RDS) database.
 	ResourceArn *string
 
-	// This is the non-unique name of the resource that belongs to the specified
-	// backup.
+	// The non-unique name of the resource that belongs to the specified backup.
 	ResourceName *string
 
 	// The type of Amazon Web Services resource to be copied; for example, an Amazon
@@ -937,7 +966,7 @@ type CopyJob struct {
 	ResourceType *string
 
 	// An Amazon Resource Name (ARN) that uniquely identifies a source copy vault; for
-	// example, arn:aws:backup:us-east-1:123456789012:vault:aBackupVault .
+	// example, arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault .
 	SourceBackupVaultArn *string
 
 	// An ARN that uniquely identifies a source recovery point; for example,
@@ -987,7 +1016,7 @@ type CopyJobSummary struct {
 	// [Monitoring]: https://docs.aws.amazon.com/aws-backup/latest/devguide/monitoring.html
 	MessageCategory *string
 
-	// This is the Amazon Web Services Regions within the job summary.
+	// The Amazon Web Services Regions within the job summary.
 	Region *string
 
 	// This value is the job count for the specified resource type. The request
@@ -1078,7 +1107,7 @@ type FrameworkControl struct {
 	// This member is required.
 	ControlName *string
 
-	// A list of ParameterName and ParameterValue pairs.
+	// The name/value pairs.
 	ControlInputParameters []ControlInputParameter
 
 	// The scope of a control. The control scope defines what the control will
@@ -1089,6 +1118,82 @@ type FrameworkControl struct {
 	//
 	// [ControlScope.]: https://docs.aws.amazon.com/aws-backup/latest/devguide/API_ControlScope.html
 	ControlScope *ControlScope
+
+	noSmithyDocumentSerde
+}
+
+// This is an optional array within a BackupRule.
+//
+// IndexAction consists of one ResourceTypes.
+type IndexAction struct {
+
+	// 0 or 1 index action will be accepted for each BackupRule.
+	//
+	// Valid values:
+	//
+	//   - EBS for Amazon Elastic Block Store
+	//
+	//   - S3 for Amazon Simple Storage Service (Amazon S3)
+	ResourceTypes []string
+
+	noSmithyDocumentSerde
+}
+
+// This is a recovery point that has an associated backup index.
+//
+// Only recovery points with a backup index can be included in a search.
+type IndexedRecoveryPoint struct {
+
+	// The date and time that a backup was created, in Unix format and Coordinated
+	// Universal Time (UTC). The value of CreationDate is accurate to milliseconds.
+	// For example, the value 1516925490.087 represents Friday, January 26, 2018
+	// 12:11:30.087 AM.
+	BackupCreationDate *time.Time
+
+	// An ARN that uniquely identifies the backup vault where the recovery point index
+	// is stored.
+	//
+	// For example, arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault .
+	BackupVaultArn *string
+
+	// This specifies the IAM role ARN used for this operation.
+	//
+	// For example, arn:aws:iam::123456789012:role/S3Access
+	IamRoleArn *string
+
+	// The date and time that a backup index was created, in Unix format and
+	// Coordinated Universal Time (UTC). The value of CreationDate is accurate to
+	// milliseconds. For example, the value 1516925490.087 represents Friday, January
+	// 26, 2018 12:11:30.087 AM.
+	IndexCreationDate *time.Time
+
+	// This is the current status for the backup index associated with the specified
+	// recovery point.
+	//
+	// Statuses are: PENDING | ACTIVE | FAILED | DELETING
+	//
+	// A recovery point with an index that has the status of ACTIVE can be included in
+	// a search.
+	IndexStatus IndexStatus
+
+	// A string in the form of a detailed message explaining the status of a backup
+	// index associated with the recovery point.
+	IndexStatusMessage *string
+
+	// An ARN that uniquely identifies a recovery point; for example,
+	// arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45
+	RecoveryPointArn *string
+
+	// The resource type of the indexed recovery point.
+	//
+	//   - EBS for Amazon Elastic Block Store
+	//
+	//   - S3 for Amazon Simple Storage Service (Amazon S3)
+	ResourceType *string
+
+	// A string of the Amazon Resource Name (ARN) that uniquely identifies the source
+	// resource.
+	SourceResourceArn *string
 
 	noSmithyDocumentSerde
 }
@@ -1128,61 +1233,62 @@ type KeyValue struct {
 // filtered by resource types and by resource IDs.
 type LegalHold struct {
 
-	// This is the time in number format when legal hold was cancelled.
+	// The time when the legal hold was cancelled.
 	CancellationDate *time.Time
 
-	// This is the time in number format when legal hold was created.
+	// The time when the legal hold was created.
 	CreationDate *time.Time
 
-	// This is the description of a legal hold.
+	// The description of a legal hold.
 	Description *string
 
-	// This is an Amazon Resource Number (ARN) that uniquely identifies the legal
-	// hold; for example,
+	// The Amazon Resource Name (ARN) of the legal hold; for example,
 	// arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45
 	// .
 	LegalHoldArn *string
 
-	// ID of specific legal hold on one or more recovery points.
+	// The ID of the legal hold.
 	LegalHoldId *string
 
-	// This is the status of the legal hold. Statuses can be ACTIVE , CREATING ,
-	// CANCELED , and CANCELING .
+	// The status of the legal hold.
 	Status LegalHoldStatus
 
-	// This is the title of a legal hold.
+	// The title of a legal hold.
 	Title *string
 
 	noSmithyDocumentSerde
 }
 
-// Contains an array of Transition objects specifying how long in days before a
-// recovery point transitions to cold storage or is deleted.
+// Specifies the time period, in days, before a recovery point transitions to cold
+// storage or is deleted.
 //
 // Backups transitioned to cold storage must be stored in cold storage for a
-// minimum of 90 days. Therefore, on the console, the “retention” setting must be
-// 90 days greater than the “transition to cold after days” setting. The
-// “transition to cold after days” setting cannot be changed after a backup has
-// been transitioned to cold.
+// minimum of 90 days. Therefore, on the console, the retention setting must be 90
+// days greater than the transition to cold after days setting. The transition to
+// cold after days setting can't be changed after a backup has been transitioned to
+// cold.
 //
-// Resource types that are able to be transitioned to cold storage are listed in
-// the "Lifecycle to cold storage" section of the [Feature availability by resource]table. Backup ignores this
-// expression for other resource types.
+// Resource types that can transition to cold storage are listed in the [Feature availability by resource] table.
+// Backup ignores this expression for other resource types.
 //
-// [Feature availability by resource]: https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource
+// To remove the existing lifecycle and retention periods and keep your recovery
+// points indefinitely, specify -1 for MoveToColdStorageAfterDays and
+// DeleteAfterDays .
+//
+// [Feature availability by resource]: https://docs.aws.amazon.com/aws-backup/latest/devguide/backup-feature-availability.html#features-by-resource
 type Lifecycle struct {
 
-	// Specifies the number of days after creation that a recovery point is deleted.
-	// Must be greater than 90 days plus MoveToColdStorageAfterDays .
+	// The number of days after creation that a recovery point is deleted. This value
+	// must be at least 90 days after the number of days specified in
+	// MoveToColdStorageAfterDays .
 	DeleteAfterDays *int64
 
-	// Specifies the number of days after creation that a recovery point is moved to
-	// cold storage.
+	// The number of days after creation that a recovery point is moved to cold
+	// storage.
 	MoveToColdStorageAfterDays *int64
 
-	// Optional Boolean. If this is true, this setting will instruct your backup plan
-	// to transition supported resources to archive (cold) storage tier in accordance
-	// with your lifecycle settings.
+	// If the value is true, your backup plan transitions supported resources to
+	// archive (cold) storage tier in accordance with your lifecycle settings.
 	OptInToArchiveForSupportedResources *bool
 
 	noSmithyDocumentSerde
@@ -1197,19 +1303,18 @@ type ProtectedResource struct {
 	// 12:11:30.087 AM.
 	LastBackupTime *time.Time
 
-	// This is the ARN (Amazon Resource Name) of the backup vault that contains the
-	// most recent backup recovery point.
+	// The ARN (Amazon Resource Name) of the backup vault that contains the most
+	// recent backup recovery point.
 	LastBackupVaultArn *string
 
-	// This is the ARN (Amazon Resource Name) of the most recent recovery point.
+	// The ARN (Amazon Resource Name) of the most recent recovery point.
 	LastRecoveryPointArn *string
 
 	// An Amazon Resource Name (ARN) that uniquely identifies a resource. The format
 	// of the ARN depends on the resource type.
 	ResourceArn *string
 
-	// This is the non-unique name of the resource that belongs to the specified
-	// backup.
+	// The non-unique name of the resource that belongs to the specified backup.
 	ResourceName *string
 
 	// The type of Amazon Web Services resource; for example, an Amazon Elastic Block
@@ -1221,11 +1326,8 @@ type ProtectedResource struct {
 	noSmithyDocumentSerde
 }
 
-// A list of conditions that you define for resources in your restore testing plan
-// using tags.
-//
-// For example, "StringEquals": { "Key": "aws:ResourceTag/CreatedByCryo", "Value":
-// "true" }, . Condition operators are case sensitive.
+// The conditions that you define for resources in your restore testing plan using
+// tags.
 type ProtectedResourceConditions struct {
 
 	// Filters the values of your tagged resources for only those resources that you
@@ -1247,13 +1349,12 @@ type RecoveryPointByBackupVault struct {
 	BackupSizeInBytes *int64
 
 	// An ARN that uniquely identifies a backup vault; for example,
-	// arn:aws:backup:us-east-1:123456789012:vault:aBackupVault .
+	// arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault .
 	BackupVaultArn *string
 
 	// The name of a logical container where backups are stored. Backup vaults are
 	// identified by names that are unique to the account used to create them and the
-	// Amazon Web Services Region where they are created. They consist of lowercase
-	// letters, numbers, and hyphens.
+	// Amazon Web Services Region where they are created.
 	BackupVaultName *string
 
 	// A CalculatedLifecycle object containing DeleteAt and MoveToColdStorageAt
@@ -1266,9 +1367,9 @@ type RecoveryPointByBackupVault struct {
 	// Friday, January 26, 2018 12:11:30.087 AM.
 	CompletionDate *time.Time
 
-	// This is the identifier of a resource within a composite group, such as nested
-	// (child) recovery point belonging to a composite (parent) stack. The ID is
-	// transferred from the [logical ID]within a stack.
+	// The identifier of a resource within a composite group, such as nested (child)
+	// recovery point belonging to a composite (parent) stack. The ID is transferred
+	// from the [logical ID]within a stack.
 	//
 	// [logical ID]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html#resources-section-structure-syntax
 	CompositeMemberIdentifier *string
@@ -1293,6 +1394,19 @@ type RecoveryPointByBackupVault struct {
 	// example, arn:aws:iam::123456789012:role/S3Access .
 	IamRoleArn *string
 
+	// This is the current status for the backup index associated with the specified
+	// recovery point.
+	//
+	// Statuses are: PENDING | ACTIVE | FAILED | DELETING
+	//
+	// A recovery point with an index that has the status of ACTIVE can be included in
+	// a search.
+	IndexStatus IndexStatus
+
+	// A string in the form of a detailed message explaining the status of a backup
+	// index associated with the recovery point.
+	IndexStatusMessage *string
+
 	// A Boolean value that is returned as TRUE if the specified recovery point is
 	// encrypted, or FALSE if the recovery point is not encrypted.
 	IsEncrypted bool
@@ -1315,14 +1429,13 @@ type RecoveryPointByBackupVault struct {
 	// than the “transition to cold after days” setting. The “transition to cold after
 	// days” setting cannot be changed after a backup has been transitioned to cold.
 	//
-	// Resource types that are able to be transitioned to cold storage are listed in
-	// the "Lifecycle to cold storage" section of the [Feature availability by resource]table. Backup ignores this
-	// expression for other resource types.
+	// Resource types that can transition to cold storage are listed in the [Feature availability by resource] table.
+	// Backup ignores this expression for other resource types.
 	//
-	// [Feature availability by resource]: https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource
+	// [Feature availability by resource]: https://docs.aws.amazon.com/aws-backup/latest/devguide/backup-feature-availability.html#features-by-resource
 	Lifecycle *Lifecycle
 
-	// This is the Amazon Resource Name (ARN) of the parent (composite) recovery point.
+	// The Amazon Resource Name (ARN) of the parent (composite) recovery point.
 	ParentRecoveryPointArn *string
 
 	// An Amazon Resource Name (ARN) that uniquely identifies a recovery point; for
@@ -1335,8 +1448,7 @@ type RecoveryPointByBackupVault struct {
 	// the resource type.
 	ResourceArn *string
 
-	// This is the non-unique name of the resource that belongs to the specified
-	// backup.
+	// The non-unique name of the resource that belongs to the specified backup.
 	ResourceName *string
 
 	// The type of Amazon Web Services resource saved as a recovery point; for
@@ -1352,10 +1464,10 @@ type RecoveryPointByBackupVault struct {
 	// A status code specifying the state of the recovery point.
 	Status RecoveryPointStatus
 
-	// A message explaining the reason of the recovery point deletion failure.
+	// A message explaining the current status of the recovery point.
 	StatusMessage *string
 
-	// This is the type of vault in which the described recovery point is stored.
+	// The type of vault in which the described recovery point is stored.
 	VaultType VaultType
 
 	noSmithyDocumentSerde
@@ -1369,8 +1481,7 @@ type RecoveryPointByResource struct {
 
 	// The name of a logical container where backups are stored. Backup vaults are
 	// identified by names that are unique to the account used to create them and the
-	// Amazon Web Services Region where they are created. They consist of lowercase
-	// letters, numbers, and hyphens.
+	// Amazon Web Services Region where they are created.
 	BackupVaultName *string
 
 	// The date and time a recovery point is created, in Unix format and Coordinated
@@ -1384,10 +1495,23 @@ type RecoveryPointByResource struct {
 	// arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab .
 	EncryptionKeyArn *string
 
+	// This is the current status for the backup index associated with the specified
+	// recovery point.
+	//
+	// Statuses are: PENDING | ACTIVE | FAILED | DELETING
+	//
+	// A recovery point with an index that has the status of ACTIVE can be included in
+	// a search.
+	IndexStatus IndexStatus
+
+	// A string in the form of a detailed message explaining the status of a backup
+	// index associated with the recovery point.
+	IndexStatusMessage *string
+
 	// This is a boolean value indicating this is a parent (composite) recovery point.
 	IsParent bool
 
-	// This is the Amazon Resource Name (ARN) of the parent (composite) recovery point.
+	// The Amazon Resource Name (ARN) of the parent (composite) recovery point.
 	ParentRecoveryPointArn *string
 
 	// An Amazon Resource Name (ARN) that uniquely identifies a recovery point; for
@@ -1396,17 +1520,16 @@ type RecoveryPointByResource struct {
 	// .
 	RecoveryPointArn *string
 
-	// This is the non-unique name of the resource that belongs to the specified
-	// backup.
+	// The non-unique name of the resource that belongs to the specified backup.
 	ResourceName *string
 
 	// A status code specifying the state of the recovery point.
 	Status RecoveryPointStatus
 
-	// A message explaining the reason of the recovery point deletion failure.
+	// A message explaining the current status of the recovery point.
 	StatusMessage *string
 
-	// This is the type of vault in which the described recovery point is stored.
+	// The type of vault in which the described recovery point is stored.
 	VaultType VaultType
 
 	noSmithyDocumentSerde
@@ -1441,18 +1564,17 @@ type RecoveryPointCreator struct {
 // member.
 type RecoveryPointMember struct {
 
-	// This is the name of the backup vault (the logical container in which backups
-	// are stored).
+	// The name of the backup vault (the logical container in which backups are
+	// stored).
 	BackupVaultName *string
 
-	// This is the Amazon Resource Name (ARN) of the parent (composite) recovery point.
+	// The Amazon Resource Name (ARN) of the parent (composite) recovery point.
 	RecoveryPointArn *string
 
-	// This is the Amazon Resource Name (ARN) that uniquely identifies a saved
-	// resource.
+	// The Amazon Resource Name (ARN) that uniquely identifies a saved resource.
 	ResourceArn *string
 
-	// This is the Amazon Web Services resource type that is saved as a recovery point.
+	// The Amazon Web Services resource type that is saved as a recovery point.
 	ResourceType *string
 
 	noSmithyDocumentSerde
@@ -1491,8 +1613,8 @@ type ReportDeliveryChannel struct {
 	// This member is required.
 	S3BucketName *string
 
-	// A list of the format of your reports: CSV , JSON , or both. If not specified,
-	// the default format is CSV .
+	// The format of your reports: CSV , JSON , or both. If not specified, the default
+	// format is CSV .
 	Formats []string
 
 	// The prefix for where Backup Audit Manager delivers your reports to Amazon S3.
@@ -1635,6 +1757,8 @@ type ReportSetting struct {
 	ReportTemplate *string
 
 	// These are the accounts to be included in the report.
+	//
+	// Use string value of ROOT to include all organizational units.
 	Accounts []string
 
 	// The Amazon Resource Names (ARNs) of the frameworks a report covers.
@@ -1647,6 +1771,8 @@ type ReportSetting struct {
 	OrganizationUnits []string
 
 	// These are the Regions to be included in the report.
+	//
+	// Use the wildcard as the string value to include all Regions.
 	Regions []string
 
 	noSmithyDocumentSerde
@@ -1701,8 +1827,8 @@ type RestoreJobsListMember struct {
 	// to take.
 	ExpectedCompletionTimeMinutes *int64
 
-	// Specifies the IAM role ARN used to create the target recovery point; for
-	// example, arn:aws:iam::123456789012:role/S3Access .
+	// The IAM role ARN used to create the target recovery point; for example,
+	// arn:aws:iam::123456789012:role/S3Access .
 	IamRoleArn *string
 
 	// Contains an estimated percentage complete of a job at the time the job status
@@ -1733,7 +1859,7 @@ type RestoreJobsListMember struct {
 	// A detailed message explaining the status of the job to restore a recovery point.
 	StatusMessage *string
 
-	// This is the status of validation run on the indicated restore job.
+	// The status of validation run on the indicated restore job.
 	ValidationStatus RestoreValidationStatus
 
 	// This describes the status of validation run on the indicated restore job.
@@ -1785,9 +1911,32 @@ type RestoreJobSummary struct {
 // This contains metadata about a restore testing plan.
 type RestoreTestingPlanForCreate struct {
 
-	// Required: Algorithm; Required: Recovery point types; IncludeVaults (one or
-	// more). Optional: SelectionWindowDays ('30' if not specified); ExcludeVaults
-	// (list of selectors), defaults to empty list if not listed.
+	// RecoveryPointSelection has five parameters (three required and two optional).
+	// The values you specify determine which recovery point is included in the restore
+	// test. You must indicate with Algorithm if you want the latest recovery point
+	// within your SelectionWindowDays or if you want a random recovery point, and you
+	// must indicate through IncludeVaults from which vaults the recovery points can
+	// be chosen.
+	//
+	// Algorithm (required) Valid values: " LATEST_WITHIN_WINDOW " or "
+	// RANDOM_WITHIN_WINDOW ".
+	//
+	// Recovery point types (required) Valid values: " SNAPSHOT " and/or " CONTINUOUS
+	// ". Include SNAPSHOT to restore only snapshot recovery points; include CONTINUOUS
+	// to restore continuous recovery points (point in time restore / PITR); use both
+	// to restore either a snapshot or a continuous recovery point. The recovery point
+	// will be determined by the value for Algorithm .
+	//
+	// IncludeVaults (required). You must include one or more backup vaults. Use the
+	// wildcard ["*"] or specific ARNs.
+	//
+	// SelectionWindowDays (optional) Value must be an integer (in days) from 1 to
+	// 365. If not included, the value defaults to 30 .
+	//
+	// ExcludeVaults (optional). You can choose to input one or more specific backup
+	// vault ARNs to exclude those vaults' contents from restore eligibility. Or, you
+	// can include a list of selectors. If this parameter and its value are not
+	// included, it defaults to empty list.
 	//
 	// This member is required.
 	RecoveryPointSelection *RestoreTestingRecoveryPointSelection
@@ -1841,7 +1990,7 @@ type RestoreTestingPlanForGet struct {
 	// This member is required.
 	RestoreTestingPlanArn *string
 
-	// This is the restore testing plan name.
+	// The restore testing plan name.
 	//
 	// This member is required.
 	RestoreTestingPlanName *string
@@ -1902,7 +2051,7 @@ type RestoreTestingPlanForList struct {
 	// This member is required.
 	RestoreTestingPlanArn *string
 
-	// This is the restore testing plan name.
+	// The restore testing plan name.
 	//
 	// This member is required.
 	RestoreTestingPlanName *string
@@ -1966,9 +2115,32 @@ type RestoreTestingPlanForUpdate struct {
 	noSmithyDocumentSerde
 }
 
-// Required: Algorithm; Required: Recovery point types; IncludeVaults(one or
-// more). Optional: SelectionWindowDays ('30' if not specified);ExcludeVaults (list
-// of selectors), defaults to empty list if not listed.
+// RecoveryPointSelection has five parameters (three required and two optional).
+// The values you specify determine which recovery point is included in the restore
+// test. You must indicate with Algorithm if you want the latest recovery point
+// within your SelectionWindowDays or if you want a random recovery point, and you
+// must indicate through IncludeVaults from which vaults the recovery points can
+// be chosen.
+//
+// Algorithm (required) Valid values: " LATEST_WITHIN_WINDOW " or "
+// RANDOM_WITHIN_WINDOW ".
+//
+// Recovery point types (required) Valid values: " SNAPSHOT " and/or " CONTINUOUS
+// ". Include SNAPSHOT to restore only snapshot recovery points; include CONTINUOUS
+// to restore continuous recovery points (point in time restore / PITR); use both
+// to restore either a snapshot or a continuous recovery point. The recovery point
+// will be determined by the value for Algorithm .
+//
+// IncludeVaults (required). You must include one or more backup vaults. Use the
+// wildcard ["*"] or specific ARNs.
+//
+// SelectionWindowDays (optional) Value must be an integer (in days) from 1 to
+// 365. If not included, the value defaults to 30 .
+//
+// ExcludeVaults (optional). You can choose to input one or more specific backup
+// vault ARNs to exclude those vaults' contents from restore eligibility. Or, you
+// can include a list of selectors. If this parameter and its value are not
+// included, it defaults to empty list.
 type RestoreTestingRecoveryPointSelection struct {
 
 	// Acceptable values include "LATEST_WITHIN_WINDOW" or "RANDOM_WITHIN_WINDOW"
@@ -1984,6 +2156,11 @@ type RestoreTestingRecoveryPointSelection struct {
 	IncludeVaults []string
 
 	// These are the types of recovery points.
+	//
+	// Include SNAPSHOT to restore only snapshot recovery points; include CONTINUOUS
+	// to restore continuous recovery points (point in time restore / PITR); use both
+	// to restore either a snapshot or a continuous recovery point. The recovery point
+	// will be determined by the value for Algorithm .
 	RecoveryPointTypes []RestoreTestingRecoveryPointType
 
 	// Accepted values are integers from 1 to 365.
@@ -2048,8 +2225,8 @@ type RestoreTestingSelectionForCreate struct {
 	// This member is required.
 	ProtectedResourceType *string
 
-	// This is the unique name of the restore testing selection that belongs to the
-	// related restore testing plan.
+	// The unique name of the restore testing selection that belongs to the related
+	// restore testing plan.
 	//
 	// This member is required.
 	RestoreTestingSelectionName *string
@@ -2110,8 +2287,8 @@ type RestoreTestingSelectionForGet struct {
 	// This member is required.
 	RestoreTestingPlanName *string
 
-	// This is the unique name of the restore testing selection that belongs to the
-	// related restore testing plan.
+	// The unique name of the restore testing selection that belongs to the related
+	// restore testing plan.
 	//
 	// This member is required.
 	RestoreTestingSelectionName *string
@@ -2153,10 +2330,10 @@ type RestoreTestingSelectionForGet struct {
 // This contains metadata about a restore testing selection.
 type RestoreTestingSelectionForList struct {
 
-	// This is the date and time that a restore testing selection was created, in Unix
-	// format and Coordinated Universal Time (UTC). The value of CreationTime is
-	// accurate to milliseconds. For example, the value 1516925490.087 represents
-	// Friday, January 26,2018 12:11:30.087 AM.
+	// The date and time that a restore testing selection was created, in Unix format
+	// and Coordinated Universal Time (UTC). The value of CreationTime is accurate to
+	// milliseconds. For example, the value 1516925490.087 represents Friday, January
+	// 26,2018 12:11:30.087 AM.
 	//
 	// This member is required.
 	CreationTime *time.Time
@@ -2208,11 +2385,8 @@ type RestoreTestingSelectionForUpdate struct {
 	// ProtectedResourceArns: ["*"] , but not both.
 	ProtectedResourceArns []string
 
-	// A list of conditions that you define for resources in your restore testing plan
-	// using tags.
-	//
-	// For example, "StringEquals": { "Key": "aws:ResourceTag/CreatedByCryo", "Value":
-	// "true" }, . Condition operators are case sensitive.
+	// The conditions that you define for resources in your restore testing plan using
+	// tags.
 	ProtectedResourceConditions *ProtectedResourceConditions
 
 	// You can override certain restore metadata keys by including the parameter

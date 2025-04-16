@@ -48,9 +48,15 @@ type CreateDomainInput struct {
 	// The description of the Amazon DataZone domain.
 	Description *string
 
+	// The version of the domain that is created.
+	DomainVersion types.DomainVersion
+
 	// The identifier of the Amazon Web Services Key Management Service (KMS) key that
 	// is used to encrypt the Amazon DataZone domain, metadata, and reporting data.
 	KmsKeyIdentifier *string
+
+	// The service role of the domain that is created.
+	ServiceRole *string
 
 	// The single-sign on configuration of the Amazon DataZone domain.
 	SingleSignOn *types.SingleSignOn
@@ -79,6 +85,9 @@ type CreateDomainOutput struct {
 	// that houses the Amazon DataZone domain.
 	DomainExecutionRole *string
 
+	// The version of the domain that is created.
+	DomainVersion types.DomainVersion
+
 	// The identifier of the Amazon Web Services Key Management Service (KMS) key that
 	// is used to encrypt the Amazon DataZone domain, metadata, and reporting data.
 	KmsKeyIdentifier *string
@@ -88,6 +97,12 @@ type CreateDomainOutput struct {
 
 	// The URL of the data portal for this Amazon DataZone domain.
 	PortalUrl *string
+
+	// The ID of the root domain unit.
+	RootDomainUnitId *string
+
+	// Te service role of the domain that is created.
+	ServiceRole *string
 
 	// The single-sign on configuration of the Amazon DataZone domain.
 	SingleSignOn *types.SingleSignOn
@@ -147,6 +162,9 @@ func (c *Client) addOperationCreateDomainMiddlewares(stack *middleware.Stack, op
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -163,6 +181,9 @@ func (c *Client) addOperationCreateDomainMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateDomainMiddleware(stack, options); err != nil {
@@ -187,6 +208,18 @@ func (c *Client) addOperationCreateDomainMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

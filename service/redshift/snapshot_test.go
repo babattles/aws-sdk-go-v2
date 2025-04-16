@@ -326,6 +326,18 @@ func TestCheckSnapshot_CreateHsmConfiguration(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_CreateIntegration(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateIntegration(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "CreateIntegration")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_CreateRedshiftIdcApplication(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.CreateRedshiftIdcApplication(context.Background(), nil, func(o *Options) {
@@ -542,6 +554,18 @@ func TestCheckSnapshot_DeleteHsmConfiguration(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_DeleteIntegration(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteIntegration(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DeleteIntegration")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_DeletePartner(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.DeletePartner(context.Background(), nil, func(o *Options) {
@@ -631,6 +655,18 @@ func TestCheckSnapshot_DeleteUsageLimit(t *testing.T) {
 	_, err := svc.DeleteUsageLimit(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "DeleteUsageLimit")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_DeregisterNamespace(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeregisterNamespace(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DeregisterNamespace")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -919,6 +955,18 @@ func TestCheckSnapshot_DescribeInboundIntegrations(t *testing.T) {
 	_, err := svc.DescribeInboundIntegrations(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "DescribeInboundIntegrations")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_DescribeIntegrations(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DescribeIntegrations(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DescribeIntegrations")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -1418,6 +1466,18 @@ func TestCheckSnapshot_ModifyEventSubscription(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_ModifyIntegration(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ModifyIntegration(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ModifyIntegration")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_ModifyRedshiftIdcApplication(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ModifyRedshiftIdcApplication(context.Background(), nil, func(o *Options) {
@@ -1519,6 +1579,18 @@ func TestCheckSnapshot_RebootCluster(t *testing.T) {
 	_, err := svc.RebootCluster(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "RebootCluster")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_RegisterNamespace(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.RegisterNamespace(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "RegisterNamespace")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -1921,6 +1993,18 @@ func TestUpdateSnapshot_CreateHsmConfiguration(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_CreateIntegration(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateIntegration(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "CreateIntegration")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_CreateRedshiftIdcApplication(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.CreateRedshiftIdcApplication(context.Background(), nil, func(o *Options) {
@@ -2137,6 +2221,18 @@ func TestUpdateSnapshot_DeleteHsmConfiguration(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_DeleteIntegration(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteIntegration(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DeleteIntegration")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_DeletePartner(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.DeletePartner(context.Background(), nil, func(o *Options) {
@@ -2226,6 +2322,18 @@ func TestUpdateSnapshot_DeleteUsageLimit(t *testing.T) {
 	_, err := svc.DeleteUsageLimit(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "DeleteUsageLimit")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_DeregisterNamespace(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeregisterNamespace(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DeregisterNamespace")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -2514,6 +2622,18 @@ func TestUpdateSnapshot_DescribeInboundIntegrations(t *testing.T) {
 	_, err := svc.DescribeInboundIntegrations(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "DescribeInboundIntegrations")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_DescribeIntegrations(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DescribeIntegrations(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DescribeIntegrations")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -3013,6 +3133,18 @@ func TestUpdateSnapshot_ModifyEventSubscription(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_ModifyIntegration(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ModifyIntegration(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ModifyIntegration")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_ModifyRedshiftIdcApplication(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ModifyRedshiftIdcApplication(context.Background(), nil, func(o *Options) {
@@ -3114,6 +3246,18 @@ func TestUpdateSnapshot_RebootCluster(t *testing.T) {
 	_, err := svc.RebootCluster(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "RebootCluster")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_RegisterNamespace(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.RegisterNamespace(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "RegisterNamespace")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {

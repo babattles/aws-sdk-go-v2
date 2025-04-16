@@ -11,8 +11,12 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Updates some of the parameters of a Server Message Block (SMB) file server
-// location that you can use for DataSync transfers.
+// Modifies the following configuration parameters of the Server Message Block
+// (SMB) transfer location that you're using with DataSync.
+//
+// For more information, see [Configuring DataSync transfers with an SMB file server].
+//
+// [Configuring DataSync transfers with an SMB file server]: https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html
 func (c *Client) UpdateLocationSmb(ctx context.Context, params *UpdateLocationSmbInput, optFns ...func(*Options)) (*UpdateLocationSmbOutput, error) {
 	if params == nil {
 		params = &UpdateLocationSmbInput{}
@@ -35,31 +39,80 @@ type UpdateLocationSmbInput struct {
 	// This member is required.
 	LocationArn *string
 
-	// Specifies the DataSync agent (or agents) which you want to connect to your SMB
-	// file server. You specify an agent by using its Amazon Resource Name (ARN).
+	// Specifies the DataSync agent (or agents) that can connect to your SMB file
+	// server. You specify an agent by using its Amazon Resource Name (ARN).
 	AgentArns []string
 
-	// Specifies the Windows domain name that your SMB file server belongs to.
+	// Specifies the authentication protocol that DataSync uses to connect to your SMB
+	// file server. DataSync supports NTLM (default) and KERBEROS authentication.
+	//
+	// For more information, see [Providing DataSync access to SMB file servers].
+	//
+	// [Providing DataSync access to SMB file servers]: https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html#configuring-smb-permissions
+	AuthenticationType types.SmbAuthenticationType
+
+	// Specifies the IPv4 addresses for the DNS servers that your SMB file server
+	// belongs to. This parameter applies only if AuthenticationType is set to KERBEROS
+	// .
+	//
+	// If you have multiple domains in your environment, configuring this parameter
+	// makes sure that DataSync connects to the right SMB file server.
+	DnsIpAddresses []string
+
+	// Specifies the Windows domain name that your SMB file server belongs to. This
+	// parameter applies only if AuthenticationType is set to NTLM .
 	//
 	// If you have multiple domains in your environment, configuring this parameter
 	// makes sure that DataSync connects to the right file server.
-	//
-	// For more information, see [required permissions] for SMB locations.
-	//
-	// [required permissions]: https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html#configuring-smb-permissions
 	Domain *string
+
+	// Specifies your Kerberos key table (keytab) file, which includes mappings
+	// between your Kerberos principal and encryption keys.
+	//
+	// The file must be base64 encoded. If you're using the CLI, the encoding is done
+	// for you.
+	//
+	// To avoid task execution errors, make sure that the Kerberos principal that you
+	// use to create the keytab file matches exactly what you specify for
+	// KerberosPrincipal .
+	KerberosKeytab []byte
+
+	// Specifies a Kerberos configuration file ( krb5.conf ) that defines your Kerberos
+	// realm configuration.
+	//
+	// The file must be base64 encoded. If you're using the CLI, the encoding is done
+	// for you.
+	KerberosKrb5Conf []byte
+
+	// Specifies a Kerberos prinicpal, which is an identity in your Kerberos realm
+	// that has permission to access the files, folders, and file metadata in your SMB
+	// file server.
+	//
+	// A Kerberos principal might look like HOST/kerberosuser@MYDOMAIN.ORG .
+	//
+	// Principal names are case sensitive. Your DataSync task execution will fail if
+	// the principal that you specify for this parameter doesn’t exactly match the
+	// principal that you use to create the keytab file.
+	KerberosPrincipal *string
 
 	// Specifies the version of the Server Message Block (SMB) protocol that DataSync
 	// uses to access an SMB file server.
 	MountOptions *types.SmbMountOptions
 
 	// Specifies the password of the user who can mount your SMB file server and has
-	// permission to access the files and folders involved in your transfer.
-	//
-	// For more information, see [required permissions] for SMB locations.
-	//
-	// [required permissions]: https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html#configuring-smb-permissions
+	// permission to access the files and folders involved in your transfer. This
+	// parameter applies only if AuthenticationType is set to NTLM .
 	Password *string
+
+	// Specifies the domain name or IP address of the SMB file server that your
+	// DataSync agent connects to.
+	//
+	// Remember the following when configuring this parameter:
+	//
+	//   - You can't specify an IP version 6 (IPv6) address.
+	//
+	//   - If you're using Kerberos authentication, you must specify a domain name.
+	ServerHostname *string
 
 	// Specifies the name of the share exported by your SMB file server where DataSync
 	// will read or write data. You can include a subdirectory in the share path (for
@@ -67,19 +120,19 @@ type UpdateLocationSmbInput struct {
 	// network can also mount this path.
 	//
 	// To copy all data in the specified subdirectory, DataSync must be able to mount
-	// the SMB share and access all of its data. For more information, see [required permissions]for SMB
-	// locations.
+	// the SMB share and access all of its data. For more information, see [Providing DataSync access to SMB file servers].
 	//
-	// [required permissions]: https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html#configuring-smb-permissions
+	// [Providing DataSync access to SMB file servers]: https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html#configuring-smb-permissions
 	Subdirectory *string
 
 	// Specifies the user name that can mount your SMB file server and has permission
-	// to access the files and folders involved in your transfer.
+	// to access the files and folders involved in your transfer. This parameter
+	// applies only if AuthenticationType is set to NTLM .
 	//
 	// For information about choosing a user with the right level of access for your
-	// transfer, see [required permissions]for SMB locations.
+	// transfer, see [Providing DataSync access to SMB file servers].
 	//
-	// [required permissions]: https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html#configuring-smb-permissions
+	// [Providing DataSync access to SMB file servers]: https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html#configuring-smb-permissions
 	User *string
 
 	noSmithyDocumentSerde
@@ -135,6 +188,9 @@ func (c *Client) addOperationUpdateLocationSmbMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -151,6 +207,9 @@ func (c *Client) addOperationUpdateLocationSmbMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateLocationSmbValidationMiddleware(stack); err != nil {
@@ -172,6 +231,18 @@ func (c *Client) addOperationUpdateLocationSmbMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

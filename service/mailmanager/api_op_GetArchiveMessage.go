@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
+	"github.com/aws/aws-sdk-go-v2/service/mailmanager/types"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -41,8 +42,14 @@ type GetArchiveMessageInput struct {
 // The response containing details about the requested archived email message.
 type GetArchiveMessageOutput struct {
 
+	// The SMTP envelope information of the email.
+	Envelope *types.Envelope
+
 	// A pre-signed URL to temporarily download the full message content.
 	MessageDownloadLink *string
+
+	// The metadata about the email.
+	Metadata *types.Metadata
 
 	// Metadata pertaining to the operation's result.
 	ResultMetadata middleware.Metadata
@@ -93,6 +100,9 @@ func (c *Client) addOperationGetArchiveMessageMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -109,6 +119,9 @@ func (c *Client) addOperationGetArchiveMessageMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetArchiveMessageValidationMiddleware(stack); err != nil {
@@ -130,6 +143,18 @@ func (c *Client) addOperationGetArchiveMessageMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

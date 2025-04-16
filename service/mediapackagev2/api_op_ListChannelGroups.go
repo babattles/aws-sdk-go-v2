@@ -11,8 +11,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Retrieves all channel groups that are configured in AWS Elemental MediaPackage,
-// including the channels and origin endpoints that are associated with it.
+// Retrieves all channel groups that are configured in Elemental MediaPackage.
 func (c *Client) ListChannelGroups(ctx context.Context, params *ListChannelGroupsInput, optFns ...func(*Options)) (*ListChannelGroupsOutput, error) {
 	if params == nil {
 		params = &ListChannelGroupsInput{}
@@ -98,6 +97,9 @@ func (c *Client) addOperationListChannelGroupsMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -116,6 +118,9 @@ func (c *Client) addOperationListChannelGroupsMiddlewares(stack *middleware.Stac
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListChannelGroups(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -132,6 +137,18 @@ func (c *Client) addOperationListChannelGroupsMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

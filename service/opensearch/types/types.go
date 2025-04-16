@@ -198,6 +198,53 @@ type AIMLOptionsStatus struct {
 	noSmithyDocumentSerde
 }
 
+// Configuration settings for an OpenSearch application. For more information, see
+// see [Using the OpenSearch user interface in Amazon OpenSearch Service].
+//
+// [Using the OpenSearch user interface in Amazon OpenSearch Service]: https://docs.aws.amazon.com/opensearch-service/latest/developerguide/application.html
+type AppConfig struct {
+
+	// The configuration item to set, such as the admin role for the OpenSearch
+	// application.
+	Key AppConfigType
+
+	// The value assigned to the configuration key, such as an IAM user ARN.
+	Value *string
+
+	noSmithyDocumentSerde
+}
+
+// Basic details of an OpenSearch application.
+type ApplicationSummary struct {
+
+	// The Amazon Resource Name (ARN) of the domain. See [Identifiers for IAM Entities] in Using Amazon Web Services
+	// Identity and Access Management for more information.
+	//
+	// [Identifiers for IAM Entities]: https://docs.aws.amazon.com/IAM/latest/UserGuide/index.html
+	Arn *string
+
+	// The timestamp when an OpenSearch application was created.
+	CreatedAt *time.Time
+
+	// The endpoint URL of an OpenSearch application.
+	Endpoint *string
+
+	// The unique identifier of an OpenSearch application.
+	Id *string
+
+	// The timestamp of the last update to an OpenSearch application.
+	LastUpdatedAt *time.Time
+
+	// The name of an OpenSearch application.
+	Name *string
+
+	// The current status of an OpenSearch application. Possible values: CREATING ,
+	// UPDATING , DELETING , FAILED , ACTIVE , and DELETED .
+	Status ApplicationStatus
+
+	noSmithyDocumentSerde
+}
+
 // Information about an Amazon Web Services account or service that has access to
 // an Amazon OpenSearch Service domain through the use of an interface VPC
 // endpoint.
@@ -523,6 +570,20 @@ type ChangeProgressStatusDetails struct {
 	noSmithyDocumentSerde
 }
 
+//	Configuration details for a CloudWatch Logs data source that can be used for
+//
+// direct queries.
+type CloudWatchDirectQueryDataSource struct {
+
+	//  The unique identifier of the IAM role that grants OpenSearch Service
+	// permission to access the specified data source.
+	//
+	// This member is required.
+	RoleArn *string
+
+	noSmithyDocumentSerde
+}
+
 // Container for the cluster configuration of an OpenSearch Service domain. For
 // more information, see [Creating and managing Amazon OpenSearch Service domains].
 //
@@ -555,6 +616,9 @@ type ClusterConfig struct {
 	//
 	// [Configuring a multi-AZ domain in Amazon OpenSearch Service]: https://docs.aws.amazon.com/opensearch-service/latest/developerguide/managedomains-multiaz.html
 	MultiAZWithStandbyEnabled *bool
+
+	// List of node options for the domain.
+	NodeOptions []NodeOption
 
 	// The number of warm nodes in the cluster.
 	WarmCount *int32
@@ -689,6 +753,21 @@ type CrossClusterSearchConnectionProperties struct {
 	noSmithyDocumentSerde
 }
 
+// Data sources that are associated with an OpenSearch Application.
+type DataSource struct {
+
+	// The Amazon Resource Name (ARN) of the domain. See [Identifiers for IAM Entities] in Using Amazon Web Services
+	// Identity and Access Management for more information.
+	//
+	// [Identifiers for IAM Entities]: https://docs.aws.amazon.com/IAM/latest/UserGuide/index.html
+	DataSourceArn *string
+
+	// Detailed description of a data source.
+	DataSourceDescription *string
+
+	noSmithyDocumentSerde
+}
+
 // Details about a direct-query data source.
 type DataSourceDetails struct {
 
@@ -736,6 +815,64 @@ type DescribePackagesFilter struct {
 
 	noSmithyDocumentSerde
 }
+
+// The configuration details for a data source that can be directly queried.
+type DirectQueryDataSource struct {
+
+	//  The unique, system-generated identifier that represents the data source.
+	DataSourceArn *string
+
+	//  A unique, user-defined label to identify the data source within your
+	// OpenSearch Service environment.
+	DataSourceName *string
+
+	//  The supported Amazon Web Services service that is used as the source for
+	// direct queries in OpenSearch Service.
+	DataSourceType DirectQueryDataSourceType
+
+	//  A description that provides additional context and details about the data
+	// source.
+	Description *string
+
+	//  A list of Amazon Resource Names (ARNs) for the OpenSearch collections that are
+	// associated with the direct query data source.
+	OpenSearchArns []string
+
+	//  A list of tags attached to a direct query data source.
+	TagList []Tag
+
+	noSmithyDocumentSerde
+}
+
+//	The type of data source that is used for direct queries. This is a supported
+//
+// Amazon Web Services service, such as CloudWatch Logs or Security Lake.
+//
+// The following types satisfy this interface:
+//
+//	DirectQueryDataSourceTypeMemberCloudWatchLog
+//	DirectQueryDataSourceTypeMemberSecurityLake
+type DirectQueryDataSourceType interface {
+	isDirectQueryDataSourceType()
+}
+
+// Specifies CloudWatch Logs as a type of data source for direct queries.
+type DirectQueryDataSourceTypeMemberCloudWatchLog struct {
+	Value CloudWatchDirectQueryDataSource
+
+	noSmithyDocumentSerde
+}
+
+func (*DirectQueryDataSourceTypeMemberCloudWatchLog) isDirectQueryDataSourceType() {}
+
+// Specifies Security Lake as a type of data source for direct queries.
+type DirectQueryDataSourceTypeMemberSecurityLake struct {
+	Value SecurityLakeDirectQueryDataSource
+
+	noSmithyDocumentSerde
+}
+
+func (*DirectQueryDataSourceTypeMemberSecurityLake) isDirectQueryDataSourceType() {}
 
 // Container for the configuration of an OpenSearch Service domain.
 type DomainConfig struct {
@@ -786,6 +923,10 @@ type DomainConfig struct {
 	// recommended option. If you set your IP address type to dual stack, you can't
 	// change your address type later.
 	IPAddressType *IPAddressTypeStatus
+
+	// Configuration options for enabling and managing IAM Identity Center integration
+	// within a domain.
+	IdentityCenterOptions *IdentityCenterOptionsStatus
 
 	// Key-value pairs to configure log publishing.
 	LogPublishingOptions *LogPublishingOptionsStatus
@@ -928,7 +1069,7 @@ type DomainNodesStatus struct {
 	// Indicates if the node is active or in standby.
 	NodeStatus NodeStatus
 
-	// Indicates whether the nodes is a data, master, or ultrawarm node.
+	// Indicates whether the nodes is a data, master, or UltraWarm node.
 	NodeType NodeType
 
 	// The storage size of the node, in GiB.
@@ -937,7 +1078,7 @@ type DomainNodesStatus struct {
 	// Indicates if the node has EBS or instance storage.
 	StorageType *string
 
-	// If the nodes has EBS storage, indicates if the volume type is GP2 or GP3. Only
+	// If the nodes has EBS storage, indicates if the volume type is gp2 or gp3. Only
 	// applicable for data nodes.
 	StorageVolumeType VolumeType
 
@@ -949,6 +1090,10 @@ type DomainNodesStatus struct {
 //
 // [Custom packages for Amazon OpenSearch Service]: https://docs.aws.amazon.com/opensearch-service/latest/developerguide/custom-packages.html
 type DomainPackageDetails struct {
+
+	// The configuration for associating a package with an Amazon OpenSearch Service
+	// domain.
+	AssociationConfiguration *PackageAssociationConfiguration
 
 	// Name of the domain that the package is associated with.
 	DomainName *string
@@ -973,6 +1118,10 @@ type DomainPackageDetails struct {
 
 	// The current version of the package.
 	PackageVersion *string
+
+	// A list of package IDs that must be associated with the domain before or with
+	// the package can be associated.
+	PrerequisitePackageIDList []string
 
 	// The relative path of the package on the OpenSearch Service cluster nodes. This
 	// is synonym_path when the package is for synonym files.
@@ -1082,6 +1231,10 @@ type DomainStatus struct {
 
 	// The type of IP addresses supported by the endpoint for the domain.
 	IPAddressType IPAddressType
+
+	// Configuration options for controlling IAM Identity Center integration within a
+	// domain.
+	IdentityCenterOptions *IdentityCenterOptions
 
 	// Log publishing options for the domain.
 	LogPublishingOptions map[string]LogPublishingOption
@@ -1296,6 +1449,117 @@ type Filter struct {
 	noSmithyDocumentSerde
 }
 
+// Configuration settings for IAM Identity Center in an OpenSearch Application.
+type IamIdentityCenterOptions struct {
+
+	// Indicates whether IAM Identity Center is enabled for the OpenSearch Application.
+	Enabled *bool
+
+	// The Amazon Resource Name (ARN) of the domain. See [Identifiers for IAM Entities] in Using Amazon Web Services
+	// Identity and Access Management for more information.
+	//
+	// [Identifiers for IAM Entities]: https://docs.aws.amazon.com/IAM/latest/UserGuide/index.html
+	IamIdentityCenterApplicationArn *string
+
+	// The Amazon Resource Name (ARN) of the domain. See [Identifiers for IAM Entities] in Using Amazon Web Services
+	// Identity and Access Management for more information.
+	//
+	// [Identifiers for IAM Entities]: https://docs.aws.amazon.com/IAM/latest/UserGuide/index.html
+	IamIdentityCenterInstanceArn *string
+
+	// The Amazon Resource Name (ARN) of the IAM role assigned to the IAM Identity
+	// Center application for the OpenSearch Application.
+	IamRoleForIdentityCenterApplicationArn *string
+
+	noSmithyDocumentSerde
+}
+
+// Configuration settings for enabling and managing IAM Identity Center.
+type IamIdentityCenterOptionsInput struct {
+
+	// Specifies whether IAM Identity Center is enabled or disabled.
+	Enabled *bool
+
+	// The Amazon Resource Name (ARN) of the domain. See [Identifiers for IAM Entities] in Using Amazon Web Services
+	// Identity and Access Management for more information.
+	//
+	// [Identifiers for IAM Entities]: https://docs.aws.amazon.com/IAM/latest/UserGuide/index.html
+	IamIdentityCenterInstanceArn *string
+
+	// The ARN of the IAM role associated with the IAM Identity Center application.
+	IamRoleForIdentityCenterApplicationArn *string
+
+	noSmithyDocumentSerde
+}
+
+// Settings container for integrating IAM Identity Center with OpenSearch UI
+// applications, which enables enabling secure user authentication and access
+// control across multiple data sources. This setup supports single sign-on (SSO)
+// through IAM Identity Center, allowing centralized user management.
+type IdentityCenterOptions struct {
+
+	// Indicates whether IAM Identity Center is enabled for the application.
+	EnabledAPIAccess *bool
+
+	// The ARN of the IAM Identity Center application that integrates with Amazon
+	// OpenSearch Service.
+	IdentityCenterApplicationARN *string
+
+	// The Amazon Resource Name (ARN) of the IAM Identity Center instance.
+	IdentityCenterInstanceARN *string
+
+	// The identifier of the IAM Identity Store.
+	IdentityStoreId *string
+
+	// Specifies the attribute that contains the backend role identifier (such as
+	// group name or group ID) in IAM Identity Center.
+	RolesKey RolesKeyIdCOption
+
+	// Specifies the attribute that contains the subject identifier (such as username,
+	// user ID, or email) in IAM Identity Center.
+	SubjectKey SubjectKeyIdCOption
+
+	noSmithyDocumentSerde
+}
+
+// Configuration settings for enabling and managing IAM Identity Center.
+type IdentityCenterOptionsInput struct {
+
+	// Indicates whether IAM Identity Center is enabled for API access in Amazon
+	// OpenSearch Service.
+	EnabledAPIAccess *bool
+
+	// The ARN of the IAM Identity Center instance used to create an OpenSearch UI
+	// application that uses IAM Identity Center for authentication.
+	IdentityCenterInstanceARN *string
+
+	// Specifies the attribute that contains the backend role identifier (such as
+	// group name or group ID) in IAM Identity Center.
+	RolesKey RolesKeyIdCOption
+
+	// Specifies the attribute that contains the subject identifier (such as username,
+	// user ID, or email) in IAM Identity Center.
+	SubjectKey SubjectKeyIdCOption
+
+	noSmithyDocumentSerde
+}
+
+// The status of IAM Identity Center configuration settings for a domain.
+type IdentityCenterOptionsStatus struct {
+
+	// Configuration settings for IAM Identity Center integration.
+	//
+	// This member is required.
+	Options *IdentityCenterOptions
+
+	// The status of IAM Identity Center configuration settings for a domain.
+	//
+	// This member is required.
+	Status *OptionStatus
+
+	noSmithyDocumentSerde
+}
+
 // Describes an inbound cross-cluster connection for Amazon OpenSearch Service.
 // For more information, see [Cross-cluster search for Amazon OpenSearch Service].
 //
@@ -1458,6 +1722,21 @@ type JWTOptionsOutput struct {
 	noSmithyDocumentSerde
 }
 
+// The configuration parameters to enable access to the key store required by the
+// package.
+type KeyStoreAccessOption struct {
+
+	// This indicates whether Key Store access is enabled
+	//
+	// This member is required.
+	KeyStoreAccessEnabled *bool
+
+	// Role ARN to access the KeyStore Key
+	KeyAccessRoleArn *string
+
+	noSmithyDocumentSerde
+}
+
 // Limits for a given instance type and for each of its roles.
 type Limits struct {
 
@@ -1569,6 +1848,34 @@ type NaturalLanguageQueryGenerationOptionsOutput struct {
 	// The desired state of the natural language query generation feature. Valid
 	// values are ENABLED and DISABLED.
 	DesiredState NaturalLanguageQueryGenerationDesiredState
+
+	noSmithyDocumentSerde
+}
+
+// Configuration options for defining the setup of any node type within the
+// cluster.
+type NodeConfig struct {
+
+	// The number of nodes of a specific type within the cluster.
+	Count *int32
+
+	// A boolean value indicating whether a specific node type is active or inactive.
+	Enabled *bool
+
+	// The instance type of a particular node within the cluster.
+	Type OpenSearchPartitionInstanceType
+
+	noSmithyDocumentSerde
+}
+
+// Configuration settings for defining the node type within a cluster.
+type NodeOption struct {
+
+	// Configuration options for defining the setup of any node type.
+	NodeConfig *NodeConfig
+
+	// Defines the type of node, such as coordinating nodes.
+	NodeType NodeOptionsNodeType
 
 	noSmithyDocumentSerde
 }
@@ -1745,8 +2052,48 @@ type OutboundConnectionStatus struct {
 	noSmithyDocumentSerde
 }
 
+// The configuration for associating a package with a domain.
+type PackageAssociationConfiguration struct {
+
+	// The configuration parameters to enable accessing the key store required by the
+	// package.
+	KeyStoreAccessOption *KeyStoreAccessOption
+
+	noSmithyDocumentSerde
+}
+
+// The configuration parameters for a package.
+type PackageConfiguration struct {
+
+	// The configuration requirements for the package.
+	//
+	// This member is required.
+	ConfigurationRequirement RequirementLevel
+
+	// The license requirements for the package.
+	//
+	// This member is required.
+	LicenseRequirement RequirementLevel
+
+	// The relative file path for the license associated with the package.
+	LicenseFilepath *string
+
+	// This indicates whether a B/G deployment is required for updating the
+	// configuration that the plugin is prerequisite for.
+	RequiresRestartForConfigurationUpdate *bool
+
+	noSmithyDocumentSerde
+}
+
 // Basic information about a package.
 type PackageDetails struct {
+
+	//  A list of users who are allowed to view and associate the package. This field
+	// is only visible to the owner of a package.
+	AllowListedUserList []string
+
+	// This represents the available configuration parameters for the package.
+	AvailablePackageConfiguration *PackageConfiguration
 
 	// The package version.
 	AvailablePackageVersion *string
@@ -1771,11 +2118,18 @@ type PackageDetails struct {
 	// User-specified description of the package.
 	PackageDescription *string
 
+	// Encryption options for a package.
+	PackageEncryptionOptions *PackageEncryptionOptions
+
 	// The unique identifier of the package.
 	PackageID *string
 
 	// The user-specified name of the package.
 	PackageName *string
+
+	// The owner of the package who is allowed to create and update a package and add
+	// users to the package scope.
+	PackageOwner *string
 
 	// The current status of the package. The available options are AVAILABLE , COPYING
 	// , COPY_FAILED , VALIDATNG , VALIDATION_FAILED , DELETING , and DELETE_FAILED .
@@ -1783,6 +2137,41 @@ type PackageDetails struct {
 
 	// The type of package.
 	PackageType PackageType
+
+	// Package Vending Options for a package.
+	PackageVendingOptions *PackageVendingOptions
+
+	noSmithyDocumentSerde
+}
+
+// Details of a package that is associated with a domain.
+type PackageDetailsForAssociation struct {
+
+	// Internal ID of the package that you want to associate with a domain.
+	//
+	// This member is required.
+	PackageID *string
+
+	// The configuration parameters for associating the package with a domain.
+	AssociationConfiguration *PackageAssociationConfiguration
+
+	// List of package IDs that must be linked to the domain before or simultaneously
+	// with the package association.
+	PrerequisitePackageIDList []string
+
+	noSmithyDocumentSerde
+}
+
+// Encryption options for a package.
+type PackageEncryptionOptions struct {
+
+	// Whether encryption is enabled for the package.
+	//
+	// This member is required.
+	EncryptionEnabled *bool
+
+	// KMS key ID for encrypting the package.
+	KmsKeyIdentifier *string
 
 	noSmithyDocumentSerde
 }
@@ -1799,6 +2188,19 @@ type PackageSource struct {
 	noSmithyDocumentSerde
 }
 
+// Configuration options for determining whether a package can be made available
+// for use by other users.
+type PackageVendingOptions struct {
+
+	// Indicates whether the package vending feature is enabled, allowing the package
+	// to be used by other users.
+	//
+	// This member is required.
+	VendingEnabled *bool
+
+	noSmithyDocumentSerde
+}
+
 // Details about a package version.
 type PackageVersionHistory struct {
 
@@ -1807,6 +2209,9 @@ type PackageVersionHistory struct {
 
 	// The date and time when the package was created.
 	CreatedAt *time.Time
+
+	// The configuration details for a specific version of a package.
+	PackageConfiguration *PackageConfiguration
 
 	// The package version.
 	PackageVersion *string
@@ -2075,6 +2480,20 @@ type ScheduledAutoTuneDetails struct {
 
 	// The severity of the Auto-Tune action. Valid values are LOW , MEDIUM , and HIGH .
 	Severity ScheduledAutoTuneSeverityType
+
+	noSmithyDocumentSerde
+}
+
+//	Configuration details for a Security Lake data source that can be used for
+//
+// direct queries.
+type SecurityLakeDirectQueryDataSource struct {
+
+	//  The unique identifier of the IAM role that grants OpenSearch Service
+	// permission to access the specified data source.
+	//
+	// This member is required.
+	RoleArn *string
 
 	noSmithyDocumentSerde
 }
@@ -2485,4 +2904,5 @@ type UnknownUnionMember struct {
 	noSmithyDocumentSerde
 }
 
-func (*UnknownUnionMember) isDataSourceType() {}
+func (*UnknownUnionMember) isDataSourceType()            {}
+func (*UnknownUnionMember) isDirectQueryDataSourceType() {}

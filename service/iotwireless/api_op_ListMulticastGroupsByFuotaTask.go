@@ -11,7 +11,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// List all multicast groups associated with a fuota task.
+// List all multicast groups associated with a FUOTA task.
 func (c *Client) ListMulticastGroupsByFuotaTask(ctx context.Context, params *ListMulticastGroupsByFuotaTaskInput, optFns ...func(*Options)) (*ListMulticastGroupsByFuotaTaskOutput, error) {
 	if params == nil {
 		params = &ListMulticastGroupsByFuotaTaskInput{}
@@ -102,6 +102,9 @@ func (c *Client) addOperationListMulticastGroupsByFuotaTaskMiddlewares(stack *mi
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -118,6 +121,9 @@ func (c *Client) addOperationListMulticastGroupsByFuotaTaskMiddlewares(stack *mi
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListMulticastGroupsByFuotaTaskValidationMiddleware(stack); err != nil {
@@ -139,6 +145,18 @@ func (c *Client) addOperationListMulticastGroupsByFuotaTaskMiddlewares(stack *mi
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

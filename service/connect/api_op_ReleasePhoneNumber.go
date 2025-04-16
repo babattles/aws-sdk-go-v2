@@ -20,7 +20,7 @@ import (
 // After releasing a phone number, the phone number enters into a cooldown period
 // for up to 180 days. It cannot be searched for or claimed again until the period
 // has ended. If you accidentally release a phone number, contact Amazon Web
-// Services Support.
+// ServicesSupport.
 //
 // If you plan to claim and release numbers frequently, contact us for a service
 // quota exception. Otherwise, it is possible you will be blocked from claiming and
@@ -120,6 +120,9 @@ func (c *Client) addOperationReleasePhoneNumberMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -136,6 +139,9 @@ func (c *Client) addOperationReleasePhoneNumberMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opReleasePhoneNumberMiddleware(stack, options); err != nil {
@@ -160,6 +166,18 @@ func (c *Client) addOperationReleasePhoneNumberMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

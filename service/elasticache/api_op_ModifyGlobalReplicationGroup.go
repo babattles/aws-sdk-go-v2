@@ -53,6 +53,10 @@ type ModifyGlobalReplicationGroupInput struct {
 	// be compatible with the major engine version used by the Global datastore.
 	CacheParameterGroupName *string
 
+	// Modifies the engine listed in a global replication group message. The options
+	// are redis, memcached or valkey.
+	Engine *string
+
 	// The upgraded version of the cache engine to be run on the clusters in the
 	// Global datastore.
 	EngineVersion *string
@@ -123,6 +127,9 @@ func (c *Client) addOperationModifyGlobalReplicationGroupMiddlewares(stack *midd
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -139,6 +146,9 @@ func (c *Client) addOperationModifyGlobalReplicationGroupMiddlewares(stack *midd
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpModifyGlobalReplicationGroupValidationMiddleware(stack); err != nil {
@@ -160,6 +170,18 @@ func (c *Client) addOperationModifyGlobalReplicationGroupMiddlewares(stack *midd
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

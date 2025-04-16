@@ -149,8 +149,11 @@ type StartTranscriptionJobInput struct {
 	// For a list of supported languages and their associated language codes, refer to
 	// the [Supported languages]table.
 	//
-	// To transcribe speech in Modern Standard Arabic ( ar-SA ), your media file must
-	// be encoded at a sample rate of 16,000 Hz or higher.
+	// To transcribe speech in Modern Standard Arabic ( ar-SA ) in Amazon Web Services
+	// GovCloud (US) (US-West, us-gov-west-1), Amazon Web Services GovCloud (US)
+	// (US-East, us-gov-east-1), Canada (Calgary, ca-west-1) and Africa (Cape Town,
+	// af-south-1), your media file must be encoded at a sample rate of 16,000 Hz or
+	// higher.
 	//
 	// [Supported languages]: https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html
 	LanguageCode types.LanguageCode
@@ -193,8 +196,11 @@ type StartTranscriptionJobInput struct {
 	//
 	// For more information, refer to [Supported languages].
 	//
-	// To transcribe speech in Modern Standard Arabic ( ar-SA ), your media file must
-	// be encoded at a sample rate of 16,000 Hz or higher.
+	// To transcribe speech in Modern Standard Arabic ( ar-SA )in Amazon Web Services
+	// GovCloud (US) (US-West, us-gov-west-1), Amazon Web Services GovCloud (US)
+	// (US-East, us-gov-east-1), in Canada (Calgary) ca-west-1 and Africa (Cape Town)
+	// af-south-1, your media file must be encoded at a sample rate of 16,000 Hz or
+	// higher.
 	//
 	// [Supported languages]: https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html
 	LanguageOptions []types.LanguageCode
@@ -400,6 +406,9 @@ func (c *Client) addOperationStartTranscriptionJobMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -416,6 +425,9 @@ func (c *Client) addOperationStartTranscriptionJobMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpStartTranscriptionJobValidationMiddleware(stack); err != nil {
@@ -437,6 +449,18 @@ func (c *Client) addOperationStartTranscriptionJobMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

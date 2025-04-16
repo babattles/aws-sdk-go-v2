@@ -1,3 +1,155 @@
+# v1.54.3 (2025-04-03)
+
+* No change notes available for this release.
+
+# v1.54.2 (2025-04-02)
+
+* No change notes available for this release.
+
+# v1.54.1 (2025-03-04.2)
+
+* **Bug Fix**: Add assurance test for operation order.
+
+# v1.54.0 (2025-02-27)
+
+* **Feature**: Track credential providers via User-Agent Feature ids
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.53.1 (2025-02-25)
+
+* No change notes available for this release.
+
+# v1.53.0 (2025-02-20)
+
+* **Feature**: Reduce the minimum number of required attack sequence signals from 2 to 1
+
+# v1.52.11 (2025-02-18)
+
+* **Bug Fix**: Bump go version to 1.22
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.52.10 (2025-02-05)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.52.9 (2025-02-04)
+
+* No change notes available for this release.
+
+# v1.52.8 (2025-01-31)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.52.7 (2025-01-30)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.52.6 (2025-01-24)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+* **Dependency Update**: Upgrade to smithy-go v1.22.2.
+
+# v1.52.5 (2025-01-17)
+
+* **Bug Fix**: Fix bug where credentials weren't refreshed during retry loop.
+
+# v1.52.4 (2025-01-15)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.52.3 (2025-01-09)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.52.2 (2024-12-19)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.52.1 (2024-12-12)
+
+* **Documentation**: Improved descriptions for certain APIs.
+
+# v1.52.0 (2024-12-02)
+
+* **Feature**: Add new Multi Domain Correlation findings.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.51.2 (2024-11-18)
+
+* **Dependency Update**: Update to smithy-go v1.22.1.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.51.1 (2024-11-07)
+
+* **Bug Fix**: Adds case-insensitive handling of error message fields in service responses
+
+# v1.51.0 (2024-11-06)
+
+* **Feature**: GuardDuty RDS Protection expands support for Amazon Aurora PostgreSQL Limitless Databases.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.50.1 (2024-10-28)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.50.0 (2024-10-11)
+
+* **Feature**: Added a new field for network connection details.
+
+# v1.49.2 (2024-10-08)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.49.1 (2024-10-07)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.49.0 (2024-10-04)
+
+* **Feature**: Add support for HTTP client metrics.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.48.4 (2024-10-03)
+
+* No change notes available for this release.
+
+# v1.48.3 (2024-09-27)
+
+* No change notes available for this release.
+
+# v1.48.2 (2024-09-25)
+
+* No change notes available for this release.
+
+# v1.48.1 (2024-09-23)
+
+* No change notes available for this release.
+
+# v1.48.0 (2024-09-20)
+
+* **Feature**: Add tracing and metrics support to service clients.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.47.0 (2024-09-18)
+
+* **Feature**: Add `launchType` and `sourceIPs` fields to GuardDuty findings.
+
+# v1.46.1 (2024-09-17)
+
+* **Bug Fix**: **BREAKFIX**: Only generate AccountIDEndpointMode config for services that use it. This is a compiler break, but removes no actual functionality, as no services currently use the account ID in endpoint resolution.
+
+# v1.46.0 (2024-09-11)
+
+* **Feature**: Add support for new statistic types in GetFindingsStatistics.
+
+# v1.45.6 (2024-09-04)
+
+* No change notes available for this release.
+
+# v1.45.5 (2024-09-03)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
 # v1.45.4 (2024-08-15)
 
 * **Dependency Update**: Bump minimum Go version to 1.21.

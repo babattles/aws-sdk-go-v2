@@ -14,6 +14,23 @@ import (
 // Updates a workgroup with the specified configuration settings. You can't update
 // multiple parameters in one request. For example, you can update baseCapacity or
 // port in a single request, but you can't update both in the same request.
+//
+// VPC Block Public Access (BPA) enables you to block resources in VPCs and
+// subnets that you own in a Region from reaching or being reached from the
+// internet through internet gateways and egress-only internet gateways. If a
+// workgroup is in an account with VPC BPA turned on, the following capabilities
+// are blocked:
+//
+//   - Creating a public access workgroup
+//
+//   - Modifying a private workgroup to public
+//
+//   - Adding a subnet with VPC BPA turned on to the workgroup when the workgroup
+//     is public
+//
+// For more information about VPC BPA, see [Block public access to VPCs and subnets] in the Amazon VPC User Guide.
+//
+// [Block public access to VPCs and subnets]: https://docs.aws.amazon.com/vpc/latest/userguide/security-vpc-bpa.html
 func (c *Client) UpdateWorkgroup(ctx context.Context, params *UpdateWorkgroupInput, optFns ...func(*Options)) (*UpdateWorkgroupOutput, error) {
 	if params == nil {
 		params = &UpdateWorkgroupInput{}
@@ -67,6 +84,10 @@ type UpdateWorkgroupInput struct {
 	// 5431-5455 and 8191-8215. The default is 5439.
 	Port *int32
 
+	// An object that represents the price performance target settings for the
+	// workgroup.
+	PricePerformanceTarget *types.PerformanceTarget
+
 	// A value that specifies whether the workgroup can be accessible from a public
 	// network.
 	PubliclyAccessible *bool
@@ -76,6 +97,10 @@ type UpdateWorkgroupInput struct {
 
 	// An array of VPC subnet IDs to associate with the workgroup.
 	SubnetIds []string
+
+	// An optional parameter for the name of the track for the workgroup. If you don't
+	// provide a track name, the workgroup is assigned to the current track.
+	TrackName *string
 
 	noSmithyDocumentSerde
 }
@@ -136,6 +161,9 @@ func (c *Client) addOperationUpdateWorkgroupMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -152,6 +180,9 @@ func (c *Client) addOperationUpdateWorkgroupMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateWorkgroupValidationMiddleware(stack); err != nil {
@@ -173,6 +204,18 @@ func (c *Client) addOperationUpdateWorkgroupMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

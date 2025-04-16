@@ -19,8 +19,8 @@ import (
 //     Contact your account team to be allow-listed to use this value. For more
 //     information, see [Amazon WorkSpaces Core].
 //
-//   - You don't need to specify the PCOIP protocol for Linux bundles because WSP
-//     is the default protocol for those bundles.
+//   - You don't need to specify the PCOIP protocol for Linux bundles because DCV
+//     (formerly WSP) is the default protocol for those bundles.
 //
 //   - User-decoupled WorkSpaces are only supported by Amazon WorkSpaces Core.
 //
@@ -115,6 +115,9 @@ func (c *Client) addOperationCreateWorkspacesMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -131,6 +134,9 @@ func (c *Client) addOperationCreateWorkspacesMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateWorkspacesValidationMiddleware(stack); err != nil {
@@ -152,6 +158,18 @@ func (c *Client) addOperationCreateWorkspacesMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -11,7 +11,6 @@ import (
 	smithytime "github.com/aws/smithy-go/time"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	smithywaiter "github.com/aws/smithy-go/waiter"
-	jmespath "github.com/jmespath/go-jmespath"
 	"time"
 )
 
@@ -67,6 +66,10 @@ type DescribeBotOutput struct {
 
 	// The description of the bot.
 	Description *string
+
+	// Contains the configuration for error logging that specifies where and how bot
+	// errors are recorded, including destinations like CloudWatch Logs.
+	ErrorLogSettings *types.ErrorLogSettings
 
 	// If the botStatus is Failed , this contains a list of reasons that the bot
 	// couldn't be built.
@@ -132,6 +135,9 @@ func (c *Client) addOperationDescribeBotMiddlewares(stack *middleware.Stack, opt
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -148,6 +154,9 @@ func (c *Client) addOperationDescribeBotMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeBotValidationMiddleware(stack); err != nil {
@@ -169,6 +178,18 @@ func (c *Client) addOperationDescribeBotMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -333,73 +354,48 @@ func (w *BotAvailableWaiter) WaitForOutput(ctx context.Context, params *Describe
 func botAvailableStateRetryable(ctx context.Context, input *DescribeBotInput, output *DescribeBotOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("botStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.BotStatus
 		expectedValue := "Available"
-		value, ok := pathValue.(types.BotStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.BotStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, nil
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("botStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.BotStatus
 		expectedValue := "Deleting"
-		value, ok := pathValue.(types.BotStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.BotStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("botStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.BotStatus
 		expectedValue := "Failed"
-		value, ok := pathValue.(types.BotStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.BotStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("botStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.BotStatus
 		expectedValue := "Inactive"
-		value, ok := pathValue.(types.BotStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.BotStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 

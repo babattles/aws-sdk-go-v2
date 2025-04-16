@@ -67,6 +67,9 @@ type GetRepositoryEndpointInput struct {
 	// domain that contains the repository. It does not include dashes or spaces.
 	DomainOwner *string
 
+	// A string that specifies the type of endpoint.
+	EndpointType types.EndpointType
+
 	noSmithyDocumentSerde
 }
 
@@ -124,6 +127,9 @@ func (c *Client) addOperationGetRepositoryEndpointMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -140,6 +146,9 @@ func (c *Client) addOperationGetRepositoryEndpointMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetRepositoryEndpointValidationMiddleware(stack); err != nil {
@@ -161,6 +170,18 @@ func (c *Client) addOperationGetRepositoryEndpointMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

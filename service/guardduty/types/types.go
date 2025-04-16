@@ -22,6 +22,21 @@ type AccessControlList struct {
 }
 
 // Contains information about the access keys.
+type AccessKey struct {
+
+	// Principal ID of the user.
+	PrincipalId *string
+
+	// Name of the user.
+	UserName *string
+
+	// Type of the user.
+	UserType *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about the access keys.
 type AccessKeyDetails struct {
 
 	// The access key ID of the user.
@@ -35,6 +50,20 @@ type AccessKeyDetails struct {
 
 	// The type of the user.
 	UserType *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about the account.
+type Account struct {
+
+	// ID of the member's Amazon Web Services account
+	//
+	// This member is required.
+	Uid *string
+
+	// Name of the member's Amazon Web Services account.
+	Name *string
 
 	noSmithyDocumentSerde
 }
@@ -81,6 +110,22 @@ type AccountLevelPermissions struct {
 	noSmithyDocumentSerde
 }
 
+// Represents a list of map of accounts with the number of findings associated
+// with each account.
+type AccountStatistics struct {
+
+	// The ID of the Amazon Web Services account.
+	AccountId *string
+
+	// The timestamp at which the finding for this account was last generated.
+	LastGeneratedAt *time.Time
+
+	// The total number of findings associated with an account.
+	TotalFindings *int32
+
+	noSmithyDocumentSerde
+}
+
 // Contains information about actions.
 type Action struct {
 
@@ -115,6 +160,23 @@ type Action struct {
 
 	// Information about RDS_LOGIN_ATTEMPT action described in this finding.
 	RdsLoginAttemptAction *RdsLoginAttemptAction
+
+	noSmithyDocumentSerde
+}
+
+// Information about the actors involved in an attack sequence.
+type Actor struct {
+
+	// ID of the threat actor.
+	//
+	// This member is required.
+	Id *string
+
+	// Contains information about the user session where the activity initiated.
+	Session *Session
+
+	// Contains information about the user credentials used by the threat actor.
+	User *User
 
 	noSmithyDocumentSerde
 }
@@ -205,6 +267,23 @@ type AnomalyUnusual struct {
 	// The behavior of the anomalous activity that caused GuardDuty to generate the
 	// finding.
 	Behavior map[string]map[string]AnomalyObject
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about the Autonomous System (AS) associated with the
+// network endpoints involved in an attack sequence.
+type AutonomousSystem struct {
+
+	// Name associated with the Autonomous System (AS).
+	//
+	// This member is required.
+	Name *string
+
+	// The unique number that identifies the Autonomous System (AS).
+	//
+	// This member is required.
+	Number *int32
 
 	noSmithyDocumentSerde
 }
@@ -736,6 +815,29 @@ type DataSourcesFreeTrial struct {
 	noSmithyDocumentSerde
 }
 
+// Represents list a map of dates with a count of total findings generated on each
+// date.
+type DateStatistics struct {
+
+	// The timestamp when the total findings count is observed.
+	//
+	// For example, Date would look like "2024-09-05T17:00:00-07:00" whereas
+	// LastGeneratedAt would look like 2024-09-05T17:12:29-07:00".
+	Date *time.Time
+
+	// The timestamp at which the last finding in the findings count, was generated.
+	LastGeneratedAt *time.Time
+
+	// The severity of the findings generated on each date.
+	Severity *float64
+
+	// The total number of findings that were generated per severity level on each
+	// date.
+	TotalFindings *int32
+
+	noSmithyDocumentSerde
+}
+
 // Contains information on the server side encryption method used in the S3
 // bucket. See [S3 Server-Side Encryption]for more information.
 //
@@ -797,6 +899,9 @@ type Detection struct {
 	// The details about the anomalous activity that caused GuardDuty to generate the
 	// finding.
 	Anomaly *Anomaly
+
+	// The details about the attack sequence.
+	Sequence *Sequence
 
 	noSmithyDocumentSerde
 }
@@ -972,6 +1077,71 @@ type EbsVolumesResult struct {
 	noSmithyDocumentSerde
 }
 
+// Details about the potentially impacted Amazon EC2 instance resource.
+type Ec2Instance struct {
+
+	// The availability zone of the Amazon EC2 instance. For more information, see [Availability zones] in
+	// the Amazon EC2 User Guide.
+	//
+	// [Availability zones]: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-availability-zones
+	AvailabilityZone *string
+
+	// The ID of the network interface.
+	Ec2NetworkInterfaceUids []string
+
+	// Contains information about the EC2 instance profile.
+	IamInstanceProfile *IamInstanceProfile
+
+	// The image description of the Amazon EC2 instance.
+	ImageDescription *string
+
+	// The state of the Amazon EC2 instance. For more information, see [Amazon EC2 instance state changes] in the Amazon
+	// EC2 User Guide.
+	//
+	// [Amazon EC2 instance state changes]: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-lifecycle.html
+	InstanceState *string
+
+	// Type of the Amazon EC2 instance.
+	InstanceType *string
+
+	// The Amazon Resource Name (ARN) of the Amazon Web Services Outpost. This shows
+	// applicable Amazon Web Services Outposts instances.
+	OutpostArn *string
+
+	// The platform of the Amazon EC2 instance.
+	Platform *string
+
+	// The product code of the Amazon EC2 instance.
+	ProductCodes []ProductCode
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about the elastic network interface of the Amazon EC2
+// instance.
+type Ec2NetworkInterface struct {
+
+	// A list of IPv6 addresses for the Amazon EC2 instance.
+	Ipv6Addresses []string
+
+	// Other private IP address information of the Amazon EC2 instance.
+	PrivateIpAddresses []PrivateIpAddressDetails
+
+	// The public IP address of the Amazon EC2 instance.
+	PublicIp *string
+
+	// The security groups associated with the Amazon EC2 instance.
+	SecurityGroups []SecurityGroup
+
+	// The subnet ID of the Amazon EC2 instance.
+	SubNetId *string
+
+	// The VPC ID of the Amazon EC2 instance.
+	VpcId *string
+
+	noSmithyDocumentSerde
+}
+
 // Contains information about the details of the ECS Cluster.
 type EcsClusterDetails struct {
 
@@ -1016,6 +1186,9 @@ type EcsTaskDetails struct {
 
 	// The name of the task group that's associated with the task.
 	Group *string
+
+	// A capacity on which the task is running. For example, Fargate and EC2 .
+	LaunchType *string
 
 	// The Unix timestamp for the time when the task started.
 	StartedAt *time.Time
@@ -1196,6 +1369,9 @@ type Finding struct {
 	// This member is required.
 	UpdatedAt *string
 
+	// Amazon Resource Name (ARN) associated with the attack sequence finding.
+	AssociatedAttackSequenceArn *string
+
 	// The confidence score for the finding.
 	Confidence *float64
 
@@ -1227,8 +1403,52 @@ type FindingCriteria struct {
 // Contains information about finding statistics.
 type FindingStatistics struct {
 
-	// Represents a map of severity to count statistics for a set of findings.
+	// Represents a list of map of severity to count statistics for a set of findings.
+	//
+	// Deprecated: This parameter is deprecated. Please set GroupBy to 'SEVERITY' to
+	// return GroupedBySeverity instead.
 	CountBySeverity map[string]int32
+
+	// Represents a list of map of accounts with a findings count associated with each
+	// account.
+	GroupedByAccount []AccountStatistics
+
+	// Represents a list of map of dates with a count of total findings generated on
+	// each date per severity level.
+	GroupedByDate []DateStatistics
+
+	// Represents a list of map of finding types with a count of total findings
+	// generated for each type.
+	//
+	// Based on the orderBy parameter, this request returns either the most occurring
+	// finding types or the least occurring finding types. If the orderBy parameter is
+	// ASC , this will represent the least occurring finding types in your account;
+	// otherwise, this will represent the most occurring finding types. The default
+	// value of orderBy is DESC .
+	GroupedByFindingType []FindingTypeStatistics
+
+	// Represents a list of map of top resources with a count of total findings.
+	GroupedByResource []ResourceStatistics
+
+	// Represents a list of map of total findings for each severity level.
+	GroupedBySeverity []SeverityStatistics
+
+	noSmithyDocumentSerde
+}
+
+// Information about each finding type associated with the groupedByFindingType
+// statistics.
+type FindingTypeStatistics struct {
+
+	// Name of the finding type.
+	FindingType *string
+
+	// The timestamp at which this finding type was last generated in your environment.
+	LastGeneratedAt *time.Time
+
+	// The total number of findings associated with generated for each distinct
+	// finding type.
+	TotalFindings *int32
 
 	noSmithyDocumentSerde
 }
@@ -1314,6 +1534,30 @@ type ImpersonatedUser struct {
 
 	// Information about the username that was being impersonated.
 	Username *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about the indicators that include a set of signals
+// observed in an attack sequence.
+type Indicator struct {
+
+	// Specific indicator keys observed in the attack sequence. For description of the
+	// valid values for key, see [Attack sequence finding details]in the Amazon GuardDuty User Guide.
+	//
+	// [Attack sequence finding details]: https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_findings-summary.html#guardduty-extended-threat-detection-attack-sequence-finding-details
+	//
+	// This member is required.
+	Key IndicatorType
+
+	// Title describing the indicator.
+	Title *string
+
+	// Values associated with each indicator key. For example, if the indicator key is
+	// SUSPICIOUS_NETWORK , then the value will be the name of the network. If the
+	// indicator key is ATTACK_TACTIC , then the value will be one of the MITRE
+	// tactics.
+	Values []string
 
 	noSmithyDocumentSerde
 }
@@ -1786,7 +2030,7 @@ type MalwareProtectionPlanStatusReason struct {
 	Code *string
 
 	// Issue message that specifies the reason. For information about potential
-	// troubleshooting steps, see [Troubleshooting Malware Protection for S3 status issues]in the GuardDuty User Guide.
+	// troubleshooting steps, see [Troubleshooting Malware Protection for S3 status issues]in the Amazon GuardDuty User Guide.
 	//
 	// [Troubleshooting Malware Protection for S3 status issues]: https://docs.aws.amazon.com/guardduty/latest/ug/troubleshoot-s3-malware-protection-status-errors.html
 	Message *string
@@ -1963,6 +2207,17 @@ type MemberFeaturesConfigurationResult struct {
 	noSmithyDocumentSerde
 }
 
+// Contains information about the network connection.
+type NetworkConnection struct {
+
+	// The direction in which the network traffic is flowing.
+	//
+	// This member is required.
+	Direction NetworkDirection
+
+	noSmithyDocumentSerde
+}
+
 // Contains information about the NETWORK_CONNECTION action described in the
 // finding.
 type NetworkConnectionAction struct {
@@ -1976,6 +2231,9 @@ type NetworkConnectionAction struct {
 	// The local IP information of the connection.
 	LocalIpDetails *LocalIpDetails
 
+	// The EC2 instance's local elastic network interface utilized for the connection.
+	LocalNetworkInterface *string
+
 	// The local port information of the connection.
 	LocalPortDetails *LocalPortDetails
 
@@ -1987,6 +2245,62 @@ type NetworkConnectionAction struct {
 
 	// The remote port information of the connection.
 	RemotePortDetails *RemotePortDetails
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about network endpoints that were observed in the attack
+// sequence.
+type NetworkEndpoint struct {
+
+	// The ID of the network endpoint.
+	//
+	// This member is required.
+	Id *string
+
+	// The Autonomous System (AS) of the network endpoint.
+	AutonomousSystem *AutonomousSystem
+
+	// Information about the network connection.
+	Connection *NetworkConnection
+
+	// The domain information for the network endpoint.
+	Domain *string
+
+	// The IP address associated with the network endpoint.
+	Ip *string
+
+	// Information about the location of the network endpoint.
+	Location *NetworkGeoLocation
+
+	// The port number associated with the network endpoint.
+	Port *int32
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about network endpoint location.
+type NetworkGeoLocation struct {
+
+	// The name of the city.
+	//
+	// This member is required.
+	City *string
+
+	// The name of the country.
+	//
+	// This member is required.
+	Country *string
+
+	// The latitude information of the endpoint location.
+	//
+	// This member is required.
+	Latitude *float64
+
+	// The longitude information of the endpoint location.
+	//
+	// This member is required.
+	Longitude *float64
 
 	noSmithyDocumentSerde
 }
@@ -2057,6 +2371,9 @@ type Organization struct {
 
 // A list of additional configurations which will be configured for the
 // organization.
+//
+// Additional configuration applies to only GuardDuty Runtime Monitoring
+// protection plan.
 type OrganizationAdditionalConfiguration struct {
 
 	// The status of the additional configuration that will be configured for the
@@ -2080,7 +2397,8 @@ type OrganizationAdditionalConfiguration struct {
 	AutoEnable OrgFeatureStatus
 
 	// The name of the additional configuration that will be configured for the
-	// organization.
+	// organization. These values are applicable to only Runtime Monitoring protection
+	// plan.
 	Name OrgFeatureAdditionalConfiguration
 
 	noSmithyDocumentSerde
@@ -2111,7 +2429,8 @@ type OrganizationAdditionalConfigurationResult struct {
 	AutoEnable OrgFeatureStatus
 
 	// The name of the additional configuration that is configured for the member
-	// accounts within the organization.
+	// accounts within the organization. These values are applicable to only Runtime
+	// Monitoring protection plan.
 	Name OrgFeatureAdditionalConfiguration
 
 	noSmithyDocumentSerde
@@ -2559,6 +2878,33 @@ type PublicAccess struct {
 	noSmithyDocumentSerde
 }
 
+// Describes public access policies that apply to the Amazon S3 bucket.
+//
+// For information about each of the following settings, see [Blocking public access to your Amazon S3 storage] in the Amazon S3
+// User Guide.
+//
+// [Blocking public access to your Amazon S3 storage]: https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-control-block-public-access.html
+type PublicAccessConfiguration struct {
+
+	// Indicates whether or not there is a setting that allows public access to the
+	// Amazon S3 buckets through access control lists (ACLs).
+	PublicAclAccess PublicAccessStatus
+
+	// Indicates whether or not there is a setting that ignores all public access
+	// control lists (ACLs) on the Amazon S3 bucket and the objects that it contains.
+	PublicAclIgnoreBehavior PublicAclIgnoreBehavior
+
+	// Indicates whether or not there is a setting that restricts access to the bucket
+	// with specified policies.
+	PublicBucketRestrictBehavior PublicBucketRestrictBehavior
+
+	// Indicates whether or not there is a setting that allows public access to the
+	// Amazon S3 bucket policy.
+	PublicPolicyAccess PublicAccessStatus
+
+	noSmithyDocumentSerde
+}
+
 // Contains information about the resource type RDSDBInstance involved in a
 // GuardDuty finding.
 type RdsDbInstanceDetails struct {
@@ -2581,7 +2927,7 @@ type RdsDbInstanceDetails struct {
 	// The version of the database engine that was involved in the finding.
 	EngineVersion *string
 
-	// Instance tag key-value pairs associated with the database instance ID.
+	// Information about the tag key-value pairs.
 	Tags []Tag
 
 	noSmithyDocumentSerde
@@ -2605,6 +2951,34 @@ type RdsDbUserDetails struct {
 
 	// The user name used in the anomalous login attempt.
 	User *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about the resource type RDSLimitlessDB that is involved in
+// a GuardDuty finding.
+type RdsLimitlessDbDetails struct {
+
+	// The name of the database cluster that is a part of the Limitless Database.
+	DbClusterIdentifier *string
+
+	// The Amazon Resource Name (ARN) that identifies the DB shard group.
+	DbShardGroupArn *string
+
+	// The name associated with the Limitless DB shard group.
+	DbShardGroupIdentifier *string
+
+	// The resource identifier of the DB shard group within the Limitless Database.
+	DbShardGroupResourceId *string
+
+	// The database engine of the database instance involved in the finding.
+	Engine *string
+
+	// The version of the database engine.
+	EngineVersion *string
+
+	// Information about the tag key-value pair.
+	Tags []Tag
 
 	noSmithyDocumentSerde
 }
@@ -2712,6 +3086,10 @@ type Resource struct {
 	// attempt was made.
 	RdsDbUserDetails *RdsDbUserDetails
 
+	// Contains information about the RDS Limitless database that was involved in a
+	// GuardDuty finding.
+	RdsLimitlessDbDetails *RdsLimitlessDbDetails
+
 	// The type of Amazon Web Services resource.
 	ResourceType *string
 
@@ -2721,11 +3099,121 @@ type Resource struct {
 	noSmithyDocumentSerde
 }
 
+// Contains information about the Amazon Web Services resource that is associated
+// with the activity that prompted GuardDuty to generate a finding.
+type ResourceData struct {
+
+	// Contains information about the IAM access key details of a user that involved
+	// in the GuardDuty finding.
+	AccessKey *AccessKey
+
+	// Contains information about the Amazon EC2 instance.
+	Ec2Instance *Ec2Instance
+
+	// Contains information about the elastic network interface of the Amazon EC2
+	// instance.
+	Ec2NetworkInterface *Ec2NetworkInterface
+
+	// Contains information about the Amazon S3 bucket.
+	S3Bucket *S3Bucket
+
+	// Contains information about the Amazon S3 object.
+	S3Object *S3Object
+
+	noSmithyDocumentSerde
+}
+
 // Represents the resources that were scanned in the scan entry.
 type ResourceDetails struct {
 
 	// Instance ARN that was scanned in the scan entry.
 	InstanceArn *string
+
+	noSmithyDocumentSerde
+}
+
+// Information about each resource type associated with the groupedByResource
+// statistics.
+type ResourceStatistics struct {
+
+	// The ID of the Amazon Web Services account.
+	AccountId *string
+
+	// The timestamp at which the statistics for this resource was last generated.
+	LastGeneratedAt *time.Time
+
+	// ID associated with each resource. The following list provides the mapping of
+	// the resource type and resource ID.
+	//
+	// Mapping of resource and resource ID
+	//
+	//   - AccessKey - resource.accessKeyDetails.accessKeyId
+	//
+	//   - Container - resource.containerDetails.id
+	//
+	//   - ECSCluster - resource.ecsClusterDetails.name
+	//
+	//   - EKSCluster - resource.eksClusterDetails.name
+	//
+	//   - Instance - resource.instanceDetails.instanceId
+	//
+	//   - KubernetesCluster -
+	//   resource.kubernetesDetails.kubernetesWorkloadDetails.name
+	//
+	//   - Lambda - resource.lambdaDetails.functionName
+	//
+	//   - RDSDBInstance - resource.rdsDbInstanceDetails.dbInstanceIdentifier
+	//
+	//   - S3Bucket - resource.s3BucketDetails.name
+	//
+	//   - S3Object - resource.s3BucketDetails.name
+	ResourceId *string
+
+	// The type of resource.
+	ResourceType *string
+
+	// The total number of findings associated with this resource.
+	TotalFindings *int32
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about the Amazon Web Services resource that is associated
+// with the GuardDuty finding.
+type ResourceV2 struct {
+
+	// The type of the Amazon Web Services resource.
+	//
+	// This member is required.
+	ResourceType FindingResourceType
+
+	// The unique identifier of the resource.
+	//
+	// This member is required.
+	Uid *string
+
+	// The Amazon Web Services account ID to which the resource belongs.
+	AccountId *string
+
+	// The cloud partition within the Amazon Web Services Region to which the resource
+	// belongs.
+	CloudPartition *string
+
+	// Contains information about the Amazon Web Services resource associated with the
+	// activity that prompted GuardDuty to generate a finding.
+	Data *ResourceData
+
+	// The name of the resource.
+	Name *string
+
+	// The Amazon Web Services Region where the resource belongs.
+	Region *string
+
+	// The Amazon Web Services service of the resource.
+	Service *string
+
+	// Contains information about the tags associated with the resource.
+	Tags []Tag
 
 	noSmithyDocumentSerde
 }
@@ -2832,6 +3320,51 @@ type RuntimeDetails struct {
 	noSmithyDocumentSerde
 }
 
+// Contains information about the Amazon S3 bucket policies and encryption.
+type S3Bucket struct {
+
+	// Contains information about the public access policies that apply to the Amazon
+	// S3 bucket at the account level.
+	AccountPublicAccess *PublicAccessConfiguration
+
+	// Contains information about public access policies that apply to the Amazon S3
+	// bucket.
+	BucketPublicAccess *PublicAccessConfiguration
+
+	// The timestamp at which the Amazon S3 bucket was created.
+	CreatedAt *time.Time
+
+	// Describes the effective permissions on this S3 bucket, after factoring all the
+	// attached policies.
+	EffectivePermission *string
+
+	// The Amazon Resource Name (ARN) of the encryption key that is used to encrypt
+	// the Amazon S3 bucket and its objects.
+	EncryptionKeyArn *string
+
+	// The type of encryption used for the Amazon S3 buckets and its objects. For more
+	// information, see [Protecting data with server-side encryption]in the Amazon S3 User Guide.
+	//
+	// [Protecting data with server-side encryption]: https://docs.aws.amazon.com/AmazonS3/latest/userguide/serv-side-encryption.html
+	EncryptionType *string
+
+	// The owner ID of the associated S3Amazon S3bucket.
+	OwnerId *string
+
+	// Indicates whether or not the public read access is allowed for an Amazon S3
+	// bucket.
+	PublicReadAccess PublicAccessStatus
+
+	// Indicates whether or not the public write access is allowed for an Amazon S3
+	// bucket.
+	PublicWriteAccess PublicAccessStatus
+
+	// Represents a list of Amazon S3 object identifiers.
+	S3ObjectUids []string
+
+	noSmithyDocumentSerde
+}
+
 // Contains information on the S3 bucket.
 type S3BucketDetail struct {
 
@@ -2888,6 +3421,22 @@ type S3LogsConfigurationResult struct {
 	noSmithyDocumentSerde
 }
 
+// Contains information about the Amazon S3 object.
+type S3Object struct {
+
+	// The entity tag is a hash of the Amazon S3 object. The ETag reflects changes
+	// only to the contents of an object, and not its metadata.
+	ETag *string
+
+	// The key of the Amazon S3 object.
+	Key *string
+
+	// The version Id of the Amazon S3 object.
+	VersionId *string
+
+	noSmithyDocumentSerde
+}
+
 // Information about the S3 object that was scanned
 type S3ObjectDetail struct {
 
@@ -2910,21 +3459,32 @@ type S3ObjectDetail struct {
 	noSmithyDocumentSerde
 }
 
-// Contains information about a malware scan.
+// Contains information about malware scans associated with GuardDuty Malware
+// Protection for EC2.
 type Scan struct {
 
 	// The ID for the account that belongs to the scan.
 	AccountId *string
 
 	// The unique detector ID of the administrator account that the request is
-	// associated with. Note that this value will be the same as the one used for
-	// DetectorId if the account is an administrator.
+	// associated with. If the account is an administrator, the AdminDetectorId will
+	// be the same as the one used for DetectorId .
+	//
+	// To find the detectorId in the current Region, see the Settings page in the
+	// GuardDuty console, or run the [ListDetectors]API.
+	//
+	// [ListDetectors]: https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html
 	AdminDetectorId *string
 
 	// List of volumes that were attached to the original instance to be scanned.
 	AttachedVolumes []VolumeDetail
 
-	// The unique ID of the detector that the request is associated with.
+	// The unique ID of the detector that is associated with the request.
+	//
+	// To find the detectorId in the current Region, see the Settings page in the
+	// GuardDuty console, or run the [ListDetectors]API.
+	//
+	// [ListDetectors]: https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html
 	DetectorId *string
 
 	// Represents the reason for FAILED scan status.
@@ -3130,6 +3690,40 @@ type SecurityGroup struct {
 	noSmithyDocumentSerde
 }
 
+// Contains information about the GuardDuty attack sequence finding.
+type Sequence struct {
+
+	// Description of the attack sequence.
+	//
+	// This member is required.
+	Description *string
+
+	// Contains information about the signals involved in the attack sequence.
+	//
+	// This member is required.
+	Signals []Signal
+
+	// Unique identifier of the attack sequence.
+	//
+	// This member is required.
+	Uid *string
+
+	// Contains information about the actors involved in the attack sequence.
+	Actors []Actor
+
+	// Contains information about the network endpoints that were used in the attack
+	// sequence.
+	Endpoints []NetworkEndpoint
+
+	// Contains information about the resources involved in the attack sequence.
+	Resources []ResourceV2
+
+	// Contains information about the indicators observed in the attack sequence.
+	SequenceIndicators []Indicator
+
+	noSmithyDocumentSerde
+}
+
 // Contains additional information about the generated finding.
 type Service struct {
 
@@ -3200,6 +3794,141 @@ type ServiceAdditionalInfo struct {
 	noSmithyDocumentSerde
 }
 
+// Contains information about the authenticated session.
+type Session struct {
+
+	// The timestamp for when the session was created.
+	//
+	// In Amazon Web Services CloudTrail, you can find this value as
+	// userIdentity.sessionContext.attributes.creationDate .
+	CreatedTime *time.Time
+
+	// Identifier of the session issuer.
+	//
+	// In Amazon Web Services CloudTrail, you can find this value as
+	// userIdentity.sessionContext.sessionIssuer.arn .
+	Issuer *string
+
+	// Indicates whether or not multi-factor authencation (MFA) was used during
+	// authentication.
+	//
+	// In Amazon Web Services CloudTrail, you can find this value as
+	// userIdentity.sessionContext.attributes.mfaAuthenticated .
+	MfaStatus MfaStatus
+
+	// The unique identifier of the session.
+	Uid *string
+
+	noSmithyDocumentSerde
+}
+
+// Information about severity level for each finding type.
+type SeverityStatistics struct {
+
+	// The timestamp at which a finding type for a specific severity was last
+	// generated.
+	LastGeneratedAt *time.Time
+
+	// The severity level associated with each finding type.
+	Severity *float64
+
+	// The total number of findings associated with this severity.
+	TotalFindings *int32
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about the signals involved in the attack sequence.
+type Signal struct {
+
+	// The number of times this signal was observed.
+	//
+	// This member is required.
+	Count *int32
+
+	// The timestamp when the first finding or activity related to this signal was
+	// observed.
+	//
+	// This member is required.
+	CreatedAt *time.Time
+
+	// The timestamp when the first finding or activity related to this signal was
+	// observed.
+	//
+	// This member is required.
+	FirstSeenAt *time.Time
+
+	// The timestamp when the last finding or activity related to this signal was
+	// observed.
+	//
+	// This member is required.
+	LastSeenAt *time.Time
+
+	// The name of the signal. For example, when signal type is FINDING , the signal
+	// name is the name of the finding.
+	//
+	// This member is required.
+	Name *string
+
+	// The type of the signal used to identify an attack sequence.
+	//
+	// Signals can be GuardDuty findings or activities observed in data sources that
+	// GuardDuty monitors. For more information, see [Foundational data sources]in the Amazon GuardDuty User
+	// Guide.
+	//
+	// A signal type can be one of the valid values listed in this API. Here are the
+	// related descriptions:
+	//
+	//   - FINDING - Individually generated GuardDuty finding.
+	//
+	//   - CLOUD_TRAIL - Activity observed from CloudTrail logs
+	//
+	//   - S3_DATA_EVENTS - Activity observed from CloudTrail data events for S3.
+	//   Activities associated with this type will show up only when you have enabled
+	//   GuardDuty S3 Protection feature in your account. For more information about S3
+	//   Protection and steps to enable it, see [S3 Protection]in the Amazon GuardDuty User Guide.
+	//
+	// [S3 Protection]: https://docs.aws.amazon.com/guardduty/latest/ug/s3-protection.html
+	// [Foundational data sources]: https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_data-sources.html
+	//
+	// This member is required.
+	Type SignalType
+
+	// The unique identifier of the signal.
+	//
+	// This member is required.
+	Uid *string
+
+	// The timestamp when this signal was last observed.
+	//
+	// This member is required.
+	UpdatedAt *time.Time
+
+	// Information about the IDs of the threat actors involved in the signal.
+	ActorIds []string
+
+	// The description of the signal.
+	Description *string
+
+	// Information about the endpoint IDs associated with this signal.
+	EndpointIds []string
+
+	// Information about the unique identifiers of the resources involved in the
+	// signal.
+	ResourceUids []string
+
+	// The severity associated with the signal. For more information about severity,
+	// see [Findings severity levels]in the Amazon GuardDuty User Guide.
+	//
+	// [Findings severity levels]: https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_findings-severity.html
+	Severity *float64
+
+	// Contains information about the indicators associated with the signals.
+	SignalIndicators []Indicator
+
+	noSmithyDocumentSerde
+}
+
 // Contains information about the criteria used for sorting findings.
 type SortCriteria struct {
 
@@ -3212,13 +3941,13 @@ type SortCriteria struct {
 	noSmithyDocumentSerde
 }
 
-// Contains information about a tag associated with the EC2 instance.
+// Contains information about a tag key-value pair.
 type Tag struct {
 
-	// The EC2 instance tag key.
+	// Describes the key associated with the tag.
 	Key *string
 
-	// The EC2 instance tag value.
+	// Describes the value associated with the tag key.
 	Value *string
 
 	noSmithyDocumentSerde
@@ -3476,6 +4205,33 @@ type UsageTopAccountsResult struct {
 	//
 	// RDS_LOGIN_EVENTS is currently not supported with topAccountsByFeature .
 	Feature UsageFeature
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about the user involved in the attack sequence.
+type User struct {
+
+	// The name of the user.
+	//
+	// This member is required.
+	Name *string
+
+	// The type of the user.
+	//
+	// This member is required.
+	Type *string
+
+	// The unique identifier of the user.
+	//
+	// This member is required.
+	Uid *string
+
+	// Contains information about the Amazon Web Services account.
+	Account *Account
+
+	// The credentials of the user ID.
+	CredentialUid *string
 
 	noSmithyDocumentSerde
 }

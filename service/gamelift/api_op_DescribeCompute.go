@@ -11,28 +11,38 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-//	This operation has been expanded to use with the Amazon GameLift containers
+// Retrieves properties for a specific compute resource in an Amazon GameLift
+// fleet. You can list all computes in a fleet by calling [ListCompute].
 //
-// feature, which is currently in public preview.
+// # Request options
 //
-// Retrieves properties for a compute resource in an Amazon GameLift fleet. To get
-// a list of all computes in a fleet, call ListCompute.
+// Provide the fleet ID and compute name. The compute name varies depending on the
+// type of fleet.
 //
-// To request information on a specific compute, provide the fleet ID and compute
-// name.
+//   - For a compute in a managed EC2 fleet, provide an instance ID. Each instance
+//     in the fleet is a compute.
+//
+//   - For a compute in a managed container fleet, provide a compute name. In a
+//     container fleet, each game server container group on a fleet instance is
+//     assigned a compute name.
+//
+//   - For a compute in an Anywhere fleet, provide a registered compute name.
+//     Anywhere fleet computes are created when you register a hosting resource with
+//     the fleet.
+//
+// # Results
 //
 // If successful, this operation returns details for the requested compute
 // resource. Depending on the fleet's compute type, the result includes the
 // following information:
 //
-//   - For EC2 fleets, this operation returns information about the EC2 instance.
+//   - For a managed EC2 fleet, this operation returns information about the EC2
+//     instance.
 //
-//   - For ANYWHERE fleets, this operation returns information about the registered
-//     compute.
+//   - For an Anywhere fleet, this operation returns information about the
+//     registered compute.
 //
-//   - For CONTAINER fleets, this operation returns information about the container
-//     that's registered as a compute, and the instance it's running on. The compute
-//     name is the container name.
+// [ListCompute]: https://docs.aws.amazon.com/gamelift/latest/apireference/API_ListCompute.html
 func (c *Client) DescribeCompute(ctx context.Context, params *DescribeComputeInput, optFns ...func(*Options)) (*DescribeComputeOutput, error) {
 	if params == nil {
 		params = &DescribeComputeInput{}
@@ -50,11 +60,11 @@ func (c *Client) DescribeCompute(ctx context.Context, params *DescribeComputeInp
 
 type DescribeComputeInput struct {
 
-	// The unique identifier of the compute resource to retrieve properties for. For
-	// an Anywhere fleet compute, use the registered compute name. For an EC2 fleet
-	// instance, use the instance ID. For a container fleet, use the compute name (for
-	// example, a123b456c789012d3e4567f8a901b23c/1a234b56-7cd8-9e0f-a1b2-c34d567ef8a9 )
-	// or the compute ARN.
+	// The unique identifier of the compute resource to retrieve properties for. For a
+	// managed container fleet or Anywhere fleet, use a compute name. For an EC2 fleet,
+	// use an instance ID. To retrieve a fleet's compute identifiers, call [ListCompute].
+	//
+	// [ListCompute]: https://docs.aws.amazon.com/gamelift/latest/apireference/API_ListCompute.html
 	//
 	// This member is required.
 	ComputeName *string
@@ -122,6 +132,9 @@ func (c *Client) addOperationDescribeComputeMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -138,6 +151,9 @@ func (c *Client) addOperationDescribeComputeMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeComputeValidationMiddleware(stack); err != nil {
@@ -159,6 +175,18 @@ func (c *Client) addOperationDescribeComputeMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

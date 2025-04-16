@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-// Gets information about an FAQ list.
+// Gets information about a FAQ.
 func (c *Client) DescribeFaq(ctx context.Context, params *DescribeFaqInput, optFns ...func(*Options)) (*DescribeFaqOutput, error) {
 	if params == nil {
 		params = &DescribeFaqInput{}
@@ -55,7 +55,7 @@ type DescribeFaqOutput struct {
 	// the FAQ failed.
 	ErrorMessage *string
 
-	// The file format used by the input files for the FAQ.
+	// The file format used for the FAQ file.
 	FileFormat types.FaqFileFormat
 
 	// The identifier of the FAQ.
@@ -74,8 +74,8 @@ type DescribeFaqOutput struct {
 	// The name that you gave the FAQ when it was created.
 	Name *string
 
-	// The Amazon Resource Name (ARN) of the role that provides access to the S3
-	// bucket containing the input files for the FAQ.
+	// The Amazon Resource Name (ARN) of the IAM role that provides access to the S3
+	// bucket containing the FAQ file.
 	RoleArn *string
 
 	// Information required to find a specific file in an Amazon S3 bucket.
@@ -136,6 +136,9 @@ func (c *Client) addOperationDescribeFaqMiddlewares(stack *middleware.Stack, opt
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -152,6 +155,9 @@ func (c *Client) addOperationDescribeFaqMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeFaqValidationMiddleware(stack); err != nil {
@@ -173,6 +179,18 @@ func (c *Client) addOperationDescribeFaqMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

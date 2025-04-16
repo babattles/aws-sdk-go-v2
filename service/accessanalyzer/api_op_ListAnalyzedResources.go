@@ -12,8 +12,7 @@ import (
 )
 
 // Retrieves a list of resources of the specified type that have been analyzed by
-// the specified external access analyzer. This action is not supported for unused
-// access analyzers.
+// the specified analyzer.
 func (c *Client) ListAnalyzedResources(ctx context.Context, params *ListAnalyzedResourcesInput, optFns ...func(*Options)) (*ListAnalyzedResourcesOutput, error) {
 	if params == nil {
 		params = &ListAnalyzedResourcesInput{}
@@ -111,6 +110,9 @@ func (c *Client) addOperationListAnalyzedResourcesMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -127,6 +129,9 @@ func (c *Client) addOperationListAnalyzedResourcesMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListAnalyzedResourcesValidationMiddleware(stack); err != nil {
@@ -148,6 +153,18 @@ func (c *Client) addOperationListAnalyzedResourcesMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

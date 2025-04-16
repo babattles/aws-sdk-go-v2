@@ -10,8 +10,8 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Deletes a group so that all users and sub groups that belong to the group can
-// no longer access documents only available to that group.
+// Deletes a group so that all users that belong to the group can no longer access
+// documents only available to that group.
 //
 // For example, after deleting the group "Summer Interns", all interns who
 // belonged to that group no longer see intern-only documents in their search
@@ -134,6 +134,9 @@ func (c *Client) addOperationDeletePrincipalMappingMiddlewares(stack *middleware
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -150,6 +153,9 @@ func (c *Client) addOperationDeletePrincipalMappingMiddlewares(stack *middleware
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeletePrincipalMappingValidationMiddleware(stack); err != nil {
@@ -171,6 +177,18 @@ func (c *Client) addOperationDeletePrincipalMappingMiddlewares(stack *middleware
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

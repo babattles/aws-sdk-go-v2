@@ -10,7 +10,18 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Deletes the specified Amazon Cognito user pool.
+// Deletes a user pool. After you delete a user pool, users can no longer sign in
+// to any associated applications.
+//
+// When you delete a user pool, it's no longer visible or operational in your
+// Amazon Web Services account. Amazon Cognito retains deleted user pools in an
+// inactive state for 14 days, then begins a cleanup process that fully removes
+// them from Amazon Web Services systems. In case of accidental deletion, contact
+// Amazon Web ServicesSupport within 14 days for restoration assistance.
+//
+// Amazon Cognito begins full deletion of all resources from deleted user pools
+// after 14 days. In the case of large user pools, the cleanup process might take
+// significant additional time before all user data is permanently deleted.
 func (c *Client) DeleteUserPool(ctx context.Context, params *DeleteUserPoolInput, optFns ...func(*Options)) (*DeleteUserPoolOutput, error) {
 	if params == nil {
 		params = &DeleteUserPoolInput{}
@@ -29,7 +40,7 @@ func (c *Client) DeleteUserPool(ctx context.Context, params *DeleteUserPoolInput
 // Represents the request to delete a user pool.
 type DeleteUserPoolInput struct {
 
-	// The user pool ID for the user pool you want to delete.
+	// The ID of the user pool that you want to delete.
 	//
 	// This member is required.
 	UserPoolId *string
@@ -87,6 +98,9 @@ func (c *Client) addOperationDeleteUserPoolMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -103,6 +117,9 @@ func (c *Client) addOperationDeleteUserPoolMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteUserPoolValidationMiddleware(stack); err != nil {
@@ -124,6 +141,18 @@ func (c *Client) addOperationDeleteUserPoolMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

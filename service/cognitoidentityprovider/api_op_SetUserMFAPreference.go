@@ -49,16 +49,27 @@ func (c *Client) SetUserMFAPreference(ctx context.Context, params *SetUserMFAPre
 
 type SetUserMFAPreferenceInput struct {
 
-	// A valid access token that Amazon Cognito issued to the user whose MFA
-	// preference you want to set.
+	// A valid access token that Amazon Cognito issued to the currently signed-in
+	// user. Must include a scope claim for aws.cognito.signin.user.admin .
 	//
 	// This member is required.
 	AccessToken *string
 
-	// The SMS text message multi-factor authentication (MFA) settings.
+	// User preferences for email message MFA. Activates or deactivates email MFA and
+	// sets it as the preferred MFA method when multiple methods are available. To
+	// activate this setting, your user pool must be in the [Essentials tier]or higher.
+	//
+	// [Essentials tier]: https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-essentials.html
+	EmailMfaSettings *types.EmailMfaSettingsType
+
+	// User preferences for SMS message MFA. Activates or deactivates SMS MFA and sets
+	// it as the preferred MFA method when multiple methods are available.
 	SMSMfaSettings *types.SMSMfaSettingsType
 
-	// The time-based one-time password (TOTP) software token MFA settings.
+	// User preferences for time-based one-time password (TOTP) MFA. Activates or
+	// deactivates TOTP MFA and sets it as the preferred MFA method when multiple
+	// methods are available. Users must register a TOTP authenticator before they set
+	// this as their preferred MFA method.
 	SoftwareTokenMfaSettings *types.SoftwareTokenMfaSettingsType
 
 	noSmithyDocumentSerde
@@ -111,6 +122,9 @@ func (c *Client) addOperationSetUserMFAPreferenceMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -127,6 +141,9 @@ func (c *Client) addOperationSetUserMFAPreferenceMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpSetUserMFAPreferenceValidationMiddleware(stack); err != nil {
@@ -148,6 +165,18 @@ func (c *Client) addOperationSetUserMFAPreferenceMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

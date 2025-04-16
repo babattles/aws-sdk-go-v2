@@ -89,6 +89,13 @@ type ActionDeclaration struct {
 	// This member is required.
 	Name *string
 
+	// The shell commands to run with your compute action in CodePipeline. All
+	// commands are supported except multi-line formats. While CodeBuild logs and
+	// permissions are used, you do not need to create any resources in CodeBuild.
+	//
+	// Using compute time for this action will incur separate charges in CodeBuild.
+	Commands []string
+
 	// The action's configuration. These are key-value pairs that specify input values
 	// for an action. For more information, see [Action Structure Requirements in CodePipeline]. For the list of configuration
 	// properties for the CloudFormation action type in CodePipeline, see [Configuration Properties Reference]in the
@@ -107,6 +114,9 @@ type ActionDeclaration struct {
 	// [Configuration Properties Reference]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-action-reference.html
 	Configuration map[string]string
 
+	// The environment variables for the action.
+	EnvironmentVariables []EnvironmentVariable
+
 	// The name or ID of the artifact consumed by the action, such as a test or build
 	// artifact.
 	InputArtifacts []InputArtifact
@@ -118,6 +128,10 @@ type ActionDeclaration struct {
 	// The name or ID of the result of the action declaration, such as a test or build
 	// artifact.
 	OutputArtifacts []OutputArtifact
+
+	// The list of variables that are to be exported from the compute action. This is
+	// specifically CodeBuild environment variables as used for that action.
+	OutputVariables []string
 
 	// The action declaration's Amazon Web Services Region, such as us-east-1.
 	Region *string
@@ -164,6 +178,9 @@ type ActionExecution struct {
 
 	// The ARN of the user who last changed the pipeline.
 	LastUpdatedBy *string
+
+	// The Amazon Resource Name (ARN) of the log stream for the action compute.
+	LogStreamARN *string
 
 	// A percentage of completeness of the action as it runs.
 	PercentComplete *int32
@@ -306,6 +323,9 @@ type ActionExecutionResult struct {
 	// The deepest external link to the external resource (for example, a repository
 	// URL or deployment endpoint) that is used when running the action.
 	ExternalExecutionUrl *string
+
+	// The Amazon Resource Name (ARN) of the log stream for the action compute.
+	LogStreamARN *string
 
 	noSmithyDocumentSerde
 }
@@ -502,6 +522,8 @@ type ActionTypeId struct {
 	//   - Invoke
 	//
 	//   - Approval
+	//
+	//   - Compute
 	//
 	// This member is required.
 	Category ActionCategory
@@ -833,7 +855,11 @@ type AWSSessionCredentials struct {
 	noSmithyDocumentSerde
 }
 
-// The conditions for making checks for entry to a stage.
+// The conditions for making checks for entry to a stage. For more information
+// about conditions, see [Stage conditions]and [How do stage conditions work?].
+//
+// [Stage conditions]: https://docs.aws.amazon.com/codepipeline/latest/userguide/stage-conditions.html
+// [How do stage conditions work?]: https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts-how-it-works-conditions.html
 type BeforeEntryConditions struct {
 
 	// The conditions that are configured as entry conditions.
@@ -861,7 +887,12 @@ type BlockerDeclaration struct {
 }
 
 // The condition for the stage. A condition is made up of the rules and the result
-// for the condition.
+// for the condition. For more information about conditions, see [Stage conditions]and [How do stage conditions work?].. For more
+// information about rules, see the [CodePipeline rule reference].
+//
+// [Stage conditions]: https://docs.aws.amazon.com/codepipeline/latest/userguide/stage-conditions.html
+// [How do stage conditions work?]: https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts-how-it-works-conditions.html
+// [CodePipeline rule reference]: https://docs.aws.amazon.com/codepipeline/latest/userguide/rule-reference.html
 type Condition struct {
 
 	// The action to be done when the condition is met. For example, rolling back an
@@ -950,6 +981,22 @@ type EncryptionKey struct {
 	noSmithyDocumentSerde
 }
 
+// The environment variables for the action.
+type EnvironmentVariable struct {
+
+	// The environment variable name in the key-value pair.
+	//
+	// This member is required.
+	Name *string
+
+	// The environment variable value in the key-value pair.
+	//
+	// This member is required.
+	Value *string
+
+	noSmithyDocumentSerde
+}
+
 // Represents information about an error in CodePipeline.
 type ErrorDetails struct {
 
@@ -1010,15 +1057,26 @@ type ExecutorConfiguration struct {
 }
 
 // The configuration that specifies the result, such as rollback, to occur upon
-// stage failure.
+// stage failure. For more information about conditions, see [Stage conditions]and [How do stage conditions work?].
+//
+// [Stage conditions]: https://docs.aws.amazon.com/codepipeline/latest/userguide/stage-conditions.html
+// [How do stage conditions work?]: https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts-how-it-works-conditions.html
 type FailureConditions struct {
 
-	// The conditions that are configured as failure conditions.
+	// The conditions that are configured as failure conditions. For more information
+	// about conditions, see [Stage conditions]and [How do stage conditions work?].
+	//
+	// [Stage conditions]: https://docs.aws.amazon.com/codepipeline/latest/userguide/stage-conditions.html
+	// [How do stage conditions work?]: https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts-how-it-works-conditions.html
 	Conditions []Condition
 
 	// The specified result for when the failure conditions are met, such as rolling
 	// back the stage.
 	Result Result
+
+	// The retry configuration specifies automatic retry for a failed stage, along
+	// with the configured retry mode.
+	RetryConfiguration *RetryConfiguration
 
 	noSmithyDocumentSerde
 }
@@ -1100,14 +1158,22 @@ type GitFilePathFilterCriteria struct {
 
 // The event criteria for the pull request trigger configuration, such as the
 // lists of branches or file paths to include and exclude.
+//
+// The following are valid values for the events for this filter:
+//
+//   - CLOSED
+//
+//   - OPEN
+//
+//   - UPDATED
 type GitPullRequestFilter struct {
 
 	// The field that specifies to filter on branches for the pull request trigger
 	// configuration.
 	Branches *GitBranchFilterCriteria
 
-	// The field that specifies which pull request events to filter on (opened,
-	// updated, closed) for the trigger configuration.
+	// The field that specifies which pull request events to filter on (OPEN, UPDATED,
+	// CLOSED) for the trigger configuration.
 	Events []GitPullRequestEventType
 
 	// The field that specifies to filter on file paths for the pull request trigger
@@ -1350,6 +1416,10 @@ type OutputArtifact struct {
 	//
 	// This member is required.
 	Name *string
+
+	// The files that you want to associate with the output artifact that will be
+	// exported from the compute action.
+	Files []string
 
 	noSmithyDocumentSerde
 }
@@ -1744,6 +1814,37 @@ type ResolvedPipelineVariable struct {
 	noSmithyDocumentSerde
 }
 
+// The retry configuration specifies automatic retry for a failed stage, along
+// with the configured retry mode.
+type RetryConfiguration struct {
+
+	// The method that you want to configure for automatic stage retry on stage
+	// failure. You can specify to retry only failed action in the stage or all actions
+	// in the stage.
+	RetryMode StageRetryMode
+
+	noSmithyDocumentSerde
+}
+
+// The details of a specific automatic retry on stage failure, including the
+// attempt number and trigger.
+type RetryStageMetadata struct {
+
+	// The number of attempts for a specific stage with automatic retry on stage
+	// failure. One attempt is allowed for automatic stage retry on failure.
+	AutoStageRetryAttempt *int32
+
+	// The latest trigger for a specific stage where manual or automatic retries have
+	// been made upon stage failure.
+	LatestRetryTrigger RetryTrigger
+
+	// The number of attempts for a specific stage where manual retries have been made
+	// upon stage failure.
+	ManualStageRetryAttempt *int32
+
+	noSmithyDocumentSerde
+}
+
 // Represents information about a rule configuration property.
 type RuleConfigurationProperty struct {
 
@@ -1791,10 +1892,15 @@ type RuleConfigurationProperty struct {
 // Represents information about the rule to be created for an associated
 // condition. An example would be creating a new rule for an entry condition, such
 // as a rule that checks for a test result before allowing the run to enter the
-// deployment stage.
+// deployment stage. For more information about conditions, see [Stage conditions]and [How do stage conditions work?]. For more
+// information about rules, see the [CodePipeline rule reference].
+//
+// [Stage conditions]: https://docs.aws.amazon.com/codepipeline/latest/userguide/stage-conditions.html
+// [How do stage conditions work?]: https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts-how-it-works-conditions.html
+// [CodePipeline rule reference]: https://docs.aws.amazon.com/codepipeline/latest/userguide/rule-reference.html
 type RuleDeclaration struct {
 
-	// The name of the rule that is created for the condition, such as CheckAllResults.
+	// The name of the rule that is created for the condition, such as VariableCheck .
 	//
 	// This member is required.
 	Name *string
@@ -1804,6 +1910,13 @@ type RuleDeclaration struct {
 	//
 	// This member is required.
 	RuleTypeId *RuleTypeId
+
+	// The shell commands to run with your commands rule in CodePipeline. All commands
+	// are supported except multi-line formats. While CodeBuild logs and permissions
+	// are used, you do not need to create any resources in CodeBuild.
+	//
+	// Using compute time for this action will incur separate charges in CodeBuild.
+	Commands []string
 
 	// The action configuration fields for the rule.
 	Configuration map[string]string
@@ -1939,7 +2052,11 @@ type RuleExecutionInput struct {
 	RoleArn *string
 
 	// The ID for the rule type, which is made up of the combined values for category,
-	// owner, provider, and version.
+	// owner, provider, and version. For more information about conditions, see [Stage conditions]. For
+	// more information about rules, see the [CodePipeline rule reference].
+	//
+	// [Stage conditions]: https://docs.aws.amazon.com/codepipeline/latest/userguide/stage-conditions.html
+	// [CodePipeline rule reference]: https://docs.aws.amazon.com/codepipeline/latest/userguide/rule-reference.html
 	RuleTypeId *RuleTypeId
 
 	noSmithyDocumentSerde
@@ -2047,25 +2164,23 @@ type RuleType struct {
 }
 
 // The ID for the rule type, which is made up of the combined values for category,
-// owner, provider, and version.
+// owner, provider, and version. For more information about conditions, see [Stage conditions]. For
+// more information about rules, see the [CodePipeline rule reference].
+//
+// [Stage conditions]: https://docs.aws.amazon.com/codepipeline/latest/userguide/stage-conditions.html
+// [CodePipeline rule reference]: https://docs.aws.amazon.com/codepipeline/latest/userguide/rule-reference.html
 type RuleTypeId struct {
 
 	// A category defines what kind of rule can be run in the stage, and constrains
-	// the provider type for the rule. Valid categories are limited to one of the
-	// following values.
-	//
-	//   - INVOKE
-	//
-	//   - Approval
-	//
-	//   - Rule
+	// the provider type for the rule. The valid category is Rule .
 	//
 	// This member is required.
 	Category RuleCategory
 
-	// The provider of the service being called by the rule. Valid providers are
-	// determined by the rulecategory. For example, a managed rule in the Rule category
-	// type has an owner of AWS, which would be specified as AWS .
+	// The rule provider, such as the DeploymentWindow rule. For a list of rule
+	// provider names, see the rules listed in the [CodePipeline rule reference].
+	//
+	// [CodePipeline rule reference]: https://docs.aws.amazon.com/codepipeline/latest/userguide/rule-reference.html
 	//
 	// This member is required.
 	Provider *string
@@ -2308,6 +2423,10 @@ type StageState struct {
 	// The state of the success conditions for a stage.
 	OnSuccessConditionState *StageConditionState
 
+	// he details of a specific automatic retry on stage failure, including the
+	// attempt number and trigger.
+	RetryStageMetadata *RetryStageMetadata
+
 	// The name of the stage.
 	StageName *string
 
@@ -2334,7 +2453,11 @@ type SucceededInStageFilter struct {
 	noSmithyDocumentSerde
 }
 
-// The conditions for making checks that, if met, succeed a stage.
+// The conditions for making checks that, if met, succeed a stage. For more
+// information about conditions, see [Stage conditions]and [How do stage conditions work?].
+//
+// [Stage conditions]: https://docs.aws.amazon.com/codepipeline/latest/userguide/stage-conditions.html
+// [How do stage conditions work?]: https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts-how-it-works-conditions.html
 type SuccessConditions struct {
 
 	// The conditions that are success conditions.
@@ -2465,6 +2588,16 @@ type WebhookAuthConfiguration struct {
 
 	// The property used to configure GitHub authentication. For GITHUB_HMAC, only the
 	// SecretToken property must be set.
+	//
+	// When creating CodePipeline webhooks, do not use your own credentials or reuse
+	// the same secret token across multiple webhooks. For optimal security, generate a
+	// unique secret token for each webhook you create. The secret token is an
+	// arbitrary string that you provide, which GitHub uses to compute and sign the
+	// webhook payloads sent to CodePipeline, for protecting the integrity and
+	// authenticity of the webhook payloads. Using your own credentials or reusing the
+	// same token across multiple webhooks can lead to security vulnerabilities.
+	//
+	// If a secret token was provided, it will be redacted in the response.
 	SecretToken *string
 
 	noSmithyDocumentSerde
@@ -2474,6 +2607,16 @@ type WebhookAuthConfiguration struct {
 type WebhookDefinition struct {
 
 	// Supported options are GITHUB_HMAC, IP, and UNAUTHENTICATED.
+	//
+	// When creating CodePipeline webhooks, do not use your own credentials or reuse
+	// the same secret token across multiple webhooks. For optimal security, generate a
+	// unique secret token for each webhook you create. The secret token is an
+	// arbitrary string that you provide, which GitHub uses to compute and sign the
+	// webhook payloads sent to CodePipeline, for protecting the integrity and
+	// authenticity of the webhook payloads. Using your own credentials or reusing the
+	// same token across multiple webhooks can lead to security vulnerabilities.
+	//
+	// If a secret token was provided, it will be redacted in the response.
 	//
 	//   - For information about the authentication scheme implemented by GITHUB_HMAC,
 	//   see [Securing your webhooks]on the GitHub Developer website.

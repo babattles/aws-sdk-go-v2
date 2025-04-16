@@ -76,8 +76,9 @@ type ApiCachingBehavior string
 
 // Enum values for ApiCachingBehavior
 const (
-	ApiCachingBehaviorFullRequestCaching ApiCachingBehavior = "FULL_REQUEST_CACHING"
-	ApiCachingBehaviorPerResolverCaching ApiCachingBehavior = "PER_RESOLVER_CACHING"
+	ApiCachingBehaviorFullRequestCaching    ApiCachingBehavior = "FULL_REQUEST_CACHING"
+	ApiCachingBehaviorPerResolverCaching    ApiCachingBehavior = "PER_RESOLVER_CACHING"
+	ApiCachingBehaviorOperationLevelCaching ApiCachingBehavior = "OPERATION_LEVEL_CACHING"
 )
 
 // Values returns all known values for ApiCachingBehavior. Note that this can be
@@ -88,6 +89,7 @@ func (ApiCachingBehavior) Values() []ApiCachingBehavior {
 	return []ApiCachingBehavior{
 		"FULL_REQUEST_CACHING",
 		"PER_RESOLVER_CACHING",
+		"OPERATION_LEVEL_CACHING",
 	}
 }
 
@@ -306,6 +308,7 @@ const (
 	DataSourceTypeRelationalDatabase      DataSourceType = "RELATIONAL_DATABASE"
 	DataSourceTypeAmazonOpensearchService DataSourceType = "AMAZON_OPENSEARCH_SERVICE"
 	DataSourceTypeAmazonEventbridge       DataSourceType = "AMAZON_EVENTBRIDGE"
+	DataSourceTypeAmazonBedrockRuntime    DataSourceType = "AMAZON_BEDROCK_RUNTIME"
 )
 
 // Values returns all known values for DataSourceType. Note that this can be
@@ -322,6 +325,7 @@ func (DataSourceType) Values() []DataSourceType {
 		"RELATIONAL_DATABASE",
 		"AMAZON_OPENSEARCH_SERVICE",
 		"AMAZON_EVENTBRIDGE",
+		"AMAZON_BEDROCK_RUNTIME",
 	}
 }
 
@@ -344,6 +348,31 @@ func (DefaultAction) Values() []DefaultAction {
 	}
 }
 
+type EventLogLevel string
+
+// Enum values for EventLogLevel
+const (
+	EventLogLevelNone  EventLogLevel = "NONE"
+	EventLogLevelError EventLogLevel = "ERROR"
+	EventLogLevelAll   EventLogLevel = "ALL"
+	EventLogLevelInfo  EventLogLevel = "INFO"
+	EventLogLevelDebug EventLogLevel = "DEBUG"
+)
+
+// Values returns all known values for EventLogLevel. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (EventLogLevel) Values() []EventLogLevel {
+	return []EventLogLevel{
+		"NONE",
+		"ERROR",
+		"ALL",
+		"INFO",
+		"DEBUG",
+	}
+}
+
 type FieldLogLevel string
 
 // Enum values for FieldLogLevel
@@ -351,6 +380,8 @@ const (
 	FieldLogLevelNone  FieldLogLevel = "NONE"
 	FieldLogLevelError FieldLogLevel = "ERROR"
 	FieldLogLevelAll   FieldLogLevel = "ALL"
+	FieldLogLevelInfo  FieldLogLevel = "INFO"
+	FieldLogLevelDebug FieldLogLevel = "DEBUG"
 )
 
 // Values returns all known values for FieldLogLevel. Note that this can be
@@ -362,6 +393,8 @@ func (FieldLogLevel) Values() []FieldLogLevel {
 		"NONE",
 		"ERROR",
 		"ALL",
+		"INFO",
+		"DEBUG",
 	}
 }
 

@@ -20,7 +20,7 @@ import (
 // you don't specify opted out numbers or filters, the output includes information
 // for all opted out destination numbers in your opt-out list.
 //
-// If you specify an opted out number that isn't valid, an error is returned.
+// If you specify an opted out number that isn't valid, an exception is returned.
 func (c *Client) DescribeOptedOutNumbers(ctx context.Context, params *DescribeOptedOutNumbersInput, optFns ...func(*Options)) (*DescribeOptedOutNumbersOutput, error) {
 	if params == nil {
 		params = &DescribeOptedOutNumbersInput{}
@@ -41,6 +41,9 @@ type DescribeOptedOutNumbersInput struct {
 	// The OptOutListName or OptOutListArn of the OptOutList. You can use DescribeOptOutLists to find the
 	// values for OptOutListName and OptOutListArn.
 	//
+	// If you are using a shared AWS End User Messaging SMS and Voice resource then
+	// you must use the full Amazon Resource Name(ARN).
+	//
 	// This member is required.
 	OptOutListName *string
 
@@ -55,6 +58,8 @@ type DescribeOptedOutNumbersInput struct {
 	NextToken *string
 
 	// An array of phone numbers to search for in the OptOutList.
+	//
+	// If you specify an opted out number that isn't valid, an exception is returned.
 	OptedOutNumbers []string
 
 	noSmithyDocumentSerde
@@ -125,6 +130,9 @@ func (c *Client) addOperationDescribeOptedOutNumbersMiddlewares(stack *middlewar
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -141,6 +149,9 @@ func (c *Client) addOperationDescribeOptedOutNumbersMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeOptedOutNumbersValidationMiddleware(stack); err != nil {
@@ -162,6 +173,18 @@ func (c *Client) addOperationDescribeOptedOutNumbersMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

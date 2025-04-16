@@ -37,8 +37,10 @@ type TerminateJobInput struct {
 	JobId *string
 
 	// A message to attach to the job that explains the reason for canceling it. This
-	// message is returned by future DescribeJobsoperations on the job. This message is also
-	// recorded in the Batch activity logs.
+	// message is returned by future DescribeJobsoperations on the job. It is also recorded in the
+	// Batch activity logs.
+	//
+	// This parameter has as limit of 1024 characters.
 	//
 	// This member is required.
 	Reason *string
@@ -96,6 +98,9 @@ func (c *Client) addOperationTerminateJobMiddlewares(stack *middleware.Stack, op
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -112,6 +117,9 @@ func (c *Client) addOperationTerminateJobMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpTerminateJobValidationMiddleware(stack); err != nil {
@@ -133,6 +141,18 @@ func (c *Client) addOperationTerminateJobMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

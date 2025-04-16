@@ -32,7 +32,12 @@ func (c *Client) GetCoverageStatistics(ctx context.Context, params *GetCoverageS
 
 type GetCoverageStatisticsInput struct {
 
-	// The unique ID of the GuardDuty detector associated to the coverage statistics.
+	// The unique ID of the GuardDuty detector.
+	//
+	// To find the detectorId in the current Region, see the Settings page in the
+	// GuardDuty console, or run the [ListDetectors]API.
+	//
+	// [ListDetectors]: https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html
 	//
 	// This member is required.
 	DetectorId *string
@@ -42,7 +47,7 @@ type GetCoverageStatisticsInput struct {
 	// This member is required.
 	StatisticsType []types.CoverageStatisticsType
 
-	// Represents the criteria used to filter the coverage statistics
+	// Represents the criteria used to filter the coverage statistics.
 	FilterCriteria *types.CoverageFilterCriteria
 
 	noSmithyDocumentSerde
@@ -102,6 +107,9 @@ func (c *Client) addOperationGetCoverageStatisticsMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -118,6 +126,9 @@ func (c *Client) addOperationGetCoverageStatisticsMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetCoverageStatisticsValidationMiddleware(stack); err != nil {
@@ -139,6 +150,18 @@ func (c *Client) addOperationGetCoverageStatisticsMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

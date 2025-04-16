@@ -45,8 +45,8 @@ func (c *Client) CreateServiceNetworkVpcAssociation(ctx context.Context, params 
 
 type CreateServiceNetworkVpcAssociationInput struct {
 
-	// The ID or Amazon Resource Name (ARN) of the service network. You must use the
-	// ARN when the resources specified in the operation are in different accounts.
+	// The ID or ARN of the service network. You must use an ARN if the resources are
+	// in different accounts.
 	//
 	// This member is required.
 	ServiceNetworkIdentifier *string
@@ -142,6 +142,9 @@ func (c *Client) addOperationCreateServiceNetworkVpcAssociationMiddlewares(stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -158,6 +161,9 @@ func (c *Client) addOperationCreateServiceNetworkVpcAssociationMiddlewares(stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateServiceNetworkVpcAssociationMiddleware(stack, options); err != nil {
@@ -182,6 +188,18 @@ func (c *Client) addOperationCreateServiceNetworkVpcAssociationMiddlewares(stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

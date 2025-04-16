@@ -11,10 +11,10 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// For Redis OSS engine version 6.0 onwards: Creates a Redis OSS user group. For
-// more information, see [Using Role Based Access Control (RBAC)]
+// For Valkey engine version 7.2 onwards and Redis OSS 6.0 to 7.1: Creates a user
+// group. For more information, see [Using Role Based Access Control (RBAC)]
 //
-// [Using Role Based Access Control (RBAC)]: http://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Clusters.RBAC.html
+// [Using Role Based Access Control (RBAC)]: http://docs.aws.amazon.com/AmazonElastiCache/latest/dg/Clusters.RBAC.html
 func (c *Client) CreateUserGroup(ctx context.Context, params *CreateUserGroupInput, optFns ...func(*Options)) (*CreateUserGroupOutput, error) {
 	if params == nil {
 		params = &CreateUserGroupInput{}
@@ -32,7 +32,7 @@ func (c *Client) CreateUserGroup(ctx context.Context, params *CreateUserGroupInp
 
 type CreateUserGroupInput struct {
 
-	// The current supported value is Redis user.
+	// Sets the engine listed in a user group. The options are valkey or redis.
 	//
 	// This member is required.
 	Engine *string
@@ -44,7 +44,7 @@ type CreateUserGroupInput struct {
 
 	// A list of tags to be added to this resource. A tag is a key-value pair. A tag
 	// key must be accompanied by a tag value, although null is accepted. Available for
-	// Redis OSS only.
+	// Valkey and Redis OSS only.
 	Tags []types.Tag
 
 	// The list of user IDs that belong to the user group.
@@ -58,7 +58,7 @@ type CreateUserGroupOutput struct {
 	// The Amazon Resource Name (ARN) of the user group.
 	ARN *string
 
-	// The current supported value is Redis user.
+	// The options are valkey or redis.
 	Engine *string
 
 	// The minimum engine version required, which is Redis OSS 6.0
@@ -71,7 +71,7 @@ type CreateUserGroupOutput struct {
 	ReplicationGroups []string
 
 	// Indicates which serverless caches the specified user group is associated with.
-	// Available for Redis OSS and Serverless Memcached only.
+	// Available for Valkey, Redis OSS and Serverless Memcached only.
 	ServerlessCaches []string
 
 	// Indicates user group status. Can be "creating", "active", "modifying",
@@ -133,6 +133,9 @@ func (c *Client) addOperationCreateUserGroupMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -149,6 +152,9 @@ func (c *Client) addOperationCreateUserGroupMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateUserGroupValidationMiddleware(stack); err != nil {
@@ -170,6 +176,18 @@ func (c *Client) addOperationCreateUserGroupMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

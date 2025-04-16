@@ -32,7 +32,8 @@ type DescribeDataProvidersInput struct {
 
 	// Filters applied to the data providers described in the form of key-value pairs.
 	//
-	// Valid filter names: data-provider-identifier
+	// Valid filter names and values: data-provider-identifier, data provider arn or
+	// name
 	Filters []types.Filter
 
 	// Specifies the unique pagination token that makes it possible to display the
@@ -117,6 +118,9 @@ func (c *Client) addOperationDescribeDataProvidersMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -133,6 +137,9 @@ func (c *Client) addOperationDescribeDataProvidersMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeDataProvidersValidationMiddleware(stack); err != nil {
@@ -154,6 +161,18 @@ func (c *Client) addOperationDescribeDataProvidersMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

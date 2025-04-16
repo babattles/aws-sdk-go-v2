@@ -11,9 +11,8 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Lists the service networks owned by the caller account or shared with the
-// caller account. Also includes the account ID in the ARN to show which account
-// owns the service network.
+// Lists the service networks owned by or shared with this account. The account ID
+// in the ARN shows which account owns the service network.
 func (c *Client) ListServiceNetworks(ctx context.Context, params *ListServiceNetworksInput, optFns ...func(*Options)) (*ListServiceNetworksOutput, error) {
 	if params == nil {
 		params = &ListServiceNetworksInput{}
@@ -100,6 +99,9 @@ func (c *Client) addOperationListServiceNetworksMiddlewares(stack *middleware.St
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -118,6 +120,9 @@ func (c *Client) addOperationListServiceNetworksMiddlewares(stack *middleware.St
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListServiceNetworks(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -134,6 +139,18 @@ func (c *Client) addOperationListServiceNetworksMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

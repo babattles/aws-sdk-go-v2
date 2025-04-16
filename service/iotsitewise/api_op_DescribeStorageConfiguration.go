@@ -51,6 +51,10 @@ type DescribeStorageConfigurationOutput struct {
 	// This member is required.
 	StorageType types.StorageType
 
+	// Describes the configuration for ingesting NULL and NaN data. By default the
+	// feature is allowed. The feature is disallowed if the value is true .
+	DisallowIngestNullNaN *bool
+
 	// Contains the storage configuration for time series (data streams) that aren't
 	// associated with asset properties. The disassociatedDataStorage can be one of
 	// the following values:
@@ -136,6 +140,9 @@ func (c *Client) addOperationDescribeStorageConfigurationMiddlewares(stack *midd
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -152,6 +159,9 @@ func (c *Client) addOperationDescribeStorageConfigurationMiddlewares(stack *midd
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addEndpointPrefix_opDescribeStorageConfigurationMiddleware(stack); err != nil {
@@ -173,6 +183,18 @@ func (c *Client) addOperationDescribeStorageConfigurationMiddlewares(stack *midd
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

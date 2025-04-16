@@ -12,7 +12,14 @@ import (
 )
 
 // GetEntitlements retrieves entitlement values for a given product. The results
-// can be filtered based on customer identifier or product dimensions.
+// can be filtered based on customer identifier, AWS account ID, or product
+// dimensions.
+//
+// The CustomerIdentifier parameter is on path for deprecation. Use
+// CustomerAWSAccountID instead.
+//
+// These parameters are mutually exclusive. You can't specify both
+// CustomerIdentifier and CustomerAWSAccountID in the same request.
 func (c *Client) GetEntitlements(ctx context.Context, params *GetEntitlementsInput, optFns ...func(*Options)) (*GetEntitlementsOutput, error) {
 	if params == nil {
 		params = &GetEntitlementsInput{}
@@ -43,6 +50,9 @@ type GetEntitlementsInput struct {
 	// dimension. Filters are described as keys mapped to a lists of values. Filtered
 	// requests are unioned for each value in the value list, and then intersected for
 	// each filter key.
+	//
+	// CustomerIdentifier and CustomerAWSAccountID are mutually exclusive. You can't
+	// specify both in the same request.
 	Filter map[string][]string
 
 	// The maximum number of items to retrieve from the GetEntitlements operation. For
@@ -118,6 +128,9 @@ func (c *Client) addOperationGetEntitlementsMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -134,6 +147,9 @@ func (c *Client) addOperationGetEntitlementsMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetEntitlementsValidationMiddleware(stack); err != nil {
@@ -155,6 +171,18 @@ func (c *Client) addOperationGetEntitlementsMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

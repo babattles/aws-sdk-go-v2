@@ -16,7 +16,7 @@ import (
 // Administrator accounts can update findings for their account and their member
 // accounts. Member accounts can update findings for their account.
 //
-// Updates from BatchUpdateFindings do not affect the value of UpdatedAt for a
+// Updates from BatchUpdateFindings don't affect the value of UpdatedAt for a
 // finding.
 //
 // Administrator and member accounts can use BatchUpdateFindings to update the
@@ -199,6 +199,9 @@ func (c *Client) addOperationBatchUpdateFindingsMiddlewares(stack *middleware.St
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -215,6 +218,9 @@ func (c *Client) addOperationBatchUpdateFindingsMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpBatchUpdateFindingsValidationMiddleware(stack); err != nil {
@@ -236,6 +242,18 @@ func (c *Client) addOperationBatchUpdateFindingsMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

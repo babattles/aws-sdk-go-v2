@@ -8,10 +8,31 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/bedrockruntime/types"
 )
 
+func ExampleAsyncInvokeOutputDataConfig_outputUsage() {
+	var union types.AsyncInvokeOutputDataConfig
+	// type switches can be used to check the union value
+	switch v := union.(type) {
+	case *types.AsyncInvokeOutputDataConfigMemberS3OutputDataConfig:
+		_ = v.Value // Value is types.AsyncInvokeS3OutputDataConfig
+
+	case *types.UnknownUnionMember:
+		fmt.Println("unknown tag:", v.Tag)
+
+	default:
+		fmt.Println("union is nil or unknown type")
+
+	}
+}
+
+var _ *types.AsyncInvokeS3OutputDataConfig
+
 func ExampleContentBlock_outputUsage() {
 	var union types.ContentBlock
 	// type switches can be used to check the union value
 	switch v := union.(type) {
+	case *types.ContentBlockMemberCachePoint:
+		_ = v.Value // Value is types.CachePointBlock
+
 	case *types.ContentBlockMemberDocument:
 		_ = v.Value // Value is types.DocumentBlock
 
@@ -21,6 +42,9 @@ func ExampleContentBlock_outputUsage() {
 	case *types.ContentBlockMemberImage:
 		_ = v.Value // Value is types.ImageBlock
 
+	case *types.ContentBlockMemberReasoningContent:
+		_ = v.Value // Value is types.ReasoningContentBlock
+
 	case *types.ContentBlockMemberText:
 		_ = v.Value // Value is string
 
@@ -29,6 +53,9 @@ func ExampleContentBlock_outputUsage() {
 
 	case *types.ContentBlockMemberToolUse:
 		_ = v.Value // Value is types.ToolUseBlock
+
+	case *types.ContentBlockMemberVideo:
+		_ = v.Value // Value is types.VideoBlock
 
 	case *types.UnknownUnionMember:
 		fmt.Println("unknown tag:", v.Tag)
@@ -41,15 +68,21 @@ func ExampleContentBlock_outputUsage() {
 
 var _ *types.DocumentBlock
 var _ *string
+var _ types.ReasoningContentBlock
+var _ *types.CachePointBlock
 var _ types.GuardrailConverseContentBlock
 var _ *types.ImageBlock
 var _ *types.ToolResultBlock
+var _ *types.VideoBlock
 var _ *types.ToolUseBlock
 
 func ExampleContentBlockDelta_outputUsage() {
 	var union types.ContentBlockDelta
 	// type switches can be used to check the union value
 	switch v := union.(type) {
+	case *types.ContentBlockDeltaMemberReasoningContent:
+		_ = v.Value // Value is types.ReasoningContentBlockDelta
+
 	case *types.ContentBlockDeltaMemberText:
 		_ = v.Value // Value is string
 
@@ -65,6 +98,7 @@ func ExampleContentBlockDelta_outputUsage() {
 	}
 }
 
+var _ types.ReasoningContentBlockDelta
 var _ *types.ToolUseBlockDelta
 var _ *string
 
@@ -164,6 +198,9 @@ func ExampleGuardrailContentBlock_outputUsage() {
 	var union types.GuardrailContentBlock
 	// type switches can be used to check the union value
 	switch v := union.(type) {
+	case *types.GuardrailContentBlockMemberImage:
+		_ = v.Value // Value is types.GuardrailImageBlock
+
 	case *types.GuardrailContentBlockMemberText:
 		_ = v.Value // Value is types.GuardrailTextBlock
 
@@ -176,12 +213,16 @@ func ExampleGuardrailContentBlock_outputUsage() {
 	}
 }
 
+var _ *types.GuardrailImageBlock
 var _ *types.GuardrailTextBlock
 
 func ExampleGuardrailConverseContentBlock_outputUsage() {
 	var union types.GuardrailConverseContentBlock
 	// type switches can be used to check the union value
 	switch v := union.(type) {
+	case *types.GuardrailConverseContentBlockMemberImage:
+		_ = v.Value // Value is types.GuardrailConverseImageBlock
+
 	case *types.GuardrailConverseContentBlockMemberText:
 		_ = v.Value // Value is types.GuardrailConverseTextBlock
 
@@ -195,6 +236,43 @@ func ExampleGuardrailConverseContentBlock_outputUsage() {
 }
 
 var _ *types.GuardrailConverseTextBlock
+var _ *types.GuardrailConverseImageBlock
+
+func ExampleGuardrailConverseImageSource_outputUsage() {
+	var union types.GuardrailConverseImageSource
+	// type switches can be used to check the union value
+	switch v := union.(type) {
+	case *types.GuardrailConverseImageSourceMemberBytes:
+		_ = v.Value // Value is []byte
+
+	case *types.UnknownUnionMember:
+		fmt.Println("unknown tag:", v.Tag)
+
+	default:
+		fmt.Println("union is nil or unknown type")
+
+	}
+}
+
+var _ []byte
+
+func ExampleGuardrailImageSource_outputUsage() {
+	var union types.GuardrailImageSource
+	// type switches can be used to check the union value
+	switch v := union.(type) {
+	case *types.GuardrailImageSourceMemberBytes:
+		_ = v.Value // Value is []byte
+
+	case *types.UnknownUnionMember:
+		fmt.Println("unknown tag:", v.Tag)
+
+	default:
+		fmt.Println("union is nil or unknown type")
+
+	}
+}
+
+var _ []byte
 
 func ExampleImageSource_outputUsage() {
 	var union types.ImageSource
@@ -212,6 +290,71 @@ func ExampleImageSource_outputUsage() {
 	}
 }
 
+var _ []byte
+
+func ExamplePromptVariableValues_outputUsage() {
+	var union types.PromptVariableValues
+	// type switches can be used to check the union value
+	switch v := union.(type) {
+	case *types.PromptVariableValuesMemberText:
+		_ = v.Value // Value is string
+
+	case *types.UnknownUnionMember:
+		fmt.Println("unknown tag:", v.Tag)
+
+	default:
+		fmt.Println("union is nil or unknown type")
+
+	}
+}
+
+var _ *string
+
+func ExampleReasoningContentBlock_outputUsage() {
+	var union types.ReasoningContentBlock
+	// type switches can be used to check the union value
+	switch v := union.(type) {
+	case *types.ReasoningContentBlockMemberReasoningText:
+		_ = v.Value // Value is types.ReasoningTextBlock
+
+	case *types.ReasoningContentBlockMemberRedactedContent:
+		_ = v.Value // Value is []byte
+
+	case *types.UnknownUnionMember:
+		fmt.Println("unknown tag:", v.Tag)
+
+	default:
+		fmt.Println("union is nil or unknown type")
+
+	}
+}
+
+var _ *types.ReasoningTextBlock
+var _ []byte
+
+func ExampleReasoningContentBlockDelta_outputUsage() {
+	var union types.ReasoningContentBlockDelta
+	// type switches can be used to check the union value
+	switch v := union.(type) {
+	case *types.ReasoningContentBlockDeltaMemberRedactedContent:
+		_ = v.Value // Value is []byte
+
+	case *types.ReasoningContentBlockDeltaMemberSignature:
+		_ = v.Value // Value is string
+
+	case *types.ReasoningContentBlockDeltaMemberText:
+		_ = v.Value // Value is string
+
+	case *types.UnknownUnionMember:
+		fmt.Println("unknown tag:", v.Tag)
+
+	default:
+		fmt.Println("union is nil or unknown type")
+
+	}
+}
+
+var _ *string
 var _ []byte
 
 func ExampleResponseStream_outputUsage() {
@@ -236,6 +379,9 @@ func ExampleSystemContentBlock_outputUsage() {
 	var union types.SystemContentBlock
 	// type switches can be used to check the union value
 	switch v := union.(type) {
+	case *types.SystemContentBlockMemberCachePoint:
+		_ = v.Value // Value is types.CachePointBlock
+
 	case *types.SystemContentBlockMemberGuardContent:
 		_ = v.Value // Value is types.GuardrailConverseContentBlock
 
@@ -252,12 +398,16 @@ func ExampleSystemContentBlock_outputUsage() {
 }
 
 var _ *string
+var _ *types.CachePointBlock
 var _ types.GuardrailConverseContentBlock
 
 func ExampleTool_outputUsage() {
 	var union types.Tool
 	// type switches can be used to check the union value
 	switch v := union.(type) {
+	case *types.ToolMemberCachePoint:
+		_ = v.Value // Value is types.CachePointBlock
+
 	case *types.ToolMemberToolSpec:
 		_ = v.Value // Value is types.ToolSpecification
 
@@ -271,6 +421,7 @@ func ExampleTool_outputUsage() {
 }
 
 var _ *types.ToolSpecification
+var _ *types.CachePointBlock
 
 func ExampleToolChoice_outputUsage() {
 	var union types.ToolChoice
@@ -332,6 +483,9 @@ func ExampleToolResultContentBlock_outputUsage() {
 	case *types.ToolResultContentBlockMemberText:
 		_ = v.Value // Value is string
 
+	case *types.ToolResultContentBlockMemberVideo:
+		_ = v.Value // Value is types.VideoBlock
+
 	case *types.UnknownUnionMember:
 		fmt.Println("unknown tag:", v.Tag)
 
@@ -345,3 +499,26 @@ var _ *types.DocumentBlock
 var _ *string
 var _ document.Interface
 var _ *types.ImageBlock
+var _ *types.VideoBlock
+
+func ExampleVideoSource_outputUsage() {
+	var union types.VideoSource
+	// type switches can be used to check the union value
+	switch v := union.(type) {
+	case *types.VideoSourceMemberBytes:
+		_ = v.Value // Value is []byte
+
+	case *types.VideoSourceMemberS3Location:
+		_ = v.Value // Value is types.S3Location
+
+	case *types.UnknownUnionMember:
+		fmt.Println("unknown tag:", v.Tag)
+
+	default:
+		fmt.Println("union is nil or unknown type")
+
+	}
+}
+
+var _ *types.S3Location
+var _ []byte

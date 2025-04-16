@@ -15,8 +15,6 @@ import (
 	"strings"
 )
 
-// This operation is not supported by directory buckets.
-//
 // Associates an access policy with the specified access point. Each access point
 // can have only one policy, so a request made to this API replaces any existing
 // policy associated with the specified access point.
@@ -78,9 +76,9 @@ type PutAccessPointPolicyInput struct {
 	Name *string
 
 	// The policy that you want to apply to the specified access point. For more
-	// information about access point policies, see [Managing data access with Amazon S3 access points]in the Amazon S3 User Guide.
+	// information about access point policies, see [Managing access to shared datasets in general purpose buckets with access points]or Managing access to shared datasets in directory bucekts with access points in the Amazon S3 User Guide.
 	//
-	// [Managing data access with Amazon S3 access points]: https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-points.html
+	// [Managing access to shared datasets in general purpose buckets with access points]: https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-points.html
 	//
 	// This member is required.
 	Policy *string
@@ -145,6 +143,9 @@ func (c *Client) addOperationPutAccessPointPolicyMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -164,6 +165,9 @@ func (c *Client) addOperationPutAccessPointPolicyMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addEndpointPrefix_opPutAccessPointPolicyMiddleware(stack); err != nil {
@@ -200,6 +204,18 @@ func (c *Client) addOperationPutAccessPointPolicyMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = s3controlcust.AddDisableHostPrefixMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

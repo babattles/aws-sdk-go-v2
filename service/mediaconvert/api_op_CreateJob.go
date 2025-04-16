@@ -69,6 +69,13 @@ type CreateJobInput struct {
 	// information about this feature, see the AWS Elemental MediaConvert User Guide.
 	HopDestinations []types.HopDestination
 
+	// Use Job engine versions to run jobs for your production workflow on one
+	// version, while you test and validate the latest version. To specify a Job engine
+	// version: Enter a date in a YYYY-MM-DD format. For a list of valid Job engine
+	// versions, submit a ListVersions request. To not specify a Job engine version:
+	// Leave blank.
+	JobEngineVersion *string
+
 	// Optional. When you create a job, you can either specify a job template or
 	// specify the transcoding settings individually.
 	JobTemplate *string
@@ -170,6 +177,9 @@ func (c *Client) addOperationCreateJobMiddlewares(stack *middleware.Stack, optio
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -186,6 +196,9 @@ func (c *Client) addOperationCreateJobMiddlewares(stack *middleware.Stack, optio
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateJobMiddleware(stack, options); err != nil {
@@ -210,6 +223,18 @@ func (c *Client) addOperationCreateJobMiddlewares(stack *middleware.Stack, optio
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

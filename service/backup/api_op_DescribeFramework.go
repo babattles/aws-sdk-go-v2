@@ -56,8 +56,8 @@ type DescribeFrameworkOutput struct {
 	// of the ARN depends on the resource type.
 	FrameworkArn *string
 
-	// A list of the controls that make up the framework. Each control in the list has
-	// a name, input parameters, and scope.
+	// The controls that make up the framework. Each control in the list has a name,
+	// input parameters, and scope.
 	FrameworkControls []types.FrameworkControl
 
 	// An optional description of the framework.
@@ -136,6 +136,9 @@ func (c *Client) addOperationDescribeFrameworkMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -152,6 +155,9 @@ func (c *Client) addOperationDescribeFrameworkMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeFrameworkValidationMiddleware(stack); err != nil {
@@ -173,6 +179,18 @@ func (c *Client) addOperationDescribeFrameworkMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

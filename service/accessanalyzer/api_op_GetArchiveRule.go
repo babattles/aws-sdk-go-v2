@@ -51,7 +51,8 @@ type GetArchiveRuleInput struct {
 // The response to the request.
 type GetArchiveRuleOutput struct {
 
-	// Contains information about an archive rule.
+	// Contains information about an archive rule. Archive rules automatically archive
+	// new findings that meet the criteria you define when you create the rule.
 	//
 	// This member is required.
 	ArchiveRule *types.ArchiveRuleSummary
@@ -105,6 +106,9 @@ func (c *Client) addOperationGetArchiveRuleMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -121,6 +125,9 @@ func (c *Client) addOperationGetArchiveRuleMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetArchiveRuleValidationMiddleware(stack); err != nil {
@@ -142,6 +149,18 @@ func (c *Client) addOperationGetArchiveRuleMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

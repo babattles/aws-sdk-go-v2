@@ -64,6 +64,15 @@ type EvaluateMappingTemplateOutput struct {
 	// in the evaluated code.
 	Logs []string
 
+	// The list of runtime errors that are added to the GraphQL operation response.
+	OutErrors *string
+
+	// An object available inside each resolver and function handler. A single stash
+	// object lives through a single resolver run. Therefore, you can use the stash to
+	// pass arbitrary data across request and response handlers and across functions in
+	// a pipeline resolver.
+	Stash *string
+
 	// Metadata pertaining to the operation's result.
 	ResultMetadata middleware.Metadata
 
@@ -113,6 +122,9 @@ func (c *Client) addOperationEvaluateMappingTemplateMiddlewares(stack *middlewar
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -129,6 +141,9 @@ func (c *Client) addOperationEvaluateMappingTemplateMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpEvaluateMappingTemplateValidationMiddleware(stack); err != nil {
@@ -150,6 +165,18 @@ func (c *Client) addOperationEvaluateMappingTemplateMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -15,9 +15,6 @@ import (
 // from the fleet. For more information, see [Delete a fleet (AWS CLI)]in the Amazon Web Services IoT
 // FleetWise Developer Guide.
 //
-// If the fleet is successfully deleted, Amazon Web Services IoT FleetWise sends
-// back an HTTP 200 response with an empty body.
-//
 // [Delete a fleet (AWS CLI)]: https://docs.aws.amazon.com/iot-fleetwise/latest/developerguide/delete-fleet-cli.html
 func (c *Client) DeleteFleet(ctx context.Context, params *DeleteFleetInput, optFns ...func(*Options)) (*DeleteFleetOutput, error) {
 	if params == nil {
@@ -101,6 +98,9 @@ func (c *Client) addOperationDeleteFleetMiddlewares(stack *middleware.Stack, opt
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -117,6 +117,9 @@ func (c *Client) addOperationDeleteFleetMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteFleetValidationMiddleware(stack); err != nil {
@@ -138,6 +141,18 @@ func (c *Client) addOperationDeleteFleetMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

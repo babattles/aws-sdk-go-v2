@@ -16,7 +16,10 @@ import (
 // point in time before LatestRestorableTime for up to BackupRetentionPeriod days.
 // The target DB cluster is created from the source DB cluster with the same
 // configuration as the original DB cluster, except that the new DB cluster is
-// created with the default DB security group.
+// created with the default DB security group. Unless the RestoreType is set to
+// copy-on-write , the restore may occur in a different Availability Zone (AZ) from
+// the original DB cluster. The AZ where RDS restores the DB cluster depends on the
+// AZs in the specified subnet group.
 //
 // For Aurora, this operation only restores the DB cluster, not the DB instances
 // for that DB cluster. You must invoke the CreateDBInstance operation to create
@@ -154,19 +157,20 @@ type RestoreDBClusterToPointInTimeInput struct {
 	//
 	// RDS for MySQL
 	//
-	// Possible values are error , general , and slowquery .
+	// Possible values are error , general , slowquery , and iam-db-auth-error .
 	//
 	// RDS for PostgreSQL
 	//
-	// Possible values are postgresql and upgrade .
+	// Possible values are postgresql , upgrade , and iam-db-auth-error .
 	//
 	// Aurora MySQL
 	//
-	// Possible values are audit , error , general , and slowquery .
+	// Possible values are audit , error , general , instance , slowquery , and
+	// iam-db-auth-error .
 	//
 	// Aurora PostgreSQL
 	//
-	// Possible value is postgresql .
+	// Possible value are instance , postgresql , and iam-db-auth-error .
 	//
 	// For more information about exporting CloudWatch Logs for Amazon RDS, see [Publishing Database Logs to Amazon CloudWatch Logs] in
 	// the Amazon RDS User Guide.
@@ -183,12 +187,17 @@ type RestoreDBClusterToPointInTimeInput struct {
 	// Management (IAM) accounts to database accounts. By default, mapping isn't
 	// enabled.
 	//
-	// For more information, see [IAM Database Authentication] in the Amazon Aurora User Guide.
+	// For more information, see [IAM Database Authentication] in the Amazon Aurora User Guide or [IAM database authentication for MariaDB, MySQL, and PostgreSQL] in the Amazon
+	// RDS User Guide.
 	//
-	// Valid for: Aurora DB clusters only
+	// Valid for: Aurora DB clusters and Multi-AZ DB clusters
 	//
 	// [IAM Database Authentication]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.IAMDBAuth.html
+	// [IAM database authentication for MariaDB, MySQL, and PostgreSQL]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.html
 	EnableIAMDatabaseAuthentication *bool
+
+	// Specifies whether to turn on Performance Insights for the DB cluster.
+	EnablePerformanceInsights *bool
 
 	// The life cycle type for this DB cluster.
 	//
@@ -204,7 +213,7 @@ type RestoreDBClusterToPointInTimeInput struct {
 	// version on your DB cluster past the end of standard support for that engine
 	// version. For more information, see the following sections:
 	//
-	//   - Amazon Aurora (PostgreSQL only) - [Using Amazon RDS Extended Support]in the Amazon Aurora User Guide
+	//   - Amazon Aurora - [Using Amazon RDS Extended Support]in the Amazon Aurora User Guide
 	//
 	//   - Amazon RDS - [Using Amazon RDS Extended Support]in the Amazon RDS User Guide
 	//
@@ -223,7 +232,8 @@ type RestoreDBClusterToPointInTimeInput struct {
 	// Serverless v1 clone from a provisioned cluster, or a provisioned clone from an
 	// Aurora Serverless v1 cluster. To create a clone that is an Aurora Serverless v1
 	// cluster, the original cluster must be an Aurora Serverless v1 cluster or an
-	// encrypted provisioned cluster.
+	// encrypted provisioned cluster. To create a full copy that is an Aurora
+	// Serverless v1 cluster, specify the engine mode serverless .
 	//
 	// Valid for: Aurora DB clusters only
 	EngineMode *string
@@ -268,6 +278,26 @@ type RestoreDBClusterToPointInTimeInput struct {
 	// Valid for: Aurora DB clusters and Multi-AZ DB clusters
 	KmsKeyId *string
 
+	// The interval, in seconds, between points when Enhanced Monitoring metrics are
+	// collected for the DB cluster. To turn off collecting Enhanced Monitoring
+	// metrics, specify 0 .
+	//
+	// If MonitoringRoleArn is specified, also set MonitoringInterval to a value other
+	// than 0 .
+	//
+	// Valid Values: 0 | 1 | 5 | 10 | 15 | 30 | 60
+	//
+	// Default: 0
+	MonitoringInterval *int32
+
+	// The Amazon Resource Name (ARN) for the IAM role that permits RDS to send
+	// Enhanced Monitoring metrics to Amazon CloudWatch Logs. An example is
+	// arn:aws:iam:123456789012:role/emaccess .
+	//
+	// If MonitoringInterval is set to a value other than 0 , supply a
+	// MonitoringRoleArn value.
+	MonitoringRoleArn *string
+
 	// The network type of the DB cluster.
 	//
 	// Valid Values:
@@ -291,6 +321,35 @@ type RestoreDBClusterToPointInTimeInput struct {
 	//
 	// DB clusters are associated with a default option group that can't be modified.
 	OptionGroupName *string
+
+	// The Amazon Web Services KMS key identifier for encryption of Performance
+	// Insights data.
+	//
+	// The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN,
+	// or alias name for the KMS key.
+	//
+	// If you don't specify a value for PerformanceInsightsKMSKeyId , then Amazon RDS
+	// uses your default KMS key. There is a default KMS key for your Amazon Web
+	// Services account. Your Amazon Web Services account has a different default KMS
+	// key for each Amazon Web Services Region.
+	PerformanceInsightsKMSKeyId *string
+
+	// The number of days to retain Performance Insights data.
+	//
+	// Valid Values:
+	//
+	//   - 7
+	//
+	//   - month * 31, where month is a number of months from 1-23. Examples: 93 (3
+	//   months * 31), 341 (11 months * 31), 589 (19 months * 31)
+	//
+	//   - 731
+	//
+	// Default: 7 days
+	//
+	// If you specify a retention period that isn't valid, such as 94 , Amazon RDS
+	// issues an error.
+	PerformanceInsightsRetentionPeriod *int32
 
 	// The port number on which the new DB cluster accepts connections.
 	//
@@ -512,6 +571,9 @@ func (c *Client) addOperationRestoreDBClusterToPointInTimeMiddlewares(stack *mid
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -528,6 +590,9 @@ func (c *Client) addOperationRestoreDBClusterToPointInTimeMiddlewares(stack *mid
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpRestoreDBClusterToPointInTimeValidationMiddleware(stack); err != nil {
@@ -549,6 +614,18 @@ func (c *Client) addOperationRestoreDBClusterToPointInTimeMiddlewares(stack *mid
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

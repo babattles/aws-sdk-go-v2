@@ -14,9 +14,8 @@ import (
 // Describes the specified flow module.
 //
 // Use the $SAVED alias in the request to describe the SAVED content of a Flow.
-// For example, arn:aws:.../contact-flow/{id}:$SAVED . Once a contact flow is
-// published, $SAVED needs to be supplied to view saved content that has not been
-// published.
+// For example, arn:aws:.../contact-flow/{id}:$SAVED . After a flow is published,
+// $SAVED needs to be supplied to view saved content that has not been published.
 func (c *Client) DescribeContactFlowModule(ctx context.Context, params *DescribeContactFlowModuleInput, optFns ...func(*Options)) (*DescribeContactFlowModuleOutput, error) {
 	if params == nil {
 		params = &DescribeContactFlowModuleInput{}
@@ -104,6 +103,9 @@ func (c *Client) addOperationDescribeContactFlowModuleMiddlewares(stack *middlew
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -120,6 +122,9 @@ func (c *Client) addOperationDescribeContactFlowModuleMiddlewares(stack *middlew
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeContactFlowModuleValidationMiddleware(stack); err != nil {
@@ -141,6 +146,18 @@ func (c *Client) addOperationDescribeContactFlowModuleMiddlewares(stack *middlew
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

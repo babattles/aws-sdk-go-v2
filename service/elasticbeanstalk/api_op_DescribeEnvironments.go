@@ -11,7 +11,6 @@ import (
 	smithytime "github.com/aws/smithy-go/time"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	smithywaiter "github.com/aws/smithy-go/waiter"
-	jmespath "github.com/jmespath/go-jmespath"
 	"time"
 )
 
@@ -138,6 +137,9 @@ func (c *Client) addOperationDescribeEnvironmentsMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -156,6 +158,9 @@ func (c *Client) addOperationDescribeEnvironmentsMiddlewares(stack *middleware.S
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeEnvironments(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -172,6 +177,18 @@ func (c *Client) addOperationDescribeEnvironmentsMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -337,29 +354,18 @@ func (w *EnvironmentExistsWaiter) WaitForOutput(ctx context.Context, params *Des
 func environmentExistsStateRetryable(ctx context.Context, input *DescribeEnvironmentsInput, output *DescribeEnvironmentsOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Environments[].Status", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Environments
+		var v2 []types.EnvironmentStatus
+		for _, v := range v1 {
+			v3 := v.Status
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "Ready"
-		var match = true
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
-		}
-
-		if len(listOfValues) == 0 {
-			match = false
-		}
-		for _, v := range listOfValues {
-			value, ok := v.(types.EnvironmentStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.EnvironmentStatus value, got %T", pathValue)
-			}
-
-			if string(value) != expectedValue {
+		match := len(v2) > 0
+		for _, v := range v2 {
+			if string(v) != expectedValue {
 				match = false
+				break
 			}
 		}
 
@@ -369,29 +375,18 @@ func environmentExistsStateRetryable(ctx context.Context, input *DescribeEnviron
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Environments[].Status", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Environments
+		var v2 []types.EnvironmentStatus
+		for _, v := range v1 {
+			v3 := v.Status
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "Launching"
-		var match = true
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
-		}
-
-		if len(listOfValues) == 0 {
-			match = false
-		}
-		for _, v := range listOfValues {
-			value, ok := v.(types.EnvironmentStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.EnvironmentStatus value, got %T", pathValue)
-			}
-
-			if string(value) != expectedValue {
+		match := len(v2) > 0
+		for _, v := range v2 {
+			if string(v) != expectedValue {
 				match = false
+				break
 			}
 		}
 
@@ -400,6 +395,9 @@ func environmentExistsStateRetryable(ctx context.Context, input *DescribeEnviron
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 
@@ -565,29 +563,18 @@ func (w *EnvironmentTerminatedWaiter) WaitForOutput(ctx context.Context, params 
 func environmentTerminatedStateRetryable(ctx context.Context, input *DescribeEnvironmentsInput, output *DescribeEnvironmentsOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Environments[].Status", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Environments
+		var v2 []types.EnvironmentStatus
+		for _, v := range v1 {
+			v3 := v.Status
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "Terminated"
-		var match = true
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
-		}
-
-		if len(listOfValues) == 0 {
-			match = false
-		}
-		for _, v := range listOfValues {
-			value, ok := v.(types.EnvironmentStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.EnvironmentStatus value, got %T", pathValue)
-			}
-
-			if string(value) != expectedValue {
+		match := len(v2) > 0
+		for _, v := range v2 {
+			if string(v) != expectedValue {
 				match = false
+				break
 			}
 		}
 
@@ -597,29 +584,18 @@ func environmentTerminatedStateRetryable(ctx context.Context, input *DescribeEnv
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Environments[].Status", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Environments
+		var v2 []types.EnvironmentStatus
+		for _, v := range v1 {
+			v3 := v.Status
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "Terminating"
-		var match = true
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
-		}
-
-		if len(listOfValues) == 0 {
-			match = false
-		}
-		for _, v := range listOfValues {
-			value, ok := v.(types.EnvironmentStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.EnvironmentStatus value, got %T", pathValue)
-			}
-
-			if string(value) != expectedValue {
+		match := len(v2) > 0
+		for _, v := range v2 {
+			if string(v) != expectedValue {
 				match = false
+				break
 			}
 		}
 
@@ -628,6 +604,9 @@ func environmentTerminatedStateRetryable(ctx context.Context, input *DescribeEnv
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 
@@ -791,29 +770,18 @@ func (w *EnvironmentUpdatedWaiter) WaitForOutput(ctx context.Context, params *De
 func environmentUpdatedStateRetryable(ctx context.Context, input *DescribeEnvironmentsInput, output *DescribeEnvironmentsOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Environments[].Status", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Environments
+		var v2 []types.EnvironmentStatus
+		for _, v := range v1 {
+			v3 := v.Status
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "Ready"
-		var match = true
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
-		}
-
-		if len(listOfValues) == 0 {
-			match = false
-		}
-		for _, v := range listOfValues {
-			value, ok := v.(types.EnvironmentStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.EnvironmentStatus value, got %T", pathValue)
-			}
-
-			if string(value) != expectedValue {
+		match := len(v2) > 0
+		for _, v := range v2 {
+			if string(v) != expectedValue {
 				match = false
+				break
 			}
 		}
 
@@ -823,29 +791,18 @@ func environmentUpdatedStateRetryable(ctx context.Context, input *DescribeEnviro
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Environments[].Status", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Environments
+		var v2 []types.EnvironmentStatus
+		for _, v := range v1 {
+			v3 := v.Status
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "Updating"
-		var match = true
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
-		}
-
-		if len(listOfValues) == 0 {
-			match = false
-		}
-		for _, v := range listOfValues {
-			value, ok := v.(types.EnvironmentStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.EnvironmentStatus value, got %T", pathValue)
-			}
-
-			if string(value) != expectedValue {
+		match := len(v2) > 0
+		for _, v := range v2 {
+			if string(v) != expectedValue {
 				match = false
+				break
 			}
 		}
 
@@ -854,6 +811,9 @@ func environmentUpdatedStateRetryable(ctx context.Context, input *DescribeEnviro
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 

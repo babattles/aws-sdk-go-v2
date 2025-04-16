@@ -330,6 +330,26 @@ func (m *validateOpDescribeFlowSourceMetadata) HandleInitialize(ctx context.Cont
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpDescribeFlowSourceThumbnail struct {
+}
+
+func (*validateOpDescribeFlowSourceThumbnail) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDescribeFlowSourceThumbnail) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DescribeFlowSourceThumbnailInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDescribeFlowSourceThumbnailInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpDescribeGateway struct {
 }
 
@@ -954,6 +974,10 @@ func addOpDescribeFlowSourceMetadataValidationMiddleware(stack *middleware.Stack
 	return stack.Initialize.Add(&validateOpDescribeFlowSourceMetadata{}, middleware.After)
 }
 
+func addOpDescribeFlowSourceThumbnailValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDescribeFlowSourceThumbnail{}, middleware.After)
+}
+
 func addOpDescribeGatewayValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDescribeGateway{}, middleware.After)
 }
@@ -1226,6 +1250,23 @@ func validate__listOfMediaStreamSourceConfigurationRequest(v []types.MediaStream
 	invalidParams := smithy.InvalidParamsError{Context: "ListOfMediaStreamSourceConfigurationRequest"}
 	for i := range v {
 		if err := validateMediaStreamSourceConfigurationRequest(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validate__listOfNdiDiscoveryServerConfig(v []types.NdiDiscoveryServerConfig) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListOfNdiDiscoveryServerConfig"}
+	for i := range v {
+		if err := validateNdiDiscoveryServerConfig(&v[i]); err != nil {
 			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
 		}
 	}
@@ -1665,6 +1706,41 @@ func validateMediaStreamSourceConfigurationRequest(v *types.MediaStreamSourceCon
 	}
 }
 
+func validateNdiConfig(v *types.NdiConfig) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "NdiConfig"}
+	if v.NdiDiscoveryServers != nil {
+		if err := validate__listOfNdiDiscoveryServerConfig(v.NdiDiscoveryServers); err != nil {
+			invalidParams.AddNested("NdiDiscoveryServers", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateNdiDiscoveryServerConfig(v *types.NdiDiscoveryServerConfig) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "NdiDiscoveryServerConfig"}
+	if v.DiscoveryServerAddress == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DiscoveryServerAddress"))
+	}
+	if v.VpcInterfaceAdapter == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("VpcInterfaceAdapter"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateSetGatewayBridgeSourceRequest(v *types.SetGatewayBridgeSourceRequest) error {
 	if v == nil {
 		return nil
@@ -1946,6 +2022,11 @@ func validateOpCreateFlowInput(v *CreateFlowInput) error {
 			invalidParams.AddNested("Maintenance", err.(smithy.InvalidParamsError))
 		}
 	}
+	if v.NdiConfig != nil {
+		if err := validateNdiConfig(v.NdiConfig); err != nil {
+			invalidParams.AddNested("NdiConfig", err.(smithy.InvalidParamsError))
+		}
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -2073,6 +2154,21 @@ func validateOpDescribeFlowSourceMetadataInput(v *DescribeFlowSourceMetadataInpu
 		return nil
 	}
 	invalidParams := smithy.InvalidParamsError{Context: "DescribeFlowSourceMetadataInput"}
+	if v.FlowArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("FlowArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpDescribeFlowSourceThumbnailInput(v *DescribeFlowSourceThumbnailInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DescribeFlowSourceThumbnailInput"}
 	if v.FlowArn == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("FlowArn"))
 	}
@@ -2487,6 +2583,11 @@ func validateOpUpdateFlowInput(v *UpdateFlowInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "UpdateFlowInput"}
 	if v.FlowArn == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("FlowArn"))
+	}
+	if v.NdiConfig != nil {
+		if err := validateNdiConfig(v.NdiConfig); err != nil {
+			invalidParams.AddNested("NdiConfig", err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams

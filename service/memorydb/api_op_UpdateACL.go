@@ -29,15 +29,15 @@ func (c *Client) UpdateACL(ctx context.Context, params *UpdateACLInput, optFns .
 
 type UpdateACLInput struct {
 
-	// The name of the Access Control List
+	// The name of the Access Control List.
 	//
 	// This member is required.
 	ACLName *string
 
-	// The list of users to add to the Access Control List
+	// The list of users to add to the Access Control List.
 	UserNamesToAdd []string
 
-	// The list of users to remove from the Access Control List
+	// The list of users to remove from the Access Control List.
 	UserNamesToRemove []string
 
 	noSmithyDocumentSerde
@@ -45,7 +45,7 @@ type UpdateACLInput struct {
 
 type UpdateACLOutput struct {
 
-	// The updated Access Control List
+	// The updated Access Control List.
 	ACL *types.ACL
 
 	// Metadata pertaining to the operation's result.
@@ -97,6 +97,9 @@ func (c *Client) addOperationUpdateACLMiddlewares(stack *middleware.Stack, optio
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -113,6 +116,9 @@ func (c *Client) addOperationUpdateACLMiddlewares(stack *middleware.Stack, optio
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateACLValidationMiddleware(stack); err != nil {
@@ -134,6 +140,18 @@ func (c *Client) addOperationUpdateACLMiddlewares(stack *middleware.Stack, optio
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

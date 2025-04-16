@@ -11,7 +11,11 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Stops the user import job.
+// Instructs your user pool to stop a running job that's importing users from a
+// CSV file that contains their usernames and attributes. For more information
+// about importing users from a CSV file, see [Importing users from a CSV file].
+//
+// [Importing users from a CSV file]: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-using-import-tool.html
 func (c *Client) StopUserImportJob(ctx context.Context, params *StopUserImportJobInput, optFns ...func(*Options)) (*StopUserImportJobOutput, error) {
 	if params == nil {
 		params = &StopUserImportJobInput{}
@@ -30,12 +34,12 @@ func (c *Client) StopUserImportJob(ctx context.Context, params *StopUserImportJo
 // Represents the request to stop the user import job.
 type StopUserImportJobInput struct {
 
-	// The job ID for the user import job.
+	// The ID of a running user import job.
 	//
 	// This member is required.
 	JobId *string
 
-	// The user pool ID for the user pool that the users are being imported into.
+	// The ID of the user pool that you want to stop.
 	//
 	// This member is required.
 	UserPoolId *string
@@ -47,7 +51,8 @@ type StopUserImportJobInput struct {
 // job.
 type StopUserImportJobOutput struct {
 
-	// The job object that represents the user import job.
+	// The details of the user import job. Includes logging destination, status, and
+	// the Amazon S3 pre-signed URL for CSV upload.
 	UserImportJob *types.UserImportJobType
 
 	// Metadata pertaining to the operation's result.
@@ -99,6 +104,9 @@ func (c *Client) addOperationStopUserImportJobMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -115,6 +123,9 @@ func (c *Client) addOperationStopUserImportJobMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpStopUserImportJobValidationMiddleware(stack); err != nil {
@@ -136,6 +147,18 @@ func (c *Client) addOperationStopUserImportJobMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -10,8 +10,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Deletes a deployment strategy. Deleting a deployment strategy does not delete a
-// configuration from a host.
+// Deletes a deployment strategy.
 func (c *Client) DeleteDeploymentStrategy(ctx context.Context, params *DeleteDeploymentStrategyInput, optFns ...func(*Options)) (*DeleteDeploymentStrategyOutput, error) {
 	if params == nil {
 		params = &DeleteDeploymentStrategyInput{}
@@ -87,6 +86,9 @@ func (c *Client) addOperationDeleteDeploymentStrategyMiddlewares(stack *middlewa
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -103,6 +105,9 @@ func (c *Client) addOperationDeleteDeploymentStrategyMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteDeploymentStrategyValidationMiddleware(stack); err != nil {
@@ -124,6 +129,18 @@ func (c *Client) addOperationDeleteDeploymentStrategyMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -21,7 +21,7 @@ import (
 // and a banner displayed on the Amazon Lightsail console. For more information,
 // see [Alarms in Amazon Lightsail].
 //
-// [Alarms in Amazon Lightsail]: https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-alarms
+// [Alarms in Amazon Lightsail]: https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-alarms
 func (c *Client) TestAlarm(ctx context.Context, params *TestAlarmInput, optFns ...func(*Options)) (*TestAlarmOutput, error) {
 	if params == nil {
 		params = &TestAlarmInput{}
@@ -117,6 +117,9 @@ func (c *Client) addOperationTestAlarmMiddlewares(stack *middleware.Stack, optio
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -133,6 +136,9 @@ func (c *Client) addOperationTestAlarmMiddlewares(stack *middleware.Stack, optio
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpTestAlarmValidationMiddleware(stack); err != nil {
@@ -154,6 +160,18 @@ func (c *Client) addOperationTestAlarmMiddlewares(stack *middleware.Stack, optio
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

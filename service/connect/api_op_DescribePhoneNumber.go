@@ -21,7 +21,7 @@ import (
 // traffic distribution group and you are calling this API in the alternate Amazon
 // Web Services Region associated with the traffic distribution group, you must
 // provide a full phone number ARN. If a UUID is provided in this scenario, you
-// will receive a ResourceNotFoundException .
+// receive a ResourceNotFoundException .
 func (c *Client) DescribePhoneNumber(ctx context.Context, params *DescribePhoneNumberInput, optFns ...func(*Options)) (*DescribePhoneNumberOutput, error) {
 	if params == nil {
 		params = &DescribePhoneNumberInput{}
@@ -102,6 +102,9 @@ func (c *Client) addOperationDescribePhoneNumberMiddlewares(stack *middleware.St
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -118,6 +121,9 @@ func (c *Client) addOperationDescribePhoneNumberMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribePhoneNumberValidationMiddleware(stack); err != nil {
@@ -139,6 +145,18 @@ func (c *Client) addOperationDescribePhoneNumberMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

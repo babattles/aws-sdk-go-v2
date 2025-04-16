@@ -27,20 +27,19 @@ func (c *Client) UpdateBridgeOutput(ctx context.Context, params *UpdateBridgeOut
 	return out, nil
 }
 
-// The fields that you want to update in the bridge output.
 type UpdateBridgeOutputInput struct {
 
-	// The ARN of the bridge that you want to update.
+	//  The Amazon Resource Name (ARN) of the bridge that you want to update.
 	//
 	// This member is required.
 	BridgeArn *string
 
-	// The name of the bridge output that you want to update.
+	//  Tname of the output that you want to update.
 	//
 	// This member is required.
 	OutputName *string
 
-	// Update an existing network output.
+	//  The network of the bridge output.
 	NetworkOutput *types.UpdateBridgeNetworkOutputRequest
 
 	noSmithyDocumentSerde
@@ -48,10 +47,10 @@ type UpdateBridgeOutputInput struct {
 
 type UpdateBridgeOutputOutput struct {
 
-	// The Amazon Resource Number (ARN) of the bridge.
+	//  The ARN of the bridge that was updated.
 	BridgeArn *string
 
-	// The output that you updated.
+	//  The bridge output that was updated.
 	Output *types.BridgeOutput
 
 	// Metadata pertaining to the operation's result.
@@ -103,6 +102,9 @@ func (c *Client) addOperationUpdateBridgeOutputMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -119,6 +121,9 @@ func (c *Client) addOperationUpdateBridgeOutputMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateBridgeOutputValidationMiddleware(stack); err != nil {
@@ -140,6 +145,18 @@ func (c *Client) addOperationUpdateBridgeOutputMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

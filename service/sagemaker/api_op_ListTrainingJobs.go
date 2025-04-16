@@ -84,6 +84,13 @@ type ListTrainingJobsInput struct {
 	// A filter that retrieves only training jobs with a specific status.
 	StatusEquals types.TrainingJobStatus
 
+	// The Amazon Resource Name (ARN); of the training plan to filter training jobs
+	// by. For more information about reserving GPU capacity for your SageMaker
+	// training jobs using Amazon SageMaker Training Plan, see [CreateTrainingPlan].
+	//
+	// [CreateTrainingPlan]: https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTrainingPlan.html
+	TrainingPlanArnEquals *string
+
 	// A filter that retrieves only training jobs with a specific warm pool status.
 	WarmPoolStatusEquals types.WarmPoolResourceStatus
 
@@ -150,6 +157,9 @@ func (c *Client) addOperationListTrainingJobsMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -168,6 +178,9 @@ func (c *Client) addOperationListTrainingJobsMiddlewares(stack *middleware.Stack
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListTrainingJobs(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -184,6 +197,18 @@ func (c *Client) addOperationListTrainingJobsMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

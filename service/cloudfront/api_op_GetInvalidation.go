@@ -11,7 +11,6 @@ import (
 	smithytime "github.com/aws/smithy-go/time"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	smithywaiter "github.com/aws/smithy-go/waiter"
-	jmespath "github.com/jmespath/go-jmespath"
 	"time"
 )
 
@@ -104,6 +103,9 @@ func (c *Client) addOperationGetInvalidationMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -120,6 +122,9 @@ func (c *Client) addOperationGetInvalidationMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetInvalidationValidationMiddleware(stack); err != nil {
@@ -141,6 +146,18 @@ func (c *Client) addOperationGetInvalidationMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -170,7 +187,7 @@ type InvalidationCompletedWaiterOptions struct {
 	MinDelay time.Duration
 
 	// MaxDelay is the maximum amount of time to delay between retries. If unset or
-	// set to zero, InvalidationCompletedWaiter will use default max delay of 120
+	// set to zero, InvalidationCompletedWaiter will use default max delay of 600
 	// seconds. Note that MaxDelay must resolve to value greater than or equal to the
 	// MinDelay.
 	MaxDelay time.Duration
@@ -201,7 +218,7 @@ type InvalidationCompletedWaiter struct {
 func NewInvalidationCompletedWaiter(client GetInvalidationAPIClient, optFns ...func(*InvalidationCompletedWaiterOptions)) *InvalidationCompletedWaiter {
 	options := InvalidationCompletedWaiterOptions{}
 	options.MinDelay = 20 * time.Second
-	options.MaxDelay = 120 * time.Second
+	options.MaxDelay = 600 * time.Second
 	options.Retryable = invalidationCompletedStateRetryable
 
 	for _, fn := range optFns {
@@ -236,7 +253,7 @@ func (w *InvalidationCompletedWaiter) WaitForOutput(ctx context.Context, params 
 	}
 
 	if options.MaxDelay <= 0 {
-		options.MaxDelay = 120 * time.Second
+		options.MaxDelay = 600 * time.Second
 	}
 
 	if options.MinDelay > options.MaxDelay {
@@ -308,22 +325,25 @@ func (w *InvalidationCompletedWaiter) WaitForOutput(ctx context.Context, params 
 func invalidationCompletedStateRetryable(ctx context.Context, input *GetInvalidationInput, output *GetInvalidationOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Invalidation.Status", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Invalidation
+		var v2 *string
+		if v1 != nil {
+			v3 := v1.Status
+			v2 = v3
 		}
-
 		expectedValue := "Completed"
-		value, ok := pathValue.(*string)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected *string value, got %T", pathValue)
+		var pathValue string
+		if v2 != nil {
+			pathValue = string(*v2)
 		}
-
-		if string(*value) == expectedValue {
+		if pathValue == expectedValue {
 			return false, nil
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 

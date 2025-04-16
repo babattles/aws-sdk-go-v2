@@ -12,9 +12,9 @@ import (
 )
 
 // Creates a running app for the specified UserProfile. This operation is
-// automatically invoked by Amazon SageMaker upon access to the associated Domain,
-// and when new kernel configurations are selected by the user. A user may have
-// multiple Apps active simultaneously.
+// automatically invoked by Amazon SageMaker AI upon access to the associated
+// Domain, and when new kernel configurations are selected by the user. A user may
+// have multiple Apps active simultaneously.
 func (c *Client) CreateApp(ctx context.Context, params *CreateAppInput, optFns ...func(*Options)) (*CreateAppOutput, error) {
 	if params == nil {
 		params = &CreateAppInput{}
@@ -47,7 +47,10 @@ type CreateAppInput struct {
 	// This member is required.
 	DomainId *string
 
-	// The instance type and the Amazon Resource Name (ARN) of the SageMaker image
+	//  Indicates whether the application is launched in recovery mode.
+	RecoveryMode *bool
+
+	// The instance type and the Amazon Resource Name (ARN) of the SageMaker AI image
 	// created on the instance.
 	//
 	// The value of InstanceType passed as part of the ResourceSpec in the CreateApp
@@ -125,6 +128,9 @@ func (c *Client) addOperationCreateAppMiddlewares(stack *middleware.Stack, optio
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -141,6 +147,9 @@ func (c *Client) addOperationCreateAppMiddlewares(stack *middleware.Stack, optio
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateAppValidationMiddleware(stack); err != nil {
@@ -162,6 +171,18 @@ func (c *Client) addOperationCreateAppMiddlewares(stack *middleware.Stack, optio
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

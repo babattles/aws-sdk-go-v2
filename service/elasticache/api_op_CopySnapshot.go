@@ -13,7 +13,7 @@ import (
 
 // Makes a copy of an existing snapshot.
 //
-// This operation is valid for Redis OSS only.
+// This operation is valid for Valkey or Redis OSS only.
 //
 // Users or groups that have permissions to use the CopySnapshot operation can
 // create their own Amazon S3 buckets and copy snapshots to it. To control access
@@ -76,11 +76,11 @@ import (
 //
 //	ElastiCache User Guide.
 //
-// [Step 2: Grant ElastiCache Access to Your Amazon S3 Bucket]: https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/backups-exporting.html#backups-exporting-grant-access
-// [Exporting Snapshots]: https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/backups-exporting.html
-// [Authentication & Access Control]: https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/IAM.html
+// [Step 2: Grant ElastiCache Access to Your Amazon S3 Bucket]: https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/backups-exporting.html#backups-exporting-grant-access
+// [Exporting Snapshots]: https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/backups-exporting.html
+// [Authentication & Access Control]: https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/IAM.html
 //
-// [Step 1: Create an Amazon S3 Bucket]: https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/backups-exporting.html#backups-exporting-create-s3-bucket
+// [Step 1: Create an Amazon S3 Bucket]: https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/backups-exporting.html#backups-exporting-create-s3-bucket
 func (c *Client) CopySnapshot(ctx context.Context, params *CopySnapshotInput, optFns ...func(*Options)) (*CopySnapshotOutput, error) {
 	if params == nil {
 		params = &CopySnapshotInput{}
@@ -127,8 +127,8 @@ type CopySnapshotInput struct {
 	//
 	// For more information, see [Exporting a Snapshot] in the Amazon ElastiCache User Guide.
 	//
-	// [Step 2: Grant ElastiCache Access to Your Amazon S3 Bucket]: https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/backups-exporting.html#backups-exporting-grant-access
-	// [Exporting a Snapshot]: https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/backups-exporting.html
+	// [Step 2: Grant ElastiCache Access to Your Amazon S3 Bucket]: https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/backups-exporting.html#backups-exporting-grant-access
+	// [Exporting a Snapshot]: https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/backups-exporting.html
 	TargetBucket *string
 
 	noSmithyDocumentSerde
@@ -136,8 +136,8 @@ type CopySnapshotInput struct {
 
 type CopySnapshotOutput struct {
 
-	// Represents a copy of an entire Redis OSS cluster as of the time when the
-	// snapshot was taken.
+	// Represents a copy of an entire Valkey or Redis OSS cluster as of the time when
+	// the snapshot was taken.
 	Snapshot *types.Snapshot
 
 	// Metadata pertaining to the operation's result.
@@ -189,6 +189,9 @@ func (c *Client) addOperationCopySnapshotMiddlewares(stack *middleware.Stack, op
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -205,6 +208,9 @@ func (c *Client) addOperationCopySnapshotMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCopySnapshotValidationMiddleware(stack); err != nil {
@@ -226,6 +232,18 @@ func (c *Client) addOperationCopySnapshotMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

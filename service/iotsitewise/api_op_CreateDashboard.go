@@ -28,10 +28,15 @@ func (c *Client) CreateDashboard(ctx context.Context, params *CreateDashboardInp
 
 type CreateDashboardInput struct {
 
-	// The dashboard definition specified in a JSON literal. For detailed information,
-	// see [Creating dashboards (CLI)]in the IoT SiteWise User Guide.
+	// The dashboard definition specified in a JSON literal.
 	//
-	// [Creating dashboards (CLI)]: https://docs.aws.amazon.com/iot-sitewise/latest/userguide/create-dashboards-using-aws-cli.html
+	//   - IoT SiteWise Monitor (Classic) see [Create dashboards (CLI)]
+	//
+	//   - IoT SiteWise Monitor (AI-aware) see [Create dashboards (CLI)]
+	//
+	// in the IoT SiteWise User Guide
+	//
+	// [Create dashboards (CLI)]: https://docs.aws.amazon.com/iot-sitewise/latest/userguide/create-dashboards-ai-dashboard-cli.html
 	//
 	// This member is required.
 	DashboardDefinition *string
@@ -128,6 +133,9 @@ func (c *Client) addOperationCreateDashboardMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -144,6 +152,9 @@ func (c *Client) addOperationCreateDashboardMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addEndpointPrefix_opCreateDashboardMiddleware(stack); err != nil {
@@ -171,6 +182,18 @@ func (c *Client) addOperationCreateDashboardMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

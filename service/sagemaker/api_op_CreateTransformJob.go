@@ -32,8 +32,8 @@ import (
 //   - TransformOutput - Identifies the Amazon S3 location where you want Amazon
 //     SageMaker to save the results from the transform job.
 //
-//   - TransformResources - Identifies the ML compute instances for the transform
-//     job.
+//   - TransformResources - Identifies the ML compute instances and AMI image
+//     versions for the transform job.
 //
 // For more information about how batch transformation works, see [Batch Transform].
 //
@@ -112,8 +112,9 @@ type CreateTransformJobInput struct {
 	// [Associate Prediction Results with their Corresponding Input Records]: https://docs.aws.amazon.com/sagemaker/latest/dg/batch-transform-data-processing.html
 	DataProcessing *types.DataProcessing
 
-	// The environment variables to set in the Docker container. We support up to 16
-	// key and values entries in the map.
+	// The environment variables to set in the Docker container. Don't include any
+	// sensitive data in your environment variables. We support up to 16 key and values
+	// entries in the map.
 	Environment map[string]string
 
 	// Associates a SageMaker job as a trial component with an experiment and trial.
@@ -226,6 +227,9 @@ func (c *Client) addOperationCreateTransformJobMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -242,6 +246,9 @@ func (c *Client) addOperationCreateTransformJobMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateTransformJobValidationMiddleware(stack); err != nil {
@@ -263,6 +270,18 @@ func (c *Client) addOperationCreateTransformJobMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -49,6 +49,9 @@ type GetPackageVersionInput struct {
 
 type GetPackageVersionOutput struct {
 
+	// The various components that make up a software package version.
+	Artifact *types.PackageVersionArtifact
+
 	// Metadata that were added to the package version that can be used to define a
 	// package version’s configuration.
 	Attributes map[string]string
@@ -70,6 +73,17 @@ type GetPackageVersionOutput struct {
 
 	// The ARN for the package version.
 	PackageVersionArn *string
+
+	// The inline job document associated with a software package version used for a
+	// quick job deployment.
+	Recipe *string
+
+	// The software bill of materials for a software package version.
+	Sbom *types.Sbom
+
+	// The status of the validation for a new software bill of materials added to a
+	// software package version.
+	SbomValidationStatus types.SbomValidationStatus
 
 	// The status associated to the package version. For more information, see [Package version lifecycle].
 	//
@@ -128,6 +142,9 @@ func (c *Client) addOperationGetPackageVersionMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -144,6 +161,9 @@ func (c *Client) addOperationGetPackageVersionMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetPackageVersionValidationMiddleware(stack); err != nil {
@@ -165,6 +185,18 @@ func (c *Client) addOperationGetPackageVersionMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

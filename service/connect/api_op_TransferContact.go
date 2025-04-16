@@ -10,15 +10,15 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Transfers contacts from one agent or queue to another agent or queue at any
-// point after a contact is created. You can transfer a contact to another queue by
-// providing the flow which orchestrates the contact to the destination queue. This
-// gives you more control over contact handling and helps you adhere to the service
-// level agreement (SLA) guaranteed to your customers.
+// Transfers TASK or EMAIL contacts from one agent or queue to another agent or
+// queue at any point after a contact is created. You can transfer a contact to
+// another queue by providing the flow which orchestrates the contact to the
+// destination queue. This gives you more control over contact handling and helps
+// you adhere to the service level agreement (SLA) guaranteed to your customers.
 //
 // Note the following requirements:
 //
-//   - Transfer is supported for only TASK contacts.
+//   - Transfer is supported for only TASK and EMAIL contacts.
 //
 //   - Do not use both QueueId and UserId in the same call.
 //
@@ -136,6 +136,9 @@ func (c *Client) addOperationTransferContactMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -152,6 +155,9 @@ func (c *Client) addOperationTransferContactMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opTransferContactMiddleware(stack, options); err != nil {
@@ -176,6 +182,18 @@ func (c *Client) addOperationTransferContactMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -18,9 +18,9 @@ import (
 //
 // This operation is not valid for:
 //
-//   - Redis OSS (cluster mode enabled) clusters
+//   - Valkey or Redis OSS (cluster mode enabled) clusters
 //
-//   - Redis OSS (cluster mode disabled) clusters
+//   - Valkey or Redis OSS (cluster mode disabled) clusters
 //
 //   - A cluster that is the last read replica of a replication group
 //
@@ -28,7 +28,8 @@ import (
 //
 //   - A node group (shard) that has Multi-AZ mode enabled
 //
-//   - A cluster from a Redis OSS (cluster mode enabled) replication group
+//   - A cluster from a Valkey or Redis OSS (cluster mode enabled) replication
+//     group
 //
 //   - A cluster that is not in the available state
 func (c *Client) DeleteCacheCluster(ctx context.Context, params *DeleteCacheClusterInput, optFns ...func(*Options)) (*DeleteCacheClusterOutput, error) {
@@ -117,6 +118,9 @@ func (c *Client) addOperationDeleteCacheClusterMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -133,6 +137,9 @@ func (c *Client) addOperationDeleteCacheClusterMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteCacheClusterValidationMiddleware(stack); err != nil {
@@ -154,6 +161,18 @@ func (c *Client) addOperationDeleteCacheClusterMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

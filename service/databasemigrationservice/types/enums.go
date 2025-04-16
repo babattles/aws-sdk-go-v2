@@ -465,6 +465,25 @@ func (NestingLevelValue) Values() []NestingLevelValue {
 	}
 }
 
+type OracleAuthenticationMethod string
+
+// Enum values for OracleAuthenticationMethod
+const (
+	OracleAuthenticationMethodPassword OracleAuthenticationMethod = "password"
+	OracleAuthenticationMethodKerberos OracleAuthenticationMethod = "kerberos"
+)
+
+// Values returns all known values for OracleAuthenticationMethod. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (OracleAuthenticationMethod) Values() []OracleAuthenticationMethod {
+	return []OracleAuthenticationMethod{
+		"password",
+		"kerberos",
+	}
+}
+
 type OriginTypeValue string
 
 // Enum values for OriginTypeValue
@@ -663,6 +682,26 @@ func (SourceType) Values() []SourceType {
 	}
 }
 
+type SqlServerAuthenticationMethod string
+
+// Enum values for SqlServerAuthenticationMethod
+const (
+	SqlServerAuthenticationMethodPassword SqlServerAuthenticationMethod = "password"
+	SqlServerAuthenticationMethodKerberos SqlServerAuthenticationMethod = "kerberos"
+)
+
+// Values returns all known values for SqlServerAuthenticationMethod. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (SqlServerAuthenticationMethod) Values() []SqlServerAuthenticationMethod {
+	return []SqlServerAuthenticationMethod{
+		"password",
+		"kerberos",
+	}
+}
+
 type SslSecurityProtocolValue string
 
 // Enum values for SslSecurityProtocolValue
@@ -679,6 +718,28 @@ func (SslSecurityProtocolValue) Values() []SslSecurityProtocolValue {
 	return []SslSecurityProtocolValue{
 		"plaintext",
 		"ssl-encryption",
+	}
+}
+
+type StartReplicationMigrationTypeValue string
+
+// Enum values for StartReplicationMigrationTypeValue
+const (
+	StartReplicationMigrationTypeValueReloadTarget     StartReplicationMigrationTypeValue = "reload-target"
+	StartReplicationMigrationTypeValueResumeProcessing StartReplicationMigrationTypeValue = "resume-processing"
+	StartReplicationMigrationTypeValueStartReplication StartReplicationMigrationTypeValue = "start-replication"
+)
+
+// Values returns all known values for StartReplicationMigrationTypeValue. Note
+// that this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (StartReplicationMigrationTypeValue) Values() []StartReplicationMigrationTypeValue {
+	return []StartReplicationMigrationTypeValue{
+		"reload-target",
+		"resume-processing",
+		"start-replication",
 	}
 }
 
@@ -701,6 +762,27 @@ func (StartReplicationTaskTypeValue) Values() []StartReplicationTaskTypeValue {
 		"start-replication",
 		"resume-processing",
 		"reload-target",
+	}
+}
+
+type TablePreparationMode string
+
+// Enum values for TablePreparationMode
+const (
+	TablePreparationModeDoNothing          TablePreparationMode = "do-nothing"
+	TablePreparationModeTruncate           TablePreparationMode = "truncate"
+	TablePreparationModeDropTablesOnTarget TablePreparationMode = "drop-tables-on-target"
+)
+
+// Values returns all known values for TablePreparationMode. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (TablePreparationMode) Values() []TablePreparationMode {
+	return []TablePreparationMode{
+		"do-nothing",
+		"truncate",
+		"drop-tables-on-target",
 	}
 }
 

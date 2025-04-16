@@ -86,6 +86,18 @@ func TestCheckSnapshot_AddDataSource(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_AddDirectQueryDataSource(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.AddDirectQueryDataSource(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "AddDirectQueryDataSource")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_AddTags(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.AddTags(context.Background(), nil, func(o *Options) {
@@ -103,6 +115,18 @@ func TestCheckSnapshot_AssociatePackage(t *testing.T) {
 	_, err := svc.AssociatePackage(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "AssociatePackage")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_AssociatePackages(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.AssociatePackages(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "AssociatePackages")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -139,6 +163,18 @@ func TestCheckSnapshot_CancelServiceSoftwareUpdate(t *testing.T) {
 	_, err := svc.CancelServiceSoftwareUpdate(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "CancelServiceSoftwareUpdate")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_CreateApplication(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateApplication(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "CreateApplication")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -194,11 +230,35 @@ func TestCheckSnapshot_CreateVpcEndpoint(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_DeleteApplication(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteApplication(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DeleteApplication")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_DeleteDataSource(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.DeleteDataSource(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "DeleteDataSource")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_DeleteDirectQueryDataSource(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteDirectQueryDataSource(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DeleteDirectQueryDataSource")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -458,6 +518,30 @@ func TestCheckSnapshot_DissociatePackage(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_DissociatePackages(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DissociatePackages(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DissociatePackages")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_GetApplication(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetApplication(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GetApplication")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_GetCompatibleVersions(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.GetCompatibleVersions(context.Background(), nil, func(o *Options) {
@@ -475,6 +559,18 @@ func TestCheckSnapshot_GetDataSource(t *testing.T) {
 	_, err := svc.GetDataSource(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "GetDataSource")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_GetDirectQueryDataSource(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetDirectQueryDataSource(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GetDirectQueryDataSource")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -530,11 +626,35 @@ func TestCheckSnapshot_GetUpgradeStatus(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_ListApplications(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListApplications(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListApplications")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_ListDataSources(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ListDataSources(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "ListDataSources")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_ListDirectQueryDataSources(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListDirectQueryDataSources(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListDirectQueryDataSources")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -746,11 +866,35 @@ func TestCheckSnapshot_StartServiceSoftwareUpdate(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_UpdateApplication(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateApplication(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "UpdateApplication")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_UpdateDataSource(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.UpdateDataSource(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "UpdateDataSource")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_UpdateDirectQueryDataSource(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateDirectQueryDataSource(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "UpdateDirectQueryDataSource")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -775,6 +919,18 @@ func TestCheckSnapshot_UpdatePackage(t *testing.T) {
 	_, err := svc.UpdatePackage(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "UpdatePackage")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_UpdatePackageScope(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdatePackageScope(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "UpdatePackageScope")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -841,6 +997,18 @@ func TestUpdateSnapshot_AddDataSource(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_AddDirectQueryDataSource(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.AddDirectQueryDataSource(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "AddDirectQueryDataSource")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_AddTags(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.AddTags(context.Background(), nil, func(o *Options) {
@@ -858,6 +1026,18 @@ func TestUpdateSnapshot_AssociatePackage(t *testing.T) {
 	_, err := svc.AssociatePackage(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "AssociatePackage")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_AssociatePackages(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.AssociatePackages(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "AssociatePackages")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -894,6 +1074,18 @@ func TestUpdateSnapshot_CancelServiceSoftwareUpdate(t *testing.T) {
 	_, err := svc.CancelServiceSoftwareUpdate(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "CancelServiceSoftwareUpdate")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_CreateApplication(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateApplication(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "CreateApplication")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -949,11 +1141,35 @@ func TestUpdateSnapshot_CreateVpcEndpoint(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_DeleteApplication(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteApplication(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DeleteApplication")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_DeleteDataSource(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.DeleteDataSource(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "DeleteDataSource")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_DeleteDirectQueryDataSource(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteDirectQueryDataSource(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DeleteDirectQueryDataSource")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -1213,6 +1429,30 @@ func TestUpdateSnapshot_DissociatePackage(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_DissociatePackages(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DissociatePackages(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DissociatePackages")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_GetApplication(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetApplication(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GetApplication")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_GetCompatibleVersions(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.GetCompatibleVersions(context.Background(), nil, func(o *Options) {
@@ -1230,6 +1470,18 @@ func TestUpdateSnapshot_GetDataSource(t *testing.T) {
 	_, err := svc.GetDataSource(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "GetDataSource")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_GetDirectQueryDataSource(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetDirectQueryDataSource(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GetDirectQueryDataSource")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -1285,11 +1537,35 @@ func TestUpdateSnapshot_GetUpgradeStatus(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_ListApplications(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListApplications(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListApplications")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_ListDataSources(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ListDataSources(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "ListDataSources")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_ListDirectQueryDataSources(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListDirectQueryDataSources(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListDirectQueryDataSources")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -1501,11 +1777,35 @@ func TestUpdateSnapshot_StartServiceSoftwareUpdate(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_UpdateApplication(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateApplication(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "UpdateApplication")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_UpdateDataSource(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.UpdateDataSource(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "UpdateDataSource")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_UpdateDirectQueryDataSource(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateDirectQueryDataSource(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "UpdateDirectQueryDataSource")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -1530,6 +1830,18 @@ func TestUpdateSnapshot_UpdatePackage(t *testing.T) {
 	_, err := svc.UpdatePackage(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "UpdatePackage")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_UpdatePackageScope(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdatePackageScope(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "UpdatePackageScope")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {

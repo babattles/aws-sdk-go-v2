@@ -343,6 +343,10 @@ type AttributePayload struct {
 // Which audit checks are enabled and disabled for this account.
 type AuditCheckConfiguration struct {
 
+	// A structure containing the configName and corresponding configValue for
+	// configuring audit checks.
+	Configuration map[string]string
+
 	// True if this audit check is enabled for this account.
 	Enabled bool
 
@@ -1119,6 +1123,16 @@ type CertificateValidity struct {
 	noSmithyDocumentSerde
 }
 
+// An object that speciﬁes the client certificate conﬁguration for a domain.
+type ClientCertificateConfig struct {
+
+	// The ARN of the Lambda function that IoT invokes after mutual TLS authentication
+	// during the connection.
+	ClientCertificateCallbackArn *string
+
+	noSmithyDocumentSerde
+}
+
 // Describes an action that updates a CloudWatch alarm.
 type CloudwatchAlarmAction struct {
 
@@ -1236,6 +1250,160 @@ type CodeSigningSignature struct {
 
 	// A base64 encoded binary representation of the code signing signature.
 	InlineDocument []byte
+
+	noSmithyDocumentSerde
+}
+
+// The result value of the command execution. The device can use the result field
+// to share additional details about the execution such as a return value of a
+// remote function call.
+//
+// This field is not applicable if you use the AWS-IoT-FleetWise namespace.
+type CommandExecutionResult struct {
+
+	// An attribute of type Boolean. For example:
+	//
+	//     "BOOL": true
+	B *bool
+
+	// An attribute of type Binary.
+	BIN []byte
+
+	// An attribute of type String. For example:
+	//
+	//     "S": "Hello"
+	S *string
+
+	noSmithyDocumentSerde
+}
+
+// Summary information about a particular command execution.
+type CommandExecutionSummary struct {
+
+	// The Amazon Resource Name (ARN) of the command execution.
+	CommandArn *string
+
+	// The date and time at which the command completed executing on the target device.
+	CompletedAt *time.Time
+
+	// The date and time at which the command execution was created for the target
+	// device.
+	CreatedAt *time.Time
+
+	// The unique identifier of the command execution.
+	ExecutionId *string
+
+	// The date and time at which the command started executing on the target device.
+	StartedAt *time.Time
+
+	// The status of the command executions.
+	Status CommandExecutionStatus
+
+	// The Amazon Resource Name (ARN) of the target device for which the command is
+	// being executed.
+	TargetArn *string
+
+	noSmithyDocumentSerde
+}
+
+// A map of key-value pairs that describe the command.
+type CommandParameter struct {
+
+	// The name of a specific parameter used in a command and command execution.
+	//
+	// This member is required.
+	Name *string
+
+	// The default value used to describe the command. This is the value assumed by
+	// the parameter if no other value is assigned to it.
+	DefaultValue *CommandParameterValue
+
+	// The description of the command parameter.
+	Description *string
+
+	// The value used to describe the command. When you assign a value to a parameter,
+	// it will override any default value that you had already specified.
+	Value *CommandParameterValue
+
+	noSmithyDocumentSerde
+}
+
+// The range of possible values that's used to describe a specific command
+// parameter.
+//
+// The commandParameterValue can only have one of the below fields listed.
+type CommandParameterValue struct {
+
+	// An attribute of type Boolean. For example:
+	//
+	//     "BOOL": true
+	B *bool
+
+	// An attribute of type Binary. For example:
+	//
+	//     "B": "dGhpcyB0ZXh0IGlzIGJhc2U2NC1lbmNvZGVk"
+	BIN []byte
+
+	// An attribute of type Double (Sixty-Four Bits).
+	D *float64
+
+	// An attribute of type Integer (Thirty-Two Bits).
+	I *int32
+
+	// An attribute of type Long.
+	L *int64
+
+	// An attribute of type String. For example:
+	//
+	//     "S": "Hello"
+	S *string
+
+	// An attribute of type unsigned long.
+	UL *string
+
+	noSmithyDocumentSerde
+}
+
+// The command payload object that contains the instructions for the device to
+// process.
+type CommandPayload struct {
+
+	// The static payload file for the command.
+	Content []byte
+
+	// The content type that specifies the format type of the payload file. This field
+	// must use a type/subtype format, such as application/json . For information about
+	// various content types, see [Common MIME types].
+	//
+	// [Common MIME types]: https://developer.mozilla.org/en-US/docs/Web/HTTP/MIME_types/Common_types
+	ContentType *string
+
+	noSmithyDocumentSerde
+}
+
+// Summary information about a particular command resource.
+type CommandSummary struct {
+
+	// The Amazon Resource Name (ARN) of the command.
+	CommandArn *string
+
+	// The unique identifier of the command.
+	CommandId *string
+
+	// The timestamp, when the command was created.
+	CreatedAt *time.Time
+
+	// Indicates whether the command has been deprecated.
+	Deprecated *bool
+
+	// The display name of the command.
+	DisplayName *string
+
+	// The timestamp, when the command was last updated.
+	LastUpdatedAt *time.Time
+
+	// Indicates whether the command is pending deletion.
+	PendingDeletion *bool
 
 	noSmithyDocumentSerde
 }
@@ -2759,6 +2927,16 @@ type MitigationActionParams struct {
 	noSmithyDocumentSerde
 }
 
+// The configuration to add user-defined properties to enrich MQTT 5 messages.
+type Mqtt5Configuration struct {
+
+	// An object that represents the propagating thing attributes and the connection
+	// attributes.
+	PropagatingAttributes []PropagatingAttribute
+
+	noSmithyDocumentSerde
+}
+
 // Specifies the MQTT context to use for the test authorizer request
 type MqttContext struct {
 
@@ -3037,6 +3215,15 @@ type PackageSummary struct {
 	noSmithyDocumentSerde
 }
 
+// A specific package version artifact associated with a software package version.
+type PackageVersionArtifact struct {
+
+	// The S3 location.
+	S3Location *S3Location
+
+	noSmithyDocumentSerde
+}
+
 // A summary of information about a package version.
 type PackageVersionSummary struct {
 
@@ -3128,6 +3315,46 @@ type PresignedUrlConfig struct {
 	//
 	// [cross-service confused deputy prevention]: https://docs.aws.amazon.com/iot/latest/developerguide/cross-service-confused-deputy-prevention.html
 	RoleArn *string
+
+	noSmithyDocumentSerde
+}
+
+// An object that represents the thing and the type of relation it has with the
+// principal.
+type PrincipalThingObject struct {
+
+	// The name of the thing.
+	//
+	// This member is required.
+	ThingName *string
+
+	// The type of the relation you want to specify when you attach a principal to a
+	// thing. The value defaults to NON_EXCLUSIVE_THING .
+	//
+	//   - EXCLUSIVE_THING - Attaches the specified principal to the specified thing,
+	//   exclusively. The thing will be the only thing that’s attached to the principal.
+	//
+	//   - NON_EXCLUSIVE_THING - Attaches the specified principal to the specified
+	//   thing. Multiple things can be attached to the principal.
+	ThingPrincipalType ThingPrincipalType
+
+	noSmithyDocumentSerde
+}
+
+// An object that represents the connection attribute, thing attribute, and the
+// user property key.
+type PropagatingAttribute struct {
+
+	// The attribute associated with the connection between a device and Amazon Web
+	// Services IoT Core.
+	ConnectionAttribute *string
+
+	// The user-defined thing attribute that is propagating for MQTT 5 message
+	// enrichment.
+	ThingAttribute *string
+
+	// The key of the user property key-value pair.
+	UserPropertyKey *string
 
 	noSmithyDocumentSerde
 }
@@ -3492,6 +3719,37 @@ type SalesforceAction struct {
 	noSmithyDocumentSerde
 }
 
+// A specific software bill of matrerials associated with a software package
+// version.
+type Sbom struct {
+
+	// The S3 location.
+	S3Location *S3Location
+
+	noSmithyDocumentSerde
+}
+
+// A summary of the validation results for a specific software bill of materials
+// (SBOM) attached to a software package version.
+type SbomValidationResultSummary struct {
+
+	// The errorCode representing the validation failure error if the SBOM validation
+	// failed.
+	ErrorCode SbomValidationErrorCode
+
+	// The errorMessage representing the validation failure error if the SBOM
+	// validation failed.
+	ErrorMessage *string
+
+	// The name of the SBOM file.
+	FileName *string
+
+	// The end result of the SBOM validation.
+	ValidationResult SbomValidationResult
+
+	noSmithyDocumentSerde
+}
+
 // Information about the scheduled audit.
 type ScheduledAuditMetadata struct {
 
@@ -3614,10 +3872,32 @@ type ServerCertificateConfig struct {
 	// A Boolean value that indicates whether Online Certificate Status Protocol
 	// (OCSP) server certificate check is enabled or not.
 	//
-	// For more information, see [Configuring OCSP server-certificate stapling in domain configuration] from Amazon Web Services IoT Core Developer Guide.
+	// For more information, see [Server certificate configuration for OCSP stapling] from Amazon Web Services IoT Core Developer Guide.
 	//
-	// [Configuring OCSP server-certificate stapling in domain configuration]: https://docs.aws.amazon.com/iot/latest/developerguide/iot-custom-domain-ocsp-config.html
+	// [Server certificate configuration for OCSP stapling]: https://docs.aws.amazon.com/iot/latest/developerguide/iot-custom-endpoints-cert-config.html
 	EnableOCSPCheck *bool
+
+	// The Amazon Resource Name (ARN) for an X.509 certificate stored in Amazon Web
+	// Services Certificate Manager (ACM). If provided, Amazon Web Services IoT Core
+	// will use this certificate to validate the signature of the received OCSP
+	// response. The OCSP responder must sign responses using either this authorized
+	// responder certificate or the issuing certificate, depending on whether the ARN
+	// is provided or not. The certificate must be in the same Amazon Web Services
+	// account and region as the domain configuration.
+	OcspAuthorizedResponderArn *string
+
+	// The Amazon Resource Name (ARN) for a Lambda function that acts as a Request for
+	// Comments (RFC) 6960-compliant Online Certificate Status Protocol (OCSP)
+	// responder, supporting basic OCSP responses. The Lambda function accepts a
+	// base64-encoding of the OCSP request in the Distinguished Encoding Rules (DER)
+	// format. The Lambda function's response is also a base64-encoded OCSP response in
+	// the DER format. The response size must not exceed 4 kilobytes (KiB). The Lambda
+	// function must be in the same Amazon Web Services account and region as the
+	// domain configuration. For more information, see [Configuring server certificate OCSP for private endpoints in Amazon Web Services IoT Core]from the Amazon Web Services
+	// IoT Core developer guide.
+	//
+	// [Configuring server certificate OCSP for private endpoints in Amazon Web Services IoT Core]: https://docs.aws.amazon.com/iot/latest/developerguide/iot-custom-endpoints-cert-config.html#iot-custom-endpoints-cert-config-ocsp-private-endpoint.html
+	OcspLambdaArn *string
 
 	noSmithyDocumentSerde
 }
@@ -3781,6 +4061,22 @@ type Statistics struct {
 
 	// The variance of the aggregated field values.
 	Variance *float64
+
+	noSmithyDocumentSerde
+}
+
+// Provide additional context about the status of a command execution using a
+// reason code and description.
+type StatusReason struct {
+
+	// A code that provides additional context for the command execution status.
+	//
+	// This member is required.
+	ReasonCode *string
+
+	// A literal string for devices to optionally provide additional information about
+	// the reason code for a command execution status.
+	ReasonDescription *string
 
 	noSmithyDocumentSerde
 }
@@ -4021,7 +4317,7 @@ type ThingDocument struct {
 	// [IoT Device Shadow service.]: https://docs.aws.amazon.com/iot/latest/developerguide/iot-device-shadows.html
 	Shadow *string
 
-	// Thing group names.
+	// Thing group and billing group names.
 	ThingGroupNames []string
 
 	// The thing ID.
@@ -4193,6 +4489,28 @@ type ThingIndexingConfiguration struct {
 	noSmithyDocumentSerde
 }
 
+// An object that represents the principal and the type of relation it has with
+// the thing.
+type ThingPrincipalObject struct {
+
+	// The principal of the thing principal object.
+	//
+	// This member is required.
+	Principal *string
+
+	// The type of the relation you want to specify when you attach a principal to a
+	// thing. The value defaults to NON_EXCLUSIVE_THING .
+	//
+	//   - EXCLUSIVE_THING - Attaches the specified principal to the specified thing,
+	//   exclusively. The thing will be the only thing that’s attached to the principal.
+	//
+	//   - NON_EXCLUSIVE_THING - Attaches the specified principal to the specified
+	//   thing. Multiple things can be attached to the principal.
+	ThingPrincipalType ThingPrincipalType
+
+	noSmithyDocumentSerde
+}
+
 // The definition of the thing type, including thing type name and description.
 type ThingTypeDefinition struct {
 
@@ -4235,11 +4553,29 @@ type ThingTypeMetadata struct {
 // thing type description, and a list of searchable thing attribute names.
 type ThingTypeProperties struct {
 
+	// The configuration to add user-defined properties to enrich MQTT 5 messages.
+	Mqtt5Configuration *Mqtt5Configuration
+
 	// A list of searchable thing attribute names.
 	SearchableAttributes []string
 
 	// The description of the thing type.
 	ThingTypeDescription *string
+
+	noSmithyDocumentSerde
+}
+
+// A filter that can be used to list command executions for a device that started
+// or completed before or after a particular date and time.
+type TimeFilter struct {
+
+	// Filter to display command executions that started or completed only after a
+	// particular date and time.
+	After *string
+
+	// Filter to display command executions that started or completed only before a
+	// particular date and time.
+	Before *string
 
 	noSmithyDocumentSerde
 }

@@ -111,6 +111,18 @@
                     "traits": {
                         "smithy.api#enumValue": "MigrateToGraviton"
                     }
+                },
+                "DELETE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Delete"
+                    }
+                },
+                "SCALE_IN": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ScaleIn"
+                    }
                 }
             }
         },
@@ -123,6 +135,23 @@
                 "smithy.api#length": {
                     "min": 1,
                     "max": 100
+                }
+            }
+        },
+        "com.amazonaws.costoptimizationhub#AllocationStrategy": {
+            "type": "enum",
+            "members": {
+                "PRIORITIZED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Prioritized"
+                    }
+                },
+                "LOWEST_PRICE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "LowestPrice"
+                    }
                 }
             }
         },
@@ -956,7 +985,7 @@
                 "configuration": {
                     "target": "com.amazonaws.costoptimizationhub#EbsVolumeConfiguration",
                     "traits": {
-                        "smithy.api#documentation": "<p>The Amazon Elastic Block Store volume configuration used for\n      recommendations.</p>"
+                        "smithy.api#documentation": "<p>The Amazon Elastic Block Store volume configuration used for recommendations.</p>"
                     }
                 },
                 "costCalculation": {
@@ -967,7 +996,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>Describes the Amazon Elastic Block Store volume configuration of the current and\n      recommended resource configuration for a recommendation.</p>"
+                "smithy.api#documentation": "<p>Describes the Amazon Elastic Block Store volume configuration of the current and recommended\n      resource configuration for a recommendation.</p>"
             }
         },
         "com.amazonaws.costoptimizationhub#EbsVolumeConfiguration": {
@@ -993,7 +1022,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>The Amazon Elastic Block Store volume configuration used for\n      recommendations.</p>"
+                "smithy.api#documentation": "<p>The Amazon Elastic Block Store volume configuration used for recommendations.</p>"
             }
         },
         "com.amazonaws.costoptimizationhub#Ec2AutoScalingGroup": {
@@ -1022,12 +1051,47 @@
                 "instance": {
                     "target": "com.amazonaws.costoptimizationhub#InstanceConfiguration",
                     "traits": {
-                        "smithy.api#documentation": "<p>Details about the instance.</p>"
+                        "smithy.api#documentation": "<p>Details about the instance for the EC2 Auto Scaling group with a single instance\n      type.</p>"
+                    }
+                },
+                "mixedInstances": {
+                    "target": "com.amazonaws.costoptimizationhub#MixedInstanceConfigurationList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of instance types for an EC2 Auto Scaling group with mixed instance types.</p>"
+                    }
+                },
+                "type": {
+                    "target": "com.amazonaws.costoptimizationhub#Ec2AutoScalingGroupType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of EC2 Auto Scaling group, showing whether it consists of a single instance type\n      or mixed instance types.</p>"
+                    }
+                },
+                "allocationStrategy": {
+                    "target": "com.amazonaws.costoptimizationhub#AllocationStrategy",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The strategy used for allocating instances, based on a predefined priority order or based\n      on the lowest available price.</p>"
                     }
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>The EC2 auto scaling group configuration used for recommendations.</p>"
+                "smithy.api#documentation": "<p>The EC2 Auto Scaling group configuration used for recommendations.</p>"
+            }
+        },
+        "com.amazonaws.costoptimizationhub#Ec2AutoScalingGroupType": {
+            "type": "enum",
+            "members": {
+                "SINGLE_INSTANCE_TYPE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SingleInstanceType"
+                    }
+                },
+                "MIXED_INSTANCE_TYPES": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "MixedInstanceTypes"
+                    }
+                }
             }
         },
         "com.amazonaws.costoptimizationhub#Ec2Instance": {
@@ -1807,12 +1871,12 @@
                 "type": {
                     "target": "smithy.api#String",
                     "traits": {
-                        "smithy.api#documentation": "<p>Details about the type.</p>"
+                        "smithy.api#documentation": "<p>The instance type of the configuration.</p>"
                     }
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>The Instance configuration used for recommendations.</p>"
+                "smithy.api#documentation": "<p>The instance configuration used for recommendations.</p>"
             }
         },
         "com.amazonaws.costoptimizationhub#InternalServerException": {
@@ -2202,6 +2266,26 @@
                 }
             }
         },
+        "com.amazonaws.costoptimizationhub#MixedInstanceConfiguration": {
+            "type": "structure",
+            "members": {
+                "type": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The instance type of the configuration.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The configuration for the EC2 Auto Scaling group with mixed instance types.</p>"
+            }
+        },
+        "com.amazonaws.costoptimizationhub#MixedInstanceConfigurationList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.costoptimizationhub#MixedInstanceConfiguration"
+            }
+        },
         "com.amazonaws.costoptimizationhub#OpenSearchReservedInstances": {
             "type": "structure",
             "members": {
@@ -2353,10 +2437,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>Contains the details of an Amazon RDS DB instance.</p>",
-                "smithy.api#tags": [
-                    "rds"
-                ]
+                "smithy.api#documentation": "<p>Contains the details of an Amazon RDS DB instance.</p>"
             }
         },
         "com.amazonaws.costoptimizationhub#RdsDbInstanceConfiguration": {
@@ -2387,10 +2468,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>Contains the details of an Amazon RDS DB instance storage.</p>",
-                "smithy.api#tags": [
-                    "rds"
-                ]
+                "smithy.api#documentation": "<p>Contains the details of an Amazon RDS DB instance storage.</p>"
             }
         },
         "com.amazonaws.costoptimizationhub#RdsDbInstanceStorageConfiguration": {
@@ -3013,25 +3091,19 @@
                 "sageMakerSavingsPlans": {
                     "target": "com.amazonaws.costoptimizationhub#SageMakerSavingsPlans",
                     "traits": {
-                        "smithy.api#documentation": "<p>The SageMaker Savings Plans recommendation details.</p>"
+                        "smithy.api#documentation": "<p>The SageMaker AI\n      Savings Plans recommendation details.</p>"
                     }
                 },
                 "rdsDbInstance": {
                     "target": "com.amazonaws.costoptimizationhub#RdsDbInstance",
                     "traits": {
-                        "smithy.api#documentation": "<p>The DB instance recommendation details.</p>",
-                        "smithy.api#tags": [
-                            "rds"
-                        ]
+                        "smithy.api#documentation": "<p>The DB instance recommendation details.</p>"
                     }
                 },
                 "rdsDbInstanceStorage": {
                     "target": "com.amazonaws.costoptimizationhub#RdsDbInstanceStorage",
                     "traits": {
-                        "smithy.api#documentation": "<p>The DB instance storage recommendation details.</p>",
-                        "smithy.api#tags": [
-                            "rds"
-                        ]
+                        "smithy.api#documentation": "<p>The DB instance storage recommendation details.</p>"
                     }
                 }
             },
@@ -3190,19 +3262,13 @@
                 "RDS_DB_INSTANCE_STORAGE": {
                     "target": "smithy.api#Unit",
                     "traits": {
-                        "smithy.api#enumValue": "RdsDbInstanceStorage",
-                        "smithy.api#tags": [
-                            "rds"
-                        ]
+                        "smithy.api#enumValue": "RdsDbInstanceStorage"
                     }
                 },
                 "RDS_DB_INSTANCE": {
                     "target": "smithy.api#Unit",
                     "traits": {
-                        "smithy.api#enumValue": "RdsDbInstance",
-                        "smithy.api#tags": [
-                            "rds"
-                        ]
+                        "smithy.api#enumValue": "RdsDbInstance"
                     }
                 }
             }

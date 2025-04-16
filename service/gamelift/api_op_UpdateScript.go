@@ -28,13 +28,13 @@ import (
 //
 // # Learn more
 //
-// [Amazon GameLift Realtime Servers]
+// [Amazon GameLift Amazon GameLift Realtime]
 //
 // # Related actions
 //
 // [All APIs by task]
 //
-// [Amazon GameLift Realtime Servers]: https://docs.aws.amazon.com/gamelift/latest/developerguide/realtime-intro.html
+// [Amazon GameLift Amazon GameLift Realtime]: https://docs.aws.amazon.com/gamelift/latest/developerguide/realtime-intro.html
 // [All APIs by task]: https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets
 func (c *Client) UpdateScript(ctx context.Context, params *UpdateScriptInput, optFns ...func(*Options)) (*UpdateScriptOutput, error) {
 	if params == nil {
@@ -59,7 +59,7 @@ type UpdateScriptInput struct {
 	// This member is required.
 	ScriptId *string
 
-	// A descriptive label that is associated with a script. Script names don't need
+	// A descriptive label that is associated with a script. Script names do not need
 	// to be unique.
 	Name *string
 
@@ -73,8 +73,8 @@ type UpdateScriptInput struct {
 	// version.
 	StorageLocation *types.S3Location
 
-	// Version information associated with a build or script. Version strings don't
-	// need to be unique.
+	// Version information that is associated with a build or script. Version strings
+	// do not need to be unique.
 	Version *string
 
 	// A data object containing your Realtime scripts and dependencies as a zip file.
@@ -148,6 +148,9 @@ func (c *Client) addOperationUpdateScriptMiddlewares(stack *middleware.Stack, op
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -164,6 +167,9 @@ func (c *Client) addOperationUpdateScriptMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateScriptValidationMiddleware(stack); err != nil {
@@ -185,6 +191,18 @@ func (c *Client) addOperationUpdateScriptMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

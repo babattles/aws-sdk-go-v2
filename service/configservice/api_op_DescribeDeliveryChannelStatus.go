@@ -12,8 +12,8 @@ import (
 )
 
 // Returns the current status of the specified delivery channel. If a delivery
-// channel is not specified, this action returns the current status of all delivery
-// channels associated with the account.
+// channel is not specified, this operation returns the current status of all
+// delivery channels associated with the account.
 //
 // Currently, you can specify only one delivery channel per region in your account.
 func (c *Client) DescribeDeliveryChannelStatus(ctx context.Context, params *DescribeDeliveryChannelStatusInput, optFns ...func(*Options)) (*DescribeDeliveryChannelStatusOutput, error) {
@@ -95,6 +95,9 @@ func (c *Client) addOperationDescribeDeliveryChannelStatusMiddlewares(stack *mid
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -113,6 +116,9 @@ func (c *Client) addOperationDescribeDeliveryChannelStatusMiddlewares(stack *mid
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeDeliveryChannelStatus(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -129,6 +135,18 @@ func (c *Client) addOperationDescribeDeliveryChannelStatusMiddlewares(stack *mid
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

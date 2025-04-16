@@ -1,3 +1,141 @@
+# v1.64.2 (2025-04-03)
+
+* No change notes available for this release.
+
+# v1.64.1 (2025-03-04.2)
+
+* **Bug Fix**: Add assurance test for operation order.
+
+# v1.64.0 (2025-02-27)
+
+* **Feature**: Track credential providers via User-Agent Feature ids
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.63.0 (2025-02-25)
+
+* **Feature**: AWS IoT - AWS IoT Device Defender adds support for a new Device Defender Audit Check that monitors device certificate age and custom threshold configurations for both the new device certificate age check and existing device certificate expiry check.
+
+# v1.62.9 (2025-02-18)
+
+* **Bug Fix**: Bump go version to 1.22
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.62.8 (2025-02-05)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.62.7 (2025-01-31)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.62.6 (2025-01-30)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.62.5 (2025-01-24)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+* **Dependency Update**: Upgrade to smithy-go v1.22.2.
+
+# v1.62.4 (2025-01-17)
+
+* **Bug Fix**: Fix bug where credentials weren't refreshed during retry loop.
+
+# v1.62.3 (2025-01-15)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.62.2 (2025-01-09)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.62.1 (2024-12-19)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.62.0 (2024-12-18)
+
+* **Feature**: Release connectivity status query API which is a dedicated high throughput(TPS) API to query a specific device's most recent connectivity state and metadata.
+
+# v1.61.1 (2024-12-02)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.61.0 (2024-11-21)
+
+* **Feature**: General Availability (GA) release of AWS IoT Device Management - Commands, to trigger light-weight remote actions on targeted devices
+
+# v1.60.1 (2024-11-18)
+
+* **Dependency Update**: Update to smithy-go v1.22.1.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.60.0 (2024-11-15.2)
+
+* **Feature**: This release allows AWS IoT Core users to enrich MQTT messages with propagating attributes, to associate a thing to a connection, and to enable Online Certificate Status Protocol (OCSP) stapling for TLS X.509 server certificates through private endpoints.
+
+# v1.59.5 (2024-11-07)
+
+* **Bug Fix**: Adds case-insensitive handling of error message fields in service responses
+
+# v1.59.4 (2024-11-06)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.59.3 (2024-10-28)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.59.2 (2024-10-08)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.59.1 (2024-10-07)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.59.0 (2024-10-04)
+
+* **Feature**: Add support for HTTP client metrics.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.58.0 (2024-10-03)
+
+* **Feature**: This release adds support for Custom Authentication with X.509 Client Certificates, support for Custom Client Certificate validation, and support for selecting application protocol and authentication type without requiring TLS ALPN for customer's AWS IoT Domain Configurations.
+
+# v1.57.3 (2024-09-27)
+
+* No change notes available for this release.
+
+# v1.57.2 (2024-09-25)
+
+* No change notes available for this release.
+
+# v1.57.1 (2024-09-23)
+
+* No change notes available for this release.
+
+# v1.57.0 (2024-09-20)
+
+* **Feature**: Add tracing and metrics support to service clients.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.56.1 (2024-09-17)
+
+* **Bug Fix**: **BREAKFIX**: Only generate AccountIDEndpointMode config for services that use it. This is a compiler break, but removes no actual functionality, as no services currently use the account ID in endpoint resolution.
+
+# v1.56.0 (2024-09-16)
+
+* **Feature**: This release adds additional enhancements to AWS IoT Device Management Software Package Catalog and Jobs. It also adds SBOM support in Software Package Version.
+
+# v1.55.6 (2024-09-04)
+
+* No change notes available for this release.
+
+# v1.55.5 (2024-09-03)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
 # v1.55.4 (2024-08-15)
 
 * **Dependency Update**: Bump minimum Go version to 1.21.

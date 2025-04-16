@@ -79,6 +79,10 @@ type UpdateDataSetInput struct {
 	// tables.
 	LogicalTableMap map[string]types.LogicalTable
 
+	// The configuration for the performance optimization of the dataset that contains
+	// a UniqueKey configuration.
+	PerformanceConfiguration *types.PerformanceConfiguration
+
 	// The row-level security configuration for the data you want to create.
 	RowLevelPermissionDataSet *types.RowLevelPermissionDataSet
 
@@ -161,6 +165,9 @@ func (c *Client) addOperationUpdateDataSetMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -177,6 +184,9 @@ func (c *Client) addOperationUpdateDataSetMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateDataSetValidationMiddleware(stack); err != nil {
@@ -198,6 +208,18 @@ func (c *Client) addOperationUpdateDataSetMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

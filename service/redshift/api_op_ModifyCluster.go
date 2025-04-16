@@ -23,7 +23,25 @@ import (
 // group requires a reboot for parameters to take effect. For more information
 // about managing clusters, go to [Amazon Redshift Clusters]in the Amazon Redshift Cluster Management Guide.
 //
+// VPC Block Public Access (BPA) enables you to block resources in VPCs and
+// subnets that you own in a Region from reaching or being reached from the
+// internet through internet gateways and egress-only internet gateways. If a
+// subnet group for a provisioned cluster is in an account with VPC BPA turned on,
+// the following capabilities are blocked:
+//
+//   - Creating a public cluster
+//
+//   - Restoring a public cluster
+//
+//   - Modifying a private cluster to be public
+//
+//   - Adding a subnet with VPC BPA turned on to the subnet group when there's at
+//     least one public cluster within the group
+//
+// For more information about VPC BPA, see [Block public access to VPCs and subnets] in the Amazon VPC User Guide.
+//
 // [Amazon Redshift Clusters]: https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html
+// [Block public access to VPCs and subnets]: https://docs.aws.amazon.com/vpc/latest/userguide/security-vpc-bpa.html
 func (c *Client) ModifyCluster(ctx context.Context, params *ModifyClusterInput, optFns ...func(*Options)) (*ModifyClusterOutput, error) {
 	if params == nil {
 		params = &ModifyClusterInput{}
@@ -254,7 +272,8 @@ type ModifyClusterInput struct {
 	// For more information about resizing clusters, go to [Resizing Clusters in Amazon Redshift] in the Amazon Redshift
 	// Cluster Management Guide.
 	//
-	// Valid Values: dc2.large | dc2.8xlarge | ra3.xlplus | ra3.4xlarge | ra3.16xlarge
+	// Valid Values: dc2.large | dc2.8xlarge | ra3.large | ra3.xlplus | ra3.4xlarge |
+	// ra3.16xlarge
 	//
 	// [Resizing Clusters in Amazon Redshift]: https://docs.aws.amazon.com/redshift/latest/mgmt/rs-resize-tutorial.html
 	NodeType *string
@@ -301,6 +320,8 @@ type ModifyClusterInput struct {
 
 	// If true , the cluster can be accessed from a public network. Only clusters in
 	// VPCs can be set to be publicly available.
+	//
+	// Default: false
 	PubliclyAccessible *bool
 
 	// A list of virtual private cloud (VPC) security groups to be associated with the
@@ -364,6 +385,9 @@ func (c *Client) addOperationModifyClusterMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -380,6 +404,9 @@ func (c *Client) addOperationModifyClusterMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpModifyClusterValidationMiddleware(stack); err != nil {
@@ -401,6 +428,18 @@ func (c *Client) addOperationModifyClusterMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

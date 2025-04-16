@@ -40,8 +40,8 @@ type AcceptResourceGroupingRecommendationsInput struct {
 	// This member is required.
 	AppArn *string
 
-	// Indicates the list of resource grouping recommendations you want to include in
-	// your application.
+	// List of resource grouping recommendations you want to include in your
+	// application.
 	//
 	// This member is required.
 	Entries []types.AcceptGroupingRecommendationEntry
@@ -61,8 +61,8 @@ type AcceptResourceGroupingRecommendationsOutput struct {
 	// This member is required.
 	AppArn *string
 
-	// Indicates the list of resource grouping recommendations that could not be
-	// included in your application.
+	// List of resource grouping recommendations that could not be included in your
+	// application.
 	//
 	// This member is required.
 	FailedEntries []types.FailedGroupingRecommendationEntry
@@ -116,6 +116,9 @@ func (c *Client) addOperationAcceptResourceGroupingRecommendationsMiddlewares(st
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -132,6 +135,9 @@ func (c *Client) addOperationAcceptResourceGroupingRecommendationsMiddlewares(st
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpAcceptResourceGroupingRecommendationsValidationMiddleware(stack); err != nil {
@@ -153,6 +159,18 @@ func (c *Client) addOperationAcceptResourceGroupingRecommendationsMiddlewares(st
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

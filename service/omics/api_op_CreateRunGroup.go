@@ -10,7 +10,8 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Creates a run group.
+// You can optionally create a run group to limit the compute resources for the
+// runs that you add to the group.
 func (c *Client) CreateRunGroup(ctx context.Context, params *CreateRunGroupInput, optFns ...func(*Options)) (*CreateRunGroupOutput, error) {
 	if params == nil {
 		params = &CreateRunGroupInput{}
@@ -34,16 +35,19 @@ type CreateRunGroupInput struct {
 	// This member is required.
 	RequestId *string
 
-	// The maximum number of CPUs to use in the group.
+	// The maximum number of CPUs that can run concurrently across all active runs in
+	// the run group.
 	MaxCpus *int32
 
-	// A maximum run time for the group in minutes.
+	// The maximum time for each run (in minutes). If a run exceeds the maximum run
+	// time, the run fails automatically.
 	MaxDuration *int32
 
-	// The maximum GPUs that can be used by a run group.
+	// The maximum number of GPUs that can run concurrently across all active runs in
+	// the run group.
 	MaxGpus *int32
 
-	// The maximum number of concurrent runs for the group.
+	// The maximum number of runs that can be running at the same time.
 	MaxRuns *int32
 
 	// A name for the group.
@@ -115,6 +119,9 @@ func (c *Client) addOperationCreateRunGroupMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -131,6 +138,9 @@ func (c *Client) addOperationCreateRunGroupMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addEndpointPrefix_opCreateRunGroupMiddleware(stack); err != nil {
@@ -158,6 +168,18 @@ func (c *Client) addOperationCreateRunGroupMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -136,8 +136,8 @@ type CreateServerInput struct {
 	// Required when IdentityProviderType is set to AWS_DIRECTORY_SERVICE , Amazon Web
 	// Services_LAMBDA or API_GATEWAY . Accepts an array containing all of the
 	// information required to use a directory in AWS_DIRECTORY_SERVICE or invoke a
-	// customer-supplied authentication API, including the API Gateway URL. Not
-	// required when IdentityProviderType is set to SERVICE_MANAGED .
+	// customer-supplied authentication API, including the API Gateway URL. Cannot be
+	// specified when IdentityProviderType is set to SERVICE_MANAGED .
 	IdentityProviderDetails *types.IdentityProviderDetails
 
 	// The mode of authentication for a server. The default value is SERVICE_MANAGED ,
@@ -333,6 +333,9 @@ func (c *Client) addOperationCreateServerMiddlewares(stack *middleware.Stack, op
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -349,6 +352,9 @@ func (c *Client) addOperationCreateServerMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateServerValidationMiddleware(stack); err != nil {
@@ -370,6 +376,18 @@ func (c *Client) addOperationCreateServerMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

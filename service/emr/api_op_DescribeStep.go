@@ -11,7 +11,6 @@ import (
 	smithytime "github.com/aws/smithy-go/time"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	smithywaiter "github.com/aws/smithy-go/waiter"
-	jmespath "github.com/jmespath/go-jmespath"
 	"time"
 )
 
@@ -102,6 +101,9 @@ func (c *Client) addOperationDescribeStepMiddlewares(stack *middleware.Stack, op
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -118,6 +120,9 @@ func (c *Client) addOperationDescribeStepMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeStepValidationMiddleware(stack); err != nil {
@@ -139,6 +144,18 @@ func (c *Client) addOperationDescribeStepMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -303,56 +320,68 @@ func (w *StepCompleteWaiter) WaitForOutput(ctx context.Context, params *Describe
 func stepCompleteStateRetryable(ctx context.Context, input *DescribeStepInput, output *DescribeStepOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Step.Status.State", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Step
+		var v2 *types.StepStatus
+		if v1 != nil {
+			v3 := v1.Status
+			v2 = v3
 		}
-
+		var v4 types.StepState
+		if v2 != nil {
+			v5 := v2.State
+			v4 = v5
+		}
 		expectedValue := "COMPLETED"
-		value, ok := pathValue.(types.StepState)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.StepState value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v4)
+		if pathValue == expectedValue {
 			return false, nil
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Step.Status.State", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Step
+		var v2 *types.StepStatus
+		if v1 != nil {
+			v3 := v1.Status
+			v2 = v3
 		}
-
+		var v4 types.StepState
+		if v2 != nil {
+			v5 := v2.State
+			v4 = v5
+		}
 		expectedValue := "FAILED"
-		value, ok := pathValue.(types.StepState)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.StepState value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v4)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Step.Status.State", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Step
+		var v2 *types.StepStatus
+		if v1 != nil {
+			v3 := v1.Status
+			v2 = v3
 		}
-
+		var v4 types.StepState
+		if v2 != nil {
+			v5 := v2.State
+			v4 = v5
+		}
 		expectedValue := "CANCELLED"
-		value, ok := pathValue.(types.StepState)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.StepState value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v4)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 

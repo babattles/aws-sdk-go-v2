@@ -44,7 +44,7 @@ type DescribeCanariesInput struct {
 
 	// Specify this parameter to limit how many canaries are returned each time you
 	// use the DescribeCanaries operation. If you omit this parameter, the default of
-	// 100 is used.
+	// 20 is used.
 	MaxResults *int32
 
 	// Use this parameter to return only canaries that match the names that you
@@ -129,6 +129,9 @@ func (c *Client) addOperationDescribeCanariesMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -145,6 +148,9 @@ func (c *Client) addOperationDescribeCanariesMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeCanaries(options.Region), middleware.Before); err != nil {
@@ -165,6 +171,18 @@ func (c *Client) addOperationDescribeCanariesMiddlewares(stack *middleware.Stack
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -172,7 +190,7 @@ func (c *Client) addOperationDescribeCanariesMiddlewares(stack *middleware.Stack
 type DescribeCanariesPaginatorOptions struct {
 	// Specify this parameter to limit how many canaries are returned each time you
 	// use the DescribeCanaries operation. If you omit this parameter, the default of
-	// 100 is used.
+	// 20 is used.
 	Limit int32
 
 	// Set to true if pagination should stop if the service returns a pagination token

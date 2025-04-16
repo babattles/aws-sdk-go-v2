@@ -37,6 +37,9 @@ type SendMediaMessageInput struct {
 	// The origination identity of the message. This can be either the PhoneNumber,
 	// PhoneNumberId, PhoneNumberArn, SenderId, SenderIdArn, PoolId, or PoolArn.
 	//
+	// If you are using a shared AWS End User Messaging SMS and Voice resource then
+	// you must use the full Amazon Resource Name(ARN).
+	//
 	// This member is required.
 	OriginationIdentity *string
 
@@ -69,10 +72,14 @@ type SendMediaMessageInput struct {
 	// The text body of the message.
 	MessageBody *string
 
+	// Set to true to enable message feedback for the message. When a user receives
+	// the message you need to update the message status using PutMessageFeedback.
+	MessageFeedbackEnabled *bool
+
 	// The unique identifier of the protect configuration to use.
 	ProtectConfigurationId *string
 
-	// How long the text message is valid for. By default this is 72 hours.
+	// How long the media message is valid for. By default this is 72 hours.
 	TimeToLive *int32
 
 	noSmithyDocumentSerde
@@ -132,6 +139,9 @@ func (c *Client) addOperationSendMediaMessageMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -148,6 +158,9 @@ func (c *Client) addOperationSendMediaMessageMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpSendMediaMessageValidationMiddleware(stack); err != nil {
@@ -169,6 +182,18 @@ func (c *Client) addOperationSendMediaMessageMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

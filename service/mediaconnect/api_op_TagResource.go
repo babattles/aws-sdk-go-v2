@@ -10,7 +10,8 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Associates the specified tags to a resource with the specified resourceArn. If
+//	Associates the specified tags to a resource with the specified resourceArn . If
+//
 // existing tags on a resource are not specified in the request parameters, they
 // are not changed. When a resource is deleted, the tags associated with that
 // resource are deleted as well.
@@ -29,18 +30,15 @@ func (c *Client) TagResource(ctx context.Context, params *TagResourceInput, optF
 	return out, nil
 }
 
-// The tags to add to the resource. A tag is an array of key-value pairs. Tag keys
-// can have a maximum character length of 128 characters, and tag values can have a
-// maximum length of 256 characters.
 type TagResourceInput struct {
 
-	// The Amazon Resource Name (ARN) that identifies the AWS Elemental MediaConnect
-	// resource to which to add tags.
+	//  The Amazon Resource Name (ARN) that identifies the MediaConnect resource to
+	// which to add tags.
 	//
 	// This member is required.
 	ResourceArn *string
 
-	// A map from tag keys to values. Tag keys can have a maximum character length of
+	//  A map from tag keys to values. Tag keys can have a maximum character length of
 	// 128 characters, and tag values can have a maximum length of 256 characters.
 	//
 	// This member is required.
@@ -99,6 +97,9 @@ func (c *Client) addOperationTagResourceMiddlewares(stack *middleware.Stack, opt
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -115,6 +116,9 @@ func (c *Client) addOperationTagResourceMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpTagResourceValidationMiddleware(stack); err != nil {
@@ -136,6 +140,18 @@ func (c *Client) addOperationTagResourceMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

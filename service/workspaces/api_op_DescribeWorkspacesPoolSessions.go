@@ -34,7 +34,8 @@ type DescribeWorkspacesPoolSessionsInput struct {
 	// This member is required.
 	PoolId *string
 
-	// The maximum number of items to return.
+	// The maximum size of each page of results. The default value is 20 and the
+	// maximum value is 50.
 	Limit *int32
 
 	// If you received a NextToken from a previous call that was paginated, provide
@@ -105,6 +106,9 @@ func (c *Client) addOperationDescribeWorkspacesPoolSessionsMiddlewares(stack *mi
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -121,6 +125,9 @@ func (c *Client) addOperationDescribeWorkspacesPoolSessionsMiddlewares(stack *mi
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeWorkspacesPoolSessionsValidationMiddleware(stack); err != nil {
@@ -142,6 +149,18 @@ func (c *Client) addOperationDescribeWorkspacesPoolSessionsMiddlewares(stack *mi
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

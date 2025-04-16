@@ -55,8 +55,8 @@ type CreateModelBiasJobDefinitionInput struct {
 	// This member is required.
 	ModelBiasJobOutputConfig *types.MonitoringOutputConfig
 
-	// The Amazon Resource Name (ARN) of an IAM role that Amazon SageMaker can assume
-	// to perform tasks on your behalf.
+	// The Amazon Resource Name (ARN) of an IAM role that Amazon SageMaker AI can
+	// assume to perform tasks on your behalf.
 	//
 	// This member is required.
 	RoleArn *string
@@ -135,6 +135,9 @@ func (c *Client) addOperationCreateModelBiasJobDefinitionMiddlewares(stack *midd
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -151,6 +154,9 @@ func (c *Client) addOperationCreateModelBiasJobDefinitionMiddlewares(stack *midd
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateModelBiasJobDefinitionValidationMiddleware(stack); err != nil {
@@ -172,6 +178,18 @@ func (c *Client) addOperationCreateModelBiasJobDefinitionMiddlewares(stack *midd
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

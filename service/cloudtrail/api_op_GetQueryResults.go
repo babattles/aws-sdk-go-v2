@@ -41,6 +41,9 @@ type GetQueryResultsInput struct {
 	// Deprecated: EventDataStore is no longer required by GetQueryResultsRequest
 	EventDataStore *string
 
+	//  The account ID of the event data store owner.
+	EventDataStoreOwnerAccountId *string
+
 	// The maximum number of query results to display on a single page.
 	MaxQueryResults *int32
 
@@ -117,6 +120,9 @@ func (c *Client) addOperationGetQueryResultsMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -133,6 +139,9 @@ func (c *Client) addOperationGetQueryResultsMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetQueryResultsValidationMiddleware(stack); err != nil {
@@ -154,6 +163,18 @@ func (c *Client) addOperationGetQueryResultsMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

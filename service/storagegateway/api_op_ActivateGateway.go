@@ -99,7 +99,13 @@ type ActivateGatewayInput struct {
 	// critical to all later functions of the gateway and cannot be changed after
 	// activation. The default value is CACHED .
 	//
+	// Amazon FSx File Gateway is no longer available to new customers. Existing
+	// customers of FSx File Gateway can continue to use the service normally. For
+	// capabilities similar to FSx File Gateway, visit [this blog post].
+	//
 	// Valid Values: STORED | CACHED | VTL | FILE_S3 | FILE_FSX_SMB
+	//
+	// [this blog post]: https://aws.amazon.com/blogs/storage/switch-your-file-share-access-from-amazon-fsx-file-gateway-to-amazon-fsx-for-windows-file-server/
 	GatewayType *string
 
 	// The value that indicates the type of medium changer to use for tape gateway.
@@ -189,6 +195,9 @@ func (c *Client) addOperationActivateGatewayMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -205,6 +214,9 @@ func (c *Client) addOperationActivateGatewayMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpActivateGatewayValidationMiddleware(stack); err != nil {
@@ -226,6 +238,18 @@ func (c *Client) addOperationActivateGatewayMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

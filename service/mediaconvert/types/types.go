@@ -34,7 +34,12 @@ type AacSettings struct {
 	// on Bitrate control mode and Profile.
 	Bitrate *int32
 
-	// AAC Profile.
+	// Specify the AAC profile. For the widest player compatibility and where higher
+	// bitrates are acceptable: Keep the default profile, LC (AAC-LC) For improved
+	// audio performance at lower bitrates: Choose HEV1 or HEV2. HEV1 (AAC-HE v1) adds
+	// spectral band replication to improve speech audio at low bitrates. HEV2 (AAC-HE
+	// v2) adds parametric stereo, which optimizes for encoding stereo audio at very
+	// low bitrates.
 	CodecProfile AacCodecProfile
 
 	// The Coding mode that you specify determines the number of audio channels and
@@ -47,28 +52,29 @@ type AacSettings struct {
 	// channels, C, L, R, Ls, Rs, LFE.
 	CodingMode AacCodingMode
 
-	// Rate Control Mode.
+	// Specify the AAC rate control mode. For a constant bitrate: Choose CBR. Your AAC
+	// output bitrate will be equal to the value that you choose for Bitrate. For a
+	// variable bitrate: Choose VBR. Your AAC output bitrate will vary according to
+	// your audio content and the value that you choose for Bitrate quality.
 	RateControlMode AacRateControlMode
 
 	// Enables LATM/LOAS AAC output. Note that if you use LATM/LOAS AAC in an output,
 	// you must choose "No container" for the output container.
 	RawFormat AacRawFormat
 
-	// Specify the Sample rate in Hz. Valid sample rates depend on the Profile and
-	// Coding mode that you select. The following list shows valid sample rates for
-	// each Profile and Coding mode. * LC Profile, Coding mode 1.0, 2.0, and Receiver
-	// Mix: 8000, 12000, 16000, 22050, 24000, 32000, 44100, 48000, 88200, 96000. * LC
-	// Profile, Coding mode 5.1: 32000, 44100, 48000, 96000. * HEV1 Profile, Coding
-	// mode 1.0 and Receiver Mix: 22050, 24000, 32000, 44100, 48000. * HEV1 Profile,
-	// Coding mode 2.0 and 5.1: 32000, 44100, 48000, 96000. * HEV2 Profile, Coding mode
-	// 2.0: 22050, 24000, 32000, 44100, 48000.
+	// Specify the AAC sample rate in samples per second (Hz). Valid sample rates
+	// depend on the AAC profile and Coding mode that you select. For a list of
+	// supported sample rates, see:
+	// https://docs.aws.amazon.com/mediaconvert/latest/ug/aac-support.html
 	SampleRate *int32
 
 	// Use MPEG-2 AAC instead of MPEG-4 AAC audio for raw or MPEG-2 Transport Stream
 	// containers.
 	Specification AacSpecification
 
-	// VBR Quality Level - Only used if rate_control_mode is VBR.
+	// Specify the quality of your variable bitrate (VBR) AAC audio. For a list of
+	// approximate VBR bitrates, see:
+	// https://docs.aws.amazon.com/mediaconvert/latest/ug/aac-support.html#aac_vbr
 	VbrQuality AacVbrQuality
 
 	noSmithyDocumentSerde
@@ -451,6 +457,30 @@ type AudioNormalizationSettings struct {
 	noSmithyDocumentSerde
 }
 
+// Details about the media file's audio track.
+type AudioProperties struct {
+
+	// The bit depth of the audio track.
+	BitDepth *int32
+
+	// The bit rate of the audio track, in bits per second.
+	BitRate *int32
+
+	// The number of audio channels in the audio track.
+	Channels *int32
+
+	// The frame rate of the video or audio track.
+	FrameRate *FrameRate
+
+	// The language code of the audio track, in three character ISO 639-3 format.
+	LanguageCode *string
+
+	// The sample rate of the audio track.
+	SampleRate *int32
+
+	noSmithyDocumentSerde
+}
+
 // Use Audio selectors to specify a track or set of tracks from the input that you
 // will use in your outputs. You can use multiple Audio selectors per input.
 type AudioSelector struct {
@@ -468,7 +498,10 @@ type AudioSelector struct {
 	// frame by a variable amount to align audio frames with STTS timestamps. No
 	// corrections are made to already-aligned frames. Frame-level correction may
 	// affect the pitch of corrected frames, and is recommended for atonal audio
-	// content such as speech or percussion.
+	// content such as speech or percussion. * Force: Apply audio duration correction,
+	// either Track or Frame depending on your input, regardless of the accuracy of
+	// your input's STTS table. Your output audio and video may not be aligned or it
+	// may contain audio artifacts.
 	AudioDurationCorrection AudioDurationCorrection
 
 	// Selects a specific language code from within an audio source, using the ISO
@@ -480,7 +513,7 @@ type AudioSelector struct {
 	// input audio. If you don't set a default, those outputs have no audio.
 	DefaultSelection AudioDefaultSelection
 
-	// Specifies audio data from an external file source.
+	// Specify the S3, HTTP, or HTTPS URL for your external audio file input.
 	ExternalAudioFileInput *string
 
 	// Settings specific to audio sources in an HLS alternate rendition group. Specify
@@ -493,10 +526,15 @@ type AudioSelector struct {
 	// alternative audio with DEFAULT=YES is chosen instead.
 	HlsRenditionGroupSettings *HlsRenditionGroupSettings
 
-	// Selects a specific language code from within an audio source.
+	// Specify the language to select from your audio input. In the MediaConvert
+	// console choose from a list of languages. In your JSON job settings choose from
+	// an ISO 639-2 three-letter code listed at
+	// https://www.loc.gov/standards/iso639-2/php/code_list.php
 	LanguageCode LanguageCode
 
-	// Specifies a time delta in milliseconds to offset the audio from the input video.
+	// Specify a time delta, in milliseconds, to offset the audio from the input
+	// video. To specify no offset: Keep the default value, 0. To specify an offset:
+	// Enter an integer from -2147483648 to 2147483647
 	Offset *int32
 
 	// Selects a specific PID from within an audio source (e.g. 257 selects PID 0x101).
@@ -624,6 +662,14 @@ type AutomatedAbrSettings struct {
 	// value that you specify.
 	MaxAbrBitrate *int32
 
+	// Optional. Specify the QVBR quality level to use for all renditions in your
+	// automated ABR stack. To have MediaConvert automatically determine the quality
+	// level: Leave blank. To manually specify a quality level: Enter an integer from 1
+	// to 10. MediaConvert will use a quality level up to the value that you specify,
+	// depending on your source. For more information about QVBR quality levels, see:
+	// https://docs.aws.amazon.com/mediaconvert/latest/ug/qvbr-guidelines.html
+	MaxQualityLevel *float64
+
 	// Optional. The maximum number of renditions that MediaConvert will create in
 	// your automated ABR stack. The number of renditions is determined automatically,
 	// based on analysis of each job, but will never exceed this limit. When you set
@@ -717,16 +763,21 @@ type Av1Settings struct {
 	FramerateControl Av1FramerateControl
 
 	// Choose the method that you want MediaConvert to use when increasing or
-	// decreasing the frame rate. For numerically simple conversions, such as 60 fps to
-	// 30 fps: We recommend that you keep the default value, Drop duplicate. For
-	// numerically complex conversions, to avoid stutter: Choose Interpolate. This
+	// decreasing your video's frame rate. For numerically simple conversions, such as
+	// 60 fps to 30 fps: We recommend that you keep the default value, Drop duplicate.
+	// For numerically complex conversions, to avoid stutter: Choose Interpolate. This
 	// results in a smooth picture, but might introduce undesirable video artifacts.
 	// For complex frame rate conversions, especially if your source video has already
 	// been converted from its original cadence: Choose FrameFormer to do
 	// motion-compensated interpolation. FrameFormer uses the best conversion method
 	// frame by frame. Note that using FrameFormer increases the transcoding time and
 	// incurs a significant add-on cost. When you choose FrameFormer, your input video
-	// resolution must be at least 128x96.
+	// resolution must be at least 128x96. To create an output with the same number of
+	// frames as your input: Choose Maintain frame count. When you do, MediaConvert
+	// will not drop, interpolate, add, or otherwise change the frame count from your
+	// input to your output. Note that since the frame count is maintained, the
+	// duration of your output will become shorter at higher frame rates and longer at
+	// lower frame rates.
 	FramerateConversionAlgorithm Av1FramerateConversionAlgorithm
 
 	// When you use the API for transcode jobs that use frame rate conversion, specify
@@ -833,16 +884,21 @@ type AvcIntraSettings struct {
 	FramerateControl AvcIntraFramerateControl
 
 	// Choose the method that you want MediaConvert to use when increasing or
-	// decreasing the frame rate. For numerically simple conversions, such as 60 fps to
-	// 30 fps: We recommend that you keep the default value, Drop duplicate. For
-	// numerically complex conversions, to avoid stutter: Choose Interpolate. This
+	// decreasing your video's frame rate. For numerically simple conversions, such as
+	// 60 fps to 30 fps: We recommend that you keep the default value, Drop duplicate.
+	// For numerically complex conversions, to avoid stutter: Choose Interpolate. This
 	// results in a smooth picture, but might introduce undesirable video artifacts.
 	// For complex frame rate conversions, especially if your source video has already
 	// been converted from its original cadence: Choose FrameFormer to do
 	// motion-compensated interpolation. FrameFormer uses the best conversion method
 	// frame by frame. Note that using FrameFormer increases the transcoding time and
 	// incurs a significant add-on cost. When you choose FrameFormer, your input video
-	// resolution must be at least 128x96.
+	// resolution must be at least 128x96. To create an output with the same number of
+	// frames as your input: Choose Maintain frame count. When you do, MediaConvert
+	// will not drop, interpolate, add, or otherwise change the frame count from your
+	// input to your output. Note that since the frame count is maintained, the
+	// duration of your output will become shorter at higher frame rates and longer at
+	// lower frame rates.
 	FramerateConversionAlgorithm AvcIntraFramerateConversionAlgorithm
 
 	// When you use the API for transcode jobs that use frame rate conversion, specify
@@ -1052,6 +1108,13 @@ type BurninDestinationSettings struct {
 	// blank and set Style passthrough to enabled to use the outline size data from
 	// your input captions, if present.
 	OutlineSize *int32
+
+	// Optionally remove any tts:rubyReserve attributes present in your input, that do
+	// not have a tts:ruby attribute in the same element, from your output. Use if your
+	// vertical Japanese output captions have alignment issues. To remove ruby reserve
+	// attributes when present: Choose Enabled. To not remove any ruby reserve
+	// attributes: Keep the default value, Disabled.
+	RemoveRubyReserveAttributes RemoveRubyReserveAttributes
 
 	// Specify the color of the shadow cast by the captions. Leave Shadow color blank
 	// and set Style passthrough to enabled to use the shadow color data from your
@@ -1619,10 +1682,22 @@ type CmafGroupSettings struct {
 	// file that has metadata to mark the segment boundaries.
 	SegmentLength *int32
 
-	// Specify how you want MediaConvert to determine the segment length. Choose Exact
-	// to have the encoder use the exact length that you specify with the setting
-	// Segment length. This might result in extra I-frames. Choose Multiple of GOP to
-	// have the encoder round up the segment lengths to match the next GOP boundary.
+	// Specify how you want MediaConvert to determine segment lengths in this output
+	// group. To use the exact value that you specify under Segment length: Choose
+	// Exact. Note that this might result in additional I-frames in the output GOP. To
+	// create segment lengths that are a multiple of the GOP: Choose Multiple of GOP.
+	// MediaConvert will round up the segment lengths to match the next GOP boundary.
+	// To have MediaConvert automatically determine a segment duration that is a
+	// multiple of both the audio packets and the frame rates: Choose Match. When you
+	// do, also specify a target segment duration under Segment length. This is useful
+	// for some ad-insertion or segment replacement workflows. Note that Match has the
+	// following requirements: - Output containers: Include at least one video output
+	// and at least one audio output. Audio-only outputs are not supported. - Output
+	// frame rate: Follow source is not supported. - Multiple output frame rates: When
+	// you specify multiple outputs, we recommend they share a similar frame rate (as
+	// in X/3, X/2, X, or 2X). For example: 5, 15, 30 and 60. Or: 25 and 50. (Outputs
+	// must share an integer multiple.) - Output audio codec: Specify Advanced Audio
+	// Coding (AAC). - Output sample rate: Choose 48kHz.
 	SegmentLengthControl CmafSegmentLengthControl
 
 	// Include or exclude RESOLUTION attribute for video in EXT-X-STREAM-INF tag of
@@ -1965,6 +2040,25 @@ type ColorCorrector struct {
 	noSmithyDocumentSerde
 }
 
+// The container of your media file. This information helps you understand the
+// overall structure and details of your media, including format, duration, and
+// track layout.
+type Container struct {
+
+	// The total duration of your media file, in seconds.
+	Duration *float64
+
+	// The format of your media file. For example: MP4, QuickTime (MOV), Matroska
+	// (MKV), or WebM. Note that this will be blank if your media file has a format
+	// that the MediaConvert Probe operation does not recognize.
+	Format Format
+
+	// Details about each track (video, audio, or data) in the media file.
+	Tracks []Track
+
+	noSmithyDocumentSerde
+}
+
 // Container specific settings.
 type ContainerSettings struct {
 
@@ -2191,10 +2285,22 @@ type DashIsoGroupSettings struct {
 	// file that has metadata to mark the segment boundaries.
 	SegmentLength *int32
 
-	// Specify how you want MediaConvert to determine the segment length. Choose Exact
-	// to have the encoder use the exact length that you specify with the setting
-	// Segment length. This might result in extra I-frames. Choose Multiple of GOP to
-	// have the encoder round up the segment lengths to match the next GOP boundary.
+	// Specify how you want MediaConvert to determine segment lengths in this output
+	// group. To use the exact value that you specify under Segment length: Choose
+	// Exact. Note that this might result in additional I-frames in the output GOP. To
+	// create segment lengths that are a multiple of the GOP: Choose Multiple of GOP.
+	// MediaConvert will round up the segment lengths to match the next GOP boundary.
+	// To have MediaConvert automatically determine a segment duration that is a
+	// multiple of both the audio packets and the frame rates: Choose Match. When you
+	// do, also specify a target segment duration under Segment length. This is useful
+	// for some ad-insertion or segment replacement workflows. Note that Match has the
+	// following requirements: - Output containers: Include at least one video output
+	// and at least one audio output. Audio-only outputs are not supported. - Output
+	// frame rate: Follow source is not supported. - Multiple output frame rates: When
+	// you specify multiple outputs, we recommend they share a similar frame rate (as
+	// in X/3, X/2, X, or 2X). For example: 5, 15, 30 and 60. Or: 25 and 50. (Outputs
+	// must share an integer multiple.) - Output audio codec: Specify Advanced Audio
+	// Coding (AAC). - Output sample rate: Choose 48kHz.
 	SegmentLengthControl DashIsoSegmentLengthControl
 
 	// Specify the video sample composition time offset mode in the output fMP4 TRUN
@@ -2249,6 +2355,15 @@ type DashIsoImageBasedTrickPlaySettings struct {
 
 	// Number of thumbnails in each row of a tile image. Set a value between 1 and 512.
 	TileWidth *int32
+
+	noSmithyDocumentSerde
+}
+
+// Details about the media file's data track.
+type DataProperties struct {
+
+	// The language code of the data track, in three character ISO 639-3 format.
+	LanguageCode *string
 
 	noSmithyDocumentSerde
 }
@@ -2632,6 +2747,58 @@ type DvbTdtSettings struct {
 	noSmithyDocumentSerde
 }
 
+// Use Dynamic audio selectors when you do not know the track layout of your
+// source when you submit your job, but want to select multiple audio tracks. When
+// you include an audio track in your output and specify this Dynamic audio
+// selector as the Audio source, MediaConvert creates an output audio track for
+// each dynamically selected track. Note that when you include a Dynamic audio
+// selector for two or more inputs, each input must have the same number of audio
+// tracks and audio channels.
+type DynamicAudioSelector struct {
+
+	// Apply audio timing corrections to help synchronize audio and video in your
+	// output. To apply timing corrections, your input must meet the following
+	// requirements: * Container: MP4, or MOV, with an accurate time-to-sample (STTS)
+	// table. * Audio track: AAC. Choose from the following audio timing correction
+	// settings: * Disabled (Default): Apply no correction. * Auto: Recommended for
+	// most inputs. MediaConvert analyzes the audio timing in your input and determines
+	// which correction setting to use, if needed. * Track: Adjust the duration of each
+	// audio frame by a constant amount to align the audio track length with STTS
+	// duration. Track-level correction does not affect pitch, and is recommended for
+	// tonal audio content such as music. * Frame: Adjust the duration of each audio
+	// frame by a variable amount to align audio frames with STTS timestamps. No
+	// corrections are made to already-aligned frames. Frame-level correction may
+	// affect the pitch of corrected frames, and is recommended for atonal audio
+	// content such as speech or percussion. * Force: Apply audio duration correction,
+	// either Track or Frame depending on your input, regardless of the accuracy of
+	// your input's STTS table. Your output audio and video may not be aligned or it
+	// may contain audio artifacts.
+	AudioDurationCorrection AudioDurationCorrection
+
+	// Specify the S3, HTTP, or HTTPS URL for your external audio file input.
+	ExternalAudioFileInput *string
+
+	// Specify the language to select from your audio input. In the MediaConvert
+	// console choose from a list of languages. In your JSON job settings choose from
+	// an ISO 639-2 three-letter code listed at
+	// https://www.loc.gov/standards/iso639-2/php/code_list.php
+	LanguageCode LanguageCode
+
+	// Specify a time delta, in milliseconds, to offset the audio from the input
+	// video. To specify no offset: Keep the default value, 0. To specify an offset:
+	// Enter an integer from -2147483648 to 2147483647
+	Offset *int32
+
+	// Specify which audio tracks to dynamically select from your source. To select
+	// all audio tracks: Keep the default value, All tracks. To select all audio tracks
+	// with a specific language code: Choose Language code. When you do, you must also
+	// specify a language code under the Language code setting. If there is no matching
+	// Language code in your source, then no track will be selected.
+	SelectorType DynamicAudioSelectorType
+
+	noSmithyDocumentSerde
+}
+
 // Required when you set Codec to the value EAC3_ATMOS.
 type Eac3AtmosSettings struct {
 
@@ -2930,6 +3097,39 @@ type EmbeddedSourceSettings struct {
 	noSmithyDocumentSerde
 }
 
+// Specify the SPEKE version, either v1.0 or v2.0, that MediaConvert uses when
+// encrypting your output. For more information, see:
+// https://docs.aws.amazon.com/speke/latest/documentation/speke-api-specification.html
+// To use SPEKE v1.0: Leave blank. To use SPEKE v2.0: Specify a SPEKE v2.0 video
+// preset and a SPEKE v2.0 audio preset.
+type EncryptionContractConfiguration struct {
+
+	// Specify which SPEKE version 2.0 audio preset MediaConvert uses to request
+	// content keys from your SPEKE server. For more information, see:
+	// https://docs.aws.amazon.com/mediaconvert/latest/ug/drm-content-speke-v2-presets.html
+	// To encrypt to your audio outputs, choose from the following: Audio preset 1,
+	// Audio preset 2, or Audio preset 3. To encrypt your audio outputs, using the same
+	// content key for both your audio and video outputs: Choose Shared. When you do,
+	// you must also set SPEKE v2.0 video preset to Shared. To not encrypt your audio
+	// outputs: Choose Unencrypted. When you do, to encrypt your video outputs, you
+	// must also specify a SPEKE v2.0 video preset (other than Shared or Unencrypted).
+	SpekeAudioPreset PresetSpeke20Audio
+
+	// Specify which SPEKE version 2.0 video preset MediaConvert uses to request
+	// content keys from your SPEKE server. For more information, see:
+	// https://docs.aws.amazon.com/mediaconvert/latest/ug/drm-content-speke-v2-presets.html
+	// To encrypt to your video outputs, choose from the following: Video preset 1,
+	// Video preset 2, Video preset 3, Video preset 4, Video preset 5, Video preset 6,
+	// Video preset 7, or Video preset 8. To encrypt your video outputs, using the same
+	// content key for both your video and audio outputs: Choose Shared. When you do,
+	// you must also set SPEKE v2.0 audio preset to Shared. To not encrypt your video
+	// outputs: Choose Unencrypted. When you do, to encrypt your audio outputs, you
+	// must also specify a SPEKE v2.0 audio preset (other than Shared or Unencrypted).
+	SpekeVideoPreset PresetSpeke20Video
+
+	noSmithyDocumentSerde
+}
+
 // Describes an account-specific API endpoint.
 type Endpoint struct {
 
@@ -3043,6 +3243,16 @@ type FileGroupSettings struct {
 // FileSoureSettings.
 type FileSourceSettings struct {
 
+	// Choose whether to limit the byte rate at which your SCC input captions are
+	// inserted into your output. To not limit the caption rate: We recommend that you
+	// keep the default value, Disabled. MediaConvert inserts captions in your output
+	// according to the byte rates listed in the EIA-608 specification, typically 2 or
+	// 3 caption bytes per frame depending on your output frame rate. To limit your
+	// output caption rate: Choose Enabled. Choose this option if your downstream
+	// systems require a maximum of 2 caption bytes per frame. Note that this setting
+	// has no effect when your output frame rate is 30 or 60.
+	ByteRateLimit CaptionSourceByteRateLimit
+
 	// Specify whether this set of input captions appears in your outputs in both 608
 	// and 708 format. If you choose Upconvert, MediaConvert includes the captions data
 	// in two ways: it passes the 608 data through using the 608 compatibility bytes
@@ -3154,6 +3364,63 @@ type FrameCaptureSettings struct {
 
 	// JPEG Quality - a higher value equals higher quality.
 	Quality *int32
+
+	noSmithyDocumentSerde
+}
+
+// The frame rate of the video or audio track.
+type FrameRate struct {
+
+	// The denominator, or bottom number, in the fractional frame rate. For example,
+	// if your frame rate is 24000 / 1001 (23.976 frames per second), then the
+	// denominator would be 1001.
+	Denominator *int32
+
+	// The numerator, or top number, in the fractional frame rate. For example, if
+	// your frame rate is 24000 / 1001 (23.976 frames per second), then the numerator
+	// would be 24000.
+	Numerator *int32
+
+	noSmithyDocumentSerde
+}
+
+// Required when you set (Codec) under (VideoDescription)>(CodecSettings) to the
+// value GIF
+type GifSettings struct {
+
+	// If you are using the console, use the Framerate setting to specify the frame
+	// rate for this output. If you want to keep the same frame rate as the input
+	// video, choose Follow source. If you want to do frame rate conversion, choose a
+	// frame rate from the dropdown list or choose Custom. The framerates shown in the
+	// dropdown list are decimal approximations of fractions. If you choose Custom,
+	// specify your frame rate as a fraction. If you are creating your transcoding job
+	// specification as a JSON file without the console, use FramerateControl to
+	// specify which value the service uses for the frame rate for this output. Choose
+	// INITIALIZE_FROM_SOURCE if you want the service to use the frame rate from the
+	// input. Choose SPECIFIED if you want the service to use the frame rate you
+	// specify in the settings FramerateNumerator and FramerateDenominator.
+	FramerateControl GifFramerateControl
+
+	// Optional. Specify how the transcoder performs framerate conversion. The default
+	// behavior is to use Drop duplicate (DUPLICATE_DROP) conversion. When you choose
+	// Interpolate (INTERPOLATE) instead, the conversion produces smoother motion.
+	FramerateConversionAlgorithm GifFramerateConversionAlgorithm
+
+	// When you use the API for transcode jobs that use frame rate conversion, specify
+	// the frame rate as a fraction. For example, 24000 / 1001 = 23.976 fps. Use
+	// FramerateDenominator to specify the denominator of this fraction. In this
+	// example, use 1001 for the value of FramerateDenominator. When you use the
+	// console for transcode jobs that use frame rate conversion, provide the value as
+	// a decimal number for Framerate. In this example, specify 23.976.
+	FramerateDenominator *int32
+
+	// When you use the API for transcode jobs that use frame rate conversion, specify
+	// the frame rate as a fraction. For example, 24000 / 1001 = 23.976 fps. Use
+	// FramerateNumerator to specify the numerator of this fraction. In this example,
+	// use 24000 for the value of FramerateNumerator. When you use the console for
+	// transcode jobs that use frame rate conversion, provide the value as a decimal
+	// number for Framerate. In this example, specify 23.976.
+	FramerateNumerator *int32
 
 	noSmithyDocumentSerde
 }
@@ -3281,16 +3548,21 @@ type H264Settings struct {
 	FramerateControl H264FramerateControl
 
 	// Choose the method that you want MediaConvert to use when increasing or
-	// decreasing the frame rate. For numerically simple conversions, such as 60 fps to
-	// 30 fps: We recommend that you keep the default value, Drop duplicate. For
-	// numerically complex conversions, to avoid stutter: Choose Interpolate. This
+	// decreasing your video's frame rate. For numerically simple conversions, such as
+	// 60 fps to 30 fps: We recommend that you keep the default value, Drop duplicate.
+	// For numerically complex conversions, to avoid stutter: Choose Interpolate. This
 	// results in a smooth picture, but might introduce undesirable video artifacts.
 	// For complex frame rate conversions, especially if your source video has already
 	// been converted from its original cadence: Choose FrameFormer to do
 	// motion-compensated interpolation. FrameFormer uses the best conversion method
 	// frame by frame. Note that using FrameFormer increases the transcoding time and
 	// incurs a significant add-on cost. When you choose FrameFormer, your input video
-	// resolution must be at least 128x96.
+	// resolution must be at least 128x96. To create an output with the same number of
+	// frames as your input: Choose Maintain frame count. When you do, MediaConvert
+	// will not drop, interpolate, add, or otherwise change the frame count from your
+	// input to your output. Note that since the frame count is maintained, the
+	// duration of your output will become shorter at higher frame rates and longer at
+	// lower frame rates.
 	FramerateConversionAlgorithm H264FramerateConversionAlgorithm
 
 	// When you use the API for transcode jobs that use frame rate conversion, specify
@@ -3374,20 +3646,23 @@ type H264Settings struct {
 	// 5000000. Required when Rate control mode is QVBR.
 	MaxBitrate *int32
 
-	// Use this setting only when you also enable Scene change detection. This setting
-	// determines how the encoder manages the spacing between I-frames that it inserts
-	// as part of the I-frame cadence and the I-frames that it inserts for Scene change
-	// detection. We recommend that you have the transcoder automatically choose this
-	// value for you based on characteristics of your input video. To enable this
-	// automatic behavior, do this by keeping the default empty value. When you
-	// explicitly specify a value for this setting, the encoder determines whether to
-	// skip a cadence-driven I-frame by the value you set. For example, if you set Min
-	// I interval to 5 and a cadence-driven I-frame would fall within 5 frames of a
-	// scene-change I-frame, then the encoder skips the cadence-driven I-frame. In this
-	// way, one GOP is shrunk slightly and one GOP is stretched slightly. When the
-	// cadence-driven I-frames are farther from the scene-change I-frame than the value
-	// you set, then the encoder leaves all I-frames in place and the GOPs surrounding
-	// the scene change are smaller than the usual cadence GOPs.
+	// Specify the minimum number of frames allowed between two IDR-frames in your
+	// output. This includes frames created at the start of a GOP or a scene change.
+	// Use Min I-Interval to improve video compression by varying GOP size when two
+	// IDR-frames would be created near each other. For example, if a regular
+	// cadence-driven IDR-frame would fall within 5 frames of a scene-change IDR-frame,
+	// and you set Min I-interval to 5, then the encoder would only write an IDR-frame
+	// for the scene-change. In this way, one GOP is shortened or extended. If a
+	// cadence-driven IDR-frame would be further than 5 frames from a scene-change
+	// IDR-frame, then the encoder leaves all IDR-frames in place. To use an
+	// automatically determined interval: We recommend that you keep this value blank.
+	// This allows for MediaConvert to use an optimal setting according to the
+	// characteristics of your input video, and results in better video compression. To
+	// manually specify an interval: Enter a value from 1 to 30. Use when your
+	// downstream systems have specific GOP size requirements. To disable GOP size
+	// variance: Enter 0. MediaConvert will only create IDR-frames at the start of your
+	// output's cadence-driven GOP. Use when your downstream systems require a regular
+	// GOP size.
 	MinIInterval *int32
 
 	// Specify the number of B-frames between reference frames in this output. For the
@@ -3441,6 +3716,16 @@ type H264Settings struct {
 
 	// Places a PPS header on each encoded picture, even if repeated.
 	RepeatPps H264RepeatPps
+
+	// Specify whether to apply Saliency aware encoding to your output. Use to improve
+	// the perceptual video quality of your output by allocating more encoding bits to
+	// the prominent or noticeable parts of your content. To apply saliency aware
+	// encoding, when possible: We recommend that you choose Preferred. The effects of
+	// Saliency aware encoding are best seen in lower bitrate outputs. When you choose
+	// Preferred, note that Saliency aware encoding will only apply to outputs that are
+	// 720p or higher in resolution. To not apply saliency aware encoding, prioritizing
+	// encoding speed over perceptual video quality: Choose Disabled.
+	SaliencyAwareEncoding H264SaliencyAwareEncoding
 
 	// Use this setting for interlaced outputs, when your output frame rate is half of
 	// your input frame rate. In this situation, choose Optimized interlacing to create
@@ -3550,6 +3835,15 @@ type H264Settings struct {
 	// Inserts timecode for each frame as 4 bytes of an unregistered SEI message.
 	UnregisteredSeiTimecode H264UnregisteredSeiTimecode
 
+	// Specify how SPS and PPS NAL units are written in your output MP4 container,
+	// according to ISO/IEC 14496-15. If the location of these parameters doesn't
+	// matter in your workflow: Keep the default value, AVC1. MediaConvert writes SPS
+	// and PPS NAL units in the sample description ('stsd') box (but not into samples
+	// directly). To write SPS and PPS NAL units directly into samples (but not in the
+	// 'stsd' box): Choose AVC3. When you do, note that your output might not play
+	// properly with some downstream systems or players.
+	WriteMp4PackagingType H264WriteMp4PackagingType
+
 	noSmithyDocumentSerde
 }
 
@@ -3629,6 +3923,14 @@ type H265Settings struct {
 	// High Tier. 4:2:2 profiles are only available with the HEVC 4:2:2 License.
 	CodecProfile H265CodecProfile
 
+	// Use Deblocking to improve the video quality of your output by smoothing the
+	// edges of macroblock artifacts created during video compression. To reduce
+	// blocking artifacts at block boundaries, and improve overall video quality: Keep
+	// the default value, Enabled. To not apply any deblocking: Choose Disabled.
+	// Visible block edge artifacts might appear in the output, especially at lower
+	// bitrates.
+	Deblocking H265Deblocking
+
 	// Specify whether to allow the number of B-frames in your output GOP structure to
 	// vary or not depending on your input video content. To improve the subjective
 	// video quality of your output that has high-motion content: Leave blank or keep
@@ -3662,16 +3964,21 @@ type H265Settings struct {
 	FramerateControl H265FramerateControl
 
 	// Choose the method that you want MediaConvert to use when increasing or
-	// decreasing the frame rate. For numerically simple conversions, such as 60 fps to
-	// 30 fps: We recommend that you keep the default value, Drop duplicate. For
-	// numerically complex conversions, to avoid stutter: Choose Interpolate. This
+	// decreasing your video's frame rate. For numerically simple conversions, such as
+	// 60 fps to 30 fps: We recommend that you keep the default value, Drop duplicate.
+	// For numerically complex conversions, to avoid stutter: Choose Interpolate. This
 	// results in a smooth picture, but might introduce undesirable video artifacts.
 	// For complex frame rate conversions, especially if your source video has already
 	// been converted from its original cadence: Choose FrameFormer to do
 	// motion-compensated interpolation. FrameFormer uses the best conversion method
 	// frame by frame. Note that using FrameFormer increases the transcoding time and
 	// incurs a significant add-on cost. When you choose FrameFormer, your input video
-	// resolution must be at least 128x96.
+	// resolution must be at least 128x96. To create an output with the same number of
+	// frames as your input: Choose Maintain frame count. When you do, MediaConvert
+	// will not drop, interpolate, add, or otherwise change the frame count from your
+	// input to your output. Note that since the frame count is maintained, the
+	// duration of your output will become shorter at higher frame rates and longer at
+	// lower frame rates.
 	FramerateConversionAlgorithm H265FramerateConversionAlgorithm
 
 	// When you use the API for transcode jobs that use frame rate conversion, specify
@@ -3755,20 +4062,23 @@ type H265Settings struct {
 	// 5000000. Required when Rate control mode is QVBR.
 	MaxBitrate *int32
 
-	// Use this setting only when you also enable Scene change detection. This setting
-	// determines how the encoder manages the spacing between I-frames that it inserts
-	// as part of the I-frame cadence and the I-frames that it inserts for Scene change
-	// detection. We recommend that you have the transcoder automatically choose this
-	// value for you based on characteristics of your input video. To enable this
-	// automatic behavior, do this by keeping the default empty value. When you
-	// explicitly specify a value for this setting, the encoder determines whether to
-	// skip a cadence-driven I-frame by the value you set. For example, if you set Min
-	// I interval to 5 and a cadence-driven I-frame would fall within 5 frames of a
-	// scene-change I-frame, then the encoder skips the cadence-driven I-frame. In this
-	// way, one GOP is shrunk slightly and one GOP is stretched slightly. When the
-	// cadence-driven I-frames are farther from the scene-change I-frame than the value
-	// you set, then the encoder leaves all I-frames in place and the GOPs surrounding
-	// the scene change are smaller than the usual cadence GOPs.
+	// Specify the minimum number of frames allowed between two IDR-frames in your
+	// output. This includes frames created at the start of a GOP or a scene change.
+	// Use Min I-Interval to improve video compression by varying GOP size when two
+	// IDR-frames would be created near each other. For example, if a regular
+	// cadence-driven IDR-frame would fall within 5 frames of a scene-change IDR-frame,
+	// and you set Min I-interval to 5, then the encoder would only write an IDR-frame
+	// for the scene-change. In this way, one GOP is shortened or extended. If a
+	// cadence-driven IDR-frame would be further than 5 frames from a scene-change
+	// IDR-frame, then the encoder leaves all IDR-frames in place. To use an
+	// automatically determined interval: We recommend that you keep this value blank.
+	// This allows for MediaConvert to use an optimal setting according to the
+	// characteristics of your input video, and results in better video compression. To
+	// manually specify an interval: Enter a value from 1 to 30. Use when your
+	// downstream systems have specific GOP size requirements. To disable GOP size
+	// variance: Enter 0. MediaConvert will only create IDR-frames at the start of your
+	// output's cadence-driven GOP. Use when your downstream systems require a regular
+	// GOP size.
 	MinIInterval *int32
 
 	// Specify the number of B-frames between reference frames in this output. For the
@@ -4231,10 +4541,22 @@ type HlsGroupSettings struct {
 	// file that has metadata to mark the segment boundaries.
 	SegmentLength *int32
 
-	// Specify how you want MediaConvert to determine the segment length. Choose Exact
-	// to have the encoder use the exact length that you specify with the setting
-	// Segment length. This might result in extra I-frames. Choose Multiple of GOP to
-	// have the encoder round up the segment lengths to match the next GOP boundary.
+	// Specify how you want MediaConvert to determine segment lengths in this output
+	// group. To use the exact value that you specify under Segment length: Choose
+	// Exact. Note that this might result in additional I-frames in the output GOP. To
+	// create segment lengths that are a multiple of the GOP: Choose Multiple of GOP.
+	// MediaConvert will round up the segment lengths to match the next GOP boundary.
+	// To have MediaConvert automatically determine a segment duration that is a
+	// multiple of both the audio packets and the frame rates: Choose Match. When you
+	// do, also specify a target segment duration under Segment length. This is useful
+	// for some ad-insertion or segment replacement workflows. Note that Match has the
+	// following requirements: - Output containers: Include at least one video output
+	// and at least one audio output. Audio-only outputs are not supported. - Output
+	// frame rate: Follow source is not supported. - Multiple output frame rates: When
+	// you specify multiple outputs, we recommend they share a similar frame rate (as
+	// in X/3, X/2, X, or 2X). For example: 5, 15, 30 and 60. Or: 25 and 50. (Outputs
+	// must share an integer multiple.) - Output audio codec: Specify Advanced Audio
+	// Coding (AAC). - Output sample rate: Choose 48kHz.
 	SegmentLengthControl HlsSegmentLengthControl
 
 	// Specify the number of segments to write to a subdirectory before starting a new
@@ -4546,6 +4868,15 @@ type Input struct {
 	// https://docs.aws.amazon.com/mediaconvert/latest/ug/iam-role.html.
 	DolbyVisionMetadataXml *string
 
+	// Use Dynamic audio selectors when you do not know the track layout of your
+	// source when you submit your job, but want to select multiple audio tracks. When
+	// you include an audio track in your output and specify this Dynamic audio
+	// selector as the Audio source, MediaConvert creates an output audio track for
+	// each dynamically selected track. Note that when you include a Dynamic audio
+	// selector for two or more inputs, each input must have the same number of audio
+	// tracks and audio channels.
+	DynamicAudioSelectors map[string]DynamicAudioSelector
+
 	// Specify the source file for your transcoding job. You can use multiple inputs
 	// in a single job. The service concatenates these inputs, in the order that you
 	// specify them in the job, to create the outputs. If your input format is IMF,
@@ -4774,6 +5105,15 @@ type InputTemplate struct {
 	// MediaConvert read permissions to this file. For more information, see
 	// https://docs.aws.amazon.com/mediaconvert/latest/ug/iam-role.html.
 	DolbyVisionMetadataXml *string
+
+	// Use Dynamic audio selectors when you do not know the track layout of your
+	// source when you submit your job, but want to select multiple audio tracks. When
+	// you include an audio track in your output and specify this Dynamic audio
+	// selector as the Audio source, MediaConvert creates an output audio track for
+	// each dynamically selected track. Note that when you include a Dynamic audio
+	// selector for two or more inputs, each input must have the same number of audio
+	// tracks and audio channels.
+	DynamicAudioSelectors map[string]DynamicAudioSelector
 
 	// Specify whether to apply input filtering to improve the video quality of your
 	// input. To apply filtering depending on your input type and quality: Choose Auto.
@@ -5026,6 +5366,19 @@ type Job struct {
 	// resources
 	Id *string
 
+	// The Job engine version that you requested for your job. Valid versions are in a
+	// YYYY-MM-DD format.
+	JobEngineVersionRequested *string
+
+	// The Job engine version that your job used. Job engine versions are in a
+	// YYYY-MM-DD format. When you request an expired version, the response for this
+	// property will be empty. Requests to create jobs with an expired version result
+	// in a regular job, as if no specific Job engine version was requested. When you
+	// request an invalid version, the response for this property will be empty.
+	// Requests to create jobs with an invalid version result in a 400 error message,
+	// and no job is created.
+	JobEngineVersionUsed *string
+
 	// An estimate of how far your job has progressed. This estimate is shown as a
 	// percentage of the total time from when your job leaves its queue to when your
 	// output files appear in your output Amazon S3 bucket. AWS Elemental MediaConvert
@@ -5090,6 +5443,24 @@ type Job struct {
 	// issues with your input, output, or job. For more information, see
 	// https://docs.aws.amazon.com/mediaconvert/latest/ug/warning_codes.html
 	Warnings []WarningGroup
+
+	noSmithyDocumentSerde
+}
+
+// Use Job engine versions to run jobs for your production workflow on one
+// version, while you test and validate the latest version. Job engine versions are
+// in a YYYY-MM-DD format.
+type JobEngineVersion struct {
+
+	// The date that this Job engine version expires. Requests to create jobs with an
+	// expired version result in a regular job, as if no specific Job engine version
+	// was requested.
+	ExpirationDate *time.Time
+
+	// Use Job engine versions to run jobs for your production workflow on one
+	// version, while you test and validate the latest version. Job engine versions are
+	// in a YYYY-MM-DD format.
+	Version *string
 
 	noSmithyDocumentSerde
 }
@@ -5176,8 +5547,8 @@ type JobSettings struct {
 	// watermarks in your output audio. In addition to specifying these values, you
 	// also need to set up your cloud TIC server. These settings apply to every output
 	// in your job. The MediaConvert implementation is currently with the following
-	// Nielsen versions: Nielsen Watermark SDK Version 5.2.1 Nielsen NLM Watermark
-	// Engine Version 1.2.7 Nielsen Watermark Authenticator [SID_TIC] Version [5.0.0]
+	// Nielsen versions: Nielsen Watermark SDK Version 6.0.13 Nielsen NLM Watermark
+	// Engine Version 1.3.3 Nielsen Watermark Authenticator [SID_TIC] Version [7.0.0]
 	NielsenNonLinearWatermark *NielsenNonLinearWatermarkSettings
 
 	// Contains one group of settings for each set of outputs that share a common
@@ -5328,8 +5699,8 @@ type JobTemplateSettings struct {
 	// watermarks in your output audio. In addition to specifying these values, you
 	// also need to set up your cloud TIC server. These settings apply to every output
 	// in your job. The MediaConvert implementation is currently with the following
-	// Nielsen versions: Nielsen Watermark SDK Version 5.2.1 Nielsen NLM Watermark
-	// Engine Version 1.2.7 Nielsen Watermark Authenticator [SID_TIC] Version [5.0.0]
+	// Nielsen versions: Nielsen Watermark SDK Version 6.0.13 Nielsen NLM Watermark
+	// Engine Version 1.3.3 Nielsen Watermark Authenticator [SID_TIC] Version [7.0.0]
 	NielsenNonLinearWatermark *NielsenNonLinearWatermarkSettings
 
 	// Contains one group of settings for each set of outputs that share a common
@@ -5475,6 +5846,12 @@ type M2tsSettings struct {
 	// range 482-492.
 	AudioPids []int32
 
+	// Manually specify the difference in PTS offset that will be applied to the audio
+	// track, in seconds or milliseconds, when you set PTS offset to Seconds or
+	// Milliseconds. Enter an integer from -10000 to 10000. Leave blank to keep the
+	// default value 0.
+	AudioPtsOffsetDelta *int32
+
 	// Specify the output bitrate of the transport stream in bits per second. Setting
 	// to 0 lets the muxer automatically determine the appropriate bitrate. Other
 	// common values are 3750000, 7500000, and 15000000.
@@ -5616,8 +5993,9 @@ type M2tsSettings struct {
 	// offset: Keep the default value, Auto. We recommend that you choose Auto for the
 	// widest player compatibility. The initial PTS will be at least two seconds and
 	// vary depending on your output's bitrate, HRD buffer size and HRD buffer initial
-	// fill percentage. To manually specify an initial PTS offset: Choose Seconds. Then
-	// specify the number of seconds with PTS offset.
+	// fill percentage. To manually specify an initial PTS offset: Choose Seconds or
+	// Milliseconds. Then specify the number of seconds or milliseconds with PTS
+	// offset.
 	PtsOffsetMode TsPtsOffset
 
 	// When set to CBR, inserts null packets into transport stream to fill specified
@@ -5709,6 +6087,12 @@ type M3u8Settings struct {
 	// comma separation.
 	AudioPids []int32
 
+	// Manually specify the difference in PTS offset that will be applied to the audio
+	// track, in seconds or milliseconds, when you set PTS offset to Seconds or
+	// Milliseconds. Enter an integer from -10000 to 10000. Leave blank to keep the
+	// default value 0.
+	AudioPtsOffsetDelta *int32
+
 	// If you select ALIGN_TO_VIDEO, MediaConvert writes captions and data packets
 	// with Presentation Timestamp (PTS) values greater than or equal to the first
 	// video packet PTS (MediaConvert drops captions and data packets with lesser PTS
@@ -5760,8 +6144,9 @@ type M3u8Settings struct {
 	// offset: Keep the default value, Auto. We recommend that you choose Auto for the
 	// widest player compatibility. The initial PTS will be at least two seconds and
 	// vary depending on your output's bitrate, HRD buffer size and HRD buffer initial
-	// fill percentage. To manually specify an initial PTS offset: Choose Seconds. Then
-	// specify the number of seconds with PTS offset.
+	// fill percentage. To manually specify an initial PTS offset: Choose Seconds or
+	// Milliseconds. Then specify the number of seconds or milliseconds with PTS
+	// offset.
 	PtsOffsetMode TsPtsOffset
 
 	// Packet Identifier (PID) of the SCTE-35 stream in the transport stream.
@@ -5790,6 +6175,24 @@ type M3u8Settings struct {
 
 	// Packet Identifier (PID) of the elementary video stream in the transport stream.
 	VideoPid *int32
+
+	noSmithyDocumentSerde
+}
+
+// Metadata and other file information.
+type Metadata struct {
+
+	// The entity tag (ETag) of the file.
+	ETag *string
+
+	// The size of the media file, in bytes.
+	FileSize *int64
+
+	// The last modification timestamp of the media file, in Unix time.
+	LastModified *time.Time
+
+	// The MIME type of the media file.
+	MimeType *string
 
 	noSmithyDocumentSerde
 }
@@ -6164,16 +6567,21 @@ type Mpeg2Settings struct {
 	FramerateControl Mpeg2FramerateControl
 
 	// Choose the method that you want MediaConvert to use when increasing or
-	// decreasing the frame rate. For numerically simple conversions, such as 60 fps to
-	// 30 fps: We recommend that you keep the default value, Drop duplicate. For
-	// numerically complex conversions, to avoid stutter: Choose Interpolate. This
+	// decreasing your video's frame rate. For numerically simple conversions, such as
+	// 60 fps to 30 fps: We recommend that you keep the default value, Drop duplicate.
+	// For numerically complex conversions, to avoid stutter: Choose Interpolate. This
 	// results in a smooth picture, but might introduce undesirable video artifacts.
 	// For complex frame rate conversions, especially if your source video has already
 	// been converted from its original cadence: Choose FrameFormer to do
 	// motion-compensated interpolation. FrameFormer uses the best conversion method
 	// frame by frame. Note that using FrameFormer increases the transcoding time and
 	// incurs a significant add-on cost. When you choose FrameFormer, your input video
-	// resolution must be at least 128x96.
+	// resolution must be at least 128x96. To create an output with the same number of
+	// frames as your input: Choose Maintain frame count. When you do, MediaConvert
+	// will not drop, interpolate, add, or otherwise change the frame count from your
+	// input to your output. Note that since the frame count is maintained, the
+	// duration of your output will become shorter at higher frame rates and longer at
+	// lower frame rates.
 	FramerateConversionAlgorithm Mpeg2FramerateConversionAlgorithm
 
 	// When you use the API for transcode jobs that use frame rate conversion, specify
@@ -6244,18 +6652,19 @@ type Mpeg2Settings struct {
 	// 5000000.
 	MaxBitrate *int32
 
-	// Use this setting only when you also enable Scene change detection. This setting
-	// determines how the encoder manages the spacing between I-frames that it inserts
-	// as part of the I-frame cadence and the I-frames that it inserts for Scene change
-	// detection. When you specify a value for this setting, the encoder determines
-	// whether to skip a cadence-driven I-frame by the value you set. For example, if
-	// you set Min I interval to 5 and a cadence-driven I-frame would fall within 5
-	// frames of a scene-change I-frame, then the encoder skips the cadence-driven
-	// I-frame. In this way, one GOP is shrunk slightly and one GOP is stretched
-	// slightly. When the cadence-driven I-frames are farther from the scene-change
-	// I-frame than the value you set, then the encoder leaves all I-frames in place
-	// and the GOPs surrounding the scene change are smaller than the usual cadence
-	// GOPs.
+	// Specify the minimum number of frames allowed between two IDR-frames in your
+	// output. This includes frames created at the start of a GOP or a scene change.
+	// Use Min I-Interval to improve video compression by varying GOP size when two
+	// IDR-frames would be created near each other. For example, if a regular
+	// cadence-driven IDR-frame would fall within 5 frames of a scene-change IDR-frame,
+	// and you set Min I-interval to 5, then the encoder would only write an IDR-frame
+	// for the scene-change. In this way, one GOP is shortened or extended. If a
+	// cadence-driven IDR-frame would be further than 5 frames from a scene-change
+	// IDR-frame, then the encoder leaves all IDR-frames in place. To manually specify
+	// an interval: Enter a value from 1 to 30. Use when your downstream systems have
+	// specific GOP size requirements. To disable GOP size variance: Enter 0.
+	// MediaConvert will only create IDR-frames at the start of your output's
+	// cadence-driven GOP. Use when your downstream systems require a regular GOP size.
 	MinIInterval *int32
 
 	// Specify the number of B-frames that MediaConvert puts between reference frames
@@ -6562,8 +6971,8 @@ type NielsenConfiguration struct {
 // watermarks in your output audio. In addition to specifying these values, you
 // also need to set up your cloud TIC server. These settings apply to every output
 // in your job. The MediaConvert implementation is currently with the following
-// Nielsen versions: Nielsen Watermark SDK Version 5.2.1 Nielsen NLM Watermark
-// Engine Version 1.2.7 Nielsen Watermark Authenticator [SID_TIC] Version [5.0.0]
+// Nielsen versions: Nielsen Watermark SDK Version 6.0.13 Nielsen NLM Watermark
+// Engine Version 1.3.3 Nielsen Watermark Authenticator [SID_TIC] Version [7.0.0]
 type NielsenNonLinearWatermarkSettings struct {
 
 	// Choose the type of Nielsen watermarks that you want in your outputs. When you
@@ -6769,8 +7178,9 @@ type Output struct {
 	// Use Extension to specify the file extension for outputs in File output groups.
 	// If you do not specify a value, the service will use default extensions by
 	// container type as follows * MPEG-2 transport stream, m2ts * Quicktime, mov * MXF
-	// container, mxf * MPEG-4 container, mp4 * WebM container, webm * No Container,
-	// the service will use codec extensions (e.g. AAC, H265, H265, AC3)
+	// container, mxf * MPEG-4 container, mp4 * WebM container, webm * Animated GIF
+	// container, gif * No Container, the service will use codec extensions (e.g. AAC,
+	// H265, H265, AC3)
 	Extension *string
 
 	// Use Name modifier to have the service add a string to the end of each output
@@ -6986,6 +7396,32 @@ type PresetSettings struct {
 	noSmithyDocumentSerde
 }
 
+// The input file that needs to be analyzed.
+type ProbeInputFile struct {
+
+	// Specify the S3, HTTP, or HTTPS URL for your media file.
+	FileUrl *string
+
+	noSmithyDocumentSerde
+}
+
+// Probe results for your media file.
+type ProbeResult struct {
+
+	// The container of your media file. This information helps you understand the
+	// overall structure and details of your media, including format, duration, and
+	// track layout.
+	Container *Container
+
+	// Metadata and other file information.
+	Metadata *Metadata
+
+	// An array containing track mapping information.
+	TrackMappings []TrackMapping
+
+	noSmithyDocumentSerde
+}
+
 // Required when you set Codec to the value PRORES.
 type ProresSettings struct {
 
@@ -7012,16 +7448,21 @@ type ProresSettings struct {
 	FramerateControl ProresFramerateControl
 
 	// Choose the method that you want MediaConvert to use when increasing or
-	// decreasing the frame rate. For numerically simple conversions, such as 60 fps to
-	// 30 fps: We recommend that you keep the default value, Drop duplicate. For
-	// numerically complex conversions, to avoid stutter: Choose Interpolate. This
+	// decreasing your video's frame rate. For numerically simple conversions, such as
+	// 60 fps to 30 fps: We recommend that you keep the default value, Drop duplicate.
+	// For numerically complex conversions, to avoid stutter: Choose Interpolate. This
 	// results in a smooth picture, but might introduce undesirable video artifacts.
 	// For complex frame rate conversions, especially if your source video has already
 	// been converted from its original cadence: Choose FrameFormer to do
 	// motion-compensated interpolation. FrameFormer uses the best conversion method
 	// frame by frame. Note that using FrameFormer increases the transcoding time and
 	// incurs a significant add-on cost. When you choose FrameFormer, your input video
-	// resolution must be at least 128x96.
+	// resolution must be at least 128x96. To create an output with the same number of
+	// frames as your input: Choose Maintain frame count. When you do, MediaConvert
+	// will not drop, interpolate, add, or otherwise change the frame count from your
+	// input to your output. Note that since the frame count is maintained, the
+	// duration of your output will become shorter at higher frame rates and longer at
+	// lower frame rates.
 	FramerateConversionAlgorithm ProresFramerateConversionAlgorithm
 
 	// When you use the API for transcode jobs that use frame rate conversion, specify
@@ -7121,6 +7562,9 @@ type Queue struct {
 	// An identifier for this resource that is unique within all of AWS.
 	Arn *string
 
+	// The maximum number of jobs your queue can process concurrently.
+	ConcurrentJobs *int32
+
 	// The timestamp in epoch seconds for when you created the queue.
 	CreatedAt *time.Time
 
@@ -7142,6 +7586,11 @@ type Queue struct {
 	// Details about the pricing plan for your reserved queue. Required for reserved
 	// queues and not applicable to on-demand queues.
 	ReservationPlan *ReservationPlan
+
+	// A list of any service overrides applied by MediaConvert to the settings that
+	// you have configured. If you see any overrides, we recommend that you contact AWS
+	// Support.
+	ServiceOverrides []ServiceOverride
 
 	// Queues can be ACTIVE or PAUSED. If you pause a queue, the service won't begin
 	// processing jobs in that queue. Jobs that are running when you pause the queue
@@ -7411,6 +7860,26 @@ type SccDestinationSettings struct {
 	noSmithyDocumentSerde
 }
 
+// A service override applied by MediaConvert to the settings that you have
+// configured. If you see any overrides, we recommend that you contact AWS Support.
+type ServiceOverride struct {
+
+	// Details about the service override that MediaConvert has applied.
+	Message *string
+
+	// The name of the setting that MediaConvert has applied an override to.
+	Name *string
+
+	// The current value of the service override that MediaConvert has applied.
+	OverrideValue *string
+
+	// The value of the setting that you configured, prior to any overrides that
+	// MediaConvert has applied.
+	Value *string
+
+	noSmithyDocumentSerde
+}
+
 // If your output group type is HLS, DASH, or Microsoft Smooth, use these settings
 // when doing DRM encryption with a SPEKE-compliant key provider. If your output
 // group type is CMAF, use the SpekeKeyProviderCmaf settings instead.
@@ -7421,12 +7890,20 @@ type SpekeKeyProvider struct {
 	// Manager. Specify the certificate's Amazon Resource Name (ARN) here.
 	CertificateArn *string
 
+	// Specify the SPEKE version, either v1.0 or v2.0, that MediaConvert uses when
+	// encrypting your output. For more information, see:
+	// https://docs.aws.amazon.com/speke/latest/documentation/speke-api-specification.html
+	// To use SPEKE v1.0: Leave blank. To use SPEKE v2.0: Specify a SPEKE v2.0 video
+	// preset and a SPEKE v2.0 audio preset.
+	EncryptionContractConfiguration *EncryptionContractConfiguration
+
 	// Specify the resource ID that your SPEKE-compliant key provider uses to identify
 	// this content.
 	ResourceId *string
 
 	// Relates to SPEKE implementation. DRM system identifiers. DASH output groups
-	// support a max of two system ids. Other group types support one system id. See
+	// support a max of two system ids. HLS output groups support a max of 3 system
+	// ids. Other group types support one system id. See
 	// https://dashif.org/identifiers/content_protection/ for more details.
 	SystemIds []string
 
@@ -7453,9 +7930,15 @@ type SpekeKeyProviderCmaf struct {
 	// https://dashif.org/identifiers/content_protection/.
 	DashSignaledSystemIds []string
 
-	// Specify the DRM system ID that you want signaled in the HLS manifest that
-	// MediaConvert creates as part of this CMAF package. The HLS manifest can
-	// currently signal only one system ID. For more information, see
+	// Specify the SPEKE version, either v1.0 or v2.0, that MediaConvert uses when
+	// encrypting your output. For more information, see:
+	// https://docs.aws.amazon.com/speke/latest/documentation/speke-api-specification.html
+	// To use SPEKE v1.0: Leave blank. To use SPEKE v2.0: Specify a SPEKE v2.0 video
+	// preset and a SPEKE v2.0 audio preset.
+	EncryptionContractConfiguration *EncryptionContractConfiguration
+
+	// Specify up to 3 DRM system IDs that you want signaled in the HLS manifest that
+	// MediaConvert creates as part of this CMAF package. For more information, see
 	// https://dashif.org/identifiers/content_protection/.
 	HlsSignaledSystemIds []string
 
@@ -7632,6 +8115,48 @@ type Timing struct {
 	noSmithyDocumentSerde
 }
 
+// Details about each track (video, audio, or data) in the media file.
+type Track struct {
+
+	// Details about the media file's audio track.
+	AudioProperties *AudioProperties
+
+	// The codec of the audio or video track, or caption format of the data track.
+	Codec Codec
+
+	// Details about the media file's data track.
+	DataProperties *DataProperties
+
+	// The duration of the track, in seconds.
+	Duration *float64
+
+	// The unique index number of the track, starting at 1.
+	Index *int32
+
+	// The type of track: video, audio, or data.
+	TrackType TrackType
+
+	// Details about the media file's video track.
+	VideoProperties *VideoProperties
+
+	noSmithyDocumentSerde
+}
+
+// An array containing track mapping information.
+type TrackMapping struct {
+
+	// The index numbers of the audio tracks in your media file.
+	AudioTrackIndexes []int32
+
+	// The index numbers of the data tracks in your media file.
+	DataTrackIndexes []int32
+
+	// The index numbers of the video tracks in your media file.
+	VideoTrackIndexes []int32
+
+	noSmithyDocumentSerde
+}
+
 // Settings specific to caption sources that are specified by track number.
 // Currently, this is only IMSC captions in an IMF package. If your caption source
 // is IMSC 1.1 in a separate xml file, use FileSourceSettings instead of
@@ -7679,16 +8204,21 @@ type UncompressedSettings struct {
 	FramerateControl UncompressedFramerateControl
 
 	// Choose the method that you want MediaConvert to use when increasing or
-	// decreasing the frame rate. For numerically simple conversions, such as 60 fps to
-	// 30 fps: We recommend that you keep the default value, Drop duplicate. For
-	// numerically complex conversions, to avoid stutter: Choose Interpolate. This
+	// decreasing your video's frame rate. For numerically simple conversions, such as
+	// 60 fps to 30 fps: We recommend that you keep the default value, Drop duplicate.
+	// For numerically complex conversions, to avoid stutter: Choose Interpolate. This
 	// results in a smooth picture, but might introduce undesirable video artifacts.
 	// For complex frame rate conversions, especially if your source video has already
 	// been converted from its original cadence: Choose FrameFormer to do
 	// motion-compensated interpolation. FrameFormer uses the best conversion method
 	// frame by frame. Note that using FrameFormer increases the transcoding time and
 	// incurs a significant add-on cost. When you choose FrameFormer, your input video
-	// resolution must be at least 128x96.
+	// resolution must be at least 128x96. To create an output with the same number of
+	// frames as your input: Choose Maintain frame count. When you do, MediaConvert
+	// will not drop, interpolate, add, or otherwise change the frame count from your
+	// input to your output. Note that since the frame count is maintained, the
+	// duration of your output will become shorter at higher frame rates and longer at
+	// lower frame rates.
 	FramerateConversionAlgorithm UncompressedFramerateConversionAlgorithm
 
 	// When you use the API for transcode jobs that use frame rate conversion, specify
@@ -7754,16 +8284,21 @@ type Vc3Settings struct {
 	FramerateControl Vc3FramerateControl
 
 	// Choose the method that you want MediaConvert to use when increasing or
-	// decreasing the frame rate. For numerically simple conversions, such as 60 fps to
-	// 30 fps: We recommend that you keep the default value, Drop duplicate. For
-	// numerically complex conversions, to avoid stutter: Choose Interpolate. This
+	// decreasing your video's frame rate. For numerically simple conversions, such as
+	// 60 fps to 30 fps: We recommend that you keep the default value, Drop duplicate.
+	// For numerically complex conversions, to avoid stutter: Choose Interpolate. This
 	// results in a smooth picture, but might introduce undesirable video artifacts.
 	// For complex frame rate conversions, especially if your source video has already
 	// been converted from its original cadence: Choose FrameFormer to do
 	// motion-compensated interpolation. FrameFormer uses the best conversion method
 	// frame by frame. Note that using FrameFormer increases the transcoding time and
 	// incurs a significant add-on cost. When you choose FrameFormer, your input video
-	// resolution must be at least 128x96.
+	// resolution must be at least 128x96. To create an output with the same number of
+	// frames as your input: Choose Maintain frame count. When you do, MediaConvert
+	// will not drop, interpolate, add, or otherwise change the frame count from your
+	// input to your output. Note that since the frame count is maintained, the
+	// duration of your output will become shorter at higher frame rates and longer at
+	// lower frame rates.
 	FramerateConversionAlgorithm Vc3FramerateConversionAlgorithm
 
 	// When you use the API for transcode jobs that use frame rate conversion, specify
@@ -7832,9 +8367,9 @@ type Vc3Settings struct {
 // codec. For each codec enum that you choose, define the corresponding settings
 // object. The following lists the codec enum, settings object pairs. * AV1,
 // Av1Settings * AVC_INTRA, AvcIntraSettings * FRAME_CAPTURE, FrameCaptureSettings
-// * H_264, H264Settings * H_265, H265Settings * MPEG2, Mpeg2Settings * PRORES,
-// ProresSettings * UNCOMPRESSED, UncompressedSettings * VC3, Vc3Settings * VP8,
-// Vp8Settings * VP9, Vp9Settings * XAVC, XavcSettings
+// * GIF, GifSettings * H_264, H264Settings * H_265, H265Settings * MPEG2,
+// Mpeg2Settings * PRORES, ProresSettings * UNCOMPRESSED, UncompressedSettings *
+// VC3, Vc3Settings * VP8, Vp8Settings * VP9, Vp9Settings * XAVC, XavcSettings
 type VideoCodecSettings struct {
 
 	// Required when you set Codec, under VideoDescription>CodecSettings to the value
@@ -7858,6 +8393,10 @@ type VideoCodecSettings struct {
 
 	// Required when you set Codec to the value FRAME_CAPTURE.
 	FrameCaptureSettings *FrameCaptureSettings
+
+	// Required when you set (Codec) under (VideoDescription)>(CodecSettings) to the
+	// value GIF
+	GifSettings *GifSettings
 
 	// Required when you set Codec to the value H_264.
 	H264Settings *H264Settings
@@ -7907,14 +8446,20 @@ type VideoDescription struct {
 	// job, the service will ignore the setting.
 	AntiAlias AntiAlias
 
+	// Specify the chroma sample positioning metadata for your H.264 or H.265 output.
+	// To have MediaConvert automatically determine chroma positioning: We recommend
+	// that you keep the default value, Auto. To specify center positioning: Choose
+	// Force center. To specify top left positioning: Choose Force top left.
+	ChromaPositionMode ChromaPositionMode
+
 	// Video codec settings contains the group of settings related to video encoding.
 	// The settings in this group vary depending on the value that you choose for Video
 	// codec. For each codec enum that you choose, define the corresponding settings
 	// object. The following lists the codec enum, settings object pairs. * AV1,
 	// Av1Settings * AVC_INTRA, AvcIntraSettings * FRAME_CAPTURE, FrameCaptureSettings
-	// * H_264, H264Settings * H_265, H265Settings * MPEG2, Mpeg2Settings * PRORES,
-	// ProresSettings * UNCOMPRESSED, UncompressedSettings * VC3, Vc3Settings * VP8,
-	// Vp8Settings * VP9, Vp9Settings * XAVC, XavcSettings
+	// * GIF, GifSettings * H_264, H264Settings * H_265, H265Settings * MPEG2,
+	// Mpeg2Settings * PRORES, ProresSettings * UNCOMPRESSED, UncompressedSettings *
+	// VC3, Vc3Settings * VP8, Vp8Settings * VP9, Vp9Settings * XAVC, XavcSettings
 	CodecSettings *VideoCodecSettings
 
 	// Choose Insert for this setting to include color metadata in this output. Choose
@@ -7929,7 +8474,7 @@ type VideoDescription struct {
 	// Applies only to 29.97 fps outputs. When this feature is enabled, the service
 	// will use drop-frame timecode on outputs. If it is not possible to use drop-frame
 	// timecode, the system will fall back to non-drop-frame. This setting is enabled
-	// by default when Timecode insertion is enabled.
+	// by default when Timecode insertion or Timecode track is enabled.
 	DropFrameTimecode DropFrameTimecode
 
 	// Applies only if you set AFD Signaling to Fixed. Use Fixed to specify a four-bit
@@ -7980,6 +8525,13 @@ type VideoDescription struct {
 	// under Job settings > Timecode configuration does.
 	TimecodeInsertion VideoTimecodeInsertion
 
+	// To include a timecode track in your MP4 output: Choose Enabled. MediaConvert
+	// writes the timecode track in the Null Media Header box (NMHD), without any
+	// timecode text formatting information. You can also specify dropframe or
+	// non-dropframe timecode under the Drop Frame Timecode setting. To not include a
+	// timecode track: Keep the default value, Disabled.
+	TimecodeTrack TimecodeTrack
+
 	// Find additional transcoding features under Preprocessors. Enable the features
 	// at each output individually. These features are disabled by default.
 	VideoPreprocessors *VideoPreprocessor
@@ -8010,29 +8562,49 @@ type VideoDetail struct {
 // see https://docs.aws.amazon.com/mediaconvert/latest/ug/video-overlays.html
 type VideoOverlay struct {
 
-	// Enter the end timecode in the underlying input video for this overlay. Your
-	// overlay will be active through this frame. To display your video overlay for the
-	// duration of the underlying video: Leave blank. Use the format HH:MM:SS:FF or
-	// HH:MM:SS;FF, where HH is the hour, MM is the minute, SS is the second, and FF is
+	// Enter the end timecode in the base input video for this overlay. Your overlay
+	// will be active through this frame. To display your video overlay for the
+	// duration of the base input video: Leave blank. Use the format HH:MM:SS:FF or
+	// HH:MM:SS;FF, where HH is the hour, MM is the minute, SS isthe second, and FF is
 	// the frame number. When entering this value, take into account your choice for
-	// the underlying Input timecode source. For example, if you have embedded
+	// the base input video's timecode source. For example, if you have embedded
 	// timecodes that start at 01:00:00:00 and you want your overlay to end ten minutes
 	// into the video, enter 01:10:00:00.
 	EndTimecode *string
+
+	// Specify the Initial position of your video overlay. To specify the Initial
+	// position of your video overlay, including distance from the left or top edge of
+	// the base input video's frame, or size: Enter a value for X position, Y position,
+	// Width, or Height. To use the full frame of the base input video: Leave blank.
+	InitialPosition *VideoOverlayPosition
 
 	// Input settings for Video overlay. You can include one or more video overlays in
 	// sequence at different times that you specify.
 	Input *VideoOverlayInput
 
-	// Enter the start timecode in the underlying input video for this overlay. Your
-	// overlay will be active starting with this frame. To display your video overlay
-	// starting at the beginning of the underlying video: Leave blank. Use the format
+	// Specify whether your video overlay repeats or plays only once. To repeat your
+	// video overlay on a loop: Keep the default value, Repeat. Your overlay will
+	// repeat for the duration of the base input video. To playback your video overlay
+	// only once: Choose Once. With either option, you can end playback at a time that
+	// you specify by entering a value for End timecode.
+	Playback VideoOverlayPlayBackMode
+
+	// Enter the start timecode in the base input video for this overlay. Your overlay
+	// will be active starting with this frame. To display your video overlay starting
+	// at the beginning of the base input video: Leave blank. Use the format
 	// HH:MM:SS:FF or HH:MM:SS;FF, where HH is the hour, MM is the minute, SS is the
 	// second, and FF is the frame number. When entering this value, take into account
-	// your choice for the underlying Input timecode source. For example, if you have
+	// your choice for the base input video's timecode source. For example, if you have
 	// embedded timecodes that start at 01:00:00:00 and you want your overlay to begin
 	// five minutes into the video, enter 01:05:00:00.
 	StartTimecode *string
+
+	// Specify one or more transitions for your video overlay. Use Transitions to
+	// reposition or resize your overlay over time. To use the same position and size
+	// for the duration of your video overlay: Leave blank. To specify a Transition:
+	// Enter a value for Start timecode, End Timecode, X Position, Y Position, Width,
+	// or Height.
+	Transitions []VideoOverlayTransition
 
 	noSmithyDocumentSerde
 }
@@ -8041,10 +8613,8 @@ type VideoOverlay struct {
 // sequence at different times that you specify.
 type VideoOverlayInput struct {
 
-	// Specify the input file S3, HTTP, or HTTPS URI for your video overlay. For
-	// consistency in color and formatting in your output video image, we recommend
-	// that you specify a video with similar characteristics as the underlying input
-	// video.
+	// Specify the input file S3, HTTP, or HTTPS URL for your video overlay. To
+	// specify one or more Transitions for your base input video instead: Leave blank.
 	FileInput *string
 
 	// Specify one or more clips to use from your video overlay. When you include an
@@ -8080,6 +8650,89 @@ type VideoOverlayInputClipping struct {
 	// clip. Use the format HH:MM:SS:FF or HH:MM:SS;FF, where HH is the hour, MM is the
 	// minute, SS is the second, and FF is the frame number. When entering this value,
 	// take into account your choice for Timecode source.
+	StartTimecode *string
+
+	noSmithyDocumentSerde
+}
+
+// position of video overlay
+type VideoOverlayPosition struct {
+
+	// To scale your video overlay to the same height as the base input video: Leave
+	// blank. To scale the height of your video overlay to a different height: Enter an
+	// integer representing the Unit type that you choose, either Pixels or Percentage.
+	// For example, when you enter 360 and choose Pixels, your video overlay will be
+	// rendered with a height of 360. When you enter 50, choose Percentage, and your
+	// overlay's source has a height of 1080, your video overlay will be rendered with
+	// a height of 540. To scale your overlay to a specific height while automatically
+	// maintaining its original aspect ratio, enter a value for Height and leave Width
+	// blank.
+	Height *int32
+
+	// Specify the Unit type to use when you enter a value for X position, Y position,
+	// Width, or Height. You can choose Pixels or Percentage. Leave blank to use the
+	// default value, Pixels.
+	Unit VideoOverlayUnit
+
+	// To scale your video overlay to the same width as the base input video: Leave
+	// blank. To scale the width of your video overlay to a different width: Enter an
+	// integer representing the Unit type that you choose, either Pixels or Percentage.
+	// For example, when you enter 640 and choose Pixels, your video overlay will scale
+	// to a height of 640 pixels. When you enter 50, choose Percentage, and your
+	// overlay's source has a width of 1920, your video overlay will scale to a width
+	// of 960. To scale your overlay to a specific width while automatically
+	// maintaining its original aspect ratio, enter a value for Width and leave Height
+	// blank.
+	Width *int32
+
+	// To position the left edge of your video overlay along the left edge of the base
+	// input video's frame: Keep blank, or enter 0. To position the left edge of your
+	// video overlay to the right, relative to the left edge of the base input video's
+	// frame: Enter an integer representing the Unit type that you choose, either
+	// Pixels or Percentage. For example, when you enter 10 and choose Pixels, your
+	// video overlay will be positioned 10 pixels from the left edge of the base input
+	// video's frame. When you enter 10, choose Percentage, and your base input video
+	// is 1920x1080, your video overlay will be positioned 192 pixels from the left
+	// edge of the base input video's frame.
+	XPosition *int32
+
+	// To position the top edge of your video overlay along the top edge of the base
+	// input video's frame: Keep blank, or enter 0. To position the top edge of your
+	// video overlay down, relative to the top edge of the base input video's frame:
+	// Enter an integer representing the Unit type that you choose, either Pixels or
+	// Percentage. For example, when you enter 10 and choose Pixels, your video overlay
+	// will be positioned 10 pixels from the top edge of the base input video's frame.
+	// When you enter 10, choose Percentage, and your underlying video is 1920x1080,
+	// your video overlay will be positioned 108 pixels from the top edge of the base
+	// input video's frame.
+	YPosition *int32
+
+	noSmithyDocumentSerde
+}
+
+// Specify one or more Transitions for your video overlay. Use Transitions to
+// reposition or resize your overlay over time. To use the same position and size
+// for the duration of your video overlay: Leave blank. To specify a Transition:
+// Enter a value for Start timecode, End Timecode, X Position, Y Position, Width,
+// or Height.
+type VideoOverlayTransition struct {
+
+	// Specify the ending position for this transition, relative to the base input
+	// video's frame. Your video overlay will move smoothly to this position, beginning
+	// at this transition's Start timecode and ending at this transition's End
+	// timecode.
+	EndPosition *VideoOverlayPosition
+
+	// Specify the timecode for when this transition ends. Use the format HH:MM:SS:FF
+	// or HH:MM:SS;FF, where HH is the hour, MM is the minute, SS is the second, and FF
+	// is the frame number. When entering this value, take into account your choice for
+	// Timecode source.
+	EndTimecode *string
+
+	// Specify the timecode for when this transition begins. Use the format
+	// HH:MM:SS:FF or HH:MM:SS;FF, where HH is the hour, MM is the minute, SS is the
+	// second, and FF is the frame number. When entering this value, take into account
+	// your choice for Timecode source.
 	StartTimecode *string
 
 	noSmithyDocumentSerde
@@ -8124,6 +8777,36 @@ type VideoPreprocessor struct {
 
 	// Settings for burning the output timecode and specified prefix into the output.
 	TimecodeBurnin *TimecodeBurnin
+
+	noSmithyDocumentSerde
+}
+
+// Details about the media file's video track.
+type VideoProperties struct {
+
+	// The bit depth of the video track.
+	BitDepth *int32
+
+	// The bit rate of the video track, in bits per second.
+	BitRate *int32
+
+	// The color space color primaries of the video track.
+	ColorPrimaries ColorPrimaries
+
+	// The frame rate of the video or audio track.
+	FrameRate *FrameRate
+
+	// The height of the video track, in pixels.
+	Height *int32
+
+	// The color space matrix coefficients of the video track.
+	MatrixCoefficients MatrixCoefficients
+
+	// The color space transfer characteristics of the video track.
+	TransferCharacteristics TransferCharacteristics
+
+	// The width of the video track, in pixels.
+	Width *int32
 
 	noSmithyDocumentSerde
 }
@@ -8274,16 +8957,21 @@ type Vp8Settings struct {
 	FramerateControl Vp8FramerateControl
 
 	// Choose the method that you want MediaConvert to use when increasing or
-	// decreasing the frame rate. For numerically simple conversions, such as 60 fps to
-	// 30 fps: We recommend that you keep the default value, Drop duplicate. For
-	// numerically complex conversions, to avoid stutter: Choose Interpolate. This
+	// decreasing your video's frame rate. For numerically simple conversions, such as
+	// 60 fps to 30 fps: We recommend that you keep the default value, Drop duplicate.
+	// For numerically complex conversions, to avoid stutter: Choose Interpolate. This
 	// results in a smooth picture, but might introduce undesirable video artifacts.
 	// For complex frame rate conversions, especially if your source video has already
 	// been converted from its original cadence: Choose FrameFormer to do
 	// motion-compensated interpolation. FrameFormer uses the best conversion method
 	// frame by frame. Note that using FrameFormer increases the transcoding time and
 	// incurs a significant add-on cost. When you choose FrameFormer, your input video
-	// resolution must be at least 128x96.
+	// resolution must be at least 128x96. To create an output with the same number of
+	// frames as your input: Choose Maintain frame count. When you do, MediaConvert
+	// will not drop, interpolate, add, or otherwise change the frame count from your
+	// input to your output. Note that since the frame count is maintained, the
+	// duration of your output will become shorter at higher frame rates and longer at
+	// lower frame rates.
 	FramerateConversionAlgorithm Vp8FramerateConversionAlgorithm
 
 	// When you use the API for transcode jobs that use frame rate conversion, specify
@@ -8364,16 +9052,21 @@ type Vp9Settings struct {
 	FramerateControl Vp9FramerateControl
 
 	// Choose the method that you want MediaConvert to use when increasing or
-	// decreasing the frame rate. For numerically simple conversions, such as 60 fps to
-	// 30 fps: We recommend that you keep the default value, Drop duplicate. For
-	// numerically complex conversions, to avoid stutter: Choose Interpolate. This
+	// decreasing your video's frame rate. For numerically simple conversions, such as
+	// 60 fps to 30 fps: We recommend that you keep the default value, Drop duplicate.
+	// For numerically complex conversions, to avoid stutter: Choose Interpolate. This
 	// results in a smooth picture, but might introduce undesirable video artifacts.
 	// For complex frame rate conversions, especially if your source video has already
 	// been converted from its original cadence: Choose FrameFormer to do
 	// motion-compensated interpolation. FrameFormer uses the best conversion method
 	// frame by frame. Note that using FrameFormer increases the transcoding time and
 	// incurs a significant add-on cost. When you choose FrameFormer, your input video
-	// resolution must be at least 128x96.
+	// resolution must be at least 128x96. To create an output with the same number of
+	// frames as your input: Choose Maintain frame count. When you do, MediaConvert
+	// will not drop, interpolate, add, or otherwise change the frame count from your
+	// input to your output. Note that since the frame count is maintained, the
+	// duration of your output will become shorter at higher frame rates and longer at
+	// lower frame rates.
 	FramerateConversionAlgorithm Vp9FramerateConversionAlgorithm
 
 	// When you use the API for transcode jobs that use frame rate conversion, specify
@@ -8465,9 +9158,11 @@ type WavSettings struct {
 	// and even numbers up to 64. For example, 1, 2, 4, 6, and so on, up to 64.
 	Channels *int32
 
-	// The service defaults to using RIFF for WAV outputs. If your output audio is
-	// likely to exceed 4 GB in file size, or if you otherwise need the extended
-	// support of the RF64 format, set your output WAV file format to RF64.
+	// Specify the file format for your wave audio output. To use a RIFF wave format:
+	// Keep the default value, RIFF. If your output audio is likely to exceed 4GB in
+	// file size, or if you otherwise need the extended support of the RF64 format:
+	// Choose RF64. If your player only supports the extensible wave format: Choose
+	// Extensible.
 	Format WavFormat
 
 	// Sample rate in Hz.
@@ -8496,15 +9191,19 @@ type WebvttDestinationSettings struct {
 	// for this track: .
 	Accessibility WebvttAccessibilitySubs
 
-	// To use the available style, color, and position information from your input
-	// captions: Set Style passthrough to Enabled. MediaConvert uses default settings
-	// when style and position information is missing from your input captions. To
-	// recreate the input captions exactly: Set Style passthrough to Strict.
-	// MediaConvert automatically applies timing adjustments, including adjustments for
-	// frame rate conversion, ad avails, and input clipping. Your input captions format
-	// must be WebVTT. To ignore the style and position information from your input
-	// captions and use simplified output captions: Set Style passthrough to Disabled,
-	// or leave blank.
+	// Specify how MediaConvert writes style information in your output WebVTT
+	// captions. To use the available style, color, and position information from your
+	// input captions: Choose Enabled. MediaConvert uses default settings when style
+	// and position information is missing from your input captions. To recreate the
+	// input captions exactly: Choose Strict. MediaConvert automatically applies timing
+	// adjustments, including adjustments for frame rate conversion, ad avails, and
+	// input clipping. Your input captions format must be WebVTT. To ignore the style
+	// and position information from your input captions and use simplified output
+	// captions: Keep the default value, Disabled. Or leave blank. To use the available
+	// style, color, and position information from your input captions, while merging
+	// cues with identical time ranges: Choose merge. This setting can help prevent
+	// positioning overlaps for certain players that expect a single single cue for any
+	// given time range.
 	StylePassthrough WebvttStylePassthrough
 
 	noSmithyDocumentSerde
@@ -8722,16 +9421,21 @@ type XavcSettings struct {
 	FramerateControl XavcFramerateControl
 
 	// Choose the method that you want MediaConvert to use when increasing or
-	// decreasing the frame rate. For numerically simple conversions, such as 60 fps to
-	// 30 fps: We recommend that you keep the default value, Drop duplicate. For
-	// numerically complex conversions, to avoid stutter: Choose Interpolate. This
+	// decreasing your video's frame rate. For numerically simple conversions, such as
+	// 60 fps to 30 fps: We recommend that you keep the default value, Drop duplicate.
+	// For numerically complex conversions, to avoid stutter: Choose Interpolate. This
 	// results in a smooth picture, but might introduce undesirable video artifacts.
 	// For complex frame rate conversions, especially if your source video has already
 	// been converted from its original cadence: Choose FrameFormer to do
 	// motion-compensated interpolation. FrameFormer uses the best conversion method
 	// frame by frame. Note that using FrameFormer increases the transcoding time and
 	// incurs a significant add-on cost. When you choose FrameFormer, your input video
-	// resolution must be at least 128x96.
+	// resolution must be at least 128x96. To create an output with the same number of
+	// frames as your input: Choose Maintain frame count. When you do, MediaConvert
+	// will not drop, interpolate, add, or otherwise change the frame count from your
+	// input to your output. Note that since the frame count is maintained, the
+	// duration of your output will become shorter at higher frame rates and longer at
+	// lower frame rates.
 	FramerateConversionAlgorithm XavcFramerateConversionAlgorithm
 
 	// When you use the API for transcode jobs that use frame rate conversion, specify

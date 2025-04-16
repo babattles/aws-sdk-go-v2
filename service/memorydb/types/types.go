@@ -125,6 +125,9 @@ type Cluster struct {
 	// A description of the cluster
 	Description *string
 
+	// The name of the engine used by the cluster.
+	Engine *string
+
 	// The Redis OSS engine patch version used by the cluster
 	EnginePatchVersion *string
 
@@ -138,6 +141,9 @@ type Cluster struct {
 	// performed. It is specified as a range in the format ddd:hh24:mi-ddd:hh24:mi (24H
 	// Clock UTC). The minimum maintenance window is a 60 minute period.
 	MaintenanceWindow *string
+
+	// The name of the multi-Region cluster that this cluster belongs to.
+	MultiRegionClusterName *string
 
 	// The user-supplied name of the cluster. This identifier is a unique key that
 	// identifies a cluster.
@@ -203,11 +209,21 @@ type ClusterConfiguration struct {
 	// The description of the cluster configuration
 	Description *string
 
+	// The name of the engine used by the cluster configuration.
+	Engine *string
+
 	// The Redis OSS engine version used by the cluster
 	EngineVersion *string
 
 	// The specified maintenance window for the cluster
 	MaintenanceWindow *string
+
+	// The name for the multi-Region cluster associated with the cluster configuration.
+	MultiRegionClusterName *string
+
+	// The name of the multi-Region parameter group associated with the cluster
+	// configuration.
+	MultiRegionParameterGroupName *string
 
 	// The name of the cluster
 	Name *string
@@ -276,6 +292,9 @@ type Endpoint struct {
 // Provides details of the Redis OSS engine version
 type EngineVersionInfo struct {
 
+	// The name of the engine for which version information is provided.
+	Engine *string
+
 	// The patched engine version
 	EnginePatchVersion *string
 
@@ -322,6 +341,45 @@ type Filter struct {
 	//
 	// This member is required.
 	Values []string
+
+	noSmithyDocumentSerde
+}
+
+// Represents a multi-Region cluster.
+type MultiRegionCluster struct {
+
+	// The Amazon Resource Name (ARN) of the multi-Region cluster.
+	ARN *string
+
+	// The clusters in this multi-Region cluster.
+	Clusters []RegionalCluster
+
+	// The description of the multi-Region cluster.
+	Description *string
+
+	// The name of the engine used by the multi-Region cluster.
+	Engine *string
+
+	// The version of the engine used by the multi-Region cluster.
+	EngineVersion *string
+
+	// The name of the multi-Region cluster.
+	MultiRegionClusterName *string
+
+	// The name of the multi-Region parameter group associated with the cluster.
+	MultiRegionParameterGroupName *string
+
+	// The node type used by the multi-Region cluster.
+	NodeType *string
+
+	// The number of shards in the multi-Region cluster.
+	NumberOfShards *int32
+
+	// The current status of the multi-Region cluster.
+	Status *string
+
+	// Indiciates if the multi-Region cluster is TLS enabled.
+	TLSEnabled *bool
 
 	noSmithyDocumentSerde
 }
@@ -428,6 +486,24 @@ type RecurringCharge struct {
 
 	// The frequency of the recurring price charged to run this reserved node.
 	RecurringChargeFrequency *string
+
+	noSmithyDocumentSerde
+}
+
+// Represents a Regional cluster
+type RegionalCluster struct {
+
+	// The Amazon Resource Name (ARN) the Regional cluster
+	ARN *string
+
+	// The name of the Regional cluster
+	ClusterName *string
+
+	// The Region the current Regional cluster is assigned to.
+	Region *string
+
+	// The status of the Regional cluster.
+	Status *string
 
 	noSmithyDocumentSerde
 }
@@ -540,6 +616,9 @@ type ServiceUpdate struct {
 
 	// Provides details of the service update
 	Description *string
+
+	// The name of the engine for which a service update is available.
+	Engine *string
 
 	// A list of nodes updated by the service update
 	NodesUpdated *string

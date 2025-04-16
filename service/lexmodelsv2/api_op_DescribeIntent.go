@@ -112,6 +112,9 @@ type DescribeIntentOutput struct {
 	// The identifier of the built-in intent that this intent is derived from, if any.
 	ParentIntentSignature *string
 
+	// Qinconnect intent configuration details for the describe intent response.
+	QInConnectIntentConfiguration *types.QInConnectIntentConfiguration
+
 	// Details about the configuration of the built-in Amazon.QnAIntent .
 	QnAIntentConfiguration *types.QnAIntentConfiguration
 
@@ -171,6 +174,9 @@ func (c *Client) addOperationDescribeIntentMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -187,6 +193,9 @@ func (c *Client) addOperationDescribeIntentMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeIntentValidationMiddleware(stack); err != nil {
@@ -208,6 +217,18 @@ func (c *Client) addOperationDescribeIntentMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -11,11 +11,11 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Creates a new script record for your Realtime Servers script. Realtime scripts
-// are JavaScript that provide configuration settings and optional custom game
-// logic for your game. The script is deployed when you create a Realtime Servers
-// fleet to host your game sessions. Script logic is executed during an active game
-// session.
+// Creates a new script record for your Amazon GameLift Realtime script. Realtime
+// scripts are JavaScript that provide configuration settings and optional custom
+// game logic for your game. The script is deployed when you create a Amazon
+// GameLift Realtime fleet to host your game sessions. Script logic is executed
+// during an active game session.
 //
 // To create a new script record, specify a script name and provide the script
 // file(s). The script files and all dependencies must be zipped into a single
@@ -36,7 +36,7 @@ import (
 //
 // # Learn more
 //
-// [Amazon GameLift Realtime Servers]
+// [Amazon GameLift Amazon GameLift Realtime]
 //
 // [Set Up a Role for Amazon GameLift Access]
 //
@@ -45,7 +45,7 @@ import (
 // [All APIs by task]
 //
 // [Set Up a Role for Amazon GameLift Access]: https://docs.aws.amazon.com/gamelift/latest/developerguide/setting-up-role.html
-// [Amazon GameLift Realtime Servers]: https://docs.aws.amazon.com/gamelift/latest/developerguide/realtime-intro.html
+// [Amazon GameLift Amazon GameLift Realtime]: https://docs.aws.amazon.com/gamelift/latest/developerguide/realtime-intro.html
 // [All APIs by task]: https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets
 func (c *Client) CreateScript(ctx context.Context, params *CreateScriptInput, optFns ...func(*Options)) (*CreateScriptOutput, error) {
 	if params == nil {
@@ -64,7 +64,7 @@ func (c *Client) CreateScript(ctx context.Context, params *CreateScriptInput, op
 
 type CreateScriptInput struct {
 
-	// A descriptive label that is associated with a script. Script names don't need
+	// A descriptive label that is associated with a script. Script names do not need
 	// to be unique. You can use [UpdateScript]to change this value later.
 	//
 	// [UpdateScript]: https://docs.aws.amazon.com/gamelift/latest/apireference/API_UpdateScript.html
@@ -94,8 +94,8 @@ type CreateScriptInput struct {
 	// [ListTagsForResource]: https://docs.aws.amazon.com/gamelift/latest/apireference/API_ListTagsForResource.html
 	Tags []types.Tag
 
-	// Version information associated with a build or script. Version strings don't
-	// need to be unique. You can use [UpdateScript]to change this value later.
+	// Version information that is associated with a build or script. Version strings
+	// do not need to be unique. You can use [UpdateScript]to change this value later.
 	//
 	// [UpdateScript]: https://docs.aws.amazon.com/gamelift/latest/apireference/API_UpdateScript.html
 	Version *string
@@ -171,6 +171,9 @@ func (c *Client) addOperationCreateScriptMiddlewares(stack *middleware.Stack, op
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -187,6 +190,9 @@ func (c *Client) addOperationCreateScriptMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateScriptValidationMiddleware(stack); err != nil {
@@ -208,6 +214,18 @@ func (c *Client) addOperationCreateScriptMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

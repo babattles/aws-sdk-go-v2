@@ -29,8 +29,8 @@ func (c *Client) DescribeSlackUserIdentities(ctx context.Context, params *Descri
 
 type DescribeSlackUserIdentitiesInput struct {
 
-	// The ARN of the SlackChannelConfiguration associated with the user identities to
-	// describe.
+	// The Amazon Resource Name (ARN) of the SlackChannelConfiguration associated with
+	// the user identities to describe.
 	ChatConfigurationArn *string
 
 	// The maximum number of results to include in the response. If more results exist
@@ -38,7 +38,7 @@ type DescribeSlackUserIdentitiesInput struct {
 	// the remaining results can be retrieved.
 	MaxResults *int32
 
-	// An optional token returned from a prior request. Use this token for pagination
+	//  An optional token returned from a prior request. Use this token for pagination
 	// of results from this action. If this parameter is specified, the response
 	// includes only results beyond the token, up to the value specified by MaxResults.
 	NextToken *string
@@ -48,7 +48,7 @@ type DescribeSlackUserIdentitiesInput struct {
 
 type DescribeSlackUserIdentitiesOutput struct {
 
-	// An optional token returned from a prior request. Use this token for pagination
+	//  An optional token returned from a prior request. Use this token for pagination
 	// of results from this action. If this parameter is specified, the response
 	// includes only results beyond the token, up to the value specified by MaxResults.
 	NextToken *string
@@ -105,6 +105,9 @@ func (c *Client) addOperationDescribeSlackUserIdentitiesMiddlewares(stack *middl
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -123,6 +126,9 @@ func (c *Client) addOperationDescribeSlackUserIdentitiesMiddlewares(stack *middl
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeSlackUserIdentities(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -139,6 +145,18 @@ func (c *Client) addOperationDescribeSlackUserIdentitiesMiddlewares(stack *middl
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -11,7 +11,31 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Gets the user pool multi-factor authentication (MFA) configuration.
+// Given a user pool ID, returns configuration for sign-in with WebAuthn
+// authenticators and for multi-factor authentication (MFA). This operation
+// describes the following:
+//
+//   - The WebAuthn relying party (RP) ID and user-verification settings.
+//
+//   - The required, optional, or disabled state of MFA for all user pool users.
+//
+//   - The message templates for email and SMS MFA.
+//
+//   - The enabled or disabled state of time-based one-time password (TOTP) MFA.
+//
+// Amazon Cognito evaluates Identity and Access Management (IAM) policies in
+// requests for this API operation. For this operation, you must use IAM
+// credentials to authorize requests, and you must grant yourself the corresponding
+// IAM permission in a policy.
+//
+// # Learn more
+//
+// [Signing Amazon Web Services API Requests]
+//
+// [Using the Amazon Cognito user pools API and user pool endpoints]
+//
+// [Using the Amazon Cognito user pools API and user pool endpoints]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html
+// [Signing Amazon Web Services API Requests]: https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html
 func (c *Client) GetUserPoolMfaConfig(ctx context.Context, params *GetUserPoolMfaConfigInput, optFns ...func(*Options)) (*GetUserPoolMfaConfigOutput, error) {
 	if params == nil {
 		params = &GetUserPoolMfaConfigInput{}
@@ -29,7 +53,7 @@ func (c *Client) GetUserPoolMfaConfig(ctx context.Context, params *GetUserPoolMf
 
 type GetUserPoolMfaConfigInput struct {
 
-	// The user pool ID.
+	// The ID of the user pool where you want to query WebAuthn and MFA configuration.
 	//
 	// This member is required.
 	UserPoolId *string
@@ -39,21 +63,40 @@ type GetUserPoolMfaConfigInput struct {
 
 type GetUserPoolMfaConfigOutput struct {
 
-	// The multi-factor authentication (MFA) configuration. Valid values include:
+	// Shows configuration for user pool email message MFA and sign-in with one-time
+	// passwords (OTPs). Includes the subject and body of the email message template
+	// for sign-in and MFA messages. To activate this setting, your user pool must be
+	// in the [Essentials tier]or higher.
 	//
-	//   - OFF MFA won't be used for any users.
+	// [Essentials tier]: https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-essentials.html
+	EmailMfaConfiguration *types.EmailMfaConfigType
+
+	// Displays the state of multi-factor authentication (MFA) as on, off, or
+	// optional. When ON , all users must set up MFA before they can sign in. When
+	// OPTIONAL , your application must make a client-side determination of whether a
+	// user wants to register an MFA device. For user pools with adaptive
+	// authentication with threat protection, choose OPTIONAL .
 	//
-	//   - ON MFA is required for all users to sign in.
-	//
-	//   - OPTIONAL MFA will be required only for individual users who have an MFA
-	//   factor activated.
+	// When MfaConfiguration is OPTIONAL , managed login doesn't automatically prompt
+	// users to set up MFA. Amazon Cognito generates MFA prompts in API responses and
+	// in managed login for users who have chosen and configured a preferred MFA
+	// factor.
 	MfaConfiguration types.UserPoolMfaType
 
-	// The SMS text message multi-factor authentication (MFA) configuration.
+	// Shows user pool configuration for SMS message MFA. Includes the message
+	// template and the SMS message sending configuration for Amazon SNS.
 	SmsMfaConfiguration *types.SmsMfaConfigType
 
-	// The software token multi-factor authentication (MFA) configuration.
+	// Shows user pool configuration for time-based one-time password (TOTP) MFA.
+	// Includes TOTP enabled or disabled state.
 	SoftwareTokenMfaConfiguration *types.SoftwareTokenMfaConfigType
+
+	// Shows user pool configuration for sign-in with passkey authenticators like
+	// biometric devices and security keys. Passkeys are not eligible MFA factors. They
+	// are instead an eligible primary sign-in factor for [choice-based authentication], or the USER_AUTH flow.
+	//
+	// [choice-based authentication]: https://docs.aws.amazon.com/cognito/latest/developerguide/authentication-flows-selection-sdk.html#authentication-flows-selection-choice
+	WebAuthnConfiguration *types.WebAuthnConfigurationType
 
 	// Metadata pertaining to the operation's result.
 	ResultMetadata middleware.Metadata
@@ -104,6 +147,9 @@ func (c *Client) addOperationGetUserPoolMfaConfigMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -120,6 +166,9 @@ func (c *Client) addOperationGetUserPoolMfaConfigMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetUserPoolMfaConfigValidationMiddleware(stack); err != nil {
@@ -141,6 +190,18 @@ func (c *Client) addOperationGetUserPoolMfaConfigMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

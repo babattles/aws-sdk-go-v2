@@ -84,6 +84,9 @@ type Api struct {
 	// only for HTTP APIs.
 	ImportInfo []string
 
+	// The IP address types that can invoke the API.
+	IpAddressType IpAddressType
+
 	// A collection of tags associated with the API.
 	Tags map[string]string
 
@@ -319,6 +322,11 @@ type DomainNameConfiguration struct {
 	// The Amazon Route 53 Hosted Zone ID of the endpoint.
 	HostedZoneId *string
 
+	// The IP address types that can invoke the domain name. Use ipv4 to allow only
+	// IPv4 addresses to invoke your domain name, or use dualstack to allow both IPv4
+	// and IPv6 addresses to invoke your domain name.
+	IpAddressType IpAddressType
+
 	// The ARN of the public certificate issued by ACM to validate ownership of your
 	// custom domain. Only required when configuring mutual TLS and using an ACM
 	// imported or private CA certificate ARN as the regionalCertificateArn
@@ -450,7 +458,10 @@ type Integration struct {
 	PassthroughBehavior PassthroughBehavior
 
 	// Specifies the format of the payload sent to an integration. Required for HTTP
-	// APIs.
+	// APIs. Supported values for Lambda proxy integrations are 1.0 and 2.0. For all
+	// other integrations, 1.0 is the only supported value. To learn more, see [Working with AWS Lambda proxy integrations for HTTP APIs].
+	//
+	// [Working with AWS Lambda proxy integrations for HTTP APIs]: https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html
 	PayloadFormatVersion *string
 
 	// For WebSocket APIs, a key-value map specifying request parameters that are

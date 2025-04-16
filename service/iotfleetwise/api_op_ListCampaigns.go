@@ -32,7 +32,12 @@ func (c *Client) ListCampaigns(ctx context.Context, params *ListCampaignsInput, 
 
 type ListCampaignsInput struct {
 
-	//  The maximum number of items to return, between 1 and 100, inclusive.
+	// When you set the listResponseScope parameter to METADATA_ONLY , the list
+	// response includes: campaign name, Amazon Resource Name (ARN), creation time, and
+	// last modification time.
+	ListResponseScope types.ListResponseScope
+
+	// The maximum number of items to return, between 1 and 100, inclusive.
 	MaxResults *int32
 
 	// A pagination token for the next set of results.
@@ -44,9 +49,9 @@ type ListCampaignsInput struct {
 	// contain a pagination token value.
 	NextToken *string
 
-	// Optional parameter to filter the results by the status of each created campaign
-	// in your account. The status can be one of: CREATING , WAITING_FOR_APPROVAL ,
-	// RUNNING , or SUSPENDED .
+	// An optional parameter to filter the results by the status of each created
+	// campaign in your account. The status can be one of: CREATING ,
+	// WAITING_FOR_APPROVAL , RUNNING , or SUSPENDED .
 	Status *string
 
 	noSmithyDocumentSerde
@@ -110,6 +115,9 @@ func (c *Client) addOperationListCampaignsMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -126,6 +134,9 @@ func (c *Client) addOperationListCampaignsMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListCampaigns(options.Region), middleware.Before); err != nil {
@@ -146,12 +157,24 @@ func (c *Client) addOperationListCampaignsMiddlewares(stack *middleware.Stack, o
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
+		return err
+	}
 	return nil
 }
 
 // ListCampaignsPaginatorOptions is the paginator options for ListCampaigns
 type ListCampaignsPaginatorOptions struct {
-	//  The maximum number of items to return, between 1 and 100, inclusive.
+	// The maximum number of items to return, between 1 and 100, inclusive.
 	Limit int32
 
 	// Set to true if pagination should stop if the service returns a pagination token

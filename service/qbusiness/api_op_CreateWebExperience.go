@@ -34,13 +34,36 @@ type CreateWebExperienceInput struct {
 	// This member is required.
 	ApplicationId *string
 
+	// The browser extension configuration for an Amazon Q Business web experience.
+	//
+	// For Amazon Q Business application using external OIDC-compliant identity
+	// providers (IdPs). The IdP administrator must add the browser extension sign-in
+	// redirect URLs to the IdP application. For more information, see [Configure external OIDC identity provider for your browser extensions.].
+	//
+	// [Configure external OIDC identity provider for your browser extensions.]: https://docs.aws.amazon.com/amazonq/latest/qbusiness-ug/browser-extensions.html
+	BrowserExtensionConfiguration *types.BrowserExtensionConfiguration
+
 	// A token you provide to identify a request to create an Amazon Q Business web
 	// experience.
 	ClientToken *string
 
+	// Sets the custom logo, favicon, font, and color used in the Amazon Q web
+	// experience.
+	CustomizationConfiguration *types.CustomizationConfiguration
+
 	// Information about the identity provider (IdP) used to authenticate end users of
 	// an Amazon Q Business web experience.
 	IdentityProviderConfiguration types.IdentityProviderConfiguration
+
+	// Sets the website domain origins that are allowed to embed the Amazon Q Business
+	// web experience.
+	//
+	// The domain origin refers to the base URL for accessing a website including the
+	// protocol ( http/https ), the domain name, and the port number (if specified).
+	//
+	// You must only submit a base URL and not a full path. For example,
+	// https://docs.aws.amazon.com .
+	Origins []string
 
 	// The Amazon Resource Name (ARN) of the service role attached to your web
 	// experience.
@@ -130,6 +153,9 @@ func (c *Client) addOperationCreateWebExperienceMiddlewares(stack *middleware.St
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -146,6 +172,9 @@ func (c *Client) addOperationCreateWebExperienceMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateWebExperienceMiddleware(stack, options); err != nil {
@@ -170,6 +199,18 @@ func (c *Client) addOperationCreateWebExperienceMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

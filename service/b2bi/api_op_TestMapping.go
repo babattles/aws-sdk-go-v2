@@ -46,6 +46,11 @@ type TestMappingInput struct {
 	// Specifies the mapping template for the transformer. This template is used to
 	// map the parsed EDI file using JSONata or XSLT.
 	//
+	// This parameter is available for backwards compatibility. Use the [Mapping] data type
+	// instead.
+	//
+	// [Mapping]: https://docs.aws.amazon.com/b2bi/latest/APIReference/API_Mapping.html
+	//
 	// This member is required.
 	MappingTemplate *string
 
@@ -109,6 +114,9 @@ func (c *Client) addOperationTestMappingMiddlewares(stack *middleware.Stack, opt
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -125,6 +133,9 @@ func (c *Client) addOperationTestMappingMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpTestMappingValidationMiddleware(stack); err != nil {
@@ -146,6 +157,18 @@ func (c *Client) addOperationTestMappingMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

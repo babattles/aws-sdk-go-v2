@@ -66,6 +66,10 @@ type GrantPermissionsInput struct {
 	// environment.
 	CatalogId *string
 
+	// A Lake Formation condition, which applies to permissions and opt-ins that
+	// contain an expression.
+	Condition *types.Condition
+
 	// Indicates a list of the granted permissions that the principal may pass to
 	// other users. These permissions may only be a subset of the permissions granted
 	// in the Privileges .
@@ -124,6 +128,9 @@ func (c *Client) addOperationGrantPermissionsMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -140,6 +147,9 @@ func (c *Client) addOperationGrantPermissionsMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGrantPermissionsValidationMiddleware(stack); err != nil {
@@ -161,6 +171,18 @@ func (c *Client) addOperationGrantPermissionsMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -11,12 +11,14 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Returns the details for the specified configuration recorders. If the
-// configuration recorder is not specified, this action returns the details for all
-// configuration recorders associated with the account.
+// Returns details for the configuration recorder you specify.
 //
-// You can specify only one configuration recorder for each Amazon Web Services
-// Region for each account.
+// If a configuration recorder is not specified, this operation returns details
+// for the customer managed configuration recorder configured for the account, if
+// applicable.
+//
+// When making a request to this operation, you can only specify one configuration
+// recorder.
 func (c *Client) DescribeConfigurationRecorders(ctx context.Context, params *DescribeConfigurationRecordersInput, optFns ...func(*Options)) (*DescribeConfigurationRecordersOutput, error) {
 	if params == nil {
 		params = &DescribeConfigurationRecordersInput{}
@@ -35,8 +37,16 @@ func (c *Client) DescribeConfigurationRecorders(ctx context.Context, params *Des
 // The input for the DescribeConfigurationRecorders action.
 type DescribeConfigurationRecordersInput struct {
 
-	// A list of configuration recorder names.
+	// The Amazon Resource Name (ARN) of the configuration recorder that you want to
+	// specify.
+	Arn *string
+
+	// A list of names of the configuration recorders that you want to specify.
 	ConfigurationRecorderNames []string
+
+	// For service-linked configuration recorders, you can use the service principal
+	// of the linked Amazon Web Services service to specify the configuration recorder.
+	ServicePrincipal *string
 
 	noSmithyDocumentSerde
 }
@@ -96,6 +106,9 @@ func (c *Client) addOperationDescribeConfigurationRecordersMiddlewares(stack *mi
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -114,6 +127,9 @@ func (c *Client) addOperationDescribeConfigurationRecordersMiddlewares(stack *mi
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeConfigurationRecorders(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -130,6 +146,18 @@ func (c *Client) addOperationDescribeConfigurationRecordersMiddlewares(stack *mi
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

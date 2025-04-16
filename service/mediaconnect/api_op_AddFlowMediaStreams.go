@@ -11,9 +11,10 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Adds media streams to an existing flow. After you add a media stream to a flow,
-// you can associate it with a source and/or an output that uses the ST 2110 JPEG
-// XS or CDI protocol.
+//	Adds media streams to an existing flow. After you add a media stream to a
+//
+// flow, you can associate it with a source and/or an output that uses the ST 2110
+// JPEG XS or CDI protocol.
 func (c *Client) AddFlowMediaStreams(ctx context.Context, params *AddFlowMediaStreamsInput, optFns ...func(*Options)) (*AddFlowMediaStreamsOutput, error) {
 	if params == nil {
 		params = &AddFlowMediaStreamsInput{}
@@ -29,15 +30,14 @@ func (c *Client) AddFlowMediaStreams(ctx context.Context, params *AddFlowMediaSt
 	return out, nil
 }
 
-// A request to add media streams to the flow.
 type AddFlowMediaStreamsInput struct {
 
-	// The Amazon Resource Name (ARN) of the flow.
+	//  The Amazon Resource Name (ARN) of the flow.
 	//
 	// This member is required.
 	FlowArn *string
 
-	// The media streams that you want to add to the flow.
+	//  The media streams that you want to add to the flow.
 	//
 	// This member is required.
 	MediaStreams []types.AddMediaStreamRequest
@@ -47,10 +47,10 @@ type AddFlowMediaStreamsInput struct {
 
 type AddFlowMediaStreamsOutput struct {
 
-	// The ARN of the flow that you added media streams to.
+	//  The ARN of the flow that you added media streams to.
 	FlowArn *string
 
-	// The media streams that you added to the flow.
+	//  The media streams that you added to the flow.
 	MediaStreams []types.MediaStream
 
 	// Metadata pertaining to the operation's result.
@@ -102,6 +102,9 @@ func (c *Client) addOperationAddFlowMediaStreamsMiddlewares(stack *middleware.St
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -118,6 +121,9 @@ func (c *Client) addOperationAddFlowMediaStreamsMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpAddFlowMediaStreamsValidationMiddleware(stack); err != nil {
@@ -139,6 +145,18 @@ func (c *Client) addOperationAddFlowMediaStreamsMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

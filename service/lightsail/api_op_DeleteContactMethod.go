@@ -19,7 +19,7 @@ import (
 // supported in some Amazon Web Services Regions, and SMS text messages cannot be
 // sent to some countries/regions. For more information, see [Notifications in Amazon Lightsail].
 //
-// [Notifications in Amazon Lightsail]: https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-notifications
+// [Notifications in Amazon Lightsail]: https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-notifications
 func (c *Client) DeleteContactMethod(ctx context.Context, params *DeleteContactMethodInput, optFns ...func(*Options)) (*DeleteContactMethodOutput, error) {
 	if params == nil {
 		params = &DeleteContactMethodInput{}
@@ -104,6 +104,9 @@ func (c *Client) addOperationDeleteContactMethodMiddlewares(stack *middleware.St
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -120,6 +123,9 @@ func (c *Client) addOperationDeleteContactMethodMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteContactMethodValidationMiddleware(stack); err != nil {
@@ -141,6 +147,18 @@ func (c *Client) addOperationDeleteContactMethodMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

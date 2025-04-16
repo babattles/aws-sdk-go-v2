@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-// Updates the metadata and status of a library item for an Amazon Q App.
+// Updates the library item for an Amazon Q App.
 func (c *Client) UpdateLibraryItem(ctx context.Context, params *UpdateLibraryItemInput, optFns ...func(*Options)) (*UpdateLibraryItemOutput, error) {
 	if params == nil {
 		params = &UpdateLibraryItemInput{}
@@ -94,6 +94,9 @@ type UpdateLibraryItemOutput struct {
 	// Whether the current user has rated the library item.
 	IsRatedByUser *bool
 
+	// Indicates whether the library item has been verified.
+	IsVerified *bool
+
 	// The date and time the library item was last updated.
 	UpdatedAt *time.Time
 
@@ -152,6 +155,9 @@ func (c *Client) addOperationUpdateLibraryItemMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -168,6 +174,9 @@ func (c *Client) addOperationUpdateLibraryItemMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateLibraryItemValidationMiddleware(stack); err != nil {
@@ -189,6 +198,18 @@ func (c *Client) addOperationUpdateLibraryItemMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

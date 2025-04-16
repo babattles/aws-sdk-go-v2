@@ -254,6 +254,30 @@ func TestCheckSnapshot_DescribeAccountLimits(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_DescribeCapacityReservation(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DescribeCapacityReservation(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DescribeCapacityReservation")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_DescribeListenerAttributes(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DescribeListenerAttributes(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DescribeListenerAttributes")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_DescribeListenerCertificates(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.DescribeListenerCertificates(context.Background(), nil, func(o *Options) {
@@ -446,11 +470,47 @@ func TestCheckSnapshot_GetTrustStoreRevocationContent(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_ModifyCapacityReservation(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ModifyCapacityReservation(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ModifyCapacityReservation")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_ModifyIpPools(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ModifyIpPools(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ModifyIpPools")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_ModifyListener(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ModifyListener(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "ModifyListener")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_ModifyListenerAttributes(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ModifyListenerAttributes(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ModifyListenerAttributes")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -805,6 +865,30 @@ func TestUpdateSnapshot_DescribeAccountLimits(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_DescribeCapacityReservation(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DescribeCapacityReservation(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DescribeCapacityReservation")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_DescribeListenerAttributes(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DescribeListenerAttributes(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DescribeListenerAttributes")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_DescribeListenerCertificates(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.DescribeListenerCertificates(context.Background(), nil, func(o *Options) {
@@ -997,11 +1081,47 @@ func TestUpdateSnapshot_GetTrustStoreRevocationContent(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_ModifyCapacityReservation(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ModifyCapacityReservation(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ModifyCapacityReservation")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_ModifyIpPools(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ModifyIpPools(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ModifyIpPools")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_ModifyListener(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ModifyListener(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "ModifyListener")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_ModifyListenerAttributes(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ModifyListenerAttributes(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ModifyListenerAttributes")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {

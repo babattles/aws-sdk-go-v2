@@ -10,7 +10,9 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Deletes the attributes for a user.
+// Deletes attributes from the currently signed-in user. For example, your
+// application can submit a request to this operation when a user wants to remove
+// their birthdate attribute value.
 //
 // Authorize this action with a signed-in user's access token. It must include the
 // scope aws.cognito.signin.user.admin .
@@ -40,16 +42,16 @@ func (c *Client) DeleteUserAttributes(ctx context.Context, params *DeleteUserAtt
 // Represents the request to delete user attributes.
 type DeleteUserAttributesInput struct {
 
-	// A valid access token that Amazon Cognito issued to the user whose attributes
-	// you want to delete.
+	// A valid access token that Amazon Cognito issued to the currently signed-in
+	// user. Must include a scope claim for aws.cognito.signin.user.admin .
 	//
 	// This member is required.
 	AccessToken *string
 
 	// An array of strings representing the user attribute names you want to delete.
 	//
-	// For custom attributes, you must prependattach the custom: prefix to the front
-	// of the attribute name.
+	// For custom attributes, you must prepend the custom: prefix to the attribute
+	// name, for example custom:department .
 	//
 	// This member is required.
 	UserAttributeNames []string
@@ -105,6 +107,9 @@ func (c *Client) addOperationDeleteUserAttributesMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -121,6 +126,9 @@ func (c *Client) addOperationDeleteUserAttributesMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteUserAttributesValidationMiddleware(stack); err != nil {
@@ -142,6 +150,18 @@ func (c *Client) addOperationDeleteUserAttributesMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

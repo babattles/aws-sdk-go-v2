@@ -44,6 +44,17 @@ type CreateClusterInput struct {
 	// This member is required.
 	InstanceGroups []types.ClusterInstanceGroupSpecification
 
+	// The node recovery mode for the SageMaker HyperPod cluster. When set to Automatic
+	// , SageMaker HyperPod will automatically reboot or replace faulty nodes when
+	// issues are detected. When set to None , cluster administrators will need to
+	// manually manage any faulty cluster instances.
+	NodeRecovery types.ClusterNodeRecovery
+
+	// The type of orchestrator to use for the SageMaker HyperPod cluster. Currently,
+	// the only supported value is "eks" , which is to use an Amazon Elastic Kubernetes
+	// Service (EKS) cluster as the orchestrator.
+	Orchestrator *types.ClusterOrchestrator
+
 	// Custom tags for managing the SageMaker HyperPod cluster as an Amazon Web
 	// Services resource. You can add tags to your cluster in the same way you add them
 	// in other Amazon Web Services services that support tagging. To learn more about
@@ -52,11 +63,34 @@ type CreateClusterInput struct {
 	// [Tagging Amazon Web Services Resources User Guide]: https://docs.aws.amazon.com/tag-editor/latest/userguide/tagging.html
 	Tags []types.Tag
 
-	// Specifies an Amazon Virtual Private Cloud (VPC) that your SageMaker jobs,
-	// hosted models, and compute resources have access to. You can control access to
-	// and from your resources by configuring a VPC. For more information, see [Give SageMaker Access to Resources in your Amazon VPC].
+	// Specifies the Amazon Virtual Private Cloud (VPC) that is associated with the
+	// Amazon SageMaker HyperPod cluster. You can control access to and from your
+	// resources by configuring your VPC. For more information, see [Give SageMaker access to resources in your Amazon VPC].
 	//
-	// [Give SageMaker Access to Resources in your Amazon VPC]: https://docs.aws.amazon.com/sagemaker/latest/dg/infrastructure-give-access.html
+	// When your Amazon VPC and subnets support IPv6, network communications differ
+	// based on the cluster orchestration platform:
+	//
+	//   - Slurm-orchestrated clusters automatically configure nodes with dual IPv6
+	//   and IPv4 addresses, allowing immediate IPv6 network communications.
+	//
+	//   - In Amazon EKS-orchestrated clusters, nodes receive dual-stack addressing,
+	//   but pods can only use IPv6 when the Amazon EKS cluster is explicitly
+	//   IPv6-enabled. For information about deploying an IPv6 Amazon EKS cluster, see [Amazon EKS IPv6 Cluster Deployment]
+	//   .
+	//
+	// Additional resources for IPv6 configuration:
+	//
+	//   - For information about adding IPv6 support to your VPC, see to [IPv6 Support for VPC].
+	//
+	//   - For information about creating a new IPv6-compatible VPC, see [Amazon VPC Creation Guide].
+	//
+	//   - To configure SageMaker HyperPod with a custom Amazon VPC, see [Custom Amazon VPC Setup for SageMaker HyperPod].
+	//
+	// [Give SageMaker access to resources in your Amazon VPC]: https://docs.aws.amazon.com/sagemaker/latest/dg/infrastructure-give-access.html
+	// [IPv6 Support for VPC]: https://docs.aws.amazon.com/vpc/latest/userguide/vpc-migrate-ipv6.html
+	// [Amazon EKS IPv6 Cluster Deployment]: https://docs.aws.amazon.com/eks/latest/userguide/deploy-ipv6-cluster.html#_deploy_an_ipv6_cluster_with_eksctl
+	// [Amazon VPC Creation Guide]: https://docs.aws.amazon.com/vpc/latest/userguide/create-vpc.html
+	// [Custom Amazon VPC Setup for SageMaker HyperPod]: https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-hyperpod-prerequisites.html#sagemaker-hyperpod-prerequisites-optional-vpc
 	VpcConfig *types.VpcConfig
 
 	noSmithyDocumentSerde
@@ -118,6 +152,9 @@ func (c *Client) addOperationCreateClusterMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -134,6 +171,9 @@ func (c *Client) addOperationCreateClusterMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateClusterValidationMiddleware(stack); err != nil {
@@ -155,6 +195,18 @@ func (c *Client) addOperationCreateClusterMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

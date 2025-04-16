@@ -60,7 +60,9 @@ type DescribeEventBusOutput struct {
 	// Configuration details of the Amazon SQS queue for EventBridge to use as a
 	// dead-letter queue (DLQ).
 	//
-	// For more information, see Event retry policy and using dead-letter queues in the EventBridge User Guide.
+	// For more information, see [Using dead-letter queues to process undelivered events] in the EventBridge User Guide.
+	//
+	// [Using dead-letter queues to process undelivered events]: https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-rule-event-delivery.html#eb-rule-dlq
 	DeadLetterConfig *types.DeadLetterConfig
 
 	// The event bus description.
@@ -132,6 +134,9 @@ func (c *Client) addOperationDescribeEventBusMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -150,6 +155,9 @@ func (c *Client) addOperationDescribeEventBusMiddlewares(stack *middleware.Stack
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeEventBus(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -166,6 +174,18 @@ func (c *Client) addOperationDescribeEventBusMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

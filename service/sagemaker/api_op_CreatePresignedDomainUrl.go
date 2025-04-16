@@ -23,14 +23,17 @@ import (
 //
 // You can restrict access to this API and to the URL that it returns to a list of
 // IP addresses, Amazon VPCs or Amazon VPC Endpoints that you specify. For more
-// information, see [Connect to Amazon SageMaker Studio Through an Interface VPC Endpoint].
+// information, see [Connect to Amazon SageMaker AI Studio Through an Interface VPC Endpoint].
 //
-// The URL that you get from a call to CreatePresignedDomainUrl has a default
-// timeout of 5 minutes. You can configure this value using ExpiresInSeconds . If
-// you try to use the URL after the timeout limit expires, you are directed to the
-// Amazon Web Services console sign-in page.
+//   - The URL that you get from a call to CreatePresignedDomainUrl has a default
+//     timeout of 5 minutes. You can configure this value using ExpiresInSeconds . If
+//     you try to use the URL after the timeout limit expires, you are directed to the
+//     Amazon Web Services console sign-in page.
 //
-// [Connect to Amazon SageMaker Studio Through an Interface VPC Endpoint]: https://docs.aws.amazon.com/sagemaker/latest/dg/studio-interface-endpoint.html
+//   - The JupyterLab session default expiration time is 12 hours. You can
+//     configure this value using SessionExpirationDurationInSeconds.
+//
+// [Connect to Amazon SageMaker AI Studio Through an Interface VPC Endpoint]: https://docs.aws.amazon.com/sagemaker/latest/dg/studio-interface-endpoint.html
 func (c *Client) CreatePresignedDomainUrl(ctx context.Context, params *CreatePresignedDomainUrlInput, optFns ...func(*Options)) (*CreatePresignedDomainUrlOutput, error) {
 	if params == nil {
 		params = &CreatePresignedDomainUrlInput{}
@@ -147,6 +150,9 @@ func (c *Client) addOperationCreatePresignedDomainUrlMiddlewares(stack *middlewa
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -163,6 +169,9 @@ func (c *Client) addOperationCreatePresignedDomainUrlMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreatePresignedDomainUrlValidationMiddleware(stack); err != nil {
@@ -184,6 +193,18 @@ func (c *Client) addOperationCreatePresignedDomainUrlMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -11,9 +11,19 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Cancels a game session placement that is in PENDING status. To stop a
-// placement, provide the placement ID values. If successful, the placement is
-// moved to CANCELLED status.
+// Cancels a game session placement that's in PENDING status. To stop a placement,
+// provide the placement ID value.
+//
+// # Results
+//
+// If successful, this operation removes the placement request from the queue and
+// moves the GameSessionPlacement to CANCELLED status.
+//
+// This operation results in an InvalidRequestExecption (400) error if a game
+// session has already been created for this placement. You can clean up an
+// unneeded game session by calling [TerminateGameSession].
+//
+// [TerminateGameSession]: https://docs.aws.amazon.com/gamelift/latest/apireference/API_TerminateGameSession
 func (c *Client) StopGameSessionPlacement(ctx context.Context, params *StopGameSessionPlacementInput, optFns ...func(*Options)) (*StopGameSessionPlacementOutput, error) {
 	if params == nil {
 		params = &StopGameSessionPlacementInput{}
@@ -94,6 +104,9 @@ func (c *Client) addOperationStopGameSessionPlacementMiddlewares(stack *middlewa
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -110,6 +123,9 @@ func (c *Client) addOperationStopGameSessionPlacementMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpStopGameSessionPlacementValidationMiddleware(stack); err != nil {
@@ -131,6 +147,18 @@ func (c *Client) addOperationStopGameSessionPlacementMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

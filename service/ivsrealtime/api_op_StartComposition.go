@@ -14,7 +14,7 @@ import (
 // Starts a Composition from a stage based on the configuration provided in the
 // request.
 //
-// A Composition is an ephemeral resource that exists after this endpoint returns
+// A Composition is an ephemeral resource that exists after this operation returns
 // successfully. Composition stops and the resource is deleted:
 //
 //   - When StopCompositionis called.
@@ -63,11 +63,12 @@ type StartCompositionInput struct {
 	Layout *types.LayoutConfiguration
 
 	// Tags attached to the resource. Array of maps, each of the form string:string
-	// (key:value) . See [Tagging AWS Resources] for details, including restrictions that apply to tags and
-	// "Tag naming limits and requirements"; Amazon IVS has no constraints on tags
-	// beyond what is documented there.
+	// (key:value) . See [Best practices and strategies] in Tagging AWS Resources and Tag Editor for details,
+	// including restrictions that apply to tags and "Tag naming limits and
+	// requirements"; Amazon IVS has no constraints on tags beyond what is documented
+	// there.
 	//
-	// [Tagging AWS Resources]: https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html
+	// [Best practices and strategies]: https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html
 	Tags map[string]string
 
 	noSmithyDocumentSerde
@@ -127,6 +128,9 @@ func (c *Client) addOperationStartCompositionMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -143,6 +147,9 @@ func (c *Client) addOperationStartCompositionMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opStartCompositionMiddleware(stack, options); err != nil {
@@ -167,6 +174,18 @@ func (c *Client) addOperationStartCompositionMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

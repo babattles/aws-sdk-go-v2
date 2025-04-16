@@ -11,10 +11,6 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-//	This operation has been expanded to use with the Amazon GameLift containers
-//
-// feature, which is currently in public preview.
-//
 // Creates a fleet of compute resources to host your game servers. Use this
 // operation to set up the following types of fleets based on compute type:
 //
@@ -51,38 +47,6 @@ import (
 // When the fleet status is ACTIVE, you can adjust capacity settings and turn
 // autoscaling on/off for each location.
 //
-// # Managed container fleet
-//
-// A container fleet is a set of Amazon Elastic Compute Cloud (Amazon EC2)
-// instances. Your container architecture is deployed to each fleet instance based
-// on the fleet configuration. Amazon GameLift manages the containers on each fleet
-// instance and controls the lifecycle of game server processes, which host game
-// sessions for players. Container fleets can have instances in multiple locations.
-// Each container on an instance that runs game server processes is registered as a
-// Compute .
-//
-// To create a container fleet, provide these required parameters:
-//
-//   - ComputeType set to CONTAINER
-//
-//   - ContainerGroupsConfiguration
-//
-//   - EC2InboundPermissions
-//
-//   - EC2InstanceType
-//
-//   - FleetType set to ON_DEMAND
-//
-//   - Name
-//
-//   - RuntimeConfiguration with at least one ServerProcesses configuration
-//
-// If successful, this operation creates a new fleet resource and places it in NEW
-// status while Amazon GameLift initiates the [fleet creation workflow].
-//
-// When the fleet status is ACTIVE, you can adjust capacity settings and turn
-// autoscaling on/off for each location.
-//
 // # Anywhere fleet
 //
 // An Anywhere fleet represents compute resources that are not owned or managed by
@@ -105,14 +69,11 @@ import (
 //
 // [Setting up fleets]
 //
-// [Setting up a container fleet]
-//
 // [Debug fleet creation issues]
 //
 // [Multi-location fleets]
 //
 // [fleet creation workflow]: https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-creating-all.html#fleets-creation-workflow
-// [Setting up a container fleet]: https://docs.aws.amazon.com/gamelift/latest/developerguide/containers-build-fleet.html
 // [Multi-location fleets]: https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-intro.html
 // [Debug fleet creation issues]: https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-creating-debug.html#fleets-creating-debug-creation
 // [Setting up fleets]: https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-intro.html
@@ -172,44 +133,29 @@ type CreateFleetInput struct {
 	//   - EC2 – The game server build is deployed to Amazon EC2 instances for cloud
 	//   hosting. This is the default setting.
 	//
-	//   - CONTAINER – Container images with your game server build and supporting
-	//   software are deployed to Amazon EC2 instances for cloud hosting. With this
-	//   compute type, you must specify the ContainerGroupsConfiguration parameter.
-	//
-	//   - ANYWHERE – Game servers or container images with your game server and
-	//   supporting software are deployed to compute resources that are provided and
-	//   managed by you. With this compute type, you can also set the
-	//   AnywhereConfiguration parameter.
+	//   - ANYWHERE – Game servers and supporting software are deployed to compute
+	//   resources that you provide and manage. With this compute type, you can also set
+	//   the AnywhereConfiguration parameter.
 	ComputeType types.ComputeType
-
-	// The container groups to deploy to instances in the container fleet and other
-	// fleet-level configuration settings. Use the CreateContainerGroupDefinitionaction to create container groups.
-	// A container fleet must have exactly one replica container group, and can
-	// optionally have one daemon container group. You can't change this property after
-	// you create the fleet.
-	ContainerGroupsConfiguration *types.ContainerGroupsConfiguration
 
 	// A description for the fleet.
 	Description *string
 
 	// The IP address ranges and port settings that allow inbound traffic to access
 	// game server processes and other processes on this fleet. Set this parameter for
-	// EC2 and container fleets. You can leave this parameter empty when creating the
-	// fleet, but you must call UpdateFleetPortSettingsto set it before players can connect to game sessions.
-	// As a best practice, we recommend opening ports for remote access only when you
-	// need them and closing them when you're finished. For Realtime Servers fleets,
+	// managed EC2 fleets. You can leave this parameter empty when creating the fleet,
+	// but you must call [https://docs.aws.amazon.com/gamelift/latest/apireference/API_UpdateFleetPortSettings]to set it before players can connect to game sessions. As a
+	// best practice, we recommend opening ports for remote access only when you need
+	// them and closing them when you're finished. For Amazon GameLift Realtime fleets,
 	// Amazon GameLift automatically sets TCP and UDP ranges.
 	//
-	// To manage inbound access for a container fleet, set this parameter to the same
-	// port numbers that you set for the fleet's connection port range. During the life
-	// of the fleet, update this parameter to control which connection ports are open
-	// to inbound traffic.
+	// [https://docs.aws.amazon.com/gamelift/latest/apireference/API_UpdateFleetPortSettings]: https://docs.aws.amazon.com/gamelift/latest/apireference/API_UpdateFleetPortSettings
 	EC2InboundPermissions []types.IpPermission
 
-	// The Amazon GameLift-supported Amazon EC2 instance type to use with EC2 and
-	// container fleets. Instance type determines the computing resources that will be
-	// used to host your game servers, including CPU, memory, storage, and networking
-	// capacity. See [Amazon Elastic Compute Cloud Instance Types]for detailed descriptions of Amazon EC2 instance types.
+	// The Amazon GameLift-supported Amazon EC2 instance type to use with managed EC2
+	// fleets. Instance type determines the computing resources that will be used to
+	// host your game servers, including CPU, memory, storage, and networking capacity.
+	// See [Amazon Elastic Compute Cloud Instance Types]for detailed descriptions of Amazon EC2 instance types.
 	//
 	// [Amazon Elastic Compute Cloud Instance Types]: http://aws.amazon.com/ec2/instance-types/
 	EC2InstanceType types.EC2InstanceType
@@ -221,14 +167,16 @@ type CreateFleetInput struct {
 	// [On-Demand versus Spot Instances]: https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-ec2-instances.html#gamelift-ec2-instances-spot
 	FleetType types.FleetType
 
-	// A unique identifier for an IAM role with access permissions to other Amazon Web
-	// Services services. Any application that runs on an instance in the
-	// fleet--including install scripts, server processes, and other processes--can use
-	// these permissions to interact with Amazon Web Services resources that you own or
-	// have access to. For more information about using the role with your game server
-	// builds, see [Communicate with other Amazon Web Services resources from your fleets]. This fleet property can't be changed after the fleet is created.
+	// A unique identifier for an IAM role that manages access to your Amazon Web
+	// Services services. With an instance role ARN set, any application that runs on
+	// an instance in this fleet can assume the role, including install scripts, server
+	// processes, and daemons (background processes). Create a role or look up a role's
+	// ARN by using the [IAM dashboard]in the Amazon Web Services Management Console. Learn more
+	// about using on-box credentials for your game servers at [Access external resources from a game server]. This fleet property
+	// can't be changed after the fleet is created.
 	//
-	// [Communicate with other Amazon Web Services resources from your fleets]: https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-resources.html
+	// [IAM dashboard]: https://console.aws.amazon.com/iam/
+	// [Access external resources from a game server]: https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-resources.html
 	InstanceRoleArn *string
 
 	// Prompts Amazon GameLift to generate a shared credentials file for the IAM role
@@ -241,15 +189,16 @@ type CreateFleetInput struct {
 	// [Communicate with other Amazon Web Services resources from your fleets]: https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-resources.html
 	InstanceRoleCredentialsProvider types.InstanceRoleCredentialsProvider
 
-	// A set of remote locations to deploy additional instances to and manage as part
-	// of the fleet. This parameter can only be used when creating fleets in Amazon Web
-	// Services Regions that support multiple locations. You can add any Amazon
-	// GameLift-supported Amazon Web Services Region as a remote location, in the form
-	// of an Amazon Web Services Region code, such as us-west-2 or Local Zone code. To
-	// create a fleet with instances in the home Region only, don't set this parameter.
+	// A set of remote locations to deploy additional instances to and manage as a
+	// multi-location fleet. Use this parameter when creating a fleet in Amazon Web
+	// Services Regions that support multiple locations. You can add any Amazon Web
+	// Services Region or Local Zone that's supported by Amazon GameLift. Provide a
+	// list of one or more Amazon Web Services Region codes, such as us-west-2 , or
+	// Local Zone names. When using this parameter, Amazon GameLift requires you to
+	// include your home location in the request. For a list of supported Regions and
+	// Local Zones, see [Amazon GameLift service locations]for managed hosting.
 	//
-	// When using this parameter, Amazon GameLift requires you to include your home
-	// location in the request.
+	// [Amazon GameLift service locations]: https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-regions.html
 	Locations []types.LocationConfiguration
 
 	//  This parameter is no longer used. To specify where Amazon GameLift should
@@ -296,11 +245,11 @@ type CreateFleetInput struct {
 	ResourceCreationLimitPolicy *types.ResourceCreationLimitPolicy
 
 	// Instructions for how to launch and run server processes on the fleet. Set
-	// runtime configuration for EC2 fleets and container fleets. For an Anywhere
-	// fleets, set this parameter only if the fleet is running the Amazon GameLift
-	// Agent. The runtime configuration defines one or more server process
-	// configurations. Each server process identifies a game executable or Realtime
-	// script file and the number of processes to run concurrently.
+	// runtime configuration for managed EC2 fleets. For an Anywhere fleets, set this
+	// parameter only if the fleet is running the Amazon GameLift Agent. The runtime
+	// configuration defines one or more server process configurations. Each server
+	// process identifies a game executable or Realtime script file and the number of
+	// processes to run concurrently.
 	//
 	// This parameter replaces the parameters ServerLaunchPath and
 	// ServerLaunchParameters , which are still supported for backward compatibility.
@@ -396,6 +345,9 @@ func (c *Client) addOperationCreateFleetMiddlewares(stack *middleware.Stack, opt
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -412,6 +364,9 @@ func (c *Client) addOperationCreateFleetMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateFleetValidationMiddleware(stack); err != nil {
@@ -433,6 +388,18 @@ func (c *Client) addOperationCreateFleetMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

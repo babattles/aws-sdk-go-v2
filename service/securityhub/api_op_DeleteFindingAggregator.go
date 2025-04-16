@@ -10,12 +10,16 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Deletes a finding aggregator. When you delete the finding aggregator, you stop
-// finding aggregation.
+// The aggregation Region is now called the home Region.
 //
-// When you stop finding aggregation, findings that were already aggregated to the
-// aggregation Region are still visible from the aggregation Region. New findings
-// and finding updates are not aggregated.
+// Deletes a finding aggregator. When you delete the finding aggregator, you stop
+// cross-Region aggregation. Finding replication stops occurring from the linked
+// Regions to the home Region.
+//
+// When you stop cross-Region aggregation, findings that were already replicated
+// and sent to the home Region are still visible from the home Region. However, new
+// findings and finding updates are no longer replicated and sent to the home
+// Region.
 func (c *Client) DeleteFindingAggregator(ctx context.Context, params *DeleteFindingAggregatorInput, optFns ...func(*Options)) (*DeleteFindingAggregatorOutput, error) {
 	if params == nil {
 		params = &DeleteFindingAggregatorInput{}
@@ -92,6 +96,9 @@ func (c *Client) addOperationDeleteFindingAggregatorMiddlewares(stack *middlewar
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -108,6 +115,9 @@ func (c *Client) addOperationDeleteFindingAggregatorMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteFindingAggregatorValidationMiddleware(stack); err != nil {
@@ -129,6 +139,18 @@ func (c *Client) addOperationDeleteFindingAggregatorMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

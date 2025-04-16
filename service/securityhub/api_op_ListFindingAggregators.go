@@ -11,8 +11,9 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// If finding aggregation is enabled, then ListFindingAggregators returns the ARN
-// of the finding aggregator. You can run this operation from any Region.
+// If cross-Region aggregation is enabled, then ListFindingAggregators returns the
+// Amazon Resource Name (ARN) of the finding aggregator. You can run this operation
+// from any Amazon Web Services Region.
 func (c *Client) ListFindingAggregators(ctx context.Context, params *ListFindingAggregatorsInput, optFns ...func(*Options)) (*ListFindingAggregatorsOutput, error) {
 	if params == nil {
 		params = &ListFindingAggregatorsInput{}
@@ -102,6 +103,9 @@ func (c *Client) addOperationListFindingAggregatorsMiddlewares(stack *middleware
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -120,6 +124,9 @@ func (c *Client) addOperationListFindingAggregatorsMiddlewares(stack *middleware
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListFindingAggregators(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -136,6 +143,18 @@ func (c *Client) addOperationListFindingAggregatorsMiddlewares(stack *middleware
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -48,7 +48,17 @@ type CreateDecoderManifestInput struct {
 	// This member is required.
 	Name *string
 
-	//  A brief description of the decoder manifest.
+	// Use default decoders for all unmapped signals in the model. You don't need to
+	// provide any detailed decoding information.
+	//
+	// Access to certain Amazon Web Services IoT FleetWise features is currently
+	// gated. For more information, see [Amazon Web Services Region and feature availability]in the Amazon Web Services IoT FleetWise
+	// Developer Guide.
+	//
+	// [Amazon Web Services Region and feature availability]: https://docs.aws.amazon.com/iot-fleetwise/latest/developerguide/fleetwise-regions.html
+	DefaultForUnmappedSignals types.DefaultForUnmappedSignalsType
+
+	// A brief description of the decoder manifest.
 	Description *string
 
 	//  A list of information about available network interfaces.
@@ -124,6 +134,9 @@ func (c *Client) addOperationCreateDecoderManifestMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -140,6 +153,9 @@ func (c *Client) addOperationCreateDecoderManifestMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateDecoderManifestValidationMiddleware(stack); err != nil {
@@ -161,6 +177,18 @@ func (c *Client) addOperationCreateDecoderManifestMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

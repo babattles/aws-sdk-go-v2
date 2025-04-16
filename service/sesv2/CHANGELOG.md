@@ -1,3 +1,146 @@
+# v1.45.0 (2025-04-03)
+
+* **Feature**: This release enables customers to provide attachments in the SESv2 SendEmail and SendBulkEmail APIs.
+
+# v1.44.0 (2025-03-31)
+
+* **Feature**: Add dual-stack support to global endpoints.
+
+# v1.43.1 (2025-03-04.2)
+
+* **Bug Fix**: Add assurance test for operation order.
+
+# v1.43.0 (2025-02-27)
+
+* **Feature**: Track credential providers via User-Agent Feature ids
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.42.0 (2025-02-19)
+
+* **Feature**: This release adds the ability for outbound email sent with SES to preserve emails to a Mail Manager archive.
+
+# v1.41.6 (2025-02-18)
+
+* **Bug Fix**: Bump go version to 1.22
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.41.5 (2025-02-05)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.41.4 (2025-01-31)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.41.3 (2025-01-30)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.41.2 (2025-01-24)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+* **Dependency Update**: Upgrade to smithy-go v1.22.2.
+
+# v1.41.1 (2025-01-17)
+
+* **Bug Fix**: Fix bug where credentials weren't refreshed during retry loop.
+
+# v1.41.0 (2025-01-15)
+
+* **Feature**: This release introduces a new recommendation in Virtual Deliverability Manager Advisor, which detects elevated complaint rates for customer sending identities.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.40.2 (2025-01-09)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.40.1 (2024-12-19)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.40.0 (2024-12-11)
+
+* **Feature**: Introduces support for multi-region endpoint.
+
+# v1.39.0 (2024-12-10)
+
+* **Feature**: Introduces support for creating DEED (Deterministic Easy-DKIM) identities.
+
+# v1.38.4 (2024-12-02)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.38.3 (2024-11-18)
+
+* **Dependency Update**: Update to smithy-go v1.22.1.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.38.2 (2024-11-07)
+
+* **Bug Fix**: Adds case-insensitive handling of error message fields in service responses
+
+# v1.38.1 (2024-11-06)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.38.0 (2024-10-31)
+
+* **Feature**: This release enables customers to provide the email template content in the SESv2 SendEmail and SendBulkEmail APIs instead of the name or the ARN of a stored email template.
+
+# v1.37.1 (2024-10-28)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.37.0 (2024-10-15)
+
+* **Feature**: This release adds support for email maximum delivery seconds that allows senders to control the time within which their emails are attempted for delivery.
+
+# v1.36.2 (2024-10-08)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.36.1 (2024-10-07)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.36.0 (2024-10-04)
+
+* **Feature**: Add support for HTTP client metrics.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.35.1 (2024-10-03)
+
+* No change notes available for this release.
+
+# v1.35.0 (2024-09-27)
+
+* **Feature**: This release adds support for engagement tracking over Https using custom domains.
+
+# v1.34.2 (2024-09-25)
+
+* No change notes available for this release.
+
+# v1.34.1 (2024-09-23)
+
+* No change notes available for this release.
+
+# v1.34.0 (2024-09-20)
+
+* **Feature**: Add tracing and metrics support to service clients.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.33.3 (2024-09-17)
+
+* **Bug Fix**: **BREAKFIX**: Only generate AccountIDEndpointMode config for services that use it. This is a compiler break, but removes no actual functionality, as no services currently use the account ID in endpoint resolution.
+
+# v1.33.2 (2024-09-04)
+
+* No change notes available for this release.
+
+# v1.33.1 (2024-09-03)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
 # v1.33.0 (2024-08-16)
 
 * **Feature**: Marking use case description field of account details as deprecated.

@@ -15,7 +15,7 @@ import (
 //
 // Terminating a WorkSpace is a permanent action and cannot be undone. The user's
 // data is destroyed. If you need to archive any user data, contact Amazon Web
-// Services Support before terminating the WorkSpace.
+// ServicesSupport before terminating the WorkSpace.
 //
 // You can terminate a WorkSpace that is in any state except SUSPENDED .
 //
@@ -118,6 +118,9 @@ func (c *Client) addOperationTerminateWorkspacesMiddlewares(stack *middleware.St
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -134,6 +137,9 @@ func (c *Client) addOperationTerminateWorkspacesMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpTerminateWorkspacesValidationMiddleware(stack); err != nil {
@@ -155,6 +161,18 @@ func (c *Client) addOperationTerminateWorkspacesMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

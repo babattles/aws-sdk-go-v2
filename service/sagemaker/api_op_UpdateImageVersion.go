@@ -11,7 +11,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Updates the properties of a SageMaker image version.
+// Updates the properties of a SageMaker AI image version.
 func (c *Client) UpdateImageVersion(ctx context.Context, params *UpdateImageVersionInput, optFns ...func(*Options)) (*UpdateImageVersionOutput, error) {
 	if params == nil {
 		params = &UpdateImageVersionInput{}
@@ -46,13 +46,13 @@ type UpdateImageVersionInput struct {
 	// Indicates Horovod compatibility.
 	Horovod *bool
 
-	// Indicates SageMaker job type compatibility.
+	// Indicates SageMaker AI job type compatibility.
 	//
-	//   - TRAINING : The image version is compatible with SageMaker training jobs.
+	//   - TRAINING : The image version is compatible with SageMaker AI training jobs.
 	//
-	//   - INFERENCE : The image version is compatible with SageMaker inference jobs.
+	//   - INFERENCE : The image version is compatible with SageMaker AI inference jobs.
 	//
-	//   - NOTEBOOK_KERNEL : The image version is compatible with SageMaker notebook
+	//   - NOTEBOOK_KERNEL : The image version is compatible with SageMaker AI notebook
 	//   kernels.
 	JobType types.JobType
 
@@ -147,6 +147,9 @@ func (c *Client) addOperationUpdateImageVersionMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -163,6 +166,9 @@ func (c *Client) addOperationUpdateImageVersionMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateImageVersionValidationMiddleware(stack); err != nil {
@@ -184,6 +190,18 @@ func (c *Client) addOperationUpdateImageVersionMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

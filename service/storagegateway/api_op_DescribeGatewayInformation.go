@@ -90,6 +90,12 @@ type DescribeGatewayInformationOutput struct {
 	GatewayTimezone *string
 
 	// The type of the gateway.
+	//
+	// Amazon FSx File Gateway is no longer available to new customers. Existing
+	// customers of FSx File Gateway can continue to use the service normally. For
+	// capabilities similar to FSx File Gateway, visit [this blog post].
+	//
+	// [this blog post]: https://aws.amazon.com/blogs/storage/switch-your-file-share-access-from-amazon-fsx-file-gateway-to-amazon-fsx-for-windows-file-server/
 	GatewayType *string
 
 	// The type of hardware or software platform on which the gateway is running.
@@ -182,6 +188,9 @@ func (c *Client) addOperationDescribeGatewayInformationMiddlewares(stack *middle
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -198,6 +207,9 @@ func (c *Client) addOperationDescribeGatewayInformationMiddlewares(stack *middle
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeGatewayInformationValidationMiddleware(stack); err != nil {
@@ -219,6 +231,18 @@ func (c *Client) addOperationDescribeGatewayInformationMiddlewares(stack *middle
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

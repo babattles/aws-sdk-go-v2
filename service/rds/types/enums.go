@@ -145,10 +145,11 @@ type ClientPasswordAuthType string
 
 // Enum values for ClientPasswordAuthType
 const (
-	ClientPasswordAuthTypeMysqlNativePassword     ClientPasswordAuthType = "MYSQL_NATIVE_PASSWORD"
-	ClientPasswordAuthTypePostgresScramSha256     ClientPasswordAuthType = "POSTGRES_SCRAM_SHA_256"
-	ClientPasswordAuthTypePostgresMd5             ClientPasswordAuthType = "POSTGRES_MD5"
-	ClientPasswordAuthTypeSqlServerAuthentication ClientPasswordAuthType = "SQL_SERVER_AUTHENTICATION"
+	ClientPasswordAuthTypeMysqlNativePassword      ClientPasswordAuthType = "MYSQL_NATIVE_PASSWORD"
+	ClientPasswordAuthTypeMysqlCachingSha2Password ClientPasswordAuthType = "MYSQL_CACHING_SHA2_PASSWORD"
+	ClientPasswordAuthTypePostgresScramSha256      ClientPasswordAuthType = "POSTGRES_SCRAM_SHA_256"
+	ClientPasswordAuthTypePostgresMd5              ClientPasswordAuthType = "POSTGRES_MD5"
+	ClientPasswordAuthTypeSqlServerAuthentication  ClientPasswordAuthType = "SQL_SERVER_AUTHENTICATION"
 )
 
 // Values returns all known values for ClientPasswordAuthType. Note that this can
@@ -158,9 +159,29 @@ const (
 func (ClientPasswordAuthType) Values() []ClientPasswordAuthType {
 	return []ClientPasswordAuthType{
 		"MYSQL_NATIVE_PASSWORD",
+		"MYSQL_CACHING_SHA2_PASSWORD",
 		"POSTGRES_SCRAM_SHA_256",
 		"POSTGRES_MD5",
 		"SQL_SERVER_AUTHENTICATION",
+	}
+}
+
+type ClusterScalabilityType string
+
+// Enum values for ClusterScalabilityType
+const (
+	ClusterScalabilityTypeStandard  ClusterScalabilityType = "standard"
+	ClusterScalabilityTypeLimitless ClusterScalabilityType = "limitless"
+)
+
+// Values returns all known values for ClusterScalabilityType. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ClusterScalabilityType) Values() []ClusterScalabilityType {
+	return []ClusterScalabilityType{
+		"standard",
+		"limitless",
 	}
 }
 
@@ -182,6 +203,25 @@ func (CustomEngineVersionStatus) Values() []CustomEngineVersionStatus {
 		"available",
 		"inactive",
 		"inactive-except-restore",
+	}
+}
+
+type DatabaseInsightsMode string
+
+// Enum values for DatabaseInsightsMode
+const (
+	DatabaseInsightsModeStandard DatabaseInsightsMode = "standard"
+	DatabaseInsightsModeAdvanced DatabaseInsightsMode = "advanced"
+)
+
+// Values returns all known values for DatabaseInsightsMode. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DatabaseInsightsMode) Values() []DatabaseInsightsMode {
+	return []DatabaseInsightsMode{
+		"standard",
+		"advanced",
 	}
 }
 

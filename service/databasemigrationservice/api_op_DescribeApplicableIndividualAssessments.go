@@ -63,6 +63,10 @@ type DescribeApplicableIndividualAssessmentsInput struct {
 	// support.
 	MigrationType types.MigrationTypeValue
 
+	// Amazon Resource Name (ARN) of a serverless replication on which you want to
+	// base the default list of individual assessments.
+	ReplicationConfigArn *string
+
 	// ARN of a replication instance on which you want to base the default list of
 	// individual assessments.
 	ReplicationInstanceArn *string
@@ -148,6 +152,9 @@ func (c *Client) addOperationDescribeApplicableIndividualAssessmentsMiddlewares(
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -166,6 +173,9 @@ func (c *Client) addOperationDescribeApplicableIndividualAssessmentsMiddlewares(
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeApplicableIndividualAssessments(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -182,6 +192,18 @@ func (c *Client) addOperationDescribeApplicableIndividualAssessmentsMiddlewares(
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

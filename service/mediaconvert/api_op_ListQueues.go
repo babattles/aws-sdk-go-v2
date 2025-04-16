@@ -58,6 +58,15 @@ type ListQueuesOutput struct {
 	// List of queues.
 	Queues []types.Queue
 
+	// The maximum number of jobs that MediaConvert can process at one time, across
+	// all of your on-demand queues in the current AWS Region.
+	TotalConcurrentJobs *int32
+
+	// The remaining number of concurrent jobs that are not associated with a queue
+	// and are available to allocate to a queue. You can allocate these jobs when you
+	// create or update a queue.
+	UnallocatedConcurrentJobs *int32
+
 	// Metadata pertaining to the operation's result.
 	ResultMetadata middleware.Metadata
 
@@ -107,6 +116,9 @@ func (c *Client) addOperationListQueuesMiddlewares(stack *middleware.Stack, opti
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -125,6 +137,9 @@ func (c *Client) addOperationListQueuesMiddlewares(stack *middleware.Stack, opti
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListQueues(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -141,6 +156,18 @@ func (c *Client) addOperationListQueuesMiddlewares(stack *middleware.Stack, opti
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

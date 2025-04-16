@@ -79,6 +79,9 @@ type GetCustomModelOutput struct {
 	// This member is required.
 	TrainingDataConfig *types.TrainingDataConfig
 
+	// The customization configuration for the custom model.
+	CustomizationConfig types.CustomizationConfig
+
 	// The type of model customization.
 	CustomizationType types.CustomizationType
 
@@ -152,6 +155,9 @@ func (c *Client) addOperationGetCustomModelMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -168,6 +174,9 @@ func (c *Client) addOperationGetCustomModelMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetCustomModelValidationMiddleware(stack); err != nil {
@@ -189,6 +198,18 @@ func (c *Client) addOperationGetCustomModelMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -15,6 +15,9 @@ import (
 //
 // For each control, the results include information about whether it is currently
 // enabled, the severity, and a link to remediation information.
+//
+// This operation returns an empty list for standard subscriptions where
+// StandardsControlsUpdatable has value NOT_READY_FOR_UPDATES .
 func (c *Client) DescribeStandardsControls(ctx context.Context, params *DescribeStandardsControlsInput, optFns ...func(*Options)) (*DescribeStandardsControlsOutput, error) {
 	if params == nil {
 		params = &DescribeStandardsControlsInput{}
@@ -109,6 +112,9 @@ func (c *Client) addOperationDescribeStandardsControlsMiddlewares(stack *middlew
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -125,6 +131,9 @@ func (c *Client) addOperationDescribeStandardsControlsMiddlewares(stack *middlew
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeStandardsControlsValidationMiddleware(stack); err != nil {
@@ -146,6 +155,18 @@ func (c *Client) addOperationDescribeStandardsControlsMiddlewares(stack *middlew
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

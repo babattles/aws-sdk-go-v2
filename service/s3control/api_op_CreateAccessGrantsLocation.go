@@ -57,7 +57,7 @@ func (c *Client) CreateAccessGrantsLocation(ctx context.Context, params *CreateA
 
 type CreateAccessGrantsLocationInput struct {
 
-	// The ID of the Amazon Web Services account that is making this request.
+	// The Amazon Web Services account ID of the S3 Access Grants instance.
 	//
 	// This member is required.
 	AccountId *string
@@ -167,6 +167,9 @@ func (c *Client) addOperationCreateAccessGrantsLocationMiddlewares(stack *middle
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -186,6 +189,9 @@ func (c *Client) addOperationCreateAccessGrantsLocationMiddlewares(stack *middle
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = smithyhttp.AddContentChecksumMiddleware(stack); err != nil {
@@ -225,6 +231,18 @@ func (c *Client) addOperationCreateAccessGrantsLocationMiddlewares(stack *middle
 		return err
 	}
 	if err = s3controlcust.AddDisableHostPrefixMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

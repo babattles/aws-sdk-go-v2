@@ -62,6 +62,90 @@ func testSnapshot(stack *middleware.Stack, operation string) error {
 	}
 	return snapshotOK{}
 }
+func TestCheckSnapshot_ActivateMessageTemplate(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ActivateMessageTemplate(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ActivateMessageTemplate")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_CreateAIAgent(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateAIAgent(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "CreateAIAgent")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_CreateAIAgentVersion(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateAIAgentVersion(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "CreateAIAgentVersion")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_CreateAIGuardrail(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateAIGuardrail(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "CreateAIGuardrail")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_CreateAIGuardrailVersion(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateAIGuardrailVersion(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "CreateAIGuardrailVersion")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_CreateAIPrompt(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateAIPrompt(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "CreateAIPrompt")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_CreateAIPromptVersion(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateAIPromptVersion(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "CreateAIPromptVersion")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_CreateAssistant(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.CreateAssistant(context.Background(), nil, func(o *Options) {
@@ -122,6 +206,42 @@ func TestCheckSnapshot_CreateKnowledgeBase(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_CreateMessageTemplate(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateMessageTemplate(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "CreateMessageTemplate")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_CreateMessageTemplateAttachment(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateMessageTemplateAttachment(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "CreateMessageTemplateAttachment")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_CreateMessageTemplateVersion(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateMessageTemplateVersion(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "CreateMessageTemplateVersion")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_CreateQuickResponse(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.CreateQuickResponse(context.Background(), nil, func(o *Options) {
@@ -139,6 +259,90 @@ func TestCheckSnapshot_CreateSession(t *testing.T) {
 	_, err := svc.CreateSession(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "CreateSession")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_DeactivateMessageTemplate(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeactivateMessageTemplate(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DeactivateMessageTemplate")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_DeleteAIAgent(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteAIAgent(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DeleteAIAgent")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_DeleteAIAgentVersion(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteAIAgentVersion(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DeleteAIAgentVersion")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_DeleteAIGuardrail(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteAIGuardrail(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DeleteAIGuardrail")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_DeleteAIGuardrailVersion(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteAIGuardrailVersion(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DeleteAIGuardrailVersion")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_DeleteAIPrompt(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteAIPrompt(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DeleteAIPrompt")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_DeleteAIPromptVersion(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteAIPromptVersion(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DeleteAIPromptVersion")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -218,11 +422,71 @@ func TestCheckSnapshot_DeleteKnowledgeBase(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_DeleteMessageTemplate(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteMessageTemplate(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DeleteMessageTemplate")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_DeleteMessageTemplateAttachment(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteMessageTemplateAttachment(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DeleteMessageTemplateAttachment")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_DeleteQuickResponse(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.DeleteQuickResponse(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "DeleteQuickResponse")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_GetAIAgent(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetAIAgent(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GetAIAgent")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_GetAIGuardrail(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetAIGuardrail(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GetAIGuardrail")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_GetAIPrompt(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetAIPrompt(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GetAIPrompt")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -314,6 +578,30 @@ func TestCheckSnapshot_GetKnowledgeBase(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_GetMessageTemplate(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetMessageTemplate(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GetMessageTemplate")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_GetNextMessage(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetNextMessage(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GetNextMessage")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_GetQuickResponse(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.GetQuickResponse(context.Background(), nil, func(o *Options) {
@@ -343,6 +631,78 @@ func TestCheckSnapshot_GetSession(t *testing.T) {
 	_, err := svc.GetSession(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "GetSession")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_ListAIAgents(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListAIAgents(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListAIAgents")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_ListAIAgentVersions(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListAIAgentVersions(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListAIAgentVersions")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_ListAIGuardrails(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListAIGuardrails(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListAIGuardrails")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_ListAIGuardrailVersions(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListAIGuardrailVersions(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListAIGuardrailVersions")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_ListAIPrompts(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListAIPrompts(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListAIPrompts")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_ListAIPromptVersions(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListAIPromptVersions(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListAIPromptVersions")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -422,6 +782,42 @@ func TestCheckSnapshot_ListKnowledgeBases(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_ListMessages(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListMessages(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListMessages")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_ListMessageTemplates(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListMessageTemplates(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListMessageTemplates")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_ListMessageTemplateVersions(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListMessageTemplateVersions(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListMessageTemplateVersions")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_ListQuickResponses(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ListQuickResponses(context.Background(), nil, func(o *Options) {
@@ -482,6 +878,18 @@ func TestCheckSnapshot_QueryAssistant(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_RemoveAssistantAIAgent(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.RemoveAssistantAIAgent(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "RemoveAssistantAIAgent")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_RemoveKnowledgeBaseTemplateUri(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.RemoveKnowledgeBaseTemplateUri(context.Background(), nil, func(o *Options) {
@@ -494,11 +902,35 @@ func TestCheckSnapshot_RemoveKnowledgeBaseTemplateUri(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_RenderMessageTemplate(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.RenderMessageTemplate(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "RenderMessageTemplate")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_SearchContent(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.SearchContent(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "SearchContent")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_SearchMessageTemplates(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.SearchMessageTemplates(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "SearchMessageTemplates")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -523,6 +955,18 @@ func TestCheckSnapshot_SearchSessions(t *testing.T) {
 	_, err := svc.SearchSessions(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "SearchSessions")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_SendMessage(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.SendMessage(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "SendMessage")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -578,6 +1022,54 @@ func TestCheckSnapshot_UntagResource(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_UpdateAIAgent(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateAIAgent(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "UpdateAIAgent")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_UpdateAIGuardrail(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateAIGuardrail(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "UpdateAIGuardrail")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_UpdateAIPrompt(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateAIPrompt(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "UpdateAIPrompt")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_UpdateAssistantAIAgent(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateAssistantAIAgent(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "UpdateAssistantAIAgent")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_UpdateContent(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.UpdateContent(context.Background(), nil, func(o *Options) {
@@ -595,6 +1087,30 @@ func TestCheckSnapshot_UpdateKnowledgeBaseTemplateUri(t *testing.T) {
 	_, err := svc.UpdateKnowledgeBaseTemplateUri(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "UpdateKnowledgeBaseTemplateUri")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_UpdateMessageTemplate(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateMessageTemplate(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "UpdateMessageTemplate")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_UpdateMessageTemplateMetadata(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateMessageTemplateMetadata(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "UpdateMessageTemplateMetadata")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -625,6 +1141,102 @@ func TestCheckSnapshot_UpdateSession(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestCheckSnapshot_UpdateSessionData(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateSessionData(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "UpdateSessionData")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+func TestUpdateSnapshot_ActivateMessageTemplate(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ActivateMessageTemplate(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ActivateMessageTemplate")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_CreateAIAgent(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateAIAgent(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "CreateAIAgent")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_CreateAIAgentVersion(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateAIAgentVersion(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "CreateAIAgentVersion")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_CreateAIGuardrail(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateAIGuardrail(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "CreateAIGuardrail")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_CreateAIGuardrailVersion(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateAIGuardrailVersion(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "CreateAIGuardrailVersion")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_CreateAIPrompt(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateAIPrompt(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "CreateAIPrompt")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_CreateAIPromptVersion(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateAIPromptVersion(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "CreateAIPromptVersion")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_CreateAssistant(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.CreateAssistant(context.Background(), nil, func(o *Options) {
@@ -685,6 +1297,42 @@ func TestUpdateSnapshot_CreateKnowledgeBase(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_CreateMessageTemplate(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateMessageTemplate(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "CreateMessageTemplate")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_CreateMessageTemplateAttachment(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateMessageTemplateAttachment(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "CreateMessageTemplateAttachment")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_CreateMessageTemplateVersion(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateMessageTemplateVersion(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "CreateMessageTemplateVersion")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_CreateQuickResponse(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.CreateQuickResponse(context.Background(), nil, func(o *Options) {
@@ -702,6 +1350,90 @@ func TestUpdateSnapshot_CreateSession(t *testing.T) {
 	_, err := svc.CreateSession(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "CreateSession")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_DeactivateMessageTemplate(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeactivateMessageTemplate(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DeactivateMessageTemplate")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_DeleteAIAgent(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteAIAgent(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DeleteAIAgent")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_DeleteAIAgentVersion(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteAIAgentVersion(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DeleteAIAgentVersion")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_DeleteAIGuardrail(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteAIGuardrail(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DeleteAIGuardrail")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_DeleteAIGuardrailVersion(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteAIGuardrailVersion(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DeleteAIGuardrailVersion")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_DeleteAIPrompt(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteAIPrompt(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DeleteAIPrompt")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_DeleteAIPromptVersion(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteAIPromptVersion(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DeleteAIPromptVersion")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -781,11 +1513,71 @@ func TestUpdateSnapshot_DeleteKnowledgeBase(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_DeleteMessageTemplate(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteMessageTemplate(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DeleteMessageTemplate")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_DeleteMessageTemplateAttachment(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteMessageTemplateAttachment(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DeleteMessageTemplateAttachment")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_DeleteQuickResponse(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.DeleteQuickResponse(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "DeleteQuickResponse")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_GetAIAgent(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetAIAgent(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GetAIAgent")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_GetAIGuardrail(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetAIGuardrail(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GetAIGuardrail")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_GetAIPrompt(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetAIPrompt(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GetAIPrompt")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -877,6 +1669,30 @@ func TestUpdateSnapshot_GetKnowledgeBase(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_GetMessageTemplate(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetMessageTemplate(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GetMessageTemplate")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_GetNextMessage(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetNextMessage(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GetNextMessage")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_GetQuickResponse(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.GetQuickResponse(context.Background(), nil, func(o *Options) {
@@ -906,6 +1722,78 @@ func TestUpdateSnapshot_GetSession(t *testing.T) {
 	_, err := svc.GetSession(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "GetSession")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_ListAIAgents(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListAIAgents(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListAIAgents")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_ListAIAgentVersions(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListAIAgentVersions(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListAIAgentVersions")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_ListAIGuardrails(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListAIGuardrails(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListAIGuardrails")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_ListAIGuardrailVersions(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListAIGuardrailVersions(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListAIGuardrailVersions")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_ListAIPrompts(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListAIPrompts(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListAIPrompts")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_ListAIPromptVersions(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListAIPromptVersions(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListAIPromptVersions")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -985,6 +1873,42 @@ func TestUpdateSnapshot_ListKnowledgeBases(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_ListMessages(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListMessages(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListMessages")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_ListMessageTemplates(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListMessageTemplates(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListMessageTemplates")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_ListMessageTemplateVersions(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListMessageTemplateVersions(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListMessageTemplateVersions")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_ListQuickResponses(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ListQuickResponses(context.Background(), nil, func(o *Options) {
@@ -1045,6 +1969,18 @@ func TestUpdateSnapshot_QueryAssistant(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_RemoveAssistantAIAgent(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.RemoveAssistantAIAgent(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "RemoveAssistantAIAgent")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_RemoveKnowledgeBaseTemplateUri(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.RemoveKnowledgeBaseTemplateUri(context.Background(), nil, func(o *Options) {
@@ -1057,11 +1993,35 @@ func TestUpdateSnapshot_RemoveKnowledgeBaseTemplateUri(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_RenderMessageTemplate(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.RenderMessageTemplate(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "RenderMessageTemplate")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_SearchContent(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.SearchContent(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "SearchContent")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_SearchMessageTemplates(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.SearchMessageTemplates(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "SearchMessageTemplates")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -1086,6 +2046,18 @@ func TestUpdateSnapshot_SearchSessions(t *testing.T) {
 	_, err := svc.SearchSessions(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "SearchSessions")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_SendMessage(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.SendMessage(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "SendMessage")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -1141,6 +2113,54 @@ func TestUpdateSnapshot_UntagResource(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_UpdateAIAgent(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateAIAgent(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "UpdateAIAgent")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_UpdateAIGuardrail(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateAIGuardrail(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "UpdateAIGuardrail")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_UpdateAIPrompt(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateAIPrompt(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "UpdateAIPrompt")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_UpdateAssistantAIAgent(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateAssistantAIAgent(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "UpdateAssistantAIAgent")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_UpdateContent(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.UpdateContent(context.Background(), nil, func(o *Options) {
@@ -1165,6 +2185,30 @@ func TestUpdateSnapshot_UpdateKnowledgeBaseTemplateUri(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_UpdateMessageTemplate(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateMessageTemplate(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "UpdateMessageTemplate")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_UpdateMessageTemplateMetadata(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateMessageTemplateMetadata(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "UpdateMessageTemplateMetadata")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_UpdateQuickResponse(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.UpdateQuickResponse(context.Background(), nil, func(o *Options) {
@@ -1182,6 +2226,18 @@ func TestUpdateSnapshot_UpdateSession(t *testing.T) {
 	_, err := svc.UpdateSession(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "UpdateSession")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_UpdateSessionData(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateSessionData(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "UpdateSessionData")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {

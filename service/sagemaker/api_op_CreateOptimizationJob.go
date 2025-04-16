@@ -65,10 +65,10 @@ type CreateOptimizationJobInput struct {
 	// This member is required.
 	OutputConfig *types.OptimizationJobOutputConfig
 
-	// The Amazon Resource Name (ARN) of an IAM role that enables Amazon SageMaker to
-	// perform tasks on your behalf.
+	// The Amazon Resource Name (ARN) of an IAM role that enables Amazon SageMaker AI
+	// to perform tasks on your behalf.
 	//
-	// During model optimization, Amazon SageMaker needs your permission to:
+	// During model optimization, Amazon SageMaker AI needs your permission to:
 	//
 	//   - Read input data from an S3 bucket
 	//
@@ -79,10 +79,10 @@ type CreateOptimizationJobInput struct {
 	//   - Publish metrics to Amazon CloudWatch
 	//
 	// You grant permissions for all of these tasks to an IAM role. To pass this role
-	// to Amazon SageMaker, the caller of this API must have the iam:PassRole
-	// permission. For more information, see [Amazon SageMaker Roles.]
+	// to Amazon SageMaker AI, the caller of this API must have the iam:PassRole
+	// permission. For more information, see [Amazon SageMaker AI Roles.]
 	//
-	// [Amazon SageMaker Roles.]: https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-roles.html
+	// [Amazon SageMaker AI Roles.]: https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-roles.html
 	//
 	// This member is required.
 	RoleArn *string
@@ -179,6 +179,9 @@ func (c *Client) addOperationCreateOptimizationJobMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -195,6 +198,9 @@ func (c *Client) addOperationCreateOptimizationJobMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateOptimizationJobValidationMiddleware(stack); err != nil {
@@ -216,6 +222,18 @@ func (c *Client) addOperationCreateOptimizationJobMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -10,7 +10,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Deletes the specified notification subscription in Amazon Security Lake for the
+// Deletes the specified subscription notification in Amazon Security Lake for the
 // organization you specify.
 func (c *Client) DeleteSubscriberNotification(ctx context.Context, params *DeleteSubscriberNotificationInput, optFns ...func(*Options)) (*DeleteSubscriberNotificationOutput, error) {
 	if params == nil {
@@ -87,6 +87,9 @@ func (c *Client) addOperationDeleteSubscriberNotificationMiddlewares(stack *midd
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -103,6 +106,9 @@ func (c *Client) addOperationDeleteSubscriberNotificationMiddlewares(stack *midd
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteSubscriberNotificationValidationMiddleware(stack); err != nil {
@@ -124,6 +130,18 @@ func (c *Client) addOperationDeleteSubscriberNotificationMiddlewares(stack *midd
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

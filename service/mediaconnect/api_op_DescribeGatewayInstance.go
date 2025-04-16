@@ -29,7 +29,7 @@ func (c *Client) DescribeGatewayInstance(ctx context.Context, params *DescribeGa
 
 type DescribeGatewayInstanceInput struct {
 
-	// The Amazon Resource Name (ARN) of the gateway instance that you want to
+	//  The Amazon Resource Name (ARN) of the gateway instance that you want to
 	// describe.
 	//
 	// This member is required.
@@ -40,7 +40,7 @@ type DescribeGatewayInstanceInput struct {
 
 type DescribeGatewayInstanceOutput struct {
 
-	// The settings for an instance in a gateway.
+	// The gateway instance that you requested a description of.
 	GatewayInstance *types.GatewayInstance
 
 	// Metadata pertaining to the operation's result.
@@ -92,6 +92,9 @@ func (c *Client) addOperationDescribeGatewayInstanceMiddlewares(stack *middlewar
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -108,6 +111,9 @@ func (c *Client) addOperationDescribeGatewayInstanceMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeGatewayInstanceValidationMiddleware(stack); err != nil {
@@ -129,6 +135,18 @@ func (c *Client) addOperationDescribeGatewayInstanceMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

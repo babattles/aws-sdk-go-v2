@@ -43,8 +43,9 @@ type DescribeOrganizationOutput struct {
 	//
 	// The AvailablePolicyTypes part of the response is deprecated, and you shouldn't
 	// use it in your apps. It doesn't include any policy type supported by
-	// Organizations other than SCPs. To determine which policy types are enabled in
-	// your organization, use the ListRootsoperation.
+	// Organizations other than SCPs. In the China (Ningxia) Region, no policy type is
+	// included. To determine which policy types are enabled in your organization, use
+	// the ListRootsoperation.
 	Organization *types.Organization
 
 	// Metadata pertaining to the operation's result.
@@ -96,6 +97,9 @@ func (c *Client) addOperationDescribeOrganizationMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -114,6 +118,9 @@ func (c *Client) addOperationDescribeOrganizationMiddlewares(stack *middleware.S
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeOrganization(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -130,6 +137,18 @@ func (c *Client) addOperationDescribeOrganizationMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

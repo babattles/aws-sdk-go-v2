@@ -35,11 +35,12 @@ type ListCollaborationAnalysisTemplatesInput struct {
 	// This member is required.
 	CollaborationIdentifier *string
 
-	// The maximum size of the results that is returned per call.
+	// The maximum number of results that are returned for an API request call. The
+	// service chooses a default number if you don't set one. The service might return
+	// a `nextToken` even if the `maxResults` value has not been met.
 	MaxResults *int32
 
-	// The token value retrieved from a previous call to access the next page of
-	// results.
+	// The pagination token that's used to fetch the next set of results.
 	NextToken *string
 
 	noSmithyDocumentSerde
@@ -52,8 +53,7 @@ type ListCollaborationAnalysisTemplatesOutput struct {
 	// This member is required.
 	CollaborationAnalysisTemplateSummaries []types.CollaborationAnalysisTemplateSummary
 
-	// The token value retrieved from a previous call to access the next page of
-	// results.
+	// The pagination token that's used to fetch the next set of results.
 	NextToken *string
 
 	// Metadata pertaining to the operation's result.
@@ -105,6 +105,9 @@ func (c *Client) addOperationListCollaborationAnalysisTemplatesMiddlewares(stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -121,6 +124,9 @@ func (c *Client) addOperationListCollaborationAnalysisTemplatesMiddlewares(stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListCollaborationAnalysisTemplatesValidationMiddleware(stack); err != nil {
@@ -144,13 +150,27 @@ func (c *Client) addOperationListCollaborationAnalysisTemplatesMiddlewares(stack
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
+		return err
+	}
 	return nil
 }
 
 // ListCollaborationAnalysisTemplatesPaginatorOptions is the paginator options for
 // ListCollaborationAnalysisTemplates
 type ListCollaborationAnalysisTemplatesPaginatorOptions struct {
-	// The maximum size of the results that is returned per call.
+	// The maximum number of results that are returned for an API request call. The
+	// service chooses a default number if you don't set one. The service might return
+	// a `nextToken` even if the `maxResults` value has not been met.
 	Limit int32
 
 	// Set to true if pagination should stop if the service returns a pagination token

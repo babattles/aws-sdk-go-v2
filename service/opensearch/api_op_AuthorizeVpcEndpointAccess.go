@@ -30,15 +30,16 @@ func (c *Client) AuthorizeVpcEndpointAccess(ctx context.Context, params *Authori
 
 type AuthorizeVpcEndpointAccessInput struct {
 
-	// The Amazon Web Services account ID to grant access to.
-	//
-	// This member is required.
-	Account *string
-
 	// The name of the OpenSearch Service domain to provide access to.
 	//
 	// This member is required.
 	DomainName *string
+
+	// The Amazon Web Services account ID to grant access to.
+	Account *string
+
+	// The Amazon Web Services service SP to grant access to.
+	Service types.AWSServicePrincipal
 
 	noSmithyDocumentSerde
 }
@@ -100,6 +101,9 @@ func (c *Client) addOperationAuthorizeVpcEndpointAccessMiddlewares(stack *middle
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -116,6 +120,9 @@ func (c *Client) addOperationAuthorizeVpcEndpointAccessMiddlewares(stack *middle
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpAuthorizeVpcEndpointAccessValidationMiddleware(stack); err != nil {
@@ -137,6 +144,18 @@ func (c *Client) addOperationAuthorizeVpcEndpointAccessMiddlewares(stack *middle
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

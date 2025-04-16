@@ -38,11 +38,11 @@ func (c *Client) SwitchoverBlueGreenDeployment(ctx context.Context, params *Swit
 
 type SwitchoverBlueGreenDeploymentInput struct {
 
-	// The unique identifier of the blue/green deployment.
+	// The resource ID of the blue/green deployment.
 	//
 	// Constraints:
 	//
-	//   - Must match an existing blue/green deployment identifier.
+	//   - Must match an existing blue/green deployment resource ID.
 	//
 	// This member is required.
 	BlueGreenDeploymentIdentifier *string
@@ -117,6 +117,9 @@ func (c *Client) addOperationSwitchoverBlueGreenDeploymentMiddlewares(stack *mid
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -133,6 +136,9 @@ func (c *Client) addOperationSwitchoverBlueGreenDeploymentMiddlewares(stack *mid
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpSwitchoverBlueGreenDeploymentValidationMiddleware(stack); err != nil {
@@ -154,6 +160,18 @@ func (c *Client) addOperationSwitchoverBlueGreenDeploymentMiddlewares(stack *mid
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

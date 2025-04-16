@@ -45,6 +45,11 @@ type StartBuildInput struct {
 	// ones already defined in the build project.
 	ArtifactsOverride *types.ProjectArtifacts
 
+	// The maximum number of additional automatic retries after a failed build. For
+	// example, if the auto-retry limit is set to 2, CodeBuild will call the RetryBuild
+	// API to automatically retry your build for up to 2 additional times.
+	AutoRetryLimitOverride *int32
+
 	// Contains information that defines how the build project reports the build
 	// status to the source provider. This option is only used when the source provider
 	// is GITHUB , GITHUB_ENTERPRISE , or BITBUCKET .
@@ -164,7 +169,8 @@ type StartBuildInput struct {
 
 	//  Set to true to report to your source provider the status of a build's start
 	// and completion. If you use this option with a source provider other than GitHub,
-	// GitHub Enterprise, or Bitbucket, an invalidInputException is thrown.
+	// GitHub Enterprise, GitLab, GitLab Self Managed, or Bitbucket, an
+	// invalidInputException is thrown.
 	//
 	// To be able to report the build status to the source provider, the user
 	// associated with the source provider must have write access to the repo. If the
@@ -295,6 +301,9 @@ func (c *Client) addOperationStartBuildMiddlewares(stack *middleware.Stack, opti
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -311,6 +320,9 @@ func (c *Client) addOperationStartBuildMiddlewares(stack *middleware.Stack, opti
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpStartBuildValidationMiddleware(stack); err != nil {
@@ -332,6 +344,18 @@ func (c *Client) addOperationStartBuildMiddlewares(stack *middleware.Stack, opti
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -1,3 +1,164 @@
+# v1.55.2 (2025-04-03)
+
+* No change notes available for this release.
+
+# v1.55.1 (2025-03-11)
+
+* No change notes available for this release.
+
+# v1.55.0 (2025-03-06)
+
+* **Feature**: Added a new ModifyEndpointEncryptionMode API for managing endpoint encryption settings.
+
+# v1.54.0 (2025-03-05)
+
+* **Feature**: Added DeviceTypeWorkSpacesThinClient type to allow users to access their WorkSpaces through a WorkSpaces Thin Client.
+
+# v1.53.1 (2025-03-04.2)
+
+* **Bug Fix**: Add assurance test for operation order.
+
+# v1.53.0 (2025-02-27)
+
+* **Feature**: Track credential providers via User-Agent Feature ids
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.52.6 (2025-02-18)
+
+* **Bug Fix**: Bump go version to 1.22
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.52.5 (2025-02-05)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.52.4 (2025-01-31)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.52.3 (2025-01-30)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.52.2 (2025-01-24)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+* **Dependency Update**: Upgrade to smithy-go v1.22.2.
+
+# v1.52.1 (2025-01-17)
+
+* **Bug Fix**: Fix bug where credentials weren't refreshed during retry loop.
+
+# v1.52.0 (2025-01-15)
+
+* **Feature**: Added GeneralPurpose.4xlarge & GeneralPurpose.8xlarge ComputeTypes.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.51.1 (2025-01-09)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.51.0 (2024-12-19)
+
+* **Feature**: Added AWS Global Accelerator (AGA) support for WorkSpaces Personal.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.50.3 (2024-12-09)
+
+* **Documentation**: Added text to clarify case-sensitivity
+
+# v1.50.2 (2024-12-02)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.50.1 (2024-11-22)
+
+* **Documentation**: While integrating WSP-DCV rebrand, a few mentions were erroneously renamed from WSP to DCV. This release reverts those mentions back to WSP.
+
+# v1.50.0 (2024-11-20)
+
+* **Feature**: Added support for Rocky Linux 8 on Amazon WorkSpaces Personal.
+
+# v1.49.0 (2024-11-19)
+
+* **Feature**: Releasing new ErrorCodes for Image Validation failure during CreateWorkspaceImage process
+
+# v1.48.6 (2024-11-18)
+
+* **Dependency Update**: Update to smithy-go v1.22.1.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.48.5 (2024-11-07)
+
+* **Bug Fix**: Adds case-insensitive handling of error message fields in service responses
+
+# v1.48.4 (2024-11-06)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.48.3 (2024-10-28)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.48.2 (2024-10-08)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.48.1 (2024-10-07)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.48.0 (2024-10-04)
+
+* **Feature**: Add support for HTTP client metrics.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.47.5 (2024-10-03)
+
+* No change notes available for this release.
+
+# v1.47.4 (2024-10-02)
+
+* **Documentation**: WSP is being rebranded to become DCV.
+
+# v1.47.3 (2024-09-27)
+
+* No change notes available for this release.
+
+# v1.47.2 (2024-09-25)
+
+* No change notes available for this release.
+
+# v1.47.1 (2024-09-23)
+
+* No change notes available for this release.
+
+# v1.47.0 (2024-09-20)
+
+* **Feature**: Add tracing and metrics support to service clients.
+* **Feature**: Releasing new ErrorCodes for SysPrep failures during ImageImport and CreateImage process
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.46.4 (2024-09-17)
+
+* **Bug Fix**: **BREAKFIX**: Only generate AccountIDEndpointMode config for services that use it. This is a compiler break, but removes no actual functionality, as no services currently use the account ID in endpoint resolution.
+
+# v1.46.3 (2024-09-04)
+
+* No change notes available for this release.
+
+# v1.46.2 (2024-09-03)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.46.1 (2024-08-28)
+
+* **Documentation**: Documentation-only update that clarifies the StartWorkspaces and StopWorkspaces actions, and a few other minor edits.
+
+# v1.46.0 (2024-08-26)
+
+* **Feature**: This release adds support for creating and managing directories that use AWS IAM Identity Center as user identity source. Such directories can be used to create non-Active Directory domain joined WorkSpaces Personal.Updated RegisterWorkspaceDirectory and DescribeWorkspaceDirectories APIs.
+
 # v1.45.1 (2024-08-15)
 
 * **Dependency Update**: Bump minimum Go version to 1.21.

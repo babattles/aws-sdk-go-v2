@@ -78,6 +78,10 @@ type UpdateInfrastructureConfigurationInput struct {
 	// The logging configuration of the infrastructure configuration.
 	Logging *types.Logging
 
+	// The instance placement settings that define where the instances that are
+	// launched from your image will run.
+	Placement *types.Placement
+
 	// The tags attached to the resource created by Image Builder.
 	ResourceTags map[string]string
 
@@ -165,6 +169,9 @@ func (c *Client) addOperationUpdateInfrastructureConfigurationMiddlewares(stack 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -181,6 +188,9 @@ func (c *Client) addOperationUpdateInfrastructureConfigurationMiddlewares(stack 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opUpdateInfrastructureConfigurationMiddleware(stack, options); err != nil {
@@ -205,6 +215,18 @@ func (c *Client) addOperationUpdateInfrastructureConfigurationMiddlewares(stack 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -25,7 +25,7 @@ import (
 // You must specify either StackName or PhysicalResourceId , but not both. In
 // addition, you can specify LogicalResourceId to filter the returned result. For
 // more information about resources, the LogicalResourceId and PhysicalResourceId ,
-// go to the [CloudFormation User Guide].
+// see the [CloudFormation User Guide].
 //
 // A ValidationError is returned if you specify both StackName and
 // PhysicalResourceId in the same request.
@@ -50,8 +50,6 @@ func (c *Client) DescribeStackResources(ctx context.Context, params *DescribeSta
 type DescribeStackResourcesInput struct {
 
 	// The logical name of the resource as specified in the template.
-	//
-	// Default: There is no default value.
 	LogicalResourceId *string
 
 	// The name or unique identifier that corresponds to a physical instance ID of a
@@ -64,8 +62,6 @@ type DescribeStackResourcesInput struct {
 	//
 	// Required: Conditional. If you don't specify PhysicalResourceId , you must
 	// specify StackName .
-	//
-	// Default: There is no default value.
 	PhysicalResourceId *string
 
 	// The name or the unique stack ID that is associated with the stack, which aren't
@@ -75,8 +71,6 @@ type DescribeStackResourcesInput struct {
 	//   ID.
 	//
 	//   - Deleted stacks: You must specify the unique stack ID.
-	//
-	// Default: There is no default value.
 	//
 	// Required: Conditional. If you don't specify StackName , you must specify
 	// PhysicalResourceId .
@@ -140,6 +134,9 @@ func (c *Client) addOperationDescribeStackResourcesMiddlewares(stack *middleware
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -158,6 +155,9 @@ func (c *Client) addOperationDescribeStackResourcesMiddlewares(stack *middleware
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeStackResources(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -174,6 +174,18 @@ func (c *Client) addOperationDescribeStackResourcesMiddlewares(stack *middleware
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

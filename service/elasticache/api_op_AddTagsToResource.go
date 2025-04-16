@@ -25,8 +25,8 @@ import (
 //
 // For more information, see [Using Cost Allocation Tags in Amazon ElastiCache] in the ElastiCache User Guide.
 //
-// [Using Cost Allocation Tags in Amazon ElastiCache]: https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Tagging.html
-// [Resource-level permissions]: http://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/IAM.ResourceLevelPermissions.html
+// [Using Cost Allocation Tags in Amazon ElastiCache]: https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/Tagging.html
+// [Resource-level permissions]: http://docs.aws.amazon.com/AmazonElastiCache/latest/dg/IAM.ResourceLevelPermissions.html
 func (c *Client) AddTagsToResource(ctx context.Context, params *AddTagsToResourceInput, optFns ...func(*Options)) (*AddTagsToResourceOutput, error) {
 	if params == nil {
 		params = &AddTagsToResourceInput{}
@@ -122,6 +122,9 @@ func (c *Client) addOperationAddTagsToResourceMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -138,6 +141,9 @@ func (c *Client) addOperationAddTagsToResourceMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpAddTagsToResourceValidationMiddleware(stack); err != nil {
@@ -159,6 +165,18 @@ func (c *Client) addOperationAddTagsToResourceMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

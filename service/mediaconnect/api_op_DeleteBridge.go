@@ -28,7 +28,7 @@ func (c *Client) DeleteBridge(ctx context.Context, params *DeleteBridgeInput, op
 
 type DeleteBridgeInput struct {
 
-	// The ARN of the bridge that you want to delete.
+	//  The Amazon Resource Name (ARN) of the bridge that you want to delete.
 	//
 	// This member is required.
 	BridgeArn *string
@@ -38,7 +38,7 @@ type DeleteBridgeInput struct {
 
 type DeleteBridgeOutput struct {
 
-	// The Amazon Resource Number (ARN) of the deleted bridge.
+	//  The ARN of the deleted bridge.
 	BridgeArn *string
 
 	// Metadata pertaining to the operation's result.
@@ -90,6 +90,9 @@ func (c *Client) addOperationDeleteBridgeMiddlewares(stack *middleware.Stack, op
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -106,6 +109,9 @@ func (c *Client) addOperationDeleteBridgeMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteBridgeValidationMiddleware(stack); err != nil {
@@ -127,6 +133,18 @@ func (c *Client) addOperationDeleteBridgeMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

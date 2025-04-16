@@ -34,8 +34,8 @@ import (
 // invitation, you use the InviteMembers operation. If the account owner accepts
 // the invitation, the account becomes a member account in Security Hub.
 //
-// Accounts that are managed using Organizations do not receive an invitation.
-// They automatically become a member account in Security Hub.
+// Accounts that are managed using Organizations don't receive an invitation. They
+// automatically become a member account in Security Hub.
 //
 //   - If the organization account does not have Security Hub enabled, then
 //     Security Hub and the default standards are automatically enabled. Note that
@@ -134,6 +134,9 @@ func (c *Client) addOperationCreateMembersMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -150,6 +153,9 @@ func (c *Client) addOperationCreateMembersMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateMembersValidationMiddleware(stack); err != nil {
@@ -171,6 +177,18 @@ func (c *Client) addOperationCreateMembersMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

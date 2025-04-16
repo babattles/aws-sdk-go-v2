@@ -13,7 +13,7 @@ import (
 
 // Returns credentials for the provided identity ID. Any provided logins will be
 // validated against supported login providers. If the token is for
-// cognito-identity.amazonaws.com, it will be passed through to AWS Security Token
+// cognito-identity.amazonaws.com , it will be passed through to Security Token
 // Service with the appropriate role for the token.
 //
 // This is a public API. You do not need any credentials to call this API.
@@ -118,6 +118,9 @@ func (c *Client) addOperationGetCredentialsForIdentityMiddlewares(stack *middlew
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -134,6 +137,9 @@ func (c *Client) addOperationGetCredentialsForIdentityMiddlewares(stack *middlew
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetCredentialsForIdentityValidationMiddleware(stack); err != nil {
@@ -155,6 +161,18 @@ func (c *Client) addOperationGetCredentialsForIdentityMiddlewares(stack *middlew
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

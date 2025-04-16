@@ -40,8 +40,10 @@ type ListHostedConfigurationVersionsInput struct {
 	// This member is required.
 	ConfigurationProfileId *string
 
-	// The maximum number of items to return for this call. The call also returns a
-	// token that you can specify in a subsequent call to get the next set of results.
+	// The maximum number of items to return for this call. If MaxResults is not
+	// provided in the call, AppConfig returns the maximum of 50. The call also returns
+	// a token that you can specify in a subsequent call to get the next set of
+	// results.
 	MaxResults *int32
 
 	// A token to start the list. Use this token to get the next set of results.
@@ -114,6 +116,9 @@ func (c *Client) addOperationListHostedConfigurationVersionsMiddlewares(stack *m
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -130,6 +135,9 @@ func (c *Client) addOperationListHostedConfigurationVersionsMiddlewares(stack *m
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListHostedConfigurationVersionsValidationMiddleware(stack); err != nil {
@@ -153,14 +161,28 @@ func (c *Client) addOperationListHostedConfigurationVersionsMiddlewares(stack *m
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
+		return err
+	}
 	return nil
 }
 
 // ListHostedConfigurationVersionsPaginatorOptions is the paginator options for
 // ListHostedConfigurationVersions
 type ListHostedConfigurationVersionsPaginatorOptions struct {
-	// The maximum number of items to return for this call. The call also returns a
-	// token that you can specify in a subsequent call to get the next set of results.
+	// The maximum number of items to return for this call. If MaxResults is not
+	// provided in the call, AppConfig returns the maximum of 50. The call also returns
+	// a token that you can specify in a subsequent call to get the next set of
+	// results.
 	Limit int32
 
 	// Set to true if pagination should stop if the service returns a pagination token

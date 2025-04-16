@@ -40,6 +40,10 @@ type UpdateEnvironmentInput struct {
 	// This member is required.
 	Identifier *string
 
+	// The blueprint version to which the environment should be updated. You can only
+	// specify the following string for this parameter: latest .
+	BlueprintVersion *string
+
 	// The description to be updated as part of the UpdateEnvironment action.
 	Description *string
 
@@ -48,6 +52,9 @@ type UpdateEnvironmentInput struct {
 
 	// The name to be updated as part of the UpdateEnvironment action.
 	Name *string
+
+	// The user parameters of the environment.
+	UserParameters []types.EnvironmentParameter
 
 	noSmithyDocumentSerde
 }
@@ -100,6 +107,9 @@ type UpdateEnvironmentOutput struct {
 
 	// The blueprint identifier of the environment.
 	EnvironmentBlueprintId *string
+
+	// The configuration ID of the environment.
+	EnvironmentConfigurationId *string
 
 	// The profile identifier of the environment.
 	EnvironmentProfileId *string
@@ -178,6 +188,9 @@ func (c *Client) addOperationUpdateEnvironmentMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -194,6 +207,9 @@ func (c *Client) addOperationUpdateEnvironmentMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateEnvironmentValidationMiddleware(stack); err != nil {
@@ -215,6 +231,18 @@ func (c *Client) addOperationUpdateEnvironmentMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

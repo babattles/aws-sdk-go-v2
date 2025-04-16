@@ -19,6 +19,9 @@ import (
 //
 // The partner is identified with the PartnerProfileId , and the AS2 process is
 // identified with the LocalProfileId .
+//
+// Specify either BaseDirectory or CustomDirectories , but not both. Specifying
+// both causes the command to fail.
 func (c *Client) CreateAgreement(ctx context.Context, params *CreateAgreementInput, optFns ...func(*Options)) (*CreateAgreementOutput, error) {
 	if params == nil {
 		params = &CreateAgreementInput{}
@@ -69,13 +72,6 @@ type CreateAgreementInput struct {
 	// This member is required.
 	AccessRole *string
 
-	// The landing directory (folder) for files transferred by using the AS2 protocol.
-	//
-	// A BaseDirectory example is /DOC-EXAMPLE-BUCKET/home/mydirectory .
-	//
-	// This member is required.
-	BaseDirectory *string
-
 	// A unique identifier for the AS2 local profile.
 	//
 	// This member is required.
@@ -92,8 +88,50 @@ type CreateAgreementInput struct {
 	// This member is required.
 	ServerId *string
 
+	// The landing directory (folder) for files transferred by using the AS2 protocol.
+	//
+	// A BaseDirectory example is /amzn-s3-demo-bucket/home/mydirectory .
+	BaseDirectory *string
+
+	// A CustomDirectoriesType structure. This structure specifies custom directories
+	// for storing various AS2 message files. You can specify directories for the
+	// following types of files.
+	//
+	//   - Failed files
+	//
+	//   - MDN files
+	//
+	//   - Payload files
+	//
+	//   - Status files
+	//
+	//   - Temporary files
+	CustomDirectories *types.CustomDirectoriesType
+
 	// A name or short description to identify the agreement.
 	Description *string
+
+	//  Determines whether or not unsigned messages from your trading partners will be
+	// accepted.
+	//
+	//   - ENABLED : Transfer Family rejects unsigned messages from your trading
+	//   partner.
+	//
+	//   - DISABLED (default value): Transfer Family accepts unsigned messages from
+	//   your trading partner.
+	EnforceMessageSigning types.EnforceMessageSigningType
+
+	//  Determines whether or not Transfer Family appends a unique string of
+	// characters to the end of the AS2 message payload filename when saving it.
+	//
+	//   - ENABLED : the filename provided by your trading parter is preserved when the
+	//   file is saved.
+	//
+	//   - DISABLED (default value): when Transfer Family saves the file, the filename
+	//   is adjusted, as described in [File names and locations].
+	//
+	// [File names and locations]: https://docs.aws.amazon.com/transfer/latest/userguide/send-as2-messages.html#file-names-as2
+	PreserveFilename types.PreserveFilenameType
 
 	// The status of the agreement. The agreement can be either ACTIVE or INACTIVE .
 	Status types.AgreementStatusType
@@ -162,6 +200,9 @@ func (c *Client) addOperationCreateAgreementMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -178,6 +219,9 @@ func (c *Client) addOperationCreateAgreementMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateAgreementValidationMiddleware(stack); err != nil {
@@ -199,6 +243,18 @@ func (c *Client) addOperationCreateAgreementMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

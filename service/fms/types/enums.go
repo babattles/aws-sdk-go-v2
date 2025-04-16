@@ -336,6 +336,25 @@ func (ResourceSetStatus) Values() []ResourceSetStatus {
 	}
 }
 
+type ResourceTagLogicalOperator string
+
+// Enum values for ResourceTagLogicalOperator
+const (
+	ResourceTagLogicalOperatorAnd ResourceTagLogicalOperator = "AND"
+	ResourceTagLogicalOperatorOr  ResourceTagLogicalOperator = "OR"
+)
+
+// Values returns all known values for ResourceTagLogicalOperator. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ResourceTagLogicalOperator) Values() []ResourceTagLogicalOperator {
+	return []ResourceTagLogicalOperator{
+		"AND",
+		"OR",
+	}
+}
+
 type RuleOrder string
 
 // Enum values for RuleOrder
@@ -528,6 +547,7 @@ const (
 	ViolationReasonRouteHasOutOfScopeEndpoint              ViolationReason = "ROUTE_HAS_OUT_OF_SCOPE_ENDPOINT"
 	ViolationReasonFirewallSubnetMissingVPCEndpoint        ViolationReason = "FIREWALL_SUBNET_MISSING_VPCE_ENDPOINT"
 	ViolationReasonInvalidNetworkAclEntry                  ViolationReason = "INVALID_NETWORK_ACL_ENTRY"
+	ViolationReasonWebACLConfigurationOrScopeOfUse         ViolationReason = "WEB_ACL_CONFIGURATION_OR_SCOPE_OF_USE"
 )
 
 // Values returns all known values for ViolationReason. Note that this can be
@@ -565,5 +585,6 @@ func (ViolationReason) Values() []ViolationReason {
 		"ROUTE_HAS_OUT_OF_SCOPE_ENDPOINT",
 		"FIREWALL_SUBNET_MISSING_VPCE_ENDPOINT",
 		"INVALID_NETWORK_ACL_ENTRY",
+		"WEB_ACL_CONFIGURATION_OR_SCOPE_OF_USE",
 	}
 }

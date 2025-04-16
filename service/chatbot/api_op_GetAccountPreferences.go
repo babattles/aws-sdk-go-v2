@@ -11,7 +11,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Get Chatbot account level preferences
+// Returns AWS Chatbot account preferences.
 func (c *Client) GetAccountPreferences(ctx context.Context, params *GetAccountPreferencesInput, optFns ...func(*Options)) (*GetAccountPreferencesOutput, error) {
 	if params == nil {
 		params = &GetAccountPreferencesInput{}
@@ -33,7 +33,7 @@ type GetAccountPreferencesInput struct {
 
 type GetAccountPreferencesOutput struct {
 
-	// Preferences which apply for AWS Chatbot usage in the calling AWS account.
+	// The preferences related to AWS Chatbot usage in the calling AWS account.
 	AccountPreferences *types.AccountPreferences
 
 	// Metadata pertaining to the operation's result.
@@ -85,6 +85,9 @@ func (c *Client) addOperationGetAccountPreferencesMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -103,6 +106,9 @@ func (c *Client) addOperationGetAccountPreferencesMiddlewares(stack *middleware.
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opGetAccountPreferences(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -119,6 +125,18 @@ func (c *Client) addOperationGetAccountPreferencesMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

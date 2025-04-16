@@ -132,3 +132,40 @@ func (EncryptionMode) Values() []EncryptionMode {
 		"SSE_KMS",
 	}
 }
+
+type ProvisionedResourceCleanupSetting string
+
+// Enum values for ProvisionedResourceCleanupSetting
+const (
+	ProvisionedResourceCleanupSettingAutomatic ProvisionedResourceCleanupSetting = "AUTOMATIC"
+	ProvisionedResourceCleanupSettingOff       ProvisionedResourceCleanupSetting = "OFF"
+)
+
+// Values returns all known values for ProvisionedResourceCleanupSetting. Note
+// that this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ProvisionedResourceCleanupSetting) Values() []ProvisionedResourceCleanupSetting {
+	return []ProvisionedResourceCleanupSetting{
+		"AUTOMATIC",
+		"OFF",
+	}
+}
+
+type ResourceToTag string
+
+// Enum values for ResourceToTag
+const (
+	ResourceToTagLambdaFunction ResourceToTag = "lambda-function"
+)
+
+// Values returns all known values for ResourceToTag. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ResourceToTag) Values() []ResourceToTag {
+	return []ResourceToTag{
+		"lambda-function",
+	}
+}

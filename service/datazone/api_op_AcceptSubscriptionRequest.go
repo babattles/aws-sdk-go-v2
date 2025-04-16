@@ -41,6 +41,9 @@ type AcceptSubscriptionRequestInput struct {
 	// This member is required.
 	Identifier *string
 
+	// The asset scopes of the accept subscription request.
+	AssetScopes []types.AcceptedAssetScope
+
 	// A description that specifies the reason for accepting the specified
 	// subscription request.
 	DecisionComment *string
@@ -101,6 +104,12 @@ type AcceptSubscriptionRequestOutput struct {
 	// Specifies the reason for accepting the subscription request.
 	DecisionComment *string
 
+	// The ID of the existing subscription.
+	ExistingSubscriptionId *string
+
+	// The metadata form in the subscription request.
+	MetadataForms []types.FormOutput
+
 	// Specifes the ID of the Amazon DataZone user who reviewed the subscription
 	// request.
 	ReviewerId *string
@@ -157,6 +166,9 @@ func (c *Client) addOperationAcceptSubscriptionRequestMiddlewares(stack *middlew
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -173,6 +185,9 @@ func (c *Client) addOperationAcceptSubscriptionRequestMiddlewares(stack *middlew
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpAcceptSubscriptionRequestValidationMiddleware(stack); err != nil {
@@ -194,6 +209,18 @@ func (c *Client) addOperationAcceptSubscriptionRequestMiddlewares(stack *middlew
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

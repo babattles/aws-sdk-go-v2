@@ -140,7 +140,10 @@ type CreateIntegrationInput struct {
 	PassthroughBehavior types.PassthroughBehavior
 
 	// Specifies the format of the payload sent to an integration. Required for HTTP
-	// APIs.
+	// APIs. Supported values for Lambda proxy integrations are 1.0 and 2.0. For all
+	// other integrations, 1.0 is the only supported value. To learn more, see [Working with AWS Lambda proxy integrations for HTTP APIs].
+	//
+	// [Working with AWS Lambda proxy integrations for HTTP APIs]: https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html
 	PayloadFormatVersion *string
 
 	// For WebSocket APIs, a key-value map specifying request parameters that are
@@ -323,7 +326,10 @@ type CreateIntegrationOutput struct {
 	PassthroughBehavior types.PassthroughBehavior
 
 	// Specifies the format of the payload sent to an integration. Required for HTTP
-	// APIs.
+	// APIs. Supported values for Lambda proxy integrations are 1.0 and 2.0. For all
+	// other integrations, 1.0 is the only supported value. To learn more, see [Working with AWS Lambda proxy integrations for HTTP APIs].
+	//
+	// [Working with AWS Lambda proxy integrations for HTTP APIs]: https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html
 	PayloadFormatVersion *string
 
 	// For WebSocket APIs, a key-value map specifying request parameters that are
@@ -435,6 +441,9 @@ func (c *Client) addOperationCreateIntegrationMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -451,6 +460,9 @@ func (c *Client) addOperationCreateIntegrationMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateIntegrationValidationMiddleware(stack); err != nil {
@@ -472,6 +484,18 @@ func (c *Client) addOperationCreateIntegrationMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

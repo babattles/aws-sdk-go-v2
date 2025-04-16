@@ -30,16 +30,15 @@ func (c *Client) DisassociateRecoveryPointFromParent(ctx context.Context, params
 
 type DisassociateRecoveryPointFromParentInput struct {
 
-	// This is the name of a logical container where the child (nested) recovery point
-	// is stored. Backup vaults are identified by names that are unique to the account
+	// The name of a logical container where the child (nested) recovery point is
+	// stored. Backup vaults are identified by names that are unique to the account
 	// used to create them and the Amazon Web Services Region where they are created.
-	// They consist of lowercase letters, numbers, and hyphens.
 	//
 	// This member is required.
 	BackupVaultName *string
 
-	// This is the Amazon Resource Name (ARN) that uniquely identifies the child
-	// (nested) recovery point; for example,
+	// The Amazon Resource Name (ARN) that uniquely identifies the child (nested)
+	// recovery point; for example,
 	// arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45.
 	//
 	// This member is required.
@@ -98,6 +97,9 @@ func (c *Client) addOperationDisassociateRecoveryPointFromParentMiddlewares(stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -114,6 +116,9 @@ func (c *Client) addOperationDisassociateRecoveryPointFromParentMiddlewares(stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDisassociateRecoveryPointFromParentValidationMiddleware(stack); err != nil {
@@ -135,6 +140,18 @@ func (c *Client) addOperationDisassociateRecoveryPointFromParentMiddlewares(stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

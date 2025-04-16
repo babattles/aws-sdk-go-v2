@@ -9,6 +9,7 @@ import (
 	smithy "github.com/aws/smithy-go"
 	"github.com/aws/smithy-go/encoding/httpbinding"
 	"github.com/aws/smithy-go/middleware"
+	"github.com/aws/smithy-go/tracing"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
@@ -22,6 +23,10 @@ func (*awsRestjson1_serializeOpInvokeEndpoint) ID() string {
 func (m *awsRestjson1_serializeOpInvokeEndpoint) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -70,6 +75,8 @@ func (m *awsRestjson1_serializeOpInvokeEndpoint) HandleSerialize(ctx context.Con
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsInvokeEndpointInput(v *InvokeEndpointInput, encoder *httpbinding.Encoder) error {
@@ -77,22 +84,22 @@ func awsRestjson1_serializeOpHttpBindingsInvokeEndpointInput(v *InvokeEndpointIn
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.Accept != nil && len(*v.Accept) > 0 {
+	if v.Accept != nil {
 		locationName := "Accept"
 		encoder.SetHeader(locationName).String(*v.Accept)
 	}
 
-	if v.ContentType != nil && len(*v.ContentType) > 0 {
+	if v.ContentType != nil {
 		locationName := "Content-Type"
 		encoder.SetHeader(locationName).String(*v.ContentType)
 	}
 
-	if v.CustomAttributes != nil && len(*v.CustomAttributes) > 0 {
+	if v.CustomAttributes != nil {
 		locationName := "X-Amzn-Sagemaker-Custom-Attributes"
 		encoder.SetHeader(locationName).String(*v.CustomAttributes)
 	}
 
-	if v.EnableExplanations != nil && len(*v.EnableExplanations) > 0 {
+	if v.EnableExplanations != nil {
 		locationName := "X-Amzn-Sagemaker-Enable-Explanations"
 		encoder.SetHeader(locationName).String(*v.EnableExplanations)
 	}
@@ -106,27 +113,32 @@ func awsRestjson1_serializeOpHttpBindingsInvokeEndpointInput(v *InvokeEndpointIn
 		}
 	}
 
-	if v.InferenceComponentName != nil && len(*v.InferenceComponentName) > 0 {
+	if v.InferenceComponentName != nil {
 		locationName := "X-Amzn-Sagemaker-Inference-Component"
 		encoder.SetHeader(locationName).String(*v.InferenceComponentName)
 	}
 
-	if v.InferenceId != nil && len(*v.InferenceId) > 0 {
+	if v.InferenceId != nil {
 		locationName := "X-Amzn-Sagemaker-Inference-Id"
 		encoder.SetHeader(locationName).String(*v.InferenceId)
 	}
 
-	if v.TargetContainerHostname != nil && len(*v.TargetContainerHostname) > 0 {
+	if v.SessionId != nil {
+		locationName := "X-Amzn-Sagemaker-Session-Id"
+		encoder.SetHeader(locationName).String(*v.SessionId)
+	}
+
+	if v.TargetContainerHostname != nil {
 		locationName := "X-Amzn-Sagemaker-Target-Container-Hostname"
 		encoder.SetHeader(locationName).String(*v.TargetContainerHostname)
 	}
 
-	if v.TargetModel != nil && len(*v.TargetModel) > 0 {
+	if v.TargetModel != nil {
 		locationName := "X-Amzn-Sagemaker-Target-Model"
 		encoder.SetHeader(locationName).String(*v.TargetModel)
 	}
 
-	if v.TargetVariant != nil && len(*v.TargetVariant) > 0 {
+	if v.TargetVariant != nil {
 		locationName := "X-Amzn-Sagemaker-Target-Variant"
 		encoder.SetHeader(locationName).String(*v.TargetVariant)
 	}
@@ -144,6 +156,10 @@ func (*awsRestjson1_serializeOpInvokeEndpointAsync) ID() string {
 func (m *awsRestjson1_serializeOpInvokeEndpointAsync) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -180,6 +196,8 @@ func (m *awsRestjson1_serializeOpInvokeEndpointAsync) HandleSerialize(ctx contex
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsInvokeEndpointAsyncInput(v *InvokeEndpointAsyncInput, encoder *httpbinding.Encoder) error {
@@ -187,17 +205,17 @@ func awsRestjson1_serializeOpHttpBindingsInvokeEndpointAsyncInput(v *InvokeEndpo
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.Accept != nil && len(*v.Accept) > 0 {
+	if v.Accept != nil {
 		locationName := "X-Amzn-Sagemaker-Accept"
 		encoder.SetHeader(locationName).String(*v.Accept)
 	}
 
-	if v.ContentType != nil && len(*v.ContentType) > 0 {
+	if v.ContentType != nil {
 		locationName := "X-Amzn-Sagemaker-Content-Type"
 		encoder.SetHeader(locationName).String(*v.ContentType)
 	}
 
-	if v.CustomAttributes != nil && len(*v.CustomAttributes) > 0 {
+	if v.CustomAttributes != nil {
 		locationName := "X-Amzn-Sagemaker-Custom-Attributes"
 		encoder.SetHeader(locationName).String(*v.CustomAttributes)
 	}
@@ -211,12 +229,12 @@ func awsRestjson1_serializeOpHttpBindingsInvokeEndpointAsyncInput(v *InvokeEndpo
 		}
 	}
 
-	if v.InferenceId != nil && len(*v.InferenceId) > 0 {
+	if v.InferenceId != nil {
 		locationName := "X-Amzn-Sagemaker-Inference-Id"
 		encoder.SetHeader(locationName).String(*v.InferenceId)
 	}
 
-	if v.InputLocation != nil && len(*v.InputLocation) > 0 {
+	if v.InputLocation != nil {
 		locationName := "X-Amzn-Sagemaker-Inputlocation"
 		encoder.SetHeader(locationName).String(*v.InputLocation)
 	}
@@ -244,6 +262,10 @@ func (*awsRestjson1_serializeOpInvokeEndpointWithResponseStream) ID() string {
 func (m *awsRestjson1_serializeOpInvokeEndpointWithResponseStream) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -292,6 +314,8 @@ func (m *awsRestjson1_serializeOpInvokeEndpointWithResponseStream) HandleSeriali
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsInvokeEndpointWithResponseStreamInput(v *InvokeEndpointWithResponseStreamInput, encoder *httpbinding.Encoder) error {
@@ -299,17 +323,17 @@ func awsRestjson1_serializeOpHttpBindingsInvokeEndpointWithResponseStreamInput(v
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.Accept != nil && len(*v.Accept) > 0 {
+	if v.Accept != nil {
 		locationName := "X-Amzn-Sagemaker-Accept"
 		encoder.SetHeader(locationName).String(*v.Accept)
 	}
 
-	if v.ContentType != nil && len(*v.ContentType) > 0 {
+	if v.ContentType != nil {
 		locationName := "Content-Type"
 		encoder.SetHeader(locationName).String(*v.ContentType)
 	}
 
-	if v.CustomAttributes != nil && len(*v.CustomAttributes) > 0 {
+	if v.CustomAttributes != nil {
 		locationName := "X-Amzn-Sagemaker-Custom-Attributes"
 		encoder.SetHeader(locationName).String(*v.CustomAttributes)
 	}
@@ -323,22 +347,27 @@ func awsRestjson1_serializeOpHttpBindingsInvokeEndpointWithResponseStreamInput(v
 		}
 	}
 
-	if v.InferenceComponentName != nil && len(*v.InferenceComponentName) > 0 {
+	if v.InferenceComponentName != nil {
 		locationName := "X-Amzn-Sagemaker-Inference-Component"
 		encoder.SetHeader(locationName).String(*v.InferenceComponentName)
 	}
 
-	if v.InferenceId != nil && len(*v.InferenceId) > 0 {
+	if v.InferenceId != nil {
 		locationName := "X-Amzn-Sagemaker-Inference-Id"
 		encoder.SetHeader(locationName).String(*v.InferenceId)
 	}
 
-	if v.TargetContainerHostname != nil && len(*v.TargetContainerHostname) > 0 {
+	if v.SessionId != nil {
+		locationName := "X-Amzn-Sagemaker-Session-Id"
+		encoder.SetHeader(locationName).String(*v.SessionId)
+	}
+
+	if v.TargetContainerHostname != nil {
 		locationName := "X-Amzn-Sagemaker-Target-Container-Hostname"
 		encoder.SetHeader(locationName).String(*v.TargetContainerHostname)
 	}
 
-	if v.TargetVariant != nil && len(*v.TargetVariant) > 0 {
+	if v.TargetVariant != nil {
 		locationName := "X-Amzn-Sagemaker-Target-Variant"
 		encoder.SetHeader(locationName).String(*v.TargetVariant)
 	}

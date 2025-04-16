@@ -14,12 +14,8 @@ import (
 // Get information about a resource that's been registered for zonal shifts with
 // Amazon Route 53 Application Recovery Controller in this Amazon Web Services
 // Region. Resources that are registered for zonal shifts are managed resources in
-// Route 53 ARC. You can start zonal shifts and configure zonal autoshift for
-// managed resources.
-//
-// At this time, you can only start a zonal shift or configure zonal autoshift for
-// Network Load Balancers and Application Load Balancers with cross-zone load
-// balancing turned off.
+// ARC. You can start zonal shifts and configure zonal autoshift for managed
+// resources.
 func (c *Client) GetManagedResource(ctx context.Context, params *GetManagedResourceInput, optFns ...func(*Options)) (*GetManagedResourceOutput, error) {
 	if params == nil {
 		params = &GetManagedResourceInput{}
@@ -132,6 +128,9 @@ func (c *Client) addOperationGetManagedResourceMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -148,6 +147,9 @@ func (c *Client) addOperationGetManagedResourceMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetManagedResourceValidationMiddleware(stack); err != nil {
@@ -169,6 +171,18 @@ func (c *Client) addOperationGetManagedResourceMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

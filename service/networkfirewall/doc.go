@@ -7,21 +7,25 @@
 // who need detailed information about the Network Firewall API actions, data
 // types, and errors.
 //
-//   - The REST API requires you to handle connection details, such as calculating
-//     signatures, handling request retries, and error handling. For general
-//     information about using the Amazon Web Services REST APIs, see [Amazon Web Services APIs].
+// The REST API requires you to handle connection details, such as calculating
+// signatures, handling request retries, and error handling. For general
+// information about using the Amazon Web Services REST APIs, see [Amazon Web Services APIs].
 //
-// To access Network Firewall using the REST API endpoint:
+// To view the complete list of Amazon Web Services Regions where Network Firewall
+// is available, see [Service endpoints and quotas]in the Amazon Web Services General Reference.
 //
-//	https://network-firewall..amazonaws.com
+// To access Network Firewall using the IPv4 REST API endpoint:
+// https://network-firewall..amazonaws.com
 //
-//	- Alternatively, you can use one of the Amazon Web Services SDKs to access an
-//	API that's tailored to the programming language or platform that you're using.
-//	For more information, see [Amazon Web Services SDKs].
+// To access Network Firewall using the Dualstack (IPv4 and IPv6) REST API
+// endpoint: https://network-firewall..aws.api
 //
-//	- For descriptions of Network Firewall features, including and step-by-step
-//	instructions on how to use them through the Network Firewall console, see the [Network Firewall Developer Guide]
-//	.
+// Alternatively, you can use one of the Amazon Web Services SDKs to access an API
+// that's tailored to the programming language or platform that you're using. For
+// more information, see [Amazon Web Services SDKs].
+//
+// For descriptions of Network Firewall features, including and step-by-step
+// instructions on how to use them through the Network Firewall console, see the [Network Firewall Developer Guide].
 //
 // Network Firewall is a stateful, managed, network firewall and intrusion
 // detection and prevention service for Amazon Virtual Private Cloud (Amazon VPC).
@@ -29,8 +33,8 @@
 // includes filtering traffic going to and coming from an internet gateway, NAT
 // gateway, or over VPN or Direct Connect. Network Firewall uses rules that are
 // compatible with Suricata, a free, open source network analysis and threat
-// detection engine. Network Firewall supports Suricata version 6.0.9. For
-// information about Suricata, see the [Suricata website].
+// detection engine. Network Firewall supports Suricata version 7.0.3. For
+// information about Suricata, see the [Suricata website]and the [Suricata User Guide].
 //
 // You can use Network Firewall to monitor and protect your VPC traffic in a
 // number of ways. The following are just a few examples:
@@ -71,10 +75,11 @@
 //   - In Amazon VPC, use ingress routing enhancements to route traffic through
 //     the new firewall endpoints.
 //
+// [Suricata User Guide]: https://suricata.readthedocs.io/en/suricata-7.0.3/
+// [Network Firewall Developer Guide]: https://docs.aws.amazon.com/network-firewall/latest/developerguide/
+// [Amazon Web Services SDKs]: http://aws.amazon.com/tools/#SDKs
+// [Service endpoints and quotas]: https://docs.aws.amazon.com/general/latest/gr/network-firewall.html
 // [Suricata website]: https://suricata.io/
 // [Amazon Web Services APIs]: https://docs.aws.amazon.com/general/latest/gr/aws-apis.html
 // [Amazon VPC User Guide]: https://docs.aws.amazon.com/vpc/latest/userguide/
-//
-// [Network Firewall Developer Guide]: https://docs.aws.amazon.com/network-firewall/latest/developerguide/
-// [Amazon Web Services SDKs]: http://aws.amazon.com/tools/#SDKs
 package networkfirewall

@@ -68,6 +68,10 @@ type CreateTaskTemplateInput struct {
 	// The description of the task template.
 	Description *string
 
+	// The ContactFlowId for the flow that will be run if this template is used to
+	// create a self-assigned task.
+	SelfAssignFlowId *string
+
 	// Marks a template as ACTIVE or INACTIVE for a task to refer to it. Tasks can
 	// only be created from ACTIVE templates. If a template is marked as INACTIVE ,
 	// then a task that refers to this template cannot be created.
@@ -137,6 +141,9 @@ func (c *Client) addOperationCreateTaskTemplateMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -153,6 +160,9 @@ func (c *Client) addOperationCreateTaskTemplateMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateTaskTemplateMiddleware(stack, options); err != nil {
@@ -177,6 +187,18 @@ func (c *Client) addOperationCreateTaskTemplateMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

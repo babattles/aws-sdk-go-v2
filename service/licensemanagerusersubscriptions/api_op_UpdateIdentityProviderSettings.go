@@ -30,16 +30,6 @@ func (c *Client) UpdateIdentityProviderSettings(ctx context.Context, params *Upd
 
 type UpdateIdentityProviderSettingsInput struct {
 
-	// Details about an identity provider.
-	//
-	// This member is required.
-	IdentityProvider types.IdentityProvider
-
-	// The name of the user-based subscription product.
-	//
-	// This member is required.
-	Product *string
-
 	// Updates the registered identity provider’s product related configuration
 	// settings. You can update any combination of settings in a single operation such
 	// as the:
@@ -52,6 +42,18 @@ type UpdateIdentityProviderSettingsInput struct {
 	//
 	// This member is required.
 	UpdateSettings *types.UpdateSettings
+
+	// Refers to an identity provider.
+	IdentityProvider types.IdentityProvider
+
+	// The Amazon Resource Name (ARN) of the identity provider to update.
+	IdentityProviderArn *string
+
+	// The name of the user-based subscription product.
+	//
+	// Valid values: VISUAL_STUDIO_ENTERPRISE | VISUAL_STUDIO_PROFESSIONAL |
+	// OFFICE_PROFESSIONAL_PLUS | REMOTE_DESKTOP_SERVICES
+	Product *string
 
 	noSmithyDocumentSerde
 }
@@ -112,6 +114,9 @@ func (c *Client) addOperationUpdateIdentityProviderSettingsMiddlewares(stack *mi
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -128,6 +133,9 @@ func (c *Client) addOperationUpdateIdentityProviderSettingsMiddlewares(stack *mi
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateIdentityProviderSettingsValidationMiddleware(stack); err != nil {
@@ -149,6 +157,18 @@ func (c *Client) addOperationUpdateIdentityProviderSettingsMiddlewares(stack *mi
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

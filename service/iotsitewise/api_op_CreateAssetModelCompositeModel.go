@@ -101,6 +101,23 @@ type CreateAssetModelCompositeModelInput struct {
 	// The ID of a component model which is reused to create this composite model.
 	ComposedAssetModelId *string
 
+	// The expected current entity tag (ETag) for the asset model’s latest or active
+	// version (specified using matchForVersionType ). The create request is rejected
+	// if the tag does not match the latest or active version's current entity tag. See
+	// [Optimistic locking for asset model writes]in the IoT SiteWise User Guide.
+	//
+	// [Optimistic locking for asset model writes]: https://docs.aws.amazon.com/iot-sitewise/latest/userguide/opt-locking-for-model.html
+	IfMatch *string
+
+	// Accepts * to reject the create request if an active version (specified using
+	// matchForVersionType as ACTIVE ) already exists for the asset model.
+	IfNoneMatch *string
+
+	// Specifies the asset model version type ( LATEST or ACTIVE ) used in conjunction
+	// with If-Match or If-None-Match headers to determine the target ETag for the
+	// create operation.
+	MatchForVersionType types.AssetModelVersionType
+
 	// The ID of the parent composite model in this asset model relationship.
 	ParentAssetModelCompositeModelId *string
 
@@ -177,6 +194,9 @@ func (c *Client) addOperationCreateAssetModelCompositeModelMiddlewares(stack *mi
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -193,6 +213,9 @@ func (c *Client) addOperationCreateAssetModelCompositeModelMiddlewares(stack *mi
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addEndpointPrefix_opCreateAssetModelCompositeModelMiddleware(stack); err != nil {
@@ -220,6 +243,18 @@ func (c *Client) addOperationCreateAssetModelCompositeModelMiddlewares(stack *mi
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

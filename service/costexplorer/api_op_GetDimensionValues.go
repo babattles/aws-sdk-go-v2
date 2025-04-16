@@ -47,6 +47,13 @@ type GetDimensionValuesInput struct {
 	// This member is required.
 	TimePeriod *types.DateInterval
 
+	// The Amazon Resource Name (ARN) that uniquely identifies a specific billing
+	// view. The ARN is used to specify which particular billing view you want to
+	// interact with or retrieve information from when making API calls related to
+	// Amazon Web Services Billing and Cost Management features. The BillingViewArn can
+	// be retrieved by calling the ListBillingViews API.
+	BillingViewArn *string
+
 	// The context for the call to GetDimensionValues . This can be RESERVATIONS or
 	// COST_AND_USAGE . The default value is COST_AND_USAGE . If the context is set to
 	// RESERVATIONS , the resulting dimension values can be used in the
@@ -62,10 +69,10 @@ type GetDimensionValuesInput struct {
 	//   Possible values are the following:
 	//
 	// - Amazon Web Services(Amazon Web Services): The entity that sells Amazon Web
-	//   Services.
+	//   Services services.
 	//
 	// - AISPL (Amazon Internet Services Pvt. Ltd.): The local Indian entity that's an
-	//   acting reseller for Amazon Web Services in India.
+	//   acting reseller for Amazon Web Services services in India.
 	//
 	// - Amazon Web Services Marketplace: The entity that supports the sale of
 	//   solutions that are built on Amazon Web Services by third-party software
@@ -466,6 +473,9 @@ func (c *Client) addOperationGetDimensionValuesMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -482,6 +492,9 @@ func (c *Client) addOperationGetDimensionValuesMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetDimensionValuesValidationMiddleware(stack); err != nil {
@@ -503,6 +516,18 @@ func (c *Client) addOperationGetDimensionValuesMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

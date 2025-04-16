@@ -46,6 +46,88 @@ func (AccountLinkStatusEnum) Values() []AccountLinkStatusEnum {
 	}
 }
 
+type AGAModeForDirectoryEnum string
+
+// Enum values for AGAModeForDirectoryEnum
+const (
+	AGAModeForDirectoryEnumEnabledAuto AGAModeForDirectoryEnum = "ENABLED_AUTO"
+	AGAModeForDirectoryEnumDisabled    AGAModeForDirectoryEnum = "DISABLED"
+)
+
+// Values returns all known values for AGAModeForDirectoryEnum. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AGAModeForDirectoryEnum) Values() []AGAModeForDirectoryEnum {
+	return []AGAModeForDirectoryEnum{
+		"ENABLED_AUTO",
+		"DISABLED",
+	}
+}
+
+type AGAModeForWorkSpaceEnum string
+
+// Enum values for AGAModeForWorkSpaceEnum
+const (
+	AGAModeForWorkSpaceEnumEnabledAuto AGAModeForWorkSpaceEnum = "ENABLED_AUTO"
+	AGAModeForWorkSpaceEnumDisabled    AGAModeForWorkSpaceEnum = "DISABLED"
+	AGAModeForWorkSpaceEnumInherited   AGAModeForWorkSpaceEnum = "INHERITED"
+)
+
+// Values returns all known values for AGAModeForWorkSpaceEnum. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AGAModeForWorkSpaceEnum) Values() []AGAModeForWorkSpaceEnum {
+	return []AGAModeForWorkSpaceEnum{
+		"ENABLED_AUTO",
+		"DISABLED",
+		"INHERITED",
+	}
+}
+
+type AGAPreferredProtocolForDirectory string
+
+// Enum values for AGAPreferredProtocolForDirectory
+const (
+	AGAPreferredProtocolForDirectoryTcp  AGAPreferredProtocolForDirectory = "TCP"
+	AGAPreferredProtocolForDirectoryNone AGAPreferredProtocolForDirectory = "NONE"
+)
+
+// Values returns all known values for AGAPreferredProtocolForDirectory. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AGAPreferredProtocolForDirectory) Values() []AGAPreferredProtocolForDirectory {
+	return []AGAPreferredProtocolForDirectory{
+		"TCP",
+		"NONE",
+	}
+}
+
+type AGAPreferredProtocolForWorkSpace string
+
+// Enum values for AGAPreferredProtocolForWorkSpace
+const (
+	AGAPreferredProtocolForWorkSpaceTcp       AGAPreferredProtocolForWorkSpace = "TCP"
+	AGAPreferredProtocolForWorkSpaceNone      AGAPreferredProtocolForWorkSpace = "NONE"
+	AGAPreferredProtocolForWorkSpaceInherited AGAPreferredProtocolForWorkSpace = "INHERITED"
+)
+
+// Values returns all known values for AGAPreferredProtocolForWorkSpace. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AGAPreferredProtocolForWorkSpace) Values() []AGAPreferredProtocolForWorkSpace {
+	return []AGAPreferredProtocolForWorkSpace{
+		"TCP",
+		"NONE",
+		"INHERITED",
+	}
+}
+
 type Application string
 
 // Enum values for Application
@@ -295,15 +377,17 @@ type Compute string
 
 // Enum values for Compute
 const (
-	ComputeValue           Compute = "VALUE"
-	ComputeStandard        Compute = "STANDARD"
-	ComputePerformance     Compute = "PERFORMANCE"
-	ComputePower           Compute = "POWER"
-	ComputeGraphics        Compute = "GRAPHICS"
-	ComputePowerpro        Compute = "POWERPRO"
-	ComputeGraphicspro     Compute = "GRAPHICSPRO"
-	ComputeGraphicsG4dn    Compute = "GRAPHICS_G4DN"
-	ComputeGraphicsproG4dn Compute = "GRAPHICSPRO_G4DN"
+	ComputeValue                 Compute = "VALUE"
+	ComputeStandard              Compute = "STANDARD"
+	ComputePerformance           Compute = "PERFORMANCE"
+	ComputePower                 Compute = "POWER"
+	ComputeGraphics              Compute = "GRAPHICS"
+	ComputePowerpro              Compute = "POWERPRO"
+	ComputeGeneralpurpose4xlarge Compute = "GENERALPURPOSE_4XLARGE"
+	ComputeGeneralpurpose8xlarge Compute = "GENERALPURPOSE_8XLARGE"
+	ComputeGraphicspro           Compute = "GRAPHICSPRO"
+	ComputeGraphicsG4dn          Compute = "GRAPHICS_G4DN"
+	ComputeGraphicsproG4dn       Compute = "GRAPHICSPRO_G4DN"
 )
 
 // Values returns all known values for Compute. Note that this can be expanded in
@@ -318,6 +402,8 @@ func (Compute) Values() []Compute {
 		"POWER",
 		"GRAPHICS",
 		"POWERPRO",
+		"GENERALPURPOSE_4XLARGE",
+		"GENERALPURPOSE_8XLARGE",
 		"GRAPHICSPRO",
 		"GRAPHICS_G4DN",
 		"GRAPHICSPRO_G4DN",
@@ -500,6 +586,26 @@ func (DeletableSamlProperty) Values() []DeletableSamlProperty {
 	}
 }
 
+type DescribeWorkspaceDirectoriesFilterName string
+
+// Enum values for DescribeWorkspaceDirectoriesFilterName
+const (
+	DescribeWorkspaceDirectoriesFilterNameUserIdentityType DescribeWorkspaceDirectoriesFilterName = "USER_IDENTITY_TYPE"
+	DescribeWorkspaceDirectoriesFilterNameWorkspaceType    DescribeWorkspaceDirectoriesFilterName = "WORKSPACE_TYPE"
+)
+
+// Values returns all known values for DescribeWorkspaceDirectoriesFilterName.
+// Note that this can be expanded in the future, and so it is only as up to date as
+// the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DescribeWorkspaceDirectoriesFilterName) Values() []DescribeWorkspaceDirectoriesFilterName {
+	return []DescribeWorkspaceDirectoriesFilterName{
+		"USER_IDENTITY_TYPE",
+		"WORKSPACE_TYPE",
+	}
+}
+
 type DescribeWorkspacesPoolsFilterName string
 
 // Enum values for DescribeWorkspacesPoolsFilterName
@@ -539,6 +645,25 @@ func (DescribeWorkspacesPoolsFilterOperator) Values() []DescribeWorkspacesPoolsF
 		"NOTEQUALS",
 		"CONTAINS",
 		"NOTCONTAINS",
+	}
+}
+
+type EndpointEncryptionMode string
+
+// Enum values for EndpointEncryptionMode
+const (
+	EndpointEncryptionModeStandardTls   EndpointEncryptionMode = "STANDARD_TLS"
+	EndpointEncryptionModeFipsValidated EndpointEncryptionMode = "FIPS_VALIDATED"
+)
+
+// Values returns all known values for EndpointEncryptionMode. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (EndpointEncryptionMode) Values() []EndpointEncryptionMode {
+	return []EndpointEncryptionMode{
+		"STANDARD_TLS",
+		"FIPS_VALIDATED",
 	}
 }
 
@@ -653,6 +778,7 @@ const (
 	OperatingSystemNameWindowsServer2019 OperatingSystemName = "WINDOWS_SERVER_2019"
 	OperatingSystemNameWindowsServer2022 OperatingSystemName = "WINDOWS_SERVER_2022"
 	OperatingSystemNameRhel8             OperatingSystemName = "RHEL_8"
+	OperatingSystemNameRocky8            OperatingSystemName = "ROCKY_8"
 )
 
 // Values returns all known values for OperatingSystemName. Note that this can be
@@ -673,6 +799,7 @@ func (OperatingSystemName) Values() []OperatingSystemName {
 		"WINDOWS_SERVER_2019",
 		"WINDOWS_SERVER_2022",
 		"RHEL_8",
+		"ROCKY_8",
 	}
 }
 
@@ -912,8 +1039,9 @@ type UserIdentityType string
 
 // Enum values for UserIdentityType
 const (
-	UserIdentityTypeCustomerManaged     UserIdentityType = "CUSTOMER_MANAGED"
-	UserIdentityTypeAwsDirectoryService UserIdentityType = "AWS_DIRECTORY_SERVICE"
+	UserIdentityTypeCustomerManaged      UserIdentityType = "CUSTOMER_MANAGED"
+	UserIdentityTypeAwsDirectoryService  UserIdentityType = "AWS_DIRECTORY_SERVICE"
+	UserIdentityTypeAwsIamIdentityCenter UserIdentityType = "AWS_IAM_IDENTITY_CENTER"
 )
 
 // Values returns all known values for UserIdentityType. Note that this can be
@@ -924,6 +1052,7 @@ func (UserIdentityType) Values() []UserIdentityType {
 	return []UserIdentityType{
 		"CUSTOMER_MANAGED",
 		"AWS_DIRECTORY_SERVICE",
+		"AWS_IAM_IDENTITY_CENTER",
 	}
 }
 
@@ -1080,9 +1209,10 @@ type WorkspaceDirectoryType string
 
 // Enum values for WorkspaceDirectoryType
 const (
-	WorkspaceDirectoryTypeSimpleAd        WorkspaceDirectoryType = "SIMPLE_AD"
-	WorkspaceDirectoryTypeAdConnector     WorkspaceDirectoryType = "AD_CONNECTOR"
-	WorkspaceDirectoryTypeCustomerManaged WorkspaceDirectoryType = "CUSTOMER_MANAGED"
+	WorkspaceDirectoryTypeSimpleAd             WorkspaceDirectoryType = "SIMPLE_AD"
+	WorkspaceDirectoryTypeAdConnector          WorkspaceDirectoryType = "AD_CONNECTOR"
+	WorkspaceDirectoryTypeCustomerManaged      WorkspaceDirectoryType = "CUSTOMER_MANAGED"
+	WorkspaceDirectoryTypeAwsIamIdentityCenter WorkspaceDirectoryType = "AWS_IAM_IDENTITY_CENTER"
 )
 
 // Values returns all known values for WorkspaceDirectoryType. Note that this can
@@ -1094,6 +1224,7 @@ func (WorkspaceDirectoryType) Values() []WorkspaceDirectoryType {
 		"SIMPLE_AD",
 		"AD_CONNECTOR",
 		"CUSTOMER_MANAGED",
+		"AWS_IAM_IDENTITY_CENTER",
 	}
 }
 
@@ -1101,32 +1232,51 @@ type WorkspaceImageErrorDetailCode string
 
 // Enum values for WorkspaceImageErrorDetailCode
 const (
-	WorkspaceImageErrorDetailCodeOutdatedPowershellVersion     WorkspaceImageErrorDetailCode = "OutdatedPowershellVersion"
-	WorkspaceImageErrorDetailCodeOfficeInstalled               WorkspaceImageErrorDetailCode = "OfficeInstalled"
-	WorkspaceImageErrorDetailCodePcoipAgentInstalled           WorkspaceImageErrorDetailCode = "PCoIPAgentInstalled"
-	WorkspaceImageErrorDetailCodeWindowsUpdatesEnabled         WorkspaceImageErrorDetailCode = "WindowsUpdatesEnabled"
-	WorkspaceImageErrorDetailCodeAutoMountDisabled             WorkspaceImageErrorDetailCode = "AutoMountDisabled"
-	WorkspaceImageErrorDetailCodeWorkspacesByolAccountNotFound WorkspaceImageErrorDetailCode = "WorkspacesBYOLAccountNotFound"
-	WorkspaceImageErrorDetailCodeWorkspacesByolAccountDisabled WorkspaceImageErrorDetailCode = "WorkspacesBYOLAccountDisabled"
-	WorkspaceImageErrorDetailCodeDhcpDisabled                  WorkspaceImageErrorDetailCode = "DHCPDisabled"
-	WorkspaceImageErrorDetailCodeDiskFreeSpace                 WorkspaceImageErrorDetailCode = "DiskFreeSpace"
-	WorkspaceImageErrorDetailCodeAdditionalDrivesAttached      WorkspaceImageErrorDetailCode = "AdditionalDrivesAttached"
-	WorkspaceImageErrorDetailCodeOsNotSupported                WorkspaceImageErrorDetailCode = "OSNotSupported"
-	WorkspaceImageErrorDetailCodeDomainJoined                  WorkspaceImageErrorDetailCode = "DomainJoined"
-	WorkspaceImageErrorDetailCodeAzureDomainJoined             WorkspaceImageErrorDetailCode = "AzureDomainJoined"
-	WorkspaceImageErrorDetailCodeFirewallEnabled               WorkspaceImageErrorDetailCode = "FirewallEnabled"
-	WorkspaceImageErrorDetailCodeVmwareToolsInstalled          WorkspaceImageErrorDetailCode = "VMWareToolsInstalled"
-	WorkspaceImageErrorDetailCodeDiskSizeExceeded              WorkspaceImageErrorDetailCode = "DiskSizeExceeded"
-	WorkspaceImageErrorDetailCodeIncompatiblePartitioning      WorkspaceImageErrorDetailCode = "IncompatiblePartitioning"
-	WorkspaceImageErrorDetailCodePendingReboot                 WorkspaceImageErrorDetailCode = "PendingReboot"
-	WorkspaceImageErrorDetailCodeAutoLogonEnabled              WorkspaceImageErrorDetailCode = "AutoLogonEnabled"
-	WorkspaceImageErrorDetailCodeRealtimeUniversalDisabled     WorkspaceImageErrorDetailCode = "RealTimeUniversalDisabled"
-	WorkspaceImageErrorDetailCodeMultipleBootPartition         WorkspaceImageErrorDetailCode = "MultipleBootPartition"
-	WorkspaceImageErrorDetailCodeSixtyFourBitOs                WorkspaceImageErrorDetailCode = "Requires64BitOS"
-	WorkspaceImageErrorDetailCodeZeroRearmCount                WorkspaceImageErrorDetailCode = "ZeroRearmCount"
-	WorkspaceImageErrorDetailCodeInPlaceUpgrade                WorkspaceImageErrorDetailCode = "InPlaceUpgrade"
-	WorkspaceImageErrorDetailCodeAntiVirusInstalled            WorkspaceImageErrorDetailCode = "AntiVirusInstalled"
-	WorkspaceImageErrorDetailCodeUefiNotSupported              WorkspaceImageErrorDetailCode = "UEFINotSupported"
+	WorkspaceImageErrorDetailCodeOutdatedPowershellVersion              WorkspaceImageErrorDetailCode = "OutdatedPowershellVersion"
+	WorkspaceImageErrorDetailCodeOfficeInstalled                        WorkspaceImageErrorDetailCode = "OfficeInstalled"
+	WorkspaceImageErrorDetailCodePcoipAgentInstalled                    WorkspaceImageErrorDetailCode = "PCoIPAgentInstalled"
+	WorkspaceImageErrorDetailCodeWindowsUpdatesEnabled                  WorkspaceImageErrorDetailCode = "WindowsUpdatesEnabled"
+	WorkspaceImageErrorDetailCodeAutoMountDisabled                      WorkspaceImageErrorDetailCode = "AutoMountDisabled"
+	WorkspaceImageErrorDetailCodeWorkspacesByolAccountNotFound          WorkspaceImageErrorDetailCode = "WorkspacesBYOLAccountNotFound"
+	WorkspaceImageErrorDetailCodeWorkspacesByolAccountDisabled          WorkspaceImageErrorDetailCode = "WorkspacesBYOLAccountDisabled"
+	WorkspaceImageErrorDetailCodeDhcpDisabled                           WorkspaceImageErrorDetailCode = "DHCPDisabled"
+	WorkspaceImageErrorDetailCodeDiskFreeSpace                          WorkspaceImageErrorDetailCode = "DiskFreeSpace"
+	WorkspaceImageErrorDetailCodeAdditionalDrivesAttached               WorkspaceImageErrorDetailCode = "AdditionalDrivesAttached"
+	WorkspaceImageErrorDetailCodeOsNotSupported                         WorkspaceImageErrorDetailCode = "OSNotSupported"
+	WorkspaceImageErrorDetailCodeDomainJoined                           WorkspaceImageErrorDetailCode = "DomainJoined"
+	WorkspaceImageErrorDetailCodeAzureDomainJoined                      WorkspaceImageErrorDetailCode = "AzureDomainJoined"
+	WorkspaceImageErrorDetailCodeFirewallEnabled                        WorkspaceImageErrorDetailCode = "FirewallEnabled"
+	WorkspaceImageErrorDetailCodeVmwareToolsInstalled                   WorkspaceImageErrorDetailCode = "VMWareToolsInstalled"
+	WorkspaceImageErrorDetailCodeDiskSizeExceeded                       WorkspaceImageErrorDetailCode = "DiskSizeExceeded"
+	WorkspaceImageErrorDetailCodeIncompatiblePartitioning               WorkspaceImageErrorDetailCode = "IncompatiblePartitioning"
+	WorkspaceImageErrorDetailCodePendingReboot                          WorkspaceImageErrorDetailCode = "PendingReboot"
+	WorkspaceImageErrorDetailCodeAutoLogonEnabled                       WorkspaceImageErrorDetailCode = "AutoLogonEnabled"
+	WorkspaceImageErrorDetailCodeRealtimeUniversalDisabled              WorkspaceImageErrorDetailCode = "RealTimeUniversalDisabled"
+	WorkspaceImageErrorDetailCodeMultipleBootPartition                  WorkspaceImageErrorDetailCode = "MultipleBootPartition"
+	WorkspaceImageErrorDetailCodeSixtyFourBitOs                         WorkspaceImageErrorDetailCode = "Requires64BitOS"
+	WorkspaceImageErrorDetailCodeZeroRearmCount                         WorkspaceImageErrorDetailCode = "ZeroRearmCount"
+	WorkspaceImageErrorDetailCodeInPlaceUpgrade                         WorkspaceImageErrorDetailCode = "InPlaceUpgrade"
+	WorkspaceImageErrorDetailCodeAntiVirusInstalled                     WorkspaceImageErrorDetailCode = "AntiVirusInstalled"
+	WorkspaceImageErrorDetailCodeUefiNotSupported                       WorkspaceImageErrorDetailCode = "UEFINotSupported"
+	WorkspaceImageErrorDetailCodeUnknownError                           WorkspaceImageErrorDetailCode = "UnknownError"
+	WorkspaceImageErrorDetailCodeAppxPackagesInstalled                  WorkspaceImageErrorDetailCode = "AppXPackagesInstalled"
+	WorkspaceImageErrorDetailCodeReservedStorageInUse                   WorkspaceImageErrorDetailCode = "ReservedStorageInUse"
+	WorkspaceImageErrorDetailCodeAdditionalDrivesPresent                WorkspaceImageErrorDetailCode = "AdditionalDrivesPresent"
+	WorkspaceImageErrorDetailCodeWindowsUpdatesRequired                 WorkspaceImageErrorDetailCode = "WindowsUpdatesRequired"
+	WorkspaceImageErrorDetailCodeSysprepFileMissing                     WorkspaceImageErrorDetailCode = "SysPrepFileMissing"
+	WorkspaceImageErrorDetailCodeUserProfileMissing                     WorkspaceImageErrorDetailCode = "UserProfileMissing"
+	WorkspaceImageErrorDetailCodeInsufficientDiskSpace                  WorkspaceImageErrorDetailCode = "InsufficientDiskSpace"
+	WorkspaceImageErrorDetailCodeEnvironmentVariablesPathMissingEntries WorkspaceImageErrorDetailCode = "EnvironmentVariablesPathMissingEntries"
+	WorkspaceImageErrorDetailCodeDomainAccountServicesFound             WorkspaceImageErrorDetailCode = "DomainAccountServicesFound"
+	WorkspaceImageErrorDetailCodeInvalidIp                              WorkspaceImageErrorDetailCode = "InvalidIp"
+	WorkspaceImageErrorDetailCodeRemoteDesktopServicesDisabled          WorkspaceImageErrorDetailCode = "RemoteDesktopServicesDisabled"
+	WorkspaceImageErrorDetailCodeWindowsModulesInstallerDisabled        WorkspaceImageErrorDetailCode = "WindowsModulesInstallerDisabled"
+	WorkspaceImageErrorDetailCodeAmazonSsmAgentEnabled                  WorkspaceImageErrorDetailCode = "AmazonSsmAgentEnabled"
+	WorkspaceImageErrorDetailCodeUnsupportedSecurityProtocol            WorkspaceImageErrorDetailCode = "UnsupportedSecurityProtocol"
+	WorkspaceImageErrorDetailCodeMultipleUserProfiles                   WorkspaceImageErrorDetailCode = "MultipleUserProfiles"
+	WorkspaceImageErrorDetailCodeStagedAppxPackage                      WorkspaceImageErrorDetailCode = "StagedAppxPackage"
+	WorkspaceImageErrorDetailCodeUnsupportedOsUpgrade                   WorkspaceImageErrorDetailCode = "UnsupportedOsUpgrade"
+	WorkspaceImageErrorDetailCodeInsufficientRearmCount                 WorkspaceImageErrorDetailCode = "InsufficientRearmCount"
 )
 
 // Values returns all known values for WorkspaceImageErrorDetailCode. Note that
@@ -1162,6 +1312,25 @@ func (WorkspaceImageErrorDetailCode) Values() []WorkspaceImageErrorDetailCode {
 		"InPlaceUpgrade",
 		"AntiVirusInstalled",
 		"UEFINotSupported",
+		"UnknownError",
+		"AppXPackagesInstalled",
+		"ReservedStorageInUse",
+		"AdditionalDrivesPresent",
+		"WindowsUpdatesRequired",
+		"SysPrepFileMissing",
+		"UserProfileMissing",
+		"InsufficientDiskSpace",
+		"EnvironmentVariablesPathMissingEntries",
+		"DomainAccountServicesFound",
+		"InvalidIp",
+		"RemoteDesktopServicesDisabled",
+		"WindowsModulesInstallerDisabled",
+		"AmazonSsmAgentEnabled",
+		"UnsupportedSecurityProtocol",
+		"MultipleUserProfiles",
+		"StagedAppxPackage",
+		"UnsupportedOsUpgrade",
+		"InsufficientRearmCount",
 	}
 }
 

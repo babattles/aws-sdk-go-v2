@@ -72,9 +72,9 @@ type RegisterTaskDefinitionInput struct {
 	// Task-level CPU and memory parameters are ignored for Windows containers. We
 	// recommend specifying container-level resources for Windows containers.
 	//
-	// If you're using the EC2 launch type, this field is optional. Supported values
-	// are between 128 CPU units ( 0.125 vCPUs) and 10240 CPU units ( 10 vCPUs). If
-	// you do not specify a value, the parameter is ignored.
+	// If you're using the EC2 launch type or external launch type, this field is
+	// optional. Supported values are between 128 CPU units ( 0.125 vCPUs) and 196608
+	// CPU units ( 192 vCPUs). If you do not specify a value, the parameter is ignored.
 	//
 	// If you're using the Fargate launch type, this field is required and you must
 	// use one of the following values, which determines your range of supported values
@@ -106,6 +106,11 @@ type RegisterTaskDefinitionInput struct {
 	//
 	// This option requires Linux platform 1.4.0 or later.
 	Cpu *string
+
+	// Enables fault injection when you register your task definition and allows for
+	// fault injection requests to be accepted from the task's containers. The default
+	// value is false .
+	EnableFaultInjection *bool
 
 	// The amount of ephemeral storage to allocate for the task. This parameter is
 	// used to expand the total amount of ephemeral storage available, beyond the
@@ -388,6 +393,9 @@ func (c *Client) addOperationRegisterTaskDefinitionMiddlewares(stack *middleware
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -404,6 +412,9 @@ func (c *Client) addOperationRegisterTaskDefinitionMiddlewares(stack *middleware
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpRegisterTaskDefinitionValidationMiddleware(stack); err != nil {
@@ -425,6 +436,18 @@ func (c *Client) addOperationRegisterTaskDefinitionMiddlewares(stack *middleware
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

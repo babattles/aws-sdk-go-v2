@@ -78,6 +78,10 @@ type CreateKeyInput struct {
 	// This member is required.
 	KeyAttributes *types.KeyAttributes
 
+	// The cryptographic usage of an ECDH derived key as deﬁned in section A.5.2 of
+	// the TR-31 spec.
+	DeriveKeyUsage types.DeriveKeyUsage
+
 	// Specifies whether to enable the key. If the key is enabled, it is activated for
 	// use within the service. If the key is not enabled, then it is created but not
 	// activated. The default value is enabled.
@@ -170,6 +174,9 @@ func (c *Client) addOperationCreateKeyMiddlewares(stack *middleware.Stack, optio
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -186,6 +193,9 @@ func (c *Client) addOperationCreateKeyMiddlewares(stack *middleware.Stack, optio
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateKeyValidationMiddleware(stack); err != nil {
@@ -207,6 +217,18 @@ func (c *Client) addOperationCreateKeyMiddlewares(stack *middleware.Stack, optio
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

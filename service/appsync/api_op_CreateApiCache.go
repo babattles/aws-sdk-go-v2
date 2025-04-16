@@ -32,9 +32,14 @@ type CreateApiCacheInput struct {
 
 	// Caching behavior.
 	//
-	//   - FULL_REQUEST_CACHING: All requests are fully cached.
+	//   - FULL_REQUEST_CACHING: All requests from the same user are cached.
+	//   Individual resolvers are automatically cached. All API calls will try to return
+	//   responses from the cache.
 	//
 	//   - PER_RESOLVER_CACHING: Individual resolvers that you specify are cached.
+	//
+	//   - OPERATION_LEVEL_CACHING: Full requests are cached together and returned
+	//   without executing resolvers.
 	//
 	// This member is required.
 	ApiCachingBehavior types.ApiCachingBehavior
@@ -172,6 +177,9 @@ func (c *Client) addOperationCreateApiCacheMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -188,6 +196,9 @@ func (c *Client) addOperationCreateApiCacheMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateApiCacheValidationMiddleware(stack); err != nil {
@@ -209,6 +220,18 @@ func (c *Client) addOperationCreateApiCacheMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

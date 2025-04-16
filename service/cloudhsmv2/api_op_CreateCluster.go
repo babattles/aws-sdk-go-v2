@@ -56,6 +56,10 @@ type CreateClusterInput struct {
 	// The mode to use in the cluster. The allowed values are FIPS and NON_FIPS .
 	Mode types.ClusterMode
 
+	// The NetworkType to create a cluster with. The allowed values are IPV4 and
+	// DUALSTACK .
+	NetworkType types.NetworkType
+
 	// The identifier (ID) or the Amazon Resource Name (ARN) of the cluster backup to
 	// restore. Use this value to restore the cluster from a backup instead of creating
 	// a new cluster. To find the backup ID or ARN, use DescribeBackups. If using a backup in another
@@ -122,6 +126,9 @@ func (c *Client) addOperationCreateClusterMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -138,6 +145,9 @@ func (c *Client) addOperationCreateClusterMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateClusterValidationMiddleware(stack); err != nil {
@@ -159,6 +169,18 @@ func (c *Client) addOperationCreateClusterMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

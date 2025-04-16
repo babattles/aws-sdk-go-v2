@@ -1,3 +1,184 @@
+# v1.127.1 (2025-04-03)
+
+* No change notes available for this release.
+
+# v1.127.0 (2025-03-10)
+
+* **Feature**: Add support for contact transfers in external voice systems.
+
+# v1.126.1 (2025-03-04.2)
+
+* **Bug Fix**: Add assurance test for operation order.
+
+# v1.126.0 (2025-02-27)
+
+* **Feature**: Track credential providers via User-Agent Feature ids
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.125.1 (2025-02-18)
+
+* **Bug Fix**: Bump go version to 1.22
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.125.0 (2025-02-14)
+
+* **Feature**: Release Notes: 1) Analytics API enhancements: Added new ListAnalyticsDataLakeDataSets API. 2)  Onboarding API Idempotency: Adds ClientToken to instance creation and management APIs to support idempotency.
+
+# v1.124.5 (2025-02-10)
+
+* **Documentation**: Updated the CreateContact API documentation to indicate that it only applies to EMAIL contacts.
+
+# v1.124.4 (2025-02-05)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.124.3 (2025-01-31)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.124.2 (2025-01-30)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.124.1 (2025-01-24)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+* **Dependency Update**: Upgrade to smithy-go v1.22.2.
+
+# v1.124.0 (2025-01-21)
+
+* **Feature**: Added DeleteContactFlowVersion API and the CAMPAIGN flow type
+
+# v1.123.4 (2025-01-17)
+
+* **Bug Fix**: Fix bug where credentials weren't refreshed during retry loop.
+
+# v1.123.3 (2025-01-15)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.123.2 (2025-01-09)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.123.1 (2025-01-02)
+
+* No change notes available for this release.
+
+# v1.123.0 (2024-12-20)
+
+* **Feature**: This release supports adding NotAttributeCondition and Range to the RoutingCriteria object.
+
+# v1.122.1 (2024-12-19)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.122.0 (2024-12-18)
+
+* **Feature**: This release adds support for the UpdateParticipantAuthentication API used for customer authentication within Amazon Connect chats.
+
+# v1.121.0 (2024-12-12)
+
+* **Feature**: Configure holidays and other overrides to hours of operation in advance. During contact handling, Amazon Connect automatically checks for overrides and provides customers with an appropriate flow path. After an override period passes call center automatically reverts to standard hours of operation.
+
+# v1.120.0 (2024-12-10)
+
+* **Feature**: Add support for Push Notifications for Amazon Connect chat. With Push Notifications enabled an alert could be sent to customers about new messages even when they aren't actively using the mobile application.
+
+# v1.119.0 (2024-12-02)
+
+* **Feature**: Adds support for WhatsApp Business messaging, IVR call recording, enabling Contact Lens for existing on-premise contact centers and telephony platforms, and enabling telephony and IVR migration to Amazon Connect independent of their contact center agents.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.118.0 (2024-11-26)
+
+* **Feature**: Enables access to ValueMap and ValueInteger types for SegmentAttributes and fixes deserialization bug for DescribeContactFlow in AmazonConnect Public API
+
+# v1.117.0 (2024-11-22)
+
+* **Feature**: Amazon Connect Service Feature: Add APIs for Amazon Connect Email Channel
+
+# v1.116.0 (2024-11-18)
+
+* **Feature**: Adds CreateContactFlowVersion and ListContactFlowVersions APIs to create and view the versions of a contact flow.
+* **Dependency Update**: Update to smithy-go v1.22.1.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.115.2 (2024-11-07)
+
+* **Bug Fix**: Adds case-insensitive handling of error message fields in service responses
+
+# v1.115.1 (2024-11-06)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.115.0 (2024-10-30)
+
+* **Feature**: Updated the public documentation for the UserIdentityInfo object to accurately reflect the character limits for the FirstName and LastName fields, which were previously listed as 1-100 characters.
+
+# v1.114.1 (2024-10-28)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.114.0 (2024-10-23)
+
+* **Feature**: Amazon Connect Service Feature: Add support to start screen sharing for a web calling contact.
+
+# v1.113.2 (2024-10-08)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.113.1 (2024-10-07)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.113.0 (2024-10-04)
+
+* **Feature**: Add support for HTTP client metrics.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.112.0 (2024-10-03)
+
+* **Feature**: Public GetMetricDataV2 Grouping increase from 3 to 4
+
+# v1.111.0 (2024-09-30)
+
+* **Feature**: Amazon Connect introduces StartOutboundChatContact API allowing customers to initiate outbound chat contacts
+
+# v1.110.3 (2024-09-27)
+
+* No change notes available for this release.
+
+# v1.110.2 (2024-09-25)
+
+* No change notes available for this release.
+
+# v1.110.1 (2024-09-23)
+
+* No change notes available for this release.
+
+# v1.110.0 (2024-09-20)
+
+* **Feature**: Add tracing and metrics support to service clients.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.109.1 (2024-09-17)
+
+* **Bug Fix**: **BREAKFIX**: Only generate AccountIDEndpointMode config for services that use it. This is a compiler break, but removes no actual functionality, as no services currently use the account ID in endpoint resolution.
+
+# v1.109.0 (2024-09-05)
+
+* **Feature**: Amazon Connect Custom Vocabulary now supports Catalan (Spain), Danish (Denmark), Dutch (Netherlands), Finnish (Finland), Indonesian (Indonesia), Malay (Malaysia), Norwegian Bokmal (Norway), Polish (Poland), Swedish (Sweden), and Tagalog/Filipino (Philippines).
+
+# v1.108.1 (2024-09-04)
+
+* No change notes available for this release.
+
+# v1.108.0 (2024-09-03)
+
+* **Feature**: Release ReplicaConfiguration as part of DescribeInstance
+* **Dependency Update**: Updated to the latest SDK module versions
+
 # v1.107.1 (2024-08-15)
 
 * **Dependency Update**: Bump minimum Go version to 1.21.

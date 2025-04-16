@@ -52,7 +52,7 @@ type UpdateFileSystemProtectionInput struct {
 	//   modified only by EFS replication.
 	//
 	// If the replication configuration is deleted, the file system's replication
-	// overwrite protection is re-enabled, the file system becomes writeable.
+	// overwrite protection is re-enabled and the file system becomes writeable.
 	ReplicationOverwriteProtection types.ReplicationOverwriteProtection
 
 	noSmithyDocumentSerde
@@ -128,6 +128,9 @@ func (c *Client) addOperationUpdateFileSystemProtectionMiddlewares(stack *middle
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -144,6 +147,9 @@ func (c *Client) addOperationUpdateFileSystemProtectionMiddlewares(stack *middle
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateFileSystemProtectionValidationMiddleware(stack); err != nil {
@@ -165,6 +171,18 @@ func (c *Client) addOperationUpdateFileSystemProtectionMiddlewares(stack *middle
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

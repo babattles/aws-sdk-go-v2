@@ -31,6 +31,8 @@
         "api_op_OperationWithNestedStructure.go",
         "api_op_OperationWithNestedStructure_test.go",
         "api_op_OperationWithRequiredMembers.go",
+        "api_op_OperationWithRequiredMembersWithDefaults.go",
+        "api_op_OperationWithRequiredMembersWithDefaults_test.go",
         "api_op_OperationWithRequiredMembers_test.go",
         "api_op_PutWithContentEncoding.go",
         "api_op_PutWithContentEncoding_test.go",
@@ -53,13 +55,14 @@
         "protocol_test.go",
         "serializers.go",
         "snapshot_test.go",
+        "sra_operation_order_test.go",
         "types/enums.go",
         "types/errors.go",
         "types/types.go",
         "types/types_exported_test.go",
         "validators.go"
     ],
-    "go": "1.15",
+    "go": "1.22",
     "module": "github.com/aws/aws-sdk-go-v2/internal/protocoltest/jsonrpc10",
     "unstable": false
 }

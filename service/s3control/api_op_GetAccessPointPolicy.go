@@ -15,8 +15,6 @@ import (
 	"strings"
 )
 
-// This operation is not supported by directory buckets.
-//
 // Returns the access point policy associated with the specified access point.
 //
 // The following actions are related to GetAccessPointPolicy :
@@ -129,6 +127,9 @@ func (c *Client) addOperationGetAccessPointPolicyMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -148,6 +149,9 @@ func (c *Client) addOperationGetAccessPointPolicyMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addEndpointPrefix_opGetAccessPointPolicyMiddleware(stack); err != nil {
@@ -184,6 +188,18 @@ func (c *Client) addOperationGetAccessPointPolicyMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = s3controlcust.AddDisableHostPrefixMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

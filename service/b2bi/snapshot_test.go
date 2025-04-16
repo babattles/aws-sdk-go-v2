@@ -98,6 +98,18 @@ func TestCheckSnapshot_CreateProfile(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_CreateStarterMappingTemplate(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateStarterMappingTemplate(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "CreateStarterMappingTemplate")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_CreateTransformer(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.CreateTransformer(context.Background(), nil, func(o *Options) {
@@ -151,6 +163,18 @@ func TestCheckSnapshot_DeleteTransformer(t *testing.T) {
 	_, err := svc.DeleteTransformer(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "DeleteTransformer")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_GenerateMapping(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GenerateMapping(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GenerateMapping")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -302,6 +326,18 @@ func TestCheckSnapshot_TagResource(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_TestConversion(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.TestConversion(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "TestConversion")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_TestMapping(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.TestMapping(context.Background(), nil, func(o *Options) {
@@ -421,6 +457,18 @@ func TestUpdateSnapshot_CreateProfile(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_CreateStarterMappingTemplate(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateStarterMappingTemplate(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "CreateStarterMappingTemplate")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_CreateTransformer(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.CreateTransformer(context.Background(), nil, func(o *Options) {
@@ -474,6 +522,18 @@ func TestUpdateSnapshot_DeleteTransformer(t *testing.T) {
 	_, err := svc.DeleteTransformer(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "DeleteTransformer")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_GenerateMapping(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GenerateMapping(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GenerateMapping")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -618,6 +678,18 @@ func TestUpdateSnapshot_TagResource(t *testing.T) {
 	_, err := svc.TagResource(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "TagResource")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_TestConversion(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.TestConversion(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "TestConversion")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {

@@ -3,6 +3,7 @@
         "github.com/aws/aws-sdk-go-v2": "v1.4.0",
         "github.com/aws/aws-sdk-go-v2/internal/configsources": "v0.0.0-00010101000000-000000000000",
         "github.com/aws/aws-sdk-go-v2/internal/endpoints/v2": "v2.0.0-00010101000000-000000000000",
+        "github.com/aws/aws-sdk-go-v2/internal/v4a": "v0.0.0-00010101000000-000000000000",
         "github.com/aws/smithy-go": "v1.4.0"
     },
     "files": [
@@ -22,6 +23,7 @@
         "api_op_CreateEmailTemplate.go",
         "api_op_CreateExportJob.go",
         "api_op_CreateImportJob.go",
+        "api_op_CreateMultiRegionEndpoint.go",
         "api_op_DeleteConfigurationSet.go",
         "api_op_DeleteConfigurationSetEventDestination.go",
         "api_op_DeleteContact.go",
@@ -31,6 +33,7 @@
         "api_op_DeleteEmailIdentity.go",
         "api_op_DeleteEmailIdentityPolicy.go",
         "api_op_DeleteEmailTemplate.go",
+        "api_op_DeleteMultiRegionEndpoint.go",
         "api_op_DeleteSuppressedDestination.go",
         "api_op_GetAccount.go",
         "api_op_GetBlacklistReports.go",
@@ -52,6 +55,7 @@
         "api_op_GetExportJob.go",
         "api_op_GetImportJob.go",
         "api_op_GetMessageInsights.go",
+        "api_op_GetMultiRegionEndpoint.go",
         "api_op_GetSuppressedDestination.go",
         "api_op_ListConfigurationSets.go",
         "api_op_ListContactLists.go",
@@ -64,6 +68,7 @@
         "api_op_ListEmailTemplates.go",
         "api_op_ListExportJobs.go",
         "api_op_ListImportJobs.go",
+        "api_op_ListMultiRegionEndpoints.go",
         "api_op_ListRecommendations.go",
         "api_op_ListSuppressedDestinations.go",
         "api_op_ListTagsForResource.go",
@@ -72,6 +77,7 @@
         "api_op_PutAccountSendingAttributes.go",
         "api_op_PutAccountSuppressionAttributes.go",
         "api_op_PutAccountVdmAttributes.go",
+        "api_op_PutConfigurationSetArchivingOptions.go",
         "api_op_PutConfigurationSetDeliveryOptions.go",
         "api_op_PutConfigurationSetReputationOptions.go",
         "api_op_PutConfigurationSetSendingOptions.go",
@@ -113,12 +119,13 @@
         "protocol_test.go",
         "serializers.go",
         "snapshot_test.go",
+        "sra_operation_order_test.go",
         "types/enums.go",
         "types/errors.go",
         "types/types.go",
         "validators.go"
     ],
-    "go": "1.15",
+    "go": "1.22",
     "module": "github.com/aws/aws-sdk-go-v2/service/sesv2",
     "unstable": false
 }

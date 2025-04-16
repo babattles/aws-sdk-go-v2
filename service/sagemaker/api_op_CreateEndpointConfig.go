@@ -79,7 +79,7 @@ type CreateEndpointConfigInput struct {
 	// [InvokeEndpointAsync]: https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_runtime_InvokeEndpointAsync.html
 	AsyncInferenceConfig *types.AsyncInferenceConfig
 
-	// Configuration to control how SageMaker captures inference data.
+	// Configuration to control how SageMaker AI captures inference data.
 	DataCaptureConfig *types.DataCaptureConfig
 
 	// Sets whether all model containers deployed to the endpoint are isolated. If
@@ -87,13 +87,13 @@ type CreateEndpointConfigInput struct {
 	// containers.
 	EnableNetworkIsolation *bool
 
-	// The Amazon Resource Name (ARN) of an IAM role that Amazon SageMaker can assume
-	// to perform actions on your behalf. For more information, see [SageMaker Roles].
+	// The Amazon Resource Name (ARN) of an IAM role that Amazon SageMaker AI can
+	// assume to perform actions on your behalf. For more information, see [SageMaker AI Roles].
 	//
-	// To be able to pass this role to Amazon SageMaker, the caller of this action
+	// To be able to pass this role to Amazon SageMaker AI, the caller of this action
 	// must have the iam:PassRole permission.
 	//
-	// [SageMaker Roles]: https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-roles.html
+	// [SageMaker AI Roles]: https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-roles.html
 	ExecutionRoleArn *string
 
 	// A member of CreateEndpointConfig that enables explainers.
@@ -216,6 +216,9 @@ func (c *Client) addOperationCreateEndpointConfigMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -232,6 +235,9 @@ func (c *Client) addOperationCreateEndpointConfigMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateEndpointConfigValidationMiddleware(stack); err != nil {
@@ -253,6 +259,18 @@ func (c *Client) addOperationCreateEndpointConfigMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

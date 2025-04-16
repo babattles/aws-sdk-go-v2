@@ -36,78 +36,26 @@ func (c *Client) CreateCustomLogSource(ctx context.Context, params *CreateCustom
 
 type CreateCustomLogSourceInput struct {
 
-	// The configuration for the third-party custom source.
+	// The configuration used for the third-party custom source.
 	//
 	// This member is required.
 	Configuration *types.CustomLogSourceConfiguration
 
 	// Specify the name for a third-party custom source. This must be a Regionally
-	// unique value.
+	// unique value. The sourceName you enter here, is used in the LogProviderRole
+	// name which follows the convention AmazonSecurityLake-Provider-{name of the
+	// custom source}-{region} . You must use a CustomLogSource name that is shorter
+	// than or equal to 20 characters. This ensures that the LogProviderRole name is
+	// below the 64 character limit.
 	//
 	// This member is required.
 	SourceName *string
 
 	// The Open Cybersecurity Schema Framework (OCSF) event classes which describes
-	// the type of data that the custom source will send to Security Lake. The
-	// supported event classes are:
+	// the type of data that the custom source will send to Security Lake. For the list
+	// of supported event classes, see the [Amazon Security Lake User Guide].
 	//
-	//   - ACCESS_ACTIVITY
-	//
-	//   - FILE_ACTIVITY
-	//
-	//   - KERNEL_ACTIVITY
-	//
-	//   - KERNEL_EXTENSION
-	//
-	//   - MEMORY_ACTIVITY
-	//
-	//   - MODULE_ACTIVITY
-	//
-	//   - PROCESS_ACTIVITY
-	//
-	//   - REGISTRY_KEY_ACTIVITY
-	//
-	//   - REGISTRY_VALUE_ACTIVITY
-	//
-	//   - RESOURCE_ACTIVITY
-	//
-	//   - SCHEDULED_JOB_ACTIVITY
-	//
-	//   - SECURITY_FINDING
-	//
-	//   - ACCOUNT_CHANGE
-	//
-	//   - AUTHENTICATION
-	//
-	//   - AUTHORIZATION
-	//
-	//   - ENTITY_MANAGEMENT_AUDIT
-	//
-	//   - DHCP_ACTIVITY
-	//
-	//   - NETWORK_ACTIVITY
-	//
-	//   - DNS_ACTIVITY
-	//
-	//   - FTP_ACTIVITY
-	//
-	//   - HTTP_ACTIVITY
-	//
-	//   - RDP_ACTIVITY
-	//
-	//   - SMB_ACTIVITY
-	//
-	//   - SSH_ACTIVITY
-	//
-	//   - CONFIG_STATE
-	//
-	//   - INVENTORY_INFO
-	//
-	//   - EMAIL_ACTIVITY
-	//
-	//   - API_ACTIVITY
-	//
-	//   - CLOUD_API
+	// [Amazon Security Lake User Guide]: https://docs.aws.amazon.com/security-lake/latest/userguide/adding-custom-sources.html#ocsf-eventclass
 	EventClasses []string
 
 	// Specify the source version for the third-party custom source, to limit log
@@ -119,7 +67,7 @@ type CreateCustomLogSourceInput struct {
 
 type CreateCustomLogSourceOutput struct {
 
-	// The created third-party custom source.
+	// The third-party custom source that was created.
 	Source *types.CustomLogSourceResource
 
 	// Metadata pertaining to the operation's result.
@@ -171,6 +119,9 @@ func (c *Client) addOperationCreateCustomLogSourceMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -187,6 +138,9 @@ func (c *Client) addOperationCreateCustomLogSourceMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateCustomLogSourceValidationMiddleware(stack); err != nil {
@@ -208,6 +162,18 @@ func (c *Client) addOperationCreateCustomLogSourceMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

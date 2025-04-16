@@ -66,6 +66,47 @@ type AddonSubscription struct {
 	noSmithyDocumentSerde
 }
 
+// Filtering options for ListMembersOfAddressList operation.
+type AddressFilter struct {
+
+	// Filter to limit the results to addresses having the provided prefix.
+	AddressPrefix *string
+
+	noSmithyDocumentSerde
+}
+
+// An address list contains a list of emails and domains that are used in
+// MailManager Ingress endpoints and Rules for email management.
+type AddressList struct {
+
+	// The Amazon Resource Name (ARN) of the address list.
+	//
+	// This member is required.
+	AddressListArn *string
+
+	// The identifier of the address list.
+	//
+	// This member is required.
+	AddressListId *string
+
+	// The user-friendly name of the address list.
+	//
+	// This member is required.
+	AddressListName *string
+
+	// The timestamp of when the address list was created.
+	//
+	// This member is required.
+	CreatedTimestamp *time.Time
+
+	// The timestamp of when the address list was last updated.
+	//
+	// This member is required.
+	LastUpdatedTimestamp *time.Time
+
+	noSmithyDocumentSerde
+}
+
 // The result of an analysis can be used in conditions to trigger actions.
 // Analyses can inspect the email content and report a certain aspect of the email.
 type Analysis struct {
@@ -282,10 +323,57 @@ type DeliverToMailboxAction struct {
 	noSmithyDocumentSerde
 }
 
+// The action to deliver incoming emails to an Amazon Q Business application for
+// indexing.
+type DeliverToQBusinessAction struct {
+
+	// The unique identifier of the Amazon Q Business application instance where the
+	// email content will be delivered.
+	//
+	// This member is required.
+	ApplicationId *string
+
+	// The identifier of the knowledge base index within the Amazon Q Business
+	// application where the email content will be stored and indexed.
+	//
+	// This member is required.
+	IndexId *string
+
+	// The Amazon Resource Name (ARN) of the IAM Role to use while delivering to
+	// Amazon Q Business. This role must have access to the qbusiness:BatchPutDocument
+	// API for the given application and index.
+	//
+	// This member is required.
+	RoleArn *string
+
+	// A policy that states what to do in the case of failure. The action will fail if
+	// there are configuration errors. For example, the specified application has been
+	// deleted or the role lacks necessary permissions to call the
+	// qbusiness:BatchPutDocument API.
+	ActionFailurePolicy ActionFailurePolicy
+
+	noSmithyDocumentSerde
+}
+
 // This action causes processing to stop and the email to be dropped. If the
 // action applies only to certain recipients, only those recipients are dropped,
 // and processing continues for other recipients.
 type DropAction struct {
+	noSmithyDocumentSerde
+}
+
+// The SMTP envelope information of the email.
+type Envelope struct {
+
+	// The RCPT FROM given by the host from which the email was received.
+	From *string
+
+	// The HELO used by the host from which the email was received.
+	Helo *string
+
+	// All SMTP TO entries given by the host from which the email was received.
+	To []string
+
 	noSmithyDocumentSerde
 }
 
@@ -337,6 +425,77 @@ type ExportSummary struct {
 	noSmithyDocumentSerde
 }
 
+// The import data format contains the specifications of the input file that would
+// be passed to the address list import job.
+type ImportDataFormat struct {
+
+	// The type of file that would be passed as an input for the address list import
+	// job.
+	//
+	// This member is required.
+	ImportDataType ImportDataType
+
+	noSmithyDocumentSerde
+}
+
+// Details about an import job.
+type ImportJob struct {
+
+	// The unique identifier of the address list the import job was created for.
+	//
+	// This member is required.
+	AddressListId *string
+
+	// The timestamp of when the import job was created.
+	//
+	// This member is required.
+	CreatedTimestamp *time.Time
+
+	// The format of the input for the import job.
+	//
+	// This member is required.
+	ImportDataFormat *ImportDataFormat
+
+	// The identifier of the import job.
+	//
+	// This member is required.
+	JobId *string
+
+	// A user-friendly name for the import job.
+	//
+	// This member is required.
+	Name *string
+
+	// The pre-signed URL target for uploading the input file.
+	//
+	// This member is required.
+	PreSignedUrl *string
+
+	// The status of the import job.
+	//
+	// This member is required.
+	Status ImportJobStatus
+
+	// The timestamp of when the import job was completed.
+	CompletedTimestamp *time.Time
+
+	// The reason for failure of an import job.
+	Error *string
+
+	// The number of addresses in the input that failed to get imported into address
+	// list.
+	FailedItemsCount *int32
+
+	// The number of addresses in the input that were successfully imported into the
+	// address list.
+	ImportedItemsCount *int32
+
+	// The timestamp of when the import job was started.
+	StartTimestamp *time.Time
+
+	noSmithyDocumentSerde
+}
+
 // The Add On ARN and its returned value that is evaluated in a policy statement's
 // conditional expression to either deny or block the incoming email.
 type IngressAnalysis struct {
@@ -376,6 +535,7 @@ type IngressBooleanExpression struct {
 // The following types satisfy this interface:
 //
 //	IngressBooleanToEvaluateMemberAnalysis
+//	IngressBooleanToEvaluateMemberIsInAddressList
 type IngressBooleanToEvaluate interface {
 	isIngressBooleanToEvaluate()
 }
@@ -389,6 +549,16 @@ type IngressBooleanToEvaluateMemberAnalysis struct {
 }
 
 func (*IngressBooleanToEvaluateMemberAnalysis) isIngressBooleanToEvaluate() {}
+
+// The structure type for a boolean condition that provides the address lists to
+// evaluate incoming traffic on.
+type IngressBooleanToEvaluateMemberIsInAddressList struct {
+	Value IngressIsInAddressList
+
+	noSmithyDocumentSerde
+}
+
+func (*IngressBooleanToEvaluateMemberIsInAddressList) isIngressBooleanToEvaluate() {}
 
 // The structure for an IP based condition matching on the incoming mail.
 //
@@ -426,6 +596,64 @@ type IngressIpv4Expression struct {
 	//
 	// This member is required.
 	Values []string
+
+	noSmithyDocumentSerde
+}
+
+// The union type representing the allowed types for the left hand side of an IPv6
+// condition.
+type IngressIpv6Expression struct {
+
+	// The left hand side argument of an IPv6 condition expression.
+	//
+	// This member is required.
+	Evaluate IngressIpv6ToEvaluate
+
+	// The matching operator for an IPv6 condition expression.
+	//
+	// This member is required.
+	Operator IngressIpOperator
+
+	// The right hand side argument of an IPv6 condition expression.
+	//
+	// This member is required.
+	Values []string
+
+	noSmithyDocumentSerde
+}
+
+// The structure for an IPv6 based condition matching on the incoming mail.
+//
+// The following types satisfy this interface:
+//
+//	IngressIpv6ToEvaluateMemberAttribute
+type IngressIpv6ToEvaluate interface {
+	isIngressIpv6ToEvaluate()
+}
+
+// An enum type representing the allowed attribute types for an IPv6 condition.
+type IngressIpv6ToEvaluateMemberAttribute struct {
+	Value IngressIpv6Attribute
+
+	noSmithyDocumentSerde
+}
+
+func (*IngressIpv6ToEvaluateMemberAttribute) isIngressIpv6ToEvaluate() {}
+
+// The address lists and the address list attribute value that is evaluated in a
+// policy statement's conditional expression to either deny or block the incoming
+// email.
+type IngressIsInAddressList struct {
+
+	// The address lists that will be used for evaluation.
+	//
+	// This member is required.
+	AddressLists []string
+
+	// The email attribute that needs to be evaluated against the address list.
+	//
+	// This member is required.
+	Attribute IngressAddressListEmailAttribute
 
 	noSmithyDocumentSerde
 }
@@ -542,10 +770,21 @@ type IngressStringExpression struct {
 //
 // The following types satisfy this interface:
 //
+//	IngressStringToEvaluateMemberAnalysis
 //	IngressStringToEvaluateMemberAttribute
 type IngressStringToEvaluate interface {
 	isIngressStringToEvaluate()
 }
+
+// The structure type for a string condition stating the Add On ARN and its
+// returned value.
+type IngressStringToEvaluateMemberAnalysis struct {
+	Value IngressAnalysis
+
+	noSmithyDocumentSerde
+}
+
+func (*IngressStringToEvaluateMemberAnalysis) isIngressStringToEvaluate() {}
 
 // The enum type representing the allowed attribute types for a string condition.
 type IngressStringToEvaluateMemberAttribute struct {
@@ -611,6 +850,87 @@ type MessageBody struct {
 	noSmithyDocumentSerde
 }
 
+// The metadata about the email.
+type Metadata struct {
+
+	// The name of the configuration set used when sent through a configuration set
+	// with archiving enabled.
+	ConfigurationSet *string
+
+	// The ID of the ingress endpoint through which the email was received.
+	IngressPointId *string
+
+	// The ID of the rule set that processed the email.
+	RuleSetId *string
+
+	// The name of the host from which the email was received.
+	SenderHostname *string
+
+	// The IP address of the host from which the email was received.
+	SenderIpAddress *string
+
+	// The name of the API call used when sent through a configuration set with
+	// archiving enabled.
+	SendingMethod *string
+
+	// The name of the dedicated IP pool used when sent through a configuration set
+	// with archiving enabled.
+	SendingPool *string
+
+	// Specifies the archived email source, identified by either a Rule Set's ARN with
+	// an Archive action, or a Configuration Set's Archive ARN.
+	SourceArn *string
+
+	// The identity name used to authorize the sending action when sent through a
+	// configuration set with archiving enabled.
+	SourceIdentity *string
+
+	// The timestamp of when the email was received.
+	Timestamp *time.Time
+
+	// The TLS cipher suite used to communicate with the host from which the email was
+	// received.
+	TlsCipherSuite *string
+
+	// The TLS protocol used to communicate with the host from which the email was
+	// received.
+	TlsProtocol *string
+
+	// The ID of the traffic policy that was in effect when the email was received.
+	TrafficPolicyId *string
+
+	noSmithyDocumentSerde
+}
+
+// The network type (IPv4-only, Dual-Stack, PrivateLink) of the ingress endpoint
+// resource.
+//
+// The following types satisfy this interface:
+//
+//	NetworkConfigurationMemberPrivateNetworkConfiguration
+//	NetworkConfigurationMemberPublicNetworkConfiguration
+type NetworkConfiguration interface {
+	isNetworkConfiguration()
+}
+
+// Specifies the network configuration for the private ingress point.
+type NetworkConfigurationMemberPrivateNetworkConfiguration struct {
+	Value PrivateNetworkConfiguration
+
+	noSmithyDocumentSerde
+}
+
+func (*NetworkConfigurationMemberPrivateNetworkConfiguration) isNetworkConfiguration() {}
+
+// Specifies the network configuration for the public ingress point.
+type NetworkConfigurationMemberPublicNetworkConfiguration struct {
+	Value PublicNetworkConfiguration
+
+	noSmithyDocumentSerde
+}
+
+func (*NetworkConfigurationMemberPublicNetworkConfiguration) isNetworkConfiguration() {}
+
 // Explicitly indicate that the relay destination server does not require SMTP
 // credential authentication.
 type NoAuthentication struct {
@@ -624,6 +944,7 @@ type NoAuthentication struct {
 //
 //	PolicyConditionMemberBooleanExpression
 //	PolicyConditionMemberIpExpression
+//	PolicyConditionMemberIpv6Expression
 //	PolicyConditionMemberStringExpression
 //	PolicyConditionMemberTlsExpression
 type PolicyCondition interface {
@@ -651,6 +972,17 @@ type PolicyConditionMemberIpExpression struct {
 }
 
 func (*PolicyConditionMemberIpExpression) isPolicyCondition() {}
+
+// This represents an IPv6 based condition matching on the incoming mail. It
+// performs the operation configured in 'Operator' and evaluates the 'Protocol'
+// object against the 'Value'.
+type PolicyConditionMemberIpv6Expression struct {
+	Value IngressIpv6Expression
+
+	noSmithyDocumentSerde
+}
+
+func (*PolicyConditionMemberIpv6Expression) isPolicyCondition() {}
 
 // This represents a string based condition matching on the incoming mail. It
 // performs the string operation configured in 'Operator' and evaluates the
@@ -688,6 +1020,29 @@ type PolicyStatement struct {
 	//
 	// This member is required.
 	Conditions []PolicyCondition
+
+	noSmithyDocumentSerde
+}
+
+// Specifies the network configuration for the private ingress point.
+type PrivateNetworkConfiguration struct {
+
+	// The identifier of the VPC endpoint to associate with this private ingress point.
+	//
+	// This member is required.
+	VpcEndpointId *string
+
+	noSmithyDocumentSerde
+}
+
+// Specifies the network configuration for the public ingress point.
+type PublicNetworkConfiguration struct {
+
+	// The IP address type for the public ingress point. Valid values are IPV4 and
+	// DUAL_STACK.
+	//
+	// This member is required.
+	IpType IpType
 
 	noSmithyDocumentSerde
 }
@@ -785,6 +1140,9 @@ type Row struct {
 	// The date the email was sent.
 	Date *string
 
+	// The SMTP envelope information of the email.
+	Envelope *Envelope
+
 	// The email address of the sender.
 	From *string
 
@@ -794,6 +1152,9 @@ type Row struct {
 	// The email message ID this is a reply to.
 	InReplyTo *string
 
+	// The ID of the ingress endpoint through which the email was received.
+	IngressPointId *string
+
 	// The unique message ID of the email.
 	MessageId *string
 
@@ -802,6 +1163,20 @@ type Row struct {
 
 	// The timestamp of when the email was received.
 	ReceivedTimestamp *time.Time
+
+	// The name of the host from which the email was received.
+	SenderHostname *string
+
+	//   - Mail archived with Mail Manager: The IP address of the client that connects
+	//   to the ingress endpoint.
+	//
+	//   - Mail sent through a configuration set with the archiving option enabled:
+	//   The IP address of the client that makes the SendEmail API call.
+	SenderIpAddress *string
+
+	// Specifies the archived email source, identified by either a Rule Set's ARN with
+	// an Archive action, or a Configuration Set's Archive ARN.
+	SourceArn *string
 
 	// The subject header value of the email.
 	Subject *string
@@ -858,6 +1233,7 @@ type Rule struct {
 //	RuleActionMemberAddHeader
 //	RuleActionMemberArchive
 //	RuleActionMemberDeliverToMailbox
+//	RuleActionMemberDeliverToQBusiness
 //	RuleActionMemberDrop
 //	RuleActionMemberRelay
 //	RuleActionMemberReplaceRecipient
@@ -894,6 +1270,16 @@ type RuleActionMemberDeliverToMailbox struct {
 }
 
 func (*RuleActionMemberDeliverToMailbox) isRuleAction() {}
+
+// This action delivers an email to an Amazon Q Business application for ingestion
+// into its knowledge base.
+type RuleActionMemberDeliverToQBusiness struct {
+	Value DeliverToQBusinessAction
+
+	noSmithyDocumentSerde
+}
+
+func (*RuleActionMemberDeliverToQBusiness) isRuleAction() {}
 
 // This action terminates the evaluation of rules in the rule set.
 type RuleActionMemberDrop struct {
@@ -962,10 +1348,22 @@ type RuleBooleanExpression struct {
 //
 // The following types satisfy this interface:
 //
+//	RuleBooleanToEvaluateMemberAnalysis
 //	RuleBooleanToEvaluateMemberAttribute
+//	RuleBooleanToEvaluateMemberIsInAddressList
 type RuleBooleanToEvaluate interface {
 	isRuleBooleanToEvaluate()
 }
+
+// The Add On ARN and its returned value to evaluate in a boolean condition
+// expression.
+type RuleBooleanToEvaluateMemberAnalysis struct {
+	Value Analysis
+
+	noSmithyDocumentSerde
+}
+
+func (*RuleBooleanToEvaluateMemberAnalysis) isRuleBooleanToEvaluate() {}
 
 // The boolean type representing the allowed attribute types for an email.
 type RuleBooleanToEvaluateMemberAttribute struct {
@@ -975,6 +1373,16 @@ type RuleBooleanToEvaluateMemberAttribute struct {
 }
 
 func (*RuleBooleanToEvaluateMemberAttribute) isRuleBooleanToEvaluate() {}
+
+// The structure representing the address lists and address list attribute that
+// will be used in evaluation of boolean expression.
+type RuleBooleanToEvaluateMemberIsInAddressList struct {
+	Value RuleIsInAddressList
+
+	noSmithyDocumentSerde
+}
+
+func (*RuleBooleanToEvaluateMemberIsInAddressList) isRuleBooleanToEvaluate() {}
 
 // The conditional expression used to evaluate an email for determining if a rule
 // action should be taken.
@@ -1112,6 +1520,23 @@ type RuleIpToEvaluateMemberAttribute struct {
 
 func (*RuleIpToEvaluateMemberAttribute) isRuleIpToEvaluate() {}
 
+// The structure type for a boolean condition that provides the address lists and
+// address list attribute to evaluate.
+type RuleIsInAddressList struct {
+
+	// The address lists that will be used for evaluation.
+	//
+	// This member is required.
+	AddressLists []string
+
+	// The email attribute that needs to be evaluated against the address list.
+	//
+	// This member is required.
+	Attribute RuleAddressListEmailAttribute
+
+	noSmithyDocumentSerde
+}
+
 // A number expression to match numeric conditions with integers from the incoming
 // email.
 type RuleNumberExpression struct {
@@ -1198,10 +1623,22 @@ type RuleStringExpression struct {
 //
 // The following types satisfy this interface:
 //
+//	RuleStringToEvaluateMemberAnalysis
 //	RuleStringToEvaluateMemberAttribute
+//	RuleStringToEvaluateMemberMimeHeaderAttribute
 type RuleStringToEvaluate interface {
 	isRuleStringToEvaluate()
 }
+
+// The Add On ARN and its returned value to evaluate in a string condition
+// expression.
+type RuleStringToEvaluateMemberAnalysis struct {
+	Value Analysis
+
+	noSmithyDocumentSerde
+}
+
+func (*RuleStringToEvaluateMemberAnalysis) isRuleStringToEvaluate() {}
 
 // The email attribute to evaluate in a string condition expression.
 type RuleStringToEvaluateMemberAttribute struct {
@@ -1211,6 +1648,15 @@ type RuleStringToEvaluateMemberAttribute struct {
 }
 
 func (*RuleStringToEvaluateMemberAttribute) isRuleStringToEvaluate() {}
+
+// The email MIME X-Header attribute to evaluate in a string condition expression.
+type RuleStringToEvaluateMemberMimeHeaderAttribute struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*RuleStringToEvaluateMemberMimeHeaderAttribute) isRuleStringToEvaluate() {}
 
 // A verdict expression is evaluated against verdicts of the email.
 type RuleVerdictExpression struct {
@@ -1300,6 +1746,22 @@ type S3ExportDestinationConfiguration struct {
 
 	// The S3 location to deliver the exported email data.
 	S3Location *string
+
+	noSmithyDocumentSerde
+}
+
+// An address that is a member of an address list.
+type SavedAddress struct {
+
+	// The email or domain that constitutes the address.
+	//
+	// This member is required.
+	Address *string
+
+	// The timestamp of when the address was added to the address list.
+	//
+	// This member is required.
+	CreatedTimestamp *time.Time
 
 	noSmithyDocumentSerde
 }
@@ -1410,9 +1872,11 @@ func (*UnknownUnionMember) isArchiveStringToEvaluate()        {}
 func (*UnknownUnionMember) isExportDestinationConfiguration() {}
 func (*UnknownUnionMember) isIngressBooleanToEvaluate()       {}
 func (*UnknownUnionMember) isIngressIpToEvaluate()            {}
+func (*UnknownUnionMember) isIngressIpv6ToEvaluate()          {}
 func (*UnknownUnionMember) isIngressPointConfiguration()      {}
 func (*UnknownUnionMember) isIngressStringToEvaluate()        {}
 func (*UnknownUnionMember) isIngressTlsProtocolToEvaluate()   {}
+func (*UnknownUnionMember) isNetworkConfiguration()           {}
 func (*UnknownUnionMember) isPolicyCondition()                {}
 func (*UnknownUnionMember) isRelayAuthentication()            {}
 func (*UnknownUnionMember) isRuleAction()                     {}

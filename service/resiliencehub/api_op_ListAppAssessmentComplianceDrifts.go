@@ -38,7 +38,7 @@ type ListAppAssessmentComplianceDriftsInput struct {
 	// This member is required.
 	AssessmentArn *string
 
-	// Indicates the maximum number of compliance drifts requested.
+	// Maximum number of compliance drifts requested.
 	MaxResults *int32
 
 	// Null, or the token from a previous call to get the next set of results.
@@ -107,6 +107,9 @@ func (c *Client) addOperationListAppAssessmentComplianceDriftsMiddlewares(stack 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -123,6 +126,9 @@ func (c *Client) addOperationListAppAssessmentComplianceDriftsMiddlewares(stack 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListAppAssessmentComplianceDriftsValidationMiddleware(stack); err != nil {
@@ -146,13 +152,25 @@ func (c *Client) addOperationListAppAssessmentComplianceDriftsMiddlewares(stack 
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
+		return err
+	}
 	return nil
 }
 
 // ListAppAssessmentComplianceDriftsPaginatorOptions is the paginator options for
 // ListAppAssessmentComplianceDrifts
 type ListAppAssessmentComplianceDriftsPaginatorOptions struct {
-	// Indicates the maximum number of compliance drifts requested.
+	// Maximum number of compliance drifts requested.
 	Limit int32
 
 	// Set to true if pagination should stop if the service returns a pagination token

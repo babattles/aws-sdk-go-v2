@@ -36,11 +36,18 @@ import (
 // you are updating an existing filter, you must specify the correct name in
 // filterName .
 //
+// Using regular expressions in filter patterns is supported. For these filters,
+// there is a quotas of quota of two regular expression patterns within a single
+// filter pattern. There is also a quota of five regular expression patterns per
+// log group. For more information about using regular expressions in filter
+// patterns, see [Filter pattern syntax for metric filters, subscription filters, filter log events, and Live Tail].
+//
 // To perform a PutSubscriptionFilter operation for any destination except a
 // Lambda function, you must also have the iam:PassRole permission.
 //
 // [PutDestination]: https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDestination.html
 // [PutLogEvents]: https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutLogEvents.html
+// [Filter pattern syntax for metric filters, subscription filters, filter log events, and Live Tail]: https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/FilterAndPatternSyntax.html
 func (c *Client) PutSubscriptionFilter(ctx context.Context, params *PutSubscriptionFilterInput, optFns ...func(*Options)) (*PutSubscriptionFilterOutput, error) {
 	if params == nil {
 		params = &PutSubscriptionFilterInput{}
@@ -100,6 +107,17 @@ type PutSubscriptionFilterInput struct {
 	//
 	// This member is required.
 	LogGroupName *string
+
+	// This parameter is valid only for log groups that have an active log
+	// transformer. For more information about log transformers, see [PutTransformer].
+	//
+	// If the log group uses either a log-group level or account-level transformer,
+	// and you specify true , the subscription filter will be applied on the
+	// transformed version of the log events instead of the original ingested log
+	// events.
+	//
+	// [PutTransformer]: https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutTransformer.html
+	ApplyOnTransformedLogs bool
 
 	// The method used to distribute log data to the destination. By default, log data
 	// is grouped by log stream, but the grouping can be set to random for a more even
@@ -165,6 +183,9 @@ func (c *Client) addOperationPutSubscriptionFilterMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -181,6 +202,9 @@ func (c *Client) addOperationPutSubscriptionFilterMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpPutSubscriptionFilterValidationMiddleware(stack); err != nil {
@@ -202,6 +226,18 @@ func (c *Client) addOperationPutSubscriptionFilterMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

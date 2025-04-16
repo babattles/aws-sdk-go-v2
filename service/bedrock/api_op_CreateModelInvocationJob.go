@@ -11,16 +11,15 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Creates a job to invoke a model on multiple prompts (batch inference). Format
+// Creates a batch inference job to invoke a model on multiple prompts. Format
 // your data according to [Format your inference data]and upload it to an Amazon S3 bucket. For more
-// information, see [Create a batch inference job].
+// information, see [Process multiple prompts with batch inference].
 //
 // The response returns a jobArn that you can use to stop or get details about the
-// job. You can check the status of the job by sending a [GetModelCustomizationJob]request.
+// job.
 //
-// [Create a batch inference job]: https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-create.html
-// [Format your inference data]: https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-prerq.html#batch-inference-data
-// [GetModelCustomizationJob]: https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GetModelCustomizationJob.html
+// [Process multiple prompts with batch inference]: https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference.html
+// [Format your inference data]: https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-data
 func (c *Client) CreateModelInvocationJob(ctx context.Context, params *CreateModelInvocationJobInput, optFns ...func(*Options)) (*CreateModelInvocationJobOutput, error) {
 	if params == nil {
 		params = &CreateModelInvocationJobInput{}
@@ -83,6 +82,12 @@ type CreateModelInvocationJobInput struct {
 	// The number of hours after which to force the batch inference job to time out.
 	TimeoutDurationInHours *int32
 
+	// The configuration of the Virtual Private Cloud (VPC) for the data in the batch
+	// inference job. For more information, see [Protect batch inference jobs using a VPC].
+	//
+	// [Protect batch inference jobs using a VPC]: https://docs.aws.amazon.com/bedrock/latest/userguide/batch-vpc
+	VpcConfig *types.VpcConfig
+
 	noSmithyDocumentSerde
 }
 
@@ -142,6 +147,9 @@ func (c *Client) addOperationCreateModelInvocationJobMiddlewares(stack *middlewa
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -158,6 +166,9 @@ func (c *Client) addOperationCreateModelInvocationJobMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateModelInvocationJobMiddleware(stack, options); err != nil {
@@ -182,6 +193,18 @@ func (c *Client) addOperationCreateModelInvocationJobMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

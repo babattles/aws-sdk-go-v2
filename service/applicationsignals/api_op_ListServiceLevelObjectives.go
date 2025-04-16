@@ -29,6 +29,19 @@ func (c *Client) ListServiceLevelObjectives(ctx context.Context, params *ListSer
 
 type ListServiceLevelObjectivesInput struct {
 
+	// Identifies the dependency using the DependencyKeyAttributes and
+	// DependencyOperationName .
+	DependencyConfig *types.DependencyConfig
+
+	// If you are using this operation in a monitoring account, specify true to
+	// include SLO from source accounts in the returned data.
+	//
+	// When you are monitoring an account, you can use Amazon Web Services account ID
+	// in KeyAttribute filter for service source account and SloOwnerawsaccountID for
+	// SLO source account with IncludeLinkedAccounts to filter the returned data to
+	// only a single source account.
+	IncludeLinkedAccounts bool
+
 	// You can use this optional field to specify which services you want to retrieve
 	// SLO information for.
 	//
@@ -53,12 +66,25 @@ type ListServiceLevelObjectivesInput struct {
 	// parameter, the default of 50 is used.
 	MaxResults *int32
 
+	// Use this optional field to only include SLOs with the specified metric source
+	// types in the output. Supported types are:
+	//
+	//   - Service operation
+	//
+	//   - Service dependency
+	//
+	//   - CloudWatch metric
+	MetricSourceTypes []types.MetricSourceType
+
 	// Include this value, if it was returned by the previous operation, to get the
 	// next set of service level objectives.
 	NextToken *string
 
 	// The name of the operation that this SLO is associated with.
 	OperationName *string
+
+	// SLO's Amazon Web Services account ID.
+	SloOwnerAwsAccountId *string
 
 	noSmithyDocumentSerde
 }
@@ -121,6 +147,9 @@ func (c *Client) addOperationListServiceLevelObjectivesMiddlewares(stack *middle
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -139,6 +168,12 @@ func (c *Client) addOperationListServiceLevelObjectivesMiddlewares(stack *middle
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
+	if err = addOpListServiceLevelObjectivesValidationMiddleware(stack); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListServiceLevelObjectives(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -155,6 +190,18 @@ func (c *Client) addOperationListServiceLevelObjectivesMiddlewares(stack *middle
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -11,7 +11,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Updates an set of chat controls configured for an existing Amazon Q Business
+// Updates a set of chat controls configured for an existing Amazon Q Business
 // application.
 func (c *Client) UpdateChatControlsConfiguration(ctx context.Context, params *UpdateChatControlsConfigurationInput, optFns ...func(*Options)) (*UpdateChatControlsConfigurationOutput, error) {
 	if params == nil {
@@ -44,6 +44,9 @@ type UpdateChatControlsConfigurationInput struct {
 
 	// The configuration details for CREATOR_MODE .
 	CreatorModeConfiguration *types.CreatorModeConfiguration
+
+	//  The chat response orchestration settings for your application.
+	OrchestrationConfiguration *types.OrchestrationConfiguration
 
 	// The response scope configured for your application. This determines whether
 	// your application uses its retrieval augmented generation (RAG) system to
@@ -110,6 +113,9 @@ func (c *Client) addOperationUpdateChatControlsConfigurationMiddlewares(stack *m
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -126,6 +132,9 @@ func (c *Client) addOperationUpdateChatControlsConfigurationMiddlewares(stack *m
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opUpdateChatControlsConfigurationMiddleware(stack, options); err != nil {
@@ -150,6 +159,18 @@ func (c *Client) addOperationUpdateChatControlsConfigurationMiddlewares(stack *m
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -94,6 +94,8 @@ type CreateDBInstanceInput struct {
 	//
 	//   - custom-sqlserver-web (for RDS Custom for SQL Server DB instances)
 	//
+	//   - custom-sqlserver-dev (for RDS Custom for SQL Server DB instances)
+	//
 	//   - db2-ae
 	//
 	//   - db2-se
@@ -339,6 +341,9 @@ type CreateDBInstanceInput struct {
 	//
 	//   - Must contain 1 to 64 alphanumeric characters.
 	//
+	//   - Must begin with a letter. Subsequent characters can be letters,
+	//   underscores, or digits (0-9).
+	//
 	//   - Can't be a word reserved by the database engine.
 	//
 	// Amazon Aurora PostgreSQL The name of the database to create when the primary DB
@@ -466,8 +471,6 @@ type CreateDBInstanceInput struct {
 	//
 	//   - Must match the name of an existing DB subnet group.
 	//
-	//   - Must not be default .
-	//
 	// Example: mydbsubnetgroup
 	DBSubnetGroupName *string
 
@@ -477,6 +480,12 @@ type CreateDBInstanceInput struct {
 	// background processes. If you don't specify a SID, the value defaults to RDSCDB .
 	// The Oracle SID is also the name of your CDB.
 	DBSystemId *string
+
+	// The mode of Database Insights to enable for the DB instance.
+	//
+	// Aurora DB instances inherit this value from the DB cluster, so you can't change
+	// this value.
+	DatabaseInsightsMode types.DatabaseInsightsMode
 
 	// Indicates whether the DB instance has a dedicated log volume (DLV) enabled.
 	DedicatedLogVolume *bool
@@ -567,17 +576,17 @@ type CreateDBInstanceInput struct {
 	//
 	// The following values are valid for each DB engine:
 	//
-	//   - RDS for Db2 - diag.log | notify.log
+	//   - RDS for Db2 - diag.log | notify.log | iam-db-auth-error
 	//
-	//   - RDS for MariaDB - audit | error | general | slowquery
+	//   - RDS for MariaDB - audit | error | general | slowquery | iam-db-auth-error
 	//
 	//   - RDS for Microsoft SQL Server - agent | error
 	//
-	//   - RDS for MySQL - audit | error | general | slowquery
+	//   - RDS for MySQL - audit | error | general | slowquery | iam-db-auth-error
 	//
 	//   - RDS for Oracle - alert | audit | listener | trace | oemagent
 	//
-	//   - RDS for PostgreSQL - postgresql | upgrade
+	//   - RDS for PostgreSQL - postgresql | upgrade | iam-db-auth-error
 	//
 	// [Publishing Database Logs to Amazon CloudWatch Logs]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_LogAccess.html#USER_LogAccess.Procedural.UploadtoCloudWatch
 	EnableCloudwatchLogsExports []string
@@ -730,10 +739,10 @@ type CreateDBInstanceInput struct {
 	// The license model information for this DB instance.
 	//
 	// License models for RDS for Db2 require additional configuration. The Bring Your
-	// Own License (BYOL) model requires a custom parameter group. The Db2 license
-	// through Amazon Web Services Marketplace model requires an Amazon Web Services
-	// Marketplace subscription. For more information, see [RDS for Db2 licensing options]in the Amazon RDS User
-	// Guide.
+	// Own License (BYOL) model requires a custom parameter group and an Amazon Web
+	// Services License Manager self-managed license. The Db2 license through Amazon
+	// Web Services Marketplace model requires an Amazon Web Services Marketplace
+	// subscription. For more information, see [Amazon RDS for Db2 licensing options]in the Amazon RDS User Guide.
 	//
 	// The default for RDS for Db2 is bring-your-own-license .
 	//
@@ -753,7 +762,7 @@ type CreateDBInstanceInput struct {
 	//
 	//   - RDS for PostgreSQL - postgresql-license
 	//
-	// [RDS for Db2 licensing options]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/db2-licensing.html
+	// [Amazon RDS for Db2 licensing options]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/db2-licensing.html
 	LicenseModel *string
 
 	// Specifies whether to manage the master user password with Amazon Web Services
@@ -1093,7 +1102,8 @@ type CreateDBInstanceInput struct {
 	// instances is managed by the DB cluster.
 	StorageEncrypted *bool
 
-	// The storage throughput value for the DB instance.
+	// The storage throughput value, in mebibyte per second (MiBps), for the DB
+	// instance.
 	//
 	// This setting applies only to the gp3 storage type.
 	//
@@ -1110,7 +1120,7 @@ type CreateDBInstanceInput struct {
 	//
 	// Valid Values: gp2 | gp3 | io1 | io2 | standard
 	//
-	// Default: io1 , if the Iops parameter is specified. Otherwise, gp2 .
+	// Default: io1 , if the Iops parameter is specified. Otherwise, gp3 .
 	StorageType *string
 
 	// Tags to assign to the DB instance.
@@ -1205,6 +1215,9 @@ func (c *Client) addOperationCreateDBInstanceMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -1221,6 +1234,9 @@ func (c *Client) addOperationCreateDBInstanceMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateDBInstanceValidationMiddleware(stack); err != nil {
@@ -1242,6 +1258,18 @@ func (c *Client) addOperationCreateDBInstanceMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

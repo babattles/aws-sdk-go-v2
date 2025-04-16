@@ -11,13 +11,9 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-//	This operation has been expanded to use with the Amazon GameLift containers
-//
-// feature, which is currently in public preview.
-//
-// Adds remote locations to an EC2 or container fleet and begins populating the
-// new locations with instances. The new instances conform to the fleet's instance
-// type, auto-scaling, and other configuration settings.
+// Adds remote locations to an EC2 and begins populating the new locations with
+// instances. The new instances conform to the fleet's instance type, auto-scaling,
+// and other configuration settings.
 //
 // You can't add remote locations to a fleet that resides in an Amazon Web
 // Services Region that doesn't support multiple locations. Fleets created prior to
@@ -35,10 +31,13 @@ import (
 //
 // [Setting up fleets]
 //
-// [Multi-location fleets]
+// [Update fleet locations]
+//
+// [Amazon GameLift service locations]for managed hosting.
 //
 // [DescribeFleetEvents]: https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeFleetEvents.html
-// [Multi-location fleets]: https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-intro.html
+// [Amazon GameLift service locations]: https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-regions.html
+// [Update fleet locations]: https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-editing.html#fleets-update-locations
 // [Setting up fleets]: https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-intro.html
 func (c *Client) CreateFleetLocations(ctx context.Context, params *CreateFleetLocationsInput, optFns ...func(*Options)) (*CreateFleetLocationsOutput, error) {
 	if params == nil {
@@ -142,6 +141,9 @@ func (c *Client) addOperationCreateFleetLocationsMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -158,6 +160,9 @@ func (c *Client) addOperationCreateFleetLocationsMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateFleetLocationsValidationMiddleware(stack); err != nil {
@@ -179,6 +184,18 @@ func (c *Client) addOperationCreateFleetLocationsMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

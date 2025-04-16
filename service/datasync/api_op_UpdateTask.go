@@ -38,6 +38,15 @@ type UpdateTaskInput struct {
 
 	// Specifies the Amazon Resource Name (ARN) of an Amazon CloudWatch log group for
 	// monitoring your task.
+	//
+	// For Enhanced mode tasks, you must use /aws/datasync as your log group name. For
+	// example:
+	//
+	//     arn:aws:logs:us-east-1:111222333444:log-group:/aws/datasync:*
+	//
+	// For more information, see [Monitoring data transfers with CloudWatch Logs].
+	//
+	// [Monitoring data transfers with CloudWatch Logs]: https://docs.aws.amazon.com/datasync/latest/userguide/configure-logging.html
 	CloudWatchLogGroupArn *string
 
 	// Specifies exclude filters that define the files, objects, and folders in your
@@ -156,6 +165,9 @@ func (c *Client) addOperationUpdateTaskMiddlewares(stack *middleware.Stack, opti
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -172,6 +184,9 @@ func (c *Client) addOperationUpdateTaskMiddlewares(stack *middleware.Stack, opti
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateTaskValidationMiddleware(stack); err != nil {
@@ -193,6 +208,18 @@ func (c *Client) addOperationUpdateTaskMiddlewares(stack *middleware.Stack, opti
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

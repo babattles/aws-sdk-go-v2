@@ -35,12 +35,17 @@ func (c *Client) GetMemberDetectors(ctx context.Context, params *GetMemberDetect
 
 type GetMemberDetectorsInput struct {
 
-	// The account ID of the member account.
+	// A list of member account IDs.
 	//
 	// This member is required.
 	AccountIds []string
 
 	// The detector ID for the administrator account.
+	//
+	// To find the detectorId in the current Region, see the Settings page in the
+	// GuardDuty console, or run the [ListDetectors]API.
+	//
+	// [ListDetectors]: https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html
 	//
 	// This member is required.
 	DetectorId *string
@@ -110,6 +115,9 @@ func (c *Client) addOperationGetMemberDetectorsMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -126,6 +134,9 @@ func (c *Client) addOperationGetMemberDetectorsMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetMemberDetectorsValidationMiddleware(stack); err != nil {
@@ -147,6 +158,18 @@ func (c *Client) addOperationGetMemberDetectorsMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -97,6 +97,8 @@ const (
 	AMITypesCustom                  AMITypes = "CUSTOM"
 	AMITypesBottlerocketArm64       AMITypes = "BOTTLEROCKET_ARM_64"
 	AMITypesBottlerocketX8664       AMITypes = "BOTTLEROCKET_x86_64"
+	AMITypesBottlerocketArm64Fips   AMITypes = "BOTTLEROCKET_ARM_64_FIPS"
+	AMITypesBottlerocketX8664Fips   AMITypes = "BOTTLEROCKET_x86_64_FIPS"
 	AMITypesBottlerocketArm64Nvidia AMITypes = "BOTTLEROCKET_ARM_64_NVIDIA"
 	AMITypesBottlerocketX8664Nvidia AMITypes = "BOTTLEROCKET_x86_64_NVIDIA"
 	AMITypesWindowsCore2019X8664    AMITypes = "WINDOWS_CORE_2019_x86_64"
@@ -121,6 +123,8 @@ func (AMITypes) Values() []AMITypes {
 		"CUSTOM",
 		"BOTTLEROCKET_ARM_64",
 		"BOTTLEROCKET_x86_64",
+		"BOTTLEROCKET_ARM_64_FIPS",
+		"BOTTLEROCKET_x86_64_FIPS",
 		"BOTTLEROCKET_ARM_64_NVIDIA",
 		"BOTTLEROCKET_x86_64_NVIDIA",
 		"WINDOWS_CORE_2019_x86_64",
@@ -270,6 +274,27 @@ func (ClusterStatus) Values() []ClusterStatus {
 		"FAILED",
 		"UPDATING",
 		"PENDING",
+	}
+}
+
+type ClusterVersionStatus string
+
+// Enum values for ClusterVersionStatus
+const (
+	ClusterVersionStatusUnsupported     ClusterVersionStatus = "unsupported"
+	ClusterVersionStatusStandardSupport ClusterVersionStatus = "standard-support"
+	ClusterVersionStatusExtendedSupport ClusterVersionStatus = "extended-support"
+)
+
+// Values returns all known values for ClusterVersionStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ClusterVersionStatus) Values() []ClusterVersionStatus {
+	return []ClusterVersionStatus{
+		"unsupported",
+		"standard-support",
+		"extended-support",
 	}
 }
 
@@ -594,6 +619,7 @@ const (
 	NodegroupIssueCodeAutoScalingGroupInstanceRefreshActive    NodegroupIssueCode = "AutoScalingGroupInstanceRefreshActive"
 	NodegroupIssueCodeKubernetesLabelInvalid                   NodegroupIssueCode = "KubernetesLabelInvalid"
 	NodegroupIssueCodeEc2LaunchTemplateVersionMaxLimitExceeded NodegroupIssueCode = "Ec2LaunchTemplateVersionMaxLimitExceeded"
+	NodegroupIssueCodeEc2InstanceTypeDoesNotExist              NodegroupIssueCode = "Ec2InstanceTypeDoesNotExist"
 )
 
 // Values returns all known values for NodegroupIssueCode. Note that this can be
@@ -637,6 +663,7 @@ func (NodegroupIssueCode) Values() []NodegroupIssueCode {
 		"AutoScalingGroupInstanceRefreshActive",
 		"KubernetesLabelInvalid",
 		"Ec2LaunchTemplateVersionMaxLimitExceeded",
+		"Ec2InstanceTypeDoesNotExist",
 	}
 }
 
@@ -666,6 +693,25 @@ func (NodegroupStatus) Values() []NodegroupStatus {
 		"CREATE_FAILED",
 		"DELETE_FAILED",
 		"DEGRADED",
+	}
+}
+
+type NodegroupUpdateStrategies string
+
+// Enum values for NodegroupUpdateStrategies
+const (
+	NodegroupUpdateStrategiesDefault NodegroupUpdateStrategies = "DEFAULT"
+	NodegroupUpdateStrategiesMinimal NodegroupUpdateStrategies = "MINIMAL"
+)
+
+// Values returns all known values for NodegroupUpdateStrategies. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (NodegroupUpdateStrategies) Values() []NodegroupUpdateStrategies {
+	return []NodegroupUpdateStrategies{
+		"DEFAULT",
+		"MINIMAL",
 	}
 }
 
@@ -757,12 +803,19 @@ const (
 	UpdateParamTypeResolveConflicts         UpdateParamType = "ResolveConflicts"
 	UpdateParamTypeMaxUnavailable           UpdateParamType = "MaxUnavailable"
 	UpdateParamTypeMaxUnavailablePercentage UpdateParamType = "MaxUnavailablePercentage"
+	UpdateParamTypeNodeRepairEnabled        UpdateParamType = "NodeRepairEnabled"
+	UpdateParamTypeUpdateStrategy           UpdateParamType = "UpdateStrategy"
 	UpdateParamTypeConfigurationValues      UpdateParamType = "ConfigurationValues"
 	UpdateParamTypeSecurityGroups           UpdateParamType = "SecurityGroups"
 	UpdateParamTypeSubnets                  UpdateParamType = "Subnets"
 	UpdateParamTypeAuthenticationMode       UpdateParamType = "AuthenticationMode"
 	UpdateParamTypePodIdentityAssociations  UpdateParamType = "PodIdentityAssociations"
 	UpdateParamTypeUpgradePolicy            UpdateParamType = "UpgradePolicy"
+	UpdateParamTypeZonalShiftConfig         UpdateParamType = "ZonalShiftConfig"
+	UpdateParamTypeComputeConfig            UpdateParamType = "ComputeConfig"
+	UpdateParamTypeStorageConfig            UpdateParamType = "StorageConfig"
+	UpdateParamTypeKubernetesNetworkConfig  UpdateParamType = "KubernetesNetworkConfig"
+	UpdateParamTypeRemoteNetworkConfig      UpdateParamType = "RemoteNetworkConfig"
 )
 
 // Values returns all known values for UpdateParamType. Note that this can be
@@ -794,12 +847,19 @@ func (UpdateParamType) Values() []UpdateParamType {
 		"ResolveConflicts",
 		"MaxUnavailable",
 		"MaxUnavailablePercentage",
+		"NodeRepairEnabled",
+		"UpdateStrategy",
 		"ConfigurationValues",
 		"SecurityGroups",
 		"Subnets",
 		"AuthenticationMode",
 		"PodIdentityAssociations",
 		"UpgradePolicy",
+		"ZonalShiftConfig",
+		"ComputeConfig",
+		"StorageConfig",
+		"KubernetesNetworkConfig",
+		"RemoteNetworkConfig",
 	}
 }
 
@@ -841,6 +901,9 @@ const (
 	UpdateTypeVpcConfigUpdate                    UpdateType = "VpcConfigUpdate"
 	UpdateTypeAccessConfigUpdate                 UpdateType = "AccessConfigUpdate"
 	UpdateTypeUpgradePolicyUpdate                UpdateType = "UpgradePolicyUpdate"
+	UpdateTypeZonalShiftConfigUpdate             UpdateType = "ZonalShiftConfigUpdate"
+	UpdateTypeAutoModeUpdate                     UpdateType = "AutoModeUpdate"
+	UpdateTypeRemoteNetworkConfigUpdate          UpdateType = "RemoteNetworkConfigUpdate"
 )
 
 // Values returns all known values for UpdateType. Note that this can be expanded
@@ -860,5 +923,29 @@ func (UpdateType) Values() []UpdateType {
 		"VpcConfigUpdate",
 		"AccessConfigUpdate",
 		"UpgradePolicyUpdate",
+		"ZonalShiftConfigUpdate",
+		"AutoModeUpdate",
+		"RemoteNetworkConfigUpdate",
+	}
+}
+
+type VersionStatus string
+
+// Enum values for VersionStatus
+const (
+	VersionStatusUnsupported     VersionStatus = "UNSUPPORTED"
+	VersionStatusStandardSupport VersionStatus = "STANDARD_SUPPORT"
+	VersionStatusExtendedSupport VersionStatus = "EXTENDED_SUPPORT"
+)
+
+// Values returns all known values for VersionStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (VersionStatus) Values() []VersionStatus {
+	return []VersionStatus{
+		"UNSUPPORTED",
+		"STANDARD_SUPPORT",
+		"EXTENDED_SUPPORT",
 	}
 }

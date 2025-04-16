@@ -10,14 +10,35 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-//	This operation is used with the Amazon GameLift containers feature, which is
+// Deletes a container group definition.
 //
-// currently in public preview.
+// Request options:
 //
-// Deletes a container group definition resource. You can delete a container group
-// definition if there are no fleets using the definition.
+//   - Delete an entire container group definition, including all versions.
+//     Specify the container group definition name, or use an ARN value without the
+//     version number.
 //
-// To delete a container group definition, identify the resource to delete.
+//   - Delete a particular version. Specify the container group definition name
+//     and a version number, or use an ARN value that includes the version number.
+//
+//   - Keep the newest versions and delete all older versions. Specify the
+//     container group definition name and the number of versions to retain. For
+//     example, set VersionCountToRetain to 5 to delete all but the five most recent
+//     versions.
+//
+// # Result
+//
+// If successful, Amazon GameLift removes the container group definition versions
+// that you request deletion for. This request will fail for any requested versions
+// if the following is true:
+//
+//   - If the version is being used in an active fleet
+//
+//   - If the version is being deployed to a fleet in a deployment that's
+//     currently in progress.
+//
+//   - If the version is designated as a rollback definition in a fleet deployment
+//     that's currently in progress.
 //
 // # Learn more
 //
@@ -46,6 +67,12 @@ type DeleteContainerGroupDefinitionInput struct {
 	//
 	// This member is required.
 	Name *string
+
+	// The number of most recent versions to keep while deleting all older versions.
+	VersionCountToRetain *int32
+
+	// The specific version to delete.
+	VersionNumber *int32
 
 	noSmithyDocumentSerde
 }
@@ -100,6 +127,9 @@ func (c *Client) addOperationDeleteContainerGroupDefinitionMiddlewares(stack *mi
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -116,6 +146,9 @@ func (c *Client) addOperationDeleteContainerGroupDefinitionMiddlewares(stack *mi
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteContainerGroupDefinitionValidationMiddleware(stack); err != nil {
@@ -137,6 +170,18 @@ func (c *Client) addOperationDeleteContainerGroupDefinitionMiddlewares(stack *mi
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

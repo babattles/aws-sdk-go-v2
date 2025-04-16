@@ -21,15 +21,15 @@ import (
 //
 // When the reboot is complete, a cluster event is created.
 //
-// Rebooting a cluster is currently supported on Memcached and Redis OSS (cluster
-// mode disabled) clusters. Rebooting is not supported on Redis OSS (cluster mode
-// enabled) clusters.
+// Rebooting a cluster is currently supported on Memcached, Valkey and Redis OSS
+// (cluster mode disabled) clusters. Rebooting is not supported on Valkey or Redis
+// OSS (cluster mode enabled) clusters.
 //
-// If you make changes to parameters that require a Redis OSS (cluster mode
-// enabled) cluster reboot for the changes to be applied, see [Rebooting a Cluster]for an alternate
-// process.
+// If you make changes to parameters that require a Valkey or Redis OSS (cluster
+// mode enabled) cluster reboot for the changes to be applied, see [Rebooting a Cluster]for an
+// alternate process.
 //
-// [Rebooting a Cluster]: http://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/nodes.rebooting.html
+// [Rebooting a Cluster]: http://docs.aws.amazon.com/AmazonElastiCache/latest/dg/nodes.rebooting.html
 func (c *Client) RebootCacheCluster(ctx context.Context, params *RebootCacheClusterInput, optFns ...func(*Options)) (*RebootCacheClusterOutput, error) {
 	if params == nil {
 		params = &RebootCacheClusterInput{}
@@ -116,6 +116,9 @@ func (c *Client) addOperationRebootCacheClusterMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -132,6 +135,9 @@ func (c *Client) addOperationRebootCacheClusterMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpRebootCacheClusterValidationMiddleware(stack); err != nil {
@@ -153,6 +159,18 @@ func (c *Client) addOperationRebootCacheClusterMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

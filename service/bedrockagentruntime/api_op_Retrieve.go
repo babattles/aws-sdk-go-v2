@@ -39,6 +39,9 @@ type RetrieveInput struct {
 	// This member is required.
 	RetrievalQuery *types.KnowledgeBaseQuery
 
+	// Guardrail settings.
+	GuardrailConfiguration *types.GuardrailConfiguration
+
 	// If there are more results than can fit in the response, the response returns a
 	// nextToken . Use this token in the nextToken field of another request to
 	// retrieve the next batch of results.
@@ -59,6 +62,9 @@ type RetrieveOutput struct {
 	//
 	// This member is required.
 	RetrievalResults []types.KnowledgeBaseRetrievalResult
+
+	// Specifies if there is a guardrail intervention in the response.
+	GuardrailAction types.GuadrailAction
 
 	// If there are more results than can fit in the response, the response returns a
 	// nextToken . Use this token in the nextToken field of another request to
@@ -114,6 +120,9 @@ func (c *Client) addOperationRetrieveMiddlewares(stack *middleware.Stack, option
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -130,6 +139,9 @@ func (c *Client) addOperationRetrieveMiddlewares(stack *middleware.Stack, option
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpRetrieveValidationMiddleware(stack); err != nil {
@@ -151,6 +163,18 @@ func (c *Client) addOperationRetrieveMiddlewares(stack *middleware.Stack, option
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -69,8 +69,7 @@ type CreateReportPlanInput struct {
 	// An optional description of the report plan with a maximum of 1,024 characters.
 	ReportPlanDescription *string
 
-	// Metadata that you can assign to help organize the report plans that you create.
-	// Each tag is a key-value pair.
+	// The tags to assign to the report plan.
 	ReportPlanTags map[string]string
 
 	noSmithyDocumentSerde
@@ -140,6 +139,9 @@ func (c *Client) addOperationCreateReportPlanMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -156,6 +158,9 @@ func (c *Client) addOperationCreateReportPlanMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateReportPlanMiddleware(stack, options); err != nil {
@@ -180,6 +185,18 @@ func (c *Client) addOperationCreateReportPlanMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

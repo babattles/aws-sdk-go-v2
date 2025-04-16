@@ -12,9 +12,9 @@ import (
 )
 
 // Creates a definition for a job that monitors model quality and drift. For
-// information about model monitor, see [Amazon SageMaker Model Monitor].
+// information about model monitor, see [Amazon SageMaker AI Model Monitor].
 //
-// [Amazon SageMaker Model Monitor]: https://docs.aws.amazon.com/sagemaker/latest/dg/model-monitor.html
+// [Amazon SageMaker AI Model Monitor]: https://docs.aws.amazon.com/sagemaker/latest/dg/model-monitor.html
 func (c *Client) CreateModelQualityJobDefinition(ctx context.Context, params *CreateModelQualityJobDefinitionInput, optFns ...func(*Options)) (*CreateModelQualityJobDefinitionOutput, error) {
 	if params == nil {
 		params = &CreateModelQualityJobDefinitionInput{}
@@ -57,8 +57,8 @@ type CreateModelQualityJobDefinitionInput struct {
 	// This member is required.
 	ModelQualityJobOutputConfig *types.MonitoringOutputConfig
 
-	// The Amazon Resource Name (ARN) of an IAM role that Amazon SageMaker can assume
-	// to perform tasks on your behalf.
+	// The Amazon Resource Name (ARN) of an IAM role that Amazon SageMaker AI can
+	// assume to perform tasks on your behalf.
 	//
 	// This member is required.
 	RoleArn *string
@@ -137,6 +137,9 @@ func (c *Client) addOperationCreateModelQualityJobDefinitionMiddlewares(stack *m
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -153,6 +156,9 @@ func (c *Client) addOperationCreateModelQualityJobDefinitionMiddlewares(stack *m
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateModelQualityJobDefinitionValidationMiddleware(stack); err != nil {
@@ -174,6 +180,18 @@ func (c *Client) addOperationCreateModelQualityJobDefinitionMiddlewares(stack *m
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

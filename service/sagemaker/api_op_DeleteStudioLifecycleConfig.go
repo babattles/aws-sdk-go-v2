@@ -10,9 +10,9 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Deletes the Amazon SageMaker Studio Lifecycle Configuration. In order to delete
-// the Lifecycle Configuration, there must be no running apps using the Lifecycle
-// Configuration. You must also remove the Lifecycle Configuration from
+// Deletes the Amazon SageMaker AI Studio Lifecycle Configuration. In order to
+// delete the Lifecycle Configuration, there must be no running apps using the
+// Lifecycle Configuration. You must also remove the Lifecycle Configuration from
 // UserSettings in all Domains and UserProfiles.
 func (c *Client) DeleteStudioLifecycleConfig(ctx context.Context, params *DeleteStudioLifecycleConfigInput, optFns ...func(*Options)) (*DeleteStudioLifecycleConfigOutput, error) {
 	if params == nil {
@@ -31,7 +31,7 @@ func (c *Client) DeleteStudioLifecycleConfig(ctx context.Context, params *Delete
 
 type DeleteStudioLifecycleConfigInput struct {
 
-	// The name of the Amazon SageMaker Studio Lifecycle Configuration to delete.
+	// The name of the Amazon SageMaker AI Studio Lifecycle Configuration to delete.
 	//
 	// This member is required.
 	StudioLifecycleConfigName *string
@@ -89,6 +89,9 @@ func (c *Client) addOperationDeleteStudioLifecycleConfigMiddlewares(stack *middl
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -105,6 +108,9 @@ func (c *Client) addOperationDeleteStudioLifecycleConfigMiddlewares(stack *middl
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteStudioLifecycleConfigValidationMiddleware(stack); err != nil {
@@ -126,6 +132,18 @@ func (c *Client) addOperationDeleteStudioLifecycleConfigMiddlewares(stack *middl
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -10,16 +10,15 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Deletes the configuration recorder.
+// Deletes the customer managed configuration recorder.
 //
-// After the configuration recorder is deleted, Config will not record resource
-// configuration changes until you create a new configuration recorder.
+// This operation does not delete the configuration information that was
+// previously recorded. You will be able to access the previously recorded
+// information by using the [GetResourceConfigHistory]operation, but you will not be able to access this
+// information in the Config console until you have created a new customer managed
+// configuration recorder.
 //
-// This action does not delete the configuration information that was previously
-// recorded. You will be able to access the previously recorded information by
-// using the GetResourceConfigHistory action, but you will not be able to access
-// this information in the Config console until you create a new configuration
-// recorder.
+// [GetResourceConfigHistory]: https://docs.aws.amazon.com/config/latest/APIReference/API_GetResourceConfigHistory.html
 func (c *Client) DeleteConfigurationRecorder(ctx context.Context, params *DeleteConfigurationRecorderInput, optFns ...func(*Options)) (*DeleteConfigurationRecorderOutput, error) {
 	if params == nil {
 		params = &DeleteConfigurationRecorderInput{}
@@ -35,12 +34,14 @@ func (c *Client) DeleteConfigurationRecorder(ctx context.Context, params *Delete
 	return out, nil
 }
 
-// The request object for the DeleteConfigurationRecorder action.
+// The request object for the DeleteConfigurationRecorder operation.
 type DeleteConfigurationRecorderInput struct {
 
-	// The name of the configuration recorder to be deleted. You can retrieve the name
-	// of your configuration recorder by using the DescribeConfigurationRecorders
-	// action.
+	// The name of the customer managed configuration recorder that you want to
+	// delete. You can retrieve the name of your configuration recorders by using the [DescribeConfigurationRecorders]
+	// operation.
+	//
+	// [DescribeConfigurationRecorders]: https://docs.aws.amazon.com/config/latest/APIReference/API_DescribeConfigurationRecorders.html
 	//
 	// This member is required.
 	ConfigurationRecorderName *string
@@ -98,6 +99,9 @@ func (c *Client) addOperationDeleteConfigurationRecorderMiddlewares(stack *middl
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -114,6 +118,9 @@ func (c *Client) addOperationDeleteConfigurationRecorderMiddlewares(stack *middl
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteConfigurationRecorderValidationMiddleware(stack); err != nil {
@@ -135,6 +142,18 @@ func (c *Client) addOperationDeleteConfigurationRecorderMiddlewares(stack *middl
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

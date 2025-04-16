@@ -11,6 +11,9 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
+// You cannot find traces through this API if Transaction Search is enabled since
+// trace is not indexed in X-Ray.
+//
 // Retrieves a list of traces specified by ID. Each trace is a collection of
 // segment documents that originates from a single request. Use GetTraceSummaries
 // to get a list of trace IDs.
@@ -102,6 +105,9 @@ func (c *Client) addOperationBatchGetTracesMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -118,6 +124,9 @@ func (c *Client) addOperationBatchGetTracesMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpBatchGetTracesValidationMiddleware(stack); err != nil {
@@ -139,6 +148,18 @@ func (c *Client) addOperationBatchGetTracesMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

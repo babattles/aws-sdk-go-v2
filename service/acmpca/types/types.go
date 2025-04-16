@@ -353,6 +353,27 @@ type CrlConfiguration struct {
 	// the default CRL URL.
 	CrlDistributionPointExtensionConfiguration *CrlDistributionPointExtensionConfiguration
 
+	// Specifies whether to create a complete or partitioned CRL. This setting
+	// determines the maximum number of certificates that the certificate authority can
+	// issue and revoke. For more information, see Amazon Web Services Private CA quotas.
+	//
+	//   - COMPLETE - The default setting. Amazon Web Services Private CA maintains a
+	//   single CRL ﬁle for all unexpired certiﬁcates issued by a CA that have been
+	//   revoked for any reason. Each certiﬁcate that Amazon Web Services Private CA
+	//   issues is bound to a speciﬁc CRL through its CRL distribution point (CDP)
+	//   extension, deﬁned in [RFC 5280].
+	//
+	//   - PARTITIONED - Compared to complete CRLs, partitioned CRLs dramatically
+	//   increase the number of certiﬁcates your private CA can issue.
+	//
+	// When using partitioned CRLs, you must validate that the CRL's associated
+	//   issuing distribution point (IDP) URI matches the certiﬁcate's CDP URI to ensure
+	//   the right CRL has been fetched. Amazon Web Services Private CA marks the IDP
+	//   extension as critical, which your client must be able to process.
+	//
+	// [RFC 5280]: https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.9
+	CrlType CrlType
+
 	// Name inserted into the certificate CRL Distribution Points extension that
 	// enables the use of an alias for the CRL distribution point. Use this value if
 	// you don't want the name of your S3 bucket to be public.
@@ -363,6 +384,10 @@ type CrlConfiguration struct {
 	//
 	// [RFC2396]: https://www.ietf.org/rfc/rfc2396.txt
 	CustomCname *string
+
+	// Designates a custom ﬁle path in S3 for CRL(s). For example,
+	// http://<CustomName>/ <CustomPath>/<CrlPartition_GUID>.crl .
+	CustomPath *string
 
 	// Validity period of the CRL in days.
 	ExpirationInDays *int32

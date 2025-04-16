@@ -32,6 +32,9 @@ type DescribeInstanceProfilesInput struct {
 
 	// Filters applied to the instance profiles described in the form of key-value
 	// pairs.
+	//
+	// Valid filter names and values: instance-profile-identifier, instance profile
+	// arn or name
 	Filters []types.Filter
 
 	// Specifies the unique pagination token that makes it possible to display the
@@ -116,6 +119,9 @@ func (c *Client) addOperationDescribeInstanceProfilesMiddlewares(stack *middlewa
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -132,6 +138,9 @@ func (c *Client) addOperationDescribeInstanceProfilesMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeInstanceProfilesValidationMiddleware(stack); err != nil {
@@ -153,6 +162,18 @@ func (c *Client) addOperationDescribeInstanceProfilesMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

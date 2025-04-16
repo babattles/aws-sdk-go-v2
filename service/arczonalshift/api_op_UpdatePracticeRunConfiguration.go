@@ -51,7 +51,7 @@ type UpdatePracticeRunConfigurationInput struct {
 	BlockedDates []string
 
 	// Add, change, or remove windows of days and times for when you can, optionally,
-	// block Route 53 ARC from starting a practice run for a resource.
+	// block ARC from starting a practice run for a resource.
 	//
 	// The format for blocked windows is: DAY:HH:SS-DAY:HH:SS. Keep in mind, when you
 	// specify dates, that dates and times for practice runs are in UTC. Also, be aware
@@ -147,6 +147,9 @@ func (c *Client) addOperationUpdatePracticeRunConfigurationMiddlewares(stack *mi
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -163,6 +166,9 @@ func (c *Client) addOperationUpdatePracticeRunConfigurationMiddlewares(stack *mi
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdatePracticeRunConfigurationValidationMiddleware(stack); err != nil {
@@ -184,6 +190,18 @@ func (c *Client) addOperationUpdatePracticeRunConfigurationMiddlewares(stack *mi
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

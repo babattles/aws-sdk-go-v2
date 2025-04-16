@@ -2,6 +2,29 @@
 
 package types
 
+type AcceleratorName string
+
+// Enum values for AcceleratorName
+const (
+	AcceleratorNameT4   AcceleratorName = "t4"
+	AcceleratorNameA10g AcceleratorName = "a10g"
+	AcceleratorNameL4   AcceleratorName = "l4"
+	AcceleratorNameL40s AcceleratorName = "l40s"
+)
+
+// Values returns all known values for AcceleratorName. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AcceleratorName) Values() []AcceleratorName {
+	return []AcceleratorName{
+		"t4",
+		"a10g",
+		"l4",
+		"l40s",
+	}
+}
+
 type AcceleratorType string
 
 // Enum values for AcceleratorType
@@ -669,6 +692,29 @@ func (QueueFleetAssociationStatus) Values() []QueueFleetAssociationStatus {
 	}
 }
 
+type QueueLimitAssociationStatus string
+
+// Enum values for QueueLimitAssociationStatus
+const (
+	QueueLimitAssociationStatusActive                         QueueLimitAssociationStatus = "ACTIVE"
+	QueueLimitAssociationStatusStopLimitUsageAndCompleteTasks QueueLimitAssociationStatus = "STOP_LIMIT_USAGE_AND_COMPLETE_TASKS"
+	QueueLimitAssociationStatusStopLimitUsageAndCancelTasks   QueueLimitAssociationStatus = "STOP_LIMIT_USAGE_AND_CANCEL_TASKS"
+	QueueLimitAssociationStatusStopped                        QueueLimitAssociationStatus = "STOPPED"
+)
+
+// Values returns all known values for QueueLimitAssociationStatus. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (QueueLimitAssociationStatus) Values() []QueueLimitAssociationStatus {
+	return []QueueLimitAssociationStatus{
+		"ACTIVE",
+		"STOP_LIMIT_USAGE_AND_COMPLETE_TASKS",
+		"STOP_LIMIT_USAGE_AND_CANCEL_TASKS",
+		"STOPPED",
+	}
+}
+
 type QueueStatus string
 
 // Enum values for QueueStatus
@@ -706,6 +752,25 @@ func (RunAs) Values() []RunAs {
 	return []RunAs{
 		"QUEUE_CONFIGURED_USER",
 		"WORKER_AGENT_USER",
+	}
+}
+
+type SearchTermMatchingType string
+
+// Enum values for SearchTermMatchingType
+const (
+	SearchTermMatchingTypeFuzzyMatch SearchTermMatchingType = "FUZZY_MATCH"
+	SearchTermMatchingTypeContains   SearchTermMatchingType = "CONTAINS"
+)
+
+// Values returns all known values for SearchTermMatchingType. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (SearchTermMatchingType) Values() []SearchTermMatchingType {
+	return []SearchTermMatchingType{
+		"FUZZY_MATCH",
+		"CONTAINS",
 	}
 }
 
@@ -1090,6 +1155,28 @@ func (UpdateQueueFleetAssociationStatus) Values() []UpdateQueueFleetAssociationS
 		"ACTIVE",
 		"STOP_SCHEDULING_AND_COMPLETE_TASKS",
 		"STOP_SCHEDULING_AND_CANCEL_TASKS",
+	}
+}
+
+type UpdateQueueLimitAssociationStatus string
+
+// Enum values for UpdateQueueLimitAssociationStatus
+const (
+	UpdateQueueLimitAssociationStatusActive                         UpdateQueueLimitAssociationStatus = "ACTIVE"
+	UpdateQueueLimitAssociationStatusStopLimitUsageAndCompleteTasks UpdateQueueLimitAssociationStatus = "STOP_LIMIT_USAGE_AND_COMPLETE_TASKS"
+	UpdateQueueLimitAssociationStatusStopLimitUsageAndCancelTasks   UpdateQueueLimitAssociationStatus = "STOP_LIMIT_USAGE_AND_CANCEL_TASKS"
+)
+
+// Values returns all known values for UpdateQueueLimitAssociationStatus. Note
+// that this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (UpdateQueueLimitAssociationStatus) Values() []UpdateQueueLimitAssociationStatus {
+	return []UpdateQueueLimitAssociationStatus{
+		"ACTIVE",
+		"STOP_LIMIT_USAGE_AND_COMPLETE_TASKS",
+		"STOP_LIMIT_USAGE_AND_CANCEL_TASKS",
 	}
 }
 

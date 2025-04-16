@@ -122,6 +122,9 @@ type GetOriginEndpointOutput struct {
 	// A low-latency HLS manifest configuration.
 	LowLatencyHlsManifests []types.GetLowLatencyHlsManifestConfiguration
 
+	// The time that the origin endpoint was last reset.
+	ResetAt *time.Time
+
 	// The size of the window (in seconds) to create a window of the live stream
 	// that's available for on-demand viewing. Viewers can start-over or catch-up on
 	// content that falls within the window.
@@ -179,6 +182,9 @@ func (c *Client) addOperationGetOriginEndpointMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -195,6 +201,9 @@ func (c *Client) addOperationGetOriginEndpointMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetOriginEndpointValidationMiddleware(stack); err != nil {
@@ -216,6 +225,18 @@ func (c *Client) addOperationGetOriginEndpointMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -37,7 +37,7 @@ type ListExecutionsInput struct {
 	// This member is required.
 	WorkflowId *string
 
-	// Specifies the maximum number of executions to return.
+	// The maximum number of items to return.
 	MaxResults *int32
 
 	// ListExecutions returns the NextToken parameter in the output. You can then pass
@@ -131,6 +131,9 @@ func (c *Client) addOperationListExecutionsMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -147,6 +150,9 @@ func (c *Client) addOperationListExecutionsMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListExecutionsValidationMiddleware(stack); err != nil {
@@ -170,12 +176,24 @@ func (c *Client) addOperationListExecutionsMiddlewares(stack *middleware.Stack, 
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
+		return err
+	}
 	return nil
 }
 
 // ListExecutionsPaginatorOptions is the paginator options for ListExecutions
 type ListExecutionsPaginatorOptions struct {
-	// Specifies the maximum number of executions to return.
+	// The maximum number of items to return.
 	Limit int32
 
 	// Set to true if pagination should stop if the service returns a pagination token

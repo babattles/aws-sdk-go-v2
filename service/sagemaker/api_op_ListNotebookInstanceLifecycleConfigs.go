@@ -71,8 +71,8 @@ type ListNotebookInstanceLifecycleConfigsInput struct {
 
 type ListNotebookInstanceLifecycleConfigsOutput struct {
 
-	// If the response is truncated, SageMaker returns this token. To get the next set
-	// of lifecycle configurations, use it in the next request.
+	// If the response is truncated, SageMaker AI returns this token. To get the next
+	// set of lifecycle configurations, use it in the next request.
 	NextToken *string
 
 	// An array of NotebookInstanceLifecycleConfiguration objects, each listing a
@@ -128,6 +128,9 @@ func (c *Client) addOperationListNotebookInstanceLifecycleConfigsMiddlewares(sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -146,6 +149,9 @@ func (c *Client) addOperationListNotebookInstanceLifecycleConfigsMiddlewares(sta
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListNotebookInstanceLifecycleConfigs(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -162,6 +168,18 @@ func (c *Client) addOperationListNotebookInstanceLifecycleConfigsMiddlewares(sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

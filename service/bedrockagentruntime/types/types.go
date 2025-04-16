@@ -8,11 +8,46 @@ import (
 	"time"
 )
 
+//	Contains details about the Lambda function containing the business logic that
+//
+// is carried out upon invoking the action or the custom control method for
+// handling the information elicited from the user.
+//
+// The following types satisfy this interface:
+//
+//	ActionGroupExecutorMemberCustomControl
+//	ActionGroupExecutorMemberLambda
+type ActionGroupExecutor interface {
+	isActionGroupExecutor()
+}
+
+//	To return the action group invocation results directly in the InvokeInlineAgent
+//
+// response, specify RETURN_CONTROL .
+type ActionGroupExecutorMemberCustomControl struct {
+	Value CustomControlMethod
+
+	noSmithyDocumentSerde
+}
+
+func (*ActionGroupExecutorMemberCustomControl) isActionGroupExecutor() {}
+
+//	The Amazon Resource Name (ARN) of the Lambda function containing the business
+//
+// logic that is carried out upon invoking the action.
+type ActionGroupExecutorMemberLambda struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*ActionGroupExecutorMemberLambda) isActionGroupExecutor() {}
+
 // Contains information about the action group being invoked. For more information
-// about the possible structures, see the InvocationInput tab in [OrchestrationTrace]in the Amazon
-// Bedrock User Guide.
+// about the possible structures, see the InvocationInput tab in [OrchestrationTrace]in the [Amazon Bedrock User Guide].
 //
 // [OrchestrationTrace]: https://docs.aws.amazon.com/bedrock/latest/userguide/trace-orchestration.html
+// [Amazon Bedrock User Guide]: https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html
 type ActionGroupInvocationInput struct {
 
 	// The name of the action group.
@@ -55,6 +90,146 @@ type ActionGroupInvocationOutput struct {
 	noSmithyDocumentSerde
 }
 
+// Contains details of the inline agent's action group.
+type AgentActionGroup struct {
+
+	//  The name of the action group.
+	//
+	// This member is required.
+	ActionGroupName *string
+
+	//  The Amazon Resource Name (ARN) of the Lambda function containing the business
+	// logic that is carried out upon invoking the action or the custom control method
+	// for handling the information elicited from the user.
+	ActionGroupExecutor ActionGroupExecutor
+
+	//  Contains either details about the S3 object containing the OpenAPI schema for
+	// the action group or the JSON or YAML-formatted payload defining the schema. For
+	// more information, see [Action group OpenAPI schemas].
+	//
+	// [Action group OpenAPI schemas]: https://docs.aws.amazon.com/bedrock/latest/userguide/agents-api-schema.html
+	ApiSchema APISchema
+
+	//  A description of the action group.
+	Description *string
+
+	//  Contains details about the function schema for the action group or the JSON or
+	// YAML-formatted payload defining the schema.
+	FunctionSchema FunctionSchema
+
+	// Specify a built-in or computer use action for this action group. If you specify
+	// a value, you must leave the description , apiSchema , and actionGroupExecutor
+	// fields empty for this action group.
+	//
+	//   - To allow your agent to request the user for additional information when
+	//   trying to complete a task, set this field to AMAZON.UserInput .
+	//
+	//   - To allow your agent to generate, run, and troubleshoot code when trying to
+	//   complete a task, set this field to AMAZON.CodeInterpreter .
+	//
+	//   - To allow your agent to use an Anthropic computer use tool, specify one of
+	//   the following values.
+	//
+	// Computer use is a new Anthropic Claude model capability (in beta) available
+	//   with Anthropic Claude 3.7 Sonnet and Claude 3.5 Sonnet v2 only. When operating
+	//   computer use functionality, we recommend taking additional security precautions,
+	//   such as executing computer actions in virtual environments with restricted data
+	//   access and limited internet connectivity. For more information, see [Configure an Amazon Bedrock Agent to complete tasks with computer use tools].
+	//
+	//   - ANTHROPIC.Computer - Gives the agent permission to use the mouse and
+	//   keyboard and take screenshots.
+	//
+	//   - ANTHROPIC.TextEditor - Gives the agent permission to view, create and edit
+	//   files.
+	//
+	//   - ANTHROPIC.Bash - Gives the agent permission to run commands in a bash shell.
+	//
+	// [Configure an Amazon Bedrock Agent to complete tasks with computer use tools]: https://docs.aws.amazon.com/bedrock/latest/userguide/agent-computer-use.html
+	ParentActionGroupSignature ActionGroupSignature
+
+	//  The configuration settings for a computer use action.
+	//
+	// Computer use is a new Anthropic Claude model capability (in beta) available
+	// with Claude 3.7 Sonnet and Claude 3.5 Sonnet v2 only. For more information, see [Configure an Amazon Bedrock Agent to complete tasks with computer use tools]
+	// .
+	//
+	// [Configure an Amazon Bedrock Agent to complete tasks with computer use tools]: https://docs.aws.amazon.com/bedrock/latest/userguide/agent-computer-use.html
+	ParentActionGroupSignatureParams map[string]string
+
+	noSmithyDocumentSerde
+}
+
+// Input for an agent collaborator. The input can be text or an action invocation
+// result.
+type AgentCollaboratorInputPayload struct {
+
+	// An action invocation result.
+	ReturnControlResults *ReturnControlResults
+
+	// Input text.
+	Text *string
+
+	// The input type.
+	Type PayloadType
+
+	noSmithyDocumentSerde
+}
+
+// An agent collaborator invocation input.
+type AgentCollaboratorInvocationInput struct {
+
+	// The collaborator's alias ARN.
+	AgentCollaboratorAliasArn *string
+
+	// The collaborator's name.
+	AgentCollaboratorName *string
+
+	// Text or action invocation result input for the collaborator.
+	Input *AgentCollaboratorInputPayload
+
+	noSmithyDocumentSerde
+}
+
+// Output from an agent collaborator.
+type AgentCollaboratorInvocationOutput struct {
+
+	// The output's agent collaborator alias ARN.
+	AgentCollaboratorAliasArn *string
+
+	// The output's agent collaborator name.
+	AgentCollaboratorName *string
+
+	// The output's output.
+	Output *AgentCollaboratorOutputPayload
+
+	noSmithyDocumentSerde
+}
+
+// Output from an agent collaborator. The output can be text or an action
+// invocation result.
+type AgentCollaboratorOutputPayload struct {
+
+	// An action invocation result.
+	ReturnControlPayload *ReturnControlPayload
+
+	// Text output.
+	Text *string
+
+	// The type of output.
+	Type PayloadType
+
+	noSmithyDocumentSerde
+}
+
+// An event in which the prompt was analyzed in preparation for optimization.
+type AnalyzePromptEvent struct {
+
+	// A message describing the analysis of the prompt.
+	Message *string
+
+	noSmithyDocumentSerde
+}
+
 // Contains information about the API operation that the agent predicts should be
 // called.
 //
@@ -73,8 +248,14 @@ type ApiInvocationInput struct {
 	// Contains information about the API operation to invoke.
 	ActionInvocationType ActionInvocationType
 
+	// The agent's ID.
+	AgentId *string
+
 	// The path to the API operation.
 	ApiPath *string
+
+	// The agent collaborator's name.
+	CollaboratorName *string
 
 	// The HTTP method of the API operation.
 	HttpMethod *string
@@ -143,6 +324,9 @@ type ApiResult struct {
 	// This member is required.
 	ActionGroup *string
 
+	// The agent's ID.
+	AgentId *string
+
 	// The path to the API operation.
 	ApiPath *string
 
@@ -170,6 +354,44 @@ type ApiResult struct {
 	noSmithyDocumentSerde
 }
 
+//	Contains details about the OpenAPI schema for the action group. For more
+//
+// information, see [Action group OpenAPI schemas]. You can either include the schema directly in the payload
+// field or you can upload it to an S3 bucket and specify the S3 bucket location in
+// the s3 field.
+//
+// The following types satisfy this interface:
+//
+//	APISchemaMemberPayload
+//	APISchemaMemberS3
+//
+// [Action group OpenAPI schemas]: https://docs.aws.amazon.com/bedrock/latest/userguide/agents-api-schema.html
+type APISchema interface {
+	isAPISchema()
+}
+
+//	The JSON or YAML-formatted payload defining the OpenAPI schema for the action
+//
+// group.
+type APISchemaMemberPayload struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*APISchemaMemberPayload) isAPISchema() {}
+
+//	Contains details about the S3 object containing the OpenAPI schema for the
+//
+// action group.
+type APISchemaMemberS3 struct {
+	Value S3Identifier
+
+	noSmithyDocumentSerde
+}
+
+func (*APISchemaMemberS3) isAPISchema() {}
+
 // Contains citations for a part of an agent response.
 type Attribution struct {
 
@@ -178,6 +400,80 @@ type Attribution struct {
 
 	noSmithyDocumentSerde
 }
+
+// Settings for a model called with InvokeAgent.
+type BedrockModelConfigurations struct {
+
+	// The performance configuration for the model.
+	PerformanceConfig *PerformanceConfiguration
+
+	noSmithyDocumentSerde
+}
+
+// Contains configurations for an Amazon Bedrock reranker model.
+type BedrockRerankingConfiguration struct {
+
+	// Contains configurations for a reranker model.
+	//
+	// This member is required.
+	ModelConfiguration *BedrockRerankingModelConfiguration
+
+	// The number of results to return after reranking.
+	NumberOfResults *int32
+
+	noSmithyDocumentSerde
+}
+
+// Contains configurations for a reranker model.
+type BedrockRerankingModelConfiguration struct {
+
+	// The ARN of the reranker model.
+	//
+	// This member is required.
+	ModelArn *string
+
+	// A JSON object whose keys are request fields for the model and whose values are
+	// values for those fields.
+	AdditionalModelRequestFields map[string]document.Interface
+
+	noSmithyDocumentSerde
+}
+
+// A block of content that you pass to, or receive from, a Amazon Bedrock session
+// in an invocation step. You pass the content to a session in the payLoad of the [PutInvocationStep]
+// API operation. You retrieve the content with the [GetInvocationStep]API operation.
+//
+// For more information about sessions, see [Store and retrieve conversation history and context with Amazon Bedrock sessions].
+//
+// The following types satisfy this interface:
+//
+//	BedrockSessionContentBlockMemberImage
+//	BedrockSessionContentBlockMemberText
+//
+// [Store and retrieve conversation history and context with Amazon Bedrock sessions]: https://docs.aws.amazon.com/bedrock/latest/userguide/sessions.html
+// [GetInvocationStep]: https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_GetInvocationStep.html
+// [PutInvocationStep]: https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_PutInvocationStep.html
+type BedrockSessionContentBlock interface {
+	isBedrockSessionContentBlock()
+}
+
+// The image in the invocation step.
+type BedrockSessionContentBlockMemberImage struct {
+	Value ImageBlock
+
+	noSmithyDocumentSerde
+}
+
+func (*BedrockSessionContentBlockMemberImage) isBedrockSessionContentBlock() {}
+
+// The text in the invocation step.
+type BedrockSessionContentBlockMemberText struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*BedrockSessionContentBlockMemberText) isBedrockSessionContentBlock() {}
 
 // This property contains the document to chat with, along with its attributes.
 type ByteContentDoc struct {
@@ -203,8 +499,8 @@ type ByteContentDoc struct {
 // The property contains the file to chat with, along with its attributes.
 type ByteContentFile struct {
 
-	// The byte value of the file to attach, encoded as Base-64 string. The maximum
-	// size of all files that is attached is 10MB. You can attach a maximum of 5 files.
+	// The raw bytes of the file to attach. The maximum size of all files that is
+	// attached is 10MB. You can attach a maximum of 5 files.
 	//
 	// This member is required.
 	Data []byte
@@ -216,6 +512,24 @@ type ByteContentFile struct {
 
 	noSmithyDocumentSerde
 }
+
+// Details about a caller.
+//
+// The following types satisfy this interface:
+//
+//	CallerMemberAgentAliasArn
+type Caller interface {
+	isCaller()
+}
+
+// The caller's agent alias ARN.
+type CallerMemberAgentAliasArn struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*CallerMemberAgentAliasArn) isCaller() {}
 
 // An object containing a segment of the generated response that is based on a
 // source in the knowledge base, alongside information about the source.
@@ -236,6 +550,24 @@ type Citation struct {
 	GeneratedResponsePart *GeneratedResponsePart
 
 	// Contains metadata about the sources cited for the generated response.
+	RetrievedReferences []RetrievedReference
+
+	noSmithyDocumentSerde
+}
+
+// A citation event.
+type CitationEvent struct {
+
+	// The citation.
+	//
+	// Deprecated: Citation is deprecated. Please use GeneratedResponsePart and
+	// RetrievedReferences for citation event.
+	Citation *Citation
+
+	// The generated response to the citation event.
+	GeneratedResponsePart *GeneratedResponsePart
+
+	// The retrieved references of the citation event.
 	RetrievedReferences []RetrievedReference
 
 	noSmithyDocumentSerde
@@ -272,6 +604,104 @@ type CodeInterpreterInvocationOutput struct {
 	noSmithyDocumentSerde
 }
 
+// List of inline collaborators.
+type Collaborator struct {
+
+	//  The foundation model used by the inline collaborator agent.
+	//
+	// This member is required.
+	FoundationModel *string
+
+	//  Instruction that tell the inline collaborator agent what it should do and how
+	// it should interact with users.
+	//
+	// This member is required.
+	Instruction *string
+
+	//  List of action groups with each action group defining tasks the inline
+	// collaborator agent needs to carry out.
+	ActionGroups []AgentActionGroup
+
+	//  Defines how the inline supervisor agent handles information across multiple
+	// collaborator agents to coordinate a final response.
+	AgentCollaboration AgentCollaboration
+
+	//  Name of the inline collaborator agent which must be the same name as specified
+	// for collaboratorName .
+	AgentName *string
+
+	//  Settings of the collaborator agent.
+	CollaboratorConfigurations []CollaboratorConfiguration
+
+	//  The Amazon Resource Name (ARN) of the AWS KMS key that encrypts the inline
+	// collaborator.
+	CustomerEncryptionKeyArn *string
+
+	//  Details of the guardwrail associated with the inline collaborator.
+	GuardrailConfiguration *GuardrailConfigurationWithArn
+
+	//  The number of seconds for which the Amazon Bedrock keeps information about the
+	// user's conversation with the inline collaborator agent.
+	//
+	// A user interaction remains active for the amount of time specified. If no
+	// conversation occurs during this time, the session expires and Amazon Bedrock
+	// deletes any data provided before the timeout.
+	IdleSessionTTLInSeconds *int32
+
+	//  Knowledge base associated with the inline collaborator agent.
+	KnowledgeBases []KnowledgeBase
+
+	//  Contains configurations to override prompt templates in different parts of an
+	// inline collaborator sequence. For more information, see [Advanced prompts].
+	//
+	// [Advanced prompts]: https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts.html
+	PromptOverrideConfiguration *PromptOverrideConfiguration
+
+	noSmithyDocumentSerde
+}
+
+// Settings of an inline collaborator agent.
+type CollaboratorConfiguration struct {
+
+	//  Instructions that tell the inline collaborator agent what it should do and how
+	// it should interact with users.
+	//
+	// This member is required.
+	CollaboratorInstruction *string
+
+	//  Name of the inline collaborator agent which must be the same name as specified
+	// for agentName .
+	//
+	// This member is required.
+	CollaboratorName *string
+
+	//  The Amazon Resource Name (ARN) of the inline collaborator agent.
+	AgentAliasArn *string
+
+	//  A relay conversation history for the inline collaborator agent.
+	RelayConversationHistory RelayConversationHistory
+
+	noSmithyDocumentSerde
+}
+
+// A content block.
+//
+// The following types satisfy this interface:
+//
+//	ContentBlockMemberText
+type ContentBlock interface {
+	isContentBlock()
+}
+
+// The block's text.
+type ContentBlockMemberText struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*ContentBlockMemberText) isContentBlock() {}
+
 // Contains the body of the API response.
 //
 // This data type is used in the following API operations:
@@ -283,6 +713,46 @@ type ContentBody struct {
 
 	// The body of the API response.
 	Body *string
+
+	// Lists details, including format and source, for the image in the response from
+	// the function call. You can specify only one image and the function in the
+	// returnControlInvocationResults must be a computer use action. For more
+	// information, see [Configure an Amazon Bedrock Agent to complete tasks with computer use tools].
+	//
+	// [Configure an Amazon Bedrock Agent to complete tasks with computer use tools]: https://docs.aws.amazon.com/bedrock/latest/userguide/agent-computer-use.html
+	Images []ImageInput
+
+	noSmithyDocumentSerde
+}
+
+// A conversation history.
+type ConversationHistory struct {
+
+	// The conversation's messages.
+	Messages []Message
+
+	noSmithyDocumentSerde
+}
+
+// The trace behavior for the custom orchestration.
+type CustomOrchestrationTrace struct {
+
+	//  The event details used with the custom orchestration.
+	Event *CustomOrchestrationTraceEvent
+
+	//  The unique identifier of the trace.
+	TraceId *string
+
+	noSmithyDocumentSerde
+}
+
+//	The event in the custom orchestration sequence. Events are the responses which
+//
+// the custom orchestration Lambda function sends as response to the agent.
+type CustomOrchestrationTraceEvent struct {
+
+	//  The text that prompted the event at this step.
+	Text *string
 
 	noSmithyDocumentSerde
 }
@@ -319,6 +789,9 @@ type ExternalSourcesGenerationConfiguration struct {
 	// generate responses while using an external source.
 	InferenceConfig *InferenceConfig
 
+	// The latency configuration for the model.
+	PerformanceConfig *PerformanceConfiguration
+
 	// Contain the textPromptTemplate string for the external source wrapper object.
 	PromptTemplate *PromptTemplate
 
@@ -329,14 +802,14 @@ type ExternalSourcesGenerationConfiguration struct {
 // retrieveAndGenerate function.
 type ExternalSourcesRetrieveAndGenerateConfiguration struct {
 
-	// The modelArn used with the external source wrapper object in the
-	// retrieveAndGenerate function.
+	// The model Amazon Resource Name (ARN) for the external source wrapper object in
+	// the retrieveAndGenerate function.
 	//
 	// This member is required.
 	ModelArn *string
 
-	// The document used with the external source wrapper object in the
-	// retrieveAndGenerate function.
+	// The document for the external source wrapper object in the retrieveAndGenerate
+	// function.
 	//
 	// This member is required.
 	Sources []ExternalSource
@@ -356,6 +829,19 @@ type FailureTrace struct {
 
 	// The unique identifier of the trace.
 	TraceId *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains information for a metadata field to include in or exclude from
+// consideration when reranking.
+type FieldForReranking struct {
+
+	// The name of a metadata field to include in or exclude from consideration when
+	// reranking.
+	//
+	// This member is required.
+	FieldName *string
 
 	noSmithyDocumentSerde
 }
@@ -422,12 +908,6 @@ type FinalResponse struct {
 }
 
 // Contains information about why a flow completed.
-//
-// This data type is used in the following API operations:
-//
-// [InvokeFlow response]
-//
-// [InvokeFlow response]: https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeFlow.html#API_agent_InvokeFlow_ResponseSyntax
 type FlowCompletionEvent struct {
 
 	// The reason that the flow completed.
@@ -439,12 +919,6 @@ type FlowCompletionEvent struct {
 }
 
 // Contains information about an input into the prompt flow and where to send it.
-//
-// This data type is used in the following API operations:
-//
-// [InvokeFlow request]
-//
-// [InvokeFlow request]: https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeFlow.html#API_agent_InvokeFlow_RequestSyntax
 type FlowInput struct {
 
 	// Contains information about an input into the prompt flow.
@@ -457,9 +931,10 @@ type FlowInput struct {
 	// This member is required.
 	NodeName *string
 
+	// The name of the input from the flow input node.
+	NodeInputName *string
+
 	// The name of the output from the flow input node that begins the prompt flow.
-	//
-	// This member is required.
 	NodeOutputName *string
 
 	noSmithyDocumentSerde
@@ -467,15 +942,9 @@ type FlowInput struct {
 
 // Contains information about an input into the flow.
 //
-// This data type is used in the following API operations:
-//
-// [InvokeFlow request]
-//
 // The following types satisfy this interface:
 //
 //	FlowInputContentMemberDocument
-//
-// [InvokeFlow request]: https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeFlow.html#API_agent_InvokeFlow_RequestSyntax
 type FlowInputContent interface {
 	isFlowInputContent()
 }
@@ -489,17 +958,52 @@ type FlowInputContentMemberDocument struct {
 
 func (*FlowInputContentMemberDocument) isFlowInputContent() {}
 
+// The content structure containing input information for multi-turn flow
+// interactions.
+//
+// The following types satisfy this interface:
+//
+//	FlowMultiTurnInputContentMemberDocument
+type FlowMultiTurnInputContent interface {
+	isFlowMultiTurnInputContent()
+}
+
+// The requested additional input to send back to the multi-turn flow node.
+type FlowMultiTurnInputContentMemberDocument struct {
+	Value document.Interface
+
+	noSmithyDocumentSerde
+}
+
+func (*FlowMultiTurnInputContentMemberDocument) isFlowMultiTurnInputContent() {}
+
+// Response object from the flow multi-turn node requesting additional information.
+type FlowMultiTurnInputRequestEvent struct {
+
+	// The content payload containing the input request details for the multi-turn
+	// interaction.
+	//
+	// This member is required.
+	Content FlowMultiTurnInputContent
+
+	// The name of the node in the flow that is requesting the input.
+	//
+	// This member is required.
+	NodeName *string
+
+	// The type of the node in the flow that is requesting the input.
+	//
+	// This member is required.
+	NodeType NodeType
+
+	noSmithyDocumentSerde
+}
+
 // Contains information about the content in an output from prompt flow invocation.
-//
-// This data type is used in the following API operations:
-//
-// [InvokeFlow request]
 //
 // The following types satisfy this interface:
 //
 //	FlowOutputContentMemberDocument
-//
-// [InvokeFlow request]: https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeFlow.html#API_agent_InvokeFlow_RequestSyntax
 type FlowOutputContent interface {
 	isFlowOutputContent()
 }
@@ -514,12 +1018,6 @@ type FlowOutputContentMemberDocument struct {
 func (*FlowOutputContentMemberDocument) isFlowOutputContent() {}
 
 // Contains information about an output from prompt flow invoction.
-//
-// This data type is used in the following API operations:
-//
-// [InvokeFlow response]
-//
-// [InvokeFlow response]: https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeFlow.html#API_agent_InvokeFlow_ResponseSyntax
 type FlowOutputEvent struct {
 
 	// The content in the output.
@@ -542,16 +1040,12 @@ type FlowOutputEvent struct {
 
 // The output of the flow.
 //
-// This data type is used in the following API operations:
-//
-// [InvokeFlow response]
-//
 // The following types satisfy this interface:
 //
 //	FlowResponseStreamMemberFlowCompletionEvent
+//	FlowResponseStreamMemberFlowMultiTurnInputRequestEvent
 //	FlowResponseStreamMemberFlowOutputEvent
-//
-// [InvokeFlow response]: https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeFlow.html#API_agent_InvokeFlow_ResponseSyntax
+//	FlowResponseStreamMemberFlowTraceEvent
 type FlowResponseStream interface {
 	isFlowResponseStream()
 }
@@ -565,6 +1059,16 @@ type FlowResponseStreamMemberFlowCompletionEvent struct {
 
 func (*FlowResponseStreamMemberFlowCompletionEvent) isFlowResponseStream() {}
 
+// The event stream containing the multi-turn input request information from the
+// flow.
+type FlowResponseStreamMemberFlowMultiTurnInputRequestEvent struct {
+	Value FlowMultiTurnInputRequestEvent
+
+	noSmithyDocumentSerde
+}
+
+func (*FlowResponseStreamMemberFlowMultiTurnInputRequestEvent) isFlowResponseStream() {}
+
 // Contains information about an output from flow invocation.
 type FlowResponseStreamMemberFlowOutputEvent struct {
 	Value FlowOutputEvent
@@ -573,6 +1077,303 @@ type FlowResponseStreamMemberFlowOutputEvent struct {
 }
 
 func (*FlowResponseStreamMemberFlowOutputEvent) isFlowResponseStream() {}
+
+// Contains information about a trace, which tracks an input or output for a node
+// in the flow.
+type FlowResponseStreamMemberFlowTraceEvent struct {
+	Value FlowTraceEvent
+
+	noSmithyDocumentSerde
+}
+
+func (*FlowResponseStreamMemberFlowTraceEvent) isFlowResponseStream() {}
+
+// Contains information about an input or output for a node in the flow. For more
+// information, see [Track each step in your prompt flow by viewing its trace in Amazon Bedrock].
+//
+// The following types satisfy this interface:
+//
+//	FlowTraceMemberConditionNodeResultTrace
+//	FlowTraceMemberNodeActionTrace
+//	FlowTraceMemberNodeInputTrace
+//	FlowTraceMemberNodeOutputTrace
+//
+// [Track each step in your prompt flow by viewing its trace in Amazon Bedrock]: https://docs.aws.amazon.com/bedrock/latest/userguide/flows-trace.html
+type FlowTrace interface {
+	isFlowTrace()
+}
+
+// Contains information about an output from a condition node.
+type FlowTraceMemberConditionNodeResultTrace struct {
+	Value FlowTraceConditionNodeResultEvent
+
+	noSmithyDocumentSerde
+}
+
+func (*FlowTraceMemberConditionNodeResultTrace) isFlowTrace() {}
+
+// Contains information about an action (operation) called by a node. For more
+// information, see [Track each step in your prompt flow by viewing its trace in Amazon Bedrock].
+//
+// [Track each step in your prompt flow by viewing its trace in Amazon Bedrock]: https://docs.aws.amazon.com/bedrock/latest/userguide/flows-trace.html
+type FlowTraceMemberNodeActionTrace struct {
+	Value FlowTraceNodeActionEvent
+
+	noSmithyDocumentSerde
+}
+
+func (*FlowTraceMemberNodeActionTrace) isFlowTrace() {}
+
+// Contains information about the input into a node.
+type FlowTraceMemberNodeInputTrace struct {
+	Value FlowTraceNodeInputEvent
+
+	noSmithyDocumentSerde
+}
+
+func (*FlowTraceMemberNodeInputTrace) isFlowTrace() {}
+
+// Contains information about the output from a node.
+type FlowTraceMemberNodeOutputTrace struct {
+	Value FlowTraceNodeOutputEvent
+
+	noSmithyDocumentSerde
+}
+
+func (*FlowTraceMemberNodeOutputTrace) isFlowTrace() {}
+
+// Contains information about a condition that was satisfied. For more
+// information, see [Track each step in your prompt flow by viewing its trace in Amazon Bedrock].
+//
+// [Track each step in your prompt flow by viewing its trace in Amazon Bedrock]: https://docs.aws.amazon.com/bedrock/latest/userguide/flows-trace.html
+type FlowTraceCondition struct {
+
+	// The name of the condition.
+	//
+	// This member is required.
+	ConditionName *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about an output from a condition node. For more
+// information, see [Track each step in your prompt flow by viewing its trace in Amazon Bedrock].
+//
+// [Track each step in your prompt flow by viewing its trace in Amazon Bedrock]: https://docs.aws.amazon.com/bedrock/latest/userguide/flows-trace.html
+type FlowTraceConditionNodeResultEvent struct {
+
+	// The name of the condition node.
+	//
+	// This member is required.
+	NodeName *string
+
+	// An array of objects containing information about the conditions that were
+	// satisfied.
+	//
+	// This member is required.
+	SatisfiedConditions []FlowTraceCondition
+
+	// The date and time that the trace was returned.
+	//
+	// This member is required.
+	Timestamp *time.Time
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about a trace, which tracks an input or output for a node
+// in the flow. For more information, see [Track each step in your prompt flow by viewing its trace in Amazon Bedrock].
+//
+// [Track each step in your prompt flow by viewing its trace in Amazon Bedrock]: https://docs.aws.amazon.com/bedrock/latest/userguide/flows-trace.html
+type FlowTraceEvent struct {
+
+	// The trace object containing information about an input or output for a node in
+	// the flow.
+	//
+	// This member is required.
+	Trace FlowTrace
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about an action (operation) called by a node in an Amazon
+// Bedrock flow. The service generates action events for calls made by prompt
+// nodes, agent nodes, and Amazon Web Services Lambda nodes.
+type FlowTraceNodeActionEvent struct {
+
+	// The name of the node that called the operation.
+	//
+	// This member is required.
+	NodeName *string
+
+	// The name of the operation that the node called.
+	//
+	// This member is required.
+	OperationName *string
+
+	// The ID of the request that the node made to the operation.
+	//
+	// This member is required.
+	RequestId *string
+
+	// The name of the service that the node called.
+	//
+	// This member is required.
+	ServiceName *string
+
+	// The date and time that the operation was called.
+	//
+	// This member is required.
+	Timestamp *time.Time
+
+	noSmithyDocumentSerde
+}
+
+// Contains the content of the node input. For more information, see [Track each step in your prompt flow by viewing its trace in Amazon Bedrock].
+//
+// The following types satisfy this interface:
+//
+//	FlowTraceNodeInputContentMemberDocument
+//
+// [Track each step in your prompt flow by viewing its trace in Amazon Bedrock]: https://docs.aws.amazon.com/bedrock/latest/userguide/flows-trace.html
+type FlowTraceNodeInputContent interface {
+	isFlowTraceNodeInputContent()
+}
+
+// The content of the node input.
+type FlowTraceNodeInputContentMemberDocument struct {
+	Value document.Interface
+
+	noSmithyDocumentSerde
+}
+
+func (*FlowTraceNodeInputContentMemberDocument) isFlowTraceNodeInputContent() {}
+
+// Contains information about the input into a node. For more information, see [Track each step in your prompt flow by viewing its trace in Amazon Bedrock].
+//
+// [Track each step in your prompt flow by viewing its trace in Amazon Bedrock]: https://docs.aws.amazon.com/bedrock/latest/userguide/flows-trace.html
+type FlowTraceNodeInputEvent struct {
+
+	// An array of objects containing information about each field in the input.
+	//
+	// This member is required.
+	Fields []FlowTraceNodeInputField
+
+	// The name of the node that received the input.
+	//
+	// This member is required.
+	NodeName *string
+
+	// The date and time that the trace was returned.
+	//
+	// This member is required.
+	Timestamp *time.Time
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about a field in the input into a node. For more
+// information, see [Track each step in your prompt flow by viewing its trace in Amazon Bedrock].
+//
+// [Track each step in your prompt flow by viewing its trace in Amazon Bedrock]: https://docs.aws.amazon.com/bedrock/latest/userguide/flows-trace.html
+type FlowTraceNodeInputField struct {
+
+	// The content of the node input.
+	//
+	// This member is required.
+	Content FlowTraceNodeInputContent
+
+	// The name of the node input.
+	//
+	// This member is required.
+	NodeInputName *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains the content of the node output. For more information, see [Track each step in your prompt flow by viewing its trace in Amazon Bedrock].
+//
+// The following types satisfy this interface:
+//
+//	FlowTraceNodeOutputContentMemberDocument
+//
+// [Track each step in your prompt flow by viewing its trace in Amazon Bedrock]: https://docs.aws.amazon.com/bedrock/latest/userguide/flows-trace.html
+type FlowTraceNodeOutputContent interface {
+	isFlowTraceNodeOutputContent()
+}
+
+// The content of the node output.
+type FlowTraceNodeOutputContentMemberDocument struct {
+	Value document.Interface
+
+	noSmithyDocumentSerde
+}
+
+func (*FlowTraceNodeOutputContentMemberDocument) isFlowTraceNodeOutputContent() {}
+
+// Contains information about the output from a node. For more information, see [Track each step in your prompt flow by viewing its trace in Amazon Bedrock].
+//
+// [Track each step in your prompt flow by viewing its trace in Amazon Bedrock]: https://docs.aws.amazon.com/bedrock/latest/userguide/flows-trace.html
+type FlowTraceNodeOutputEvent struct {
+
+	// An array of objects containing information about each field in the output.
+	//
+	// This member is required.
+	Fields []FlowTraceNodeOutputField
+
+	// The name of the node that yielded the output.
+	//
+	// This member is required.
+	NodeName *string
+
+	// The date and time that the trace was returned.
+	//
+	// This member is required.
+	Timestamp *time.Time
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about a field in the output from a node. For more
+// information, see [Track each step in your prompt flow by viewing its trace in Amazon Bedrock].
+//
+// [Track each step in your prompt flow by viewing its trace in Amazon Bedrock]: https://docs.aws.amazon.com/bedrock/latest/userguide/flows-trace.html
+type FlowTraceNodeOutputField struct {
+
+	// The content of the node output.
+	//
+	// This member is required.
+	Content FlowTraceNodeOutputContent
+
+	// The name of the node output.
+	//
+	// This member is required.
+	NodeOutputName *string
+
+	noSmithyDocumentSerde
+}
+
+//	Defines parameters that the agent needs to invoke from the user to complete
+//
+// the function. Corresponds to an action in an action group.
+type FunctionDefinition struct {
+
+	//  A name for the function.
+	//
+	// This member is required.
+	Name *string
+
+	//  A description of the function and its purpose.
+	Description *string
+
+	//  The parameters that the agent elicits from the user to fulfill the function.
+	Parameters map[string]ParameterDetail
+
+	//  Contains information if user confirmation is required to invoke the function.
+	RequireConfirmation RequireConfirmation
+
+	noSmithyDocumentSerde
+}
 
 // Contains information about the function that the agent predicts should be
 // called.
@@ -591,6 +1392,12 @@ type FunctionInvocationInput struct {
 
 	// Contains information about the function to invoke,
 	ActionInvocationType ActionInvocationType
+
+	// The agent's ID.
+	AgentId *string
+
+	// The collaborator's name.
+	CollaboratorName *string
 
 	// The name of the function.
 	Function *string
@@ -637,15 +1444,23 @@ type FunctionResult struct {
 	// This member is required.
 	ActionGroup *string
 
+	// The agent's ID.
+	AgentId *string
+
 	// Contains the user confirmation information about the function that was called.
 	ConfirmationState ConfirmationState
 
 	// The name of the function that was called.
 	Function *string
 
-	// The response from the function call using the parameters. The key of the object
-	// is the content type (currently, only TEXT is supported). The response may be
-	// returned directly or from the Lambda function.
+	// The response from the function call using the parameters. The response might be
+	// returned directly or from the Lambda function. Specify TEXT or IMAGES . The key
+	// of the object is the content type. You can only specify one type. If you specify
+	// IMAGES , you can specify only one image. You can specify images only when the
+	// function in the returnControlInvocationResults is a computer use action. For
+	// more information, see [Configure an Amazon Bedrock Agent to complete tasks with computer use tools].
+	//
+	// [Configure an Amazon Bedrock Agent to complete tasks with computer use tools]: https://docs.aws.amazon.com/bedrock/latest/userguide/agent-computer-use.html
 	ResponseBody map[string]ContentBody
 
 	// Controls the final response state returned to end user when API/Function
@@ -653,6 +1468,38 @@ type FunctionResult struct {
 	// dependency failure exception. When this state is REPROMPT, the API/function
 	// response will be sent to model for re-prompt
 	ResponseState ResponseState
+
+	noSmithyDocumentSerde
+}
+
+//	Contains details about the function schema for the action group or the JSON or
+//
+// YAML-formatted payload defining the schema.
+//
+// The following types satisfy this interface:
+//
+//	FunctionSchemaMemberFunctions
+type FunctionSchema interface {
+	isFunctionSchema()
+}
+
+// A list of functions that each define an action in the action group.
+type FunctionSchemaMemberFunctions struct {
+	Value []FunctionDefinition
+
+	noSmithyDocumentSerde
+}
+
+func (*FunctionSchemaMemberFunctions) isFunctionSchema() {}
+
+// Contains information about a query generated for a natural language query.
+type GeneratedQuery struct {
+
+	// An SQL query that corresponds to the natural language query.
+	Sql *string
+
+	// The type of transformed query.
+	Type GeneratedQueryType
 
 	noSmithyDocumentSerde
 }
@@ -701,8 +1548,14 @@ type GenerationConfiguration struct {
 	// generate responses while using a knowledge base as a source.
 	InferenceConfig *InferenceConfig
 
+	// The latency configuration for the model.
+	PerformanceConfig *PerformanceConfiguration
+
 	// Contains the template for the prompt that's sent to the model for response
-	// generation.
+	// generation. Generation prompts must include the $search_results$ variable. For
+	// more information, see [Use placeholder variables]in the user guide.
+	//
+	// [Use placeholder variables]: https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-placeholders.html
 	PromptTemplate *PromptTemplate
 
 	noSmithyDocumentSerde
@@ -735,6 +1588,22 @@ type GuardrailConfiguration struct {
 	GuardrailId *string
 
 	// The version of the guardrail.
+	//
+	// This member is required.
+	GuardrailVersion *string
+
+	noSmithyDocumentSerde
+}
+
+// The configuration details for the guardrail.
+type GuardrailConfigurationWithArn struct {
+
+	//  The unique identifier for the guardrail.
+	//
+	// This member is required.
+	GuardrailIdentifier *string
+
+	//  The version of the guardrail.
 	//
 	// This member is required.
 	GuardrailVersion *string
@@ -775,6 +1644,15 @@ type GuardrailCustomWord struct {
 
 	// The match details for the custom word filter in the Guardrail.
 	Match *string
+
+	noSmithyDocumentSerde
+}
+
+// A guardrail event.
+type GuardrailEvent struct {
+
+	// The guardrail action.
+	Action GuadrailAction
 
 	noSmithyDocumentSerde
 }
@@ -896,6 +1774,110 @@ type GuardrailWordPolicyAssessment struct {
 	noSmithyDocumentSerde
 }
 
+// Image content for an invocation step.
+type ImageBlock struct {
+
+	// The format of the image.
+	//
+	// This member is required.
+	Format ImageFormat
+
+	// The source for the image.
+	//
+	// This member is required.
+	Source ImageSource
+
+	noSmithyDocumentSerde
+}
+
+// Details about an image in the result from a function in the action group
+// invocation. You can specify images only when the function is a computer use
+// action. For more information, see [Configure an Amazon Bedrock Agent to complete tasks with computer use tools].
+//
+// [Configure an Amazon Bedrock Agent to complete tasks with computer use tools]: https://docs.aws.amazon.com/bedrock/latest/userguide/agent-computer-use.html
+type ImageInput struct {
+
+	// The type of image in the result.
+	//
+	// This member is required.
+	Format ImageInputFormat
+
+	// The source of the image in the result.
+	//
+	// This member is required.
+	Source ImageInputSource
+
+	noSmithyDocumentSerde
+}
+
+// Details about the source of an input image in the result from a function in the
+// action group invocation.
+//
+// The following types satisfy this interface:
+//
+//	ImageInputSourceMemberBytes
+type ImageInputSource interface {
+	isImageInputSource()
+}
+
+//	The raw image bytes for the image. If you use an Amazon Web Services SDK, you
+//
+// don't need to encode the image bytes in base64.
+type ImageInputSourceMemberBytes struct {
+	Value []byte
+
+	noSmithyDocumentSerde
+}
+
+func (*ImageInputSourceMemberBytes) isImageInputSource() {}
+
+// The source for an image.
+//
+// The following types satisfy this interface:
+//
+//	ImageSourceMemberBytes
+//	ImageSourceMemberS3Location
+type ImageSource interface {
+	isImageSource()
+}
+
+//	The raw image bytes for the image. If you use an Amazon Web Services SDK, you
+//
+// don't need to encode the image bytes in base64.
+type ImageSourceMemberBytes struct {
+	Value []byte
+
+	noSmithyDocumentSerde
+}
+
+func (*ImageSourceMemberBytes) isImageSource() {}
+
+// The path to the Amazon S3 bucket where the image is stored.
+type ImageSourceMemberS3Location struct {
+	Value S3Location
+
+	noSmithyDocumentSerde
+}
+
+func (*ImageSourceMemberS3Location) isImageSource() {}
+
+// Settings for implicit filtering, where a model generates a metadata filter
+// based on the prompt.
+type ImplicitFilterConfiguration struct {
+
+	// Metadata that can be used in a filter.
+	//
+	// This member is required.
+	MetadataAttributes []MetadataAttributeSchema
+
+	// The model that generates the filter.
+	//
+	// This member is required.
+	ModelArn *string
+
+	noSmithyDocumentSerde
+}
+
 //	The configuration for inference settings when generating responses using
 //
 // RetrieveAndGenerate.
@@ -947,6 +1929,182 @@ type InferenceConfiguration struct {
 	noSmithyDocumentSerde
 }
 
+// Contains intermediate response for code interpreter if any files have been
+// generated.
+type InlineAgentFilePart struct {
+
+	// Files containing intermediate response for the user.
+	Files []OutputFile
+
+	noSmithyDocumentSerde
+}
+
+// Contains a part of an agent response and citations for it.
+type InlineAgentPayloadPart struct {
+
+	// Contains citations for a part of an agent response.
+	Attribution *Attribution
+
+	// A part of the agent response in bytes.
+	Bytes []byte
+
+	noSmithyDocumentSerde
+}
+
+// The response from invoking the agent and associated citations and trace
+// information.
+//
+// The following types satisfy this interface:
+//
+//	InlineAgentResponseStreamMemberChunk
+//	InlineAgentResponseStreamMemberFiles
+//	InlineAgentResponseStreamMemberReturnControl
+//	InlineAgentResponseStreamMemberTrace
+type InlineAgentResponseStream interface {
+	isInlineAgentResponseStream()
+}
+
+// Contains a part of an agent response and citations for it.
+type InlineAgentResponseStreamMemberChunk struct {
+	Value InlineAgentPayloadPart
+
+	noSmithyDocumentSerde
+}
+
+func (*InlineAgentResponseStreamMemberChunk) isInlineAgentResponseStream() {}
+
+// Contains intermediate response for code interpreter if any files have been
+// generated.
+type InlineAgentResponseStreamMemberFiles struct {
+	Value InlineAgentFilePart
+
+	noSmithyDocumentSerde
+}
+
+func (*InlineAgentResponseStreamMemberFiles) isInlineAgentResponseStream() {}
+
+// Contains the parameters and information that the agent elicited from the
+// customer to carry out an action. This information is returned to the system and
+// can be used in your own setup for fulfilling the action.
+type InlineAgentResponseStreamMemberReturnControl struct {
+	Value InlineAgentReturnControlPayload
+
+	noSmithyDocumentSerde
+}
+
+func (*InlineAgentResponseStreamMemberReturnControl) isInlineAgentResponseStream() {}
+
+// Contains information about the agent and session, alongside the agent's
+// reasoning process and results from calling actions and querying knowledge bases
+// and metadata about the trace. You can use the trace to understand how the agent
+// arrived at the response it provided the customer. For more information, see [Trace events].
+//
+// [Trace events]: https://docs.aws.amazon.com/bedrock/latest/userguide/trace-events.html
+type InlineAgentResponseStreamMemberTrace struct {
+	Value InlineAgentTracePart
+
+	noSmithyDocumentSerde
+}
+
+func (*InlineAgentResponseStreamMemberTrace) isInlineAgentResponseStream() {}
+
+// Contains information to return from the action group that the agent has
+// predicted to invoke.
+//
+// This data type is used in the [InvokeAgent response] API operation.
+//
+// [InvokeAgent response]: https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeAgent.html#API_agent-runtime_InvokeAgent_ResponseSyntax
+type InlineAgentReturnControlPayload struct {
+
+	// The identifier of the action group invocation.
+	InvocationId *string
+
+	// A list of objects that contain information about the parameters and inputs that
+	// need to be sent into the API operation or function, based on what the agent
+	// determines from its session with the user.
+	InvocationInputs []InvocationInputMember
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about the agent and session, alongside the agent's
+// reasoning process and results from calling API actions and querying knowledge
+// bases and metadata about the trace. You can use the trace to understand how the
+// agent arrived at the response it provided the customer. For more information,
+// see [Trace enablement].
+//
+// [Trace enablement]: https://docs.aws.amazon.com/bedrock/latest/userguide/agents-test.html#trace-enablement
+type InlineAgentTracePart struct {
+
+	// The unique identifier of the session with the agent.
+	SessionId *string
+
+	// Contains one part of the agent's reasoning process and results from calling API
+	// actions and querying knowledge bases. You can use the trace to understand how
+	// the agent arrived at the response it provided the customer. For more
+	// information, see [Trace enablement].
+	//
+	// [Trace enablement]: https://docs.aws.amazon.com/bedrock/latest/userguide/agents-test.html#trace-enablement
+	Trace Trace
+
+	noSmithyDocumentSerde
+}
+
+// Settings for a model called with InvokeInlineAgent.
+type InlineBedrockModelConfigurations struct {
+
+	// The latency configuration for the model.
+	PerformanceConfig *PerformanceConfiguration
+
+	noSmithyDocumentSerde
+}
+
+//	Contains parameters that specify various attributes that persist across a
+//
+// session or prompt. You can define session state attributes as key-value pairs
+// when writing a [Lambda function]for an action group or pass them when making an InvokeInlineAgent
+// request. Use session state attributes to control and provide conversational
+// context for your inline agent and to help customize your agent's behavior. For
+// more information, see [Control session context]
+//
+// [Control session context]: https://docs.aws.amazon.com/bedrock/latest/userguide/agents-session-state.html
+// [Lambda function]: https://docs.aws.amazon.com/bedrock/latest/userguide/agents-lambda.html
+type InlineSessionState struct {
+
+	//  Contains the conversation history that persist across sessions.
+	ConversationHistory *ConversationHistory
+
+	//  Contains information about the files used by code interpreter.
+	Files []InputFile
+
+	//  The identifier of the invocation of an action. This value must match the
+	// invocationId returned in the InvokeInlineAgent response for the action whose
+	// results are provided in the returnControlInvocationResults field. For more
+	// information, see [Return control to the agent developer].
+	//
+	// [Return control to the agent developer]: https://docs.aws.amazon.com/bedrock/latest/userguide/agents-returncontrol.html
+	InvocationId *string
+
+	//  Contains attributes that persist across a session and the values of those
+	// attributes.
+	PromptSessionAttributes map[string]string
+
+	//  Contains information about the results from the action group invocation. For
+	// more information, see [Return control to the agent developer].
+	//
+	// If you include this field in the sessionState field, the inputText field will
+	// be ignored.
+	//
+	// [Return control to the agent developer]: https://docs.aws.amazon.com/bedrock/latest/userguide/agents-returncontrol.html
+	ReturnControlInvocationResults []InvocationResultMember
+
+	//  Contains attributes that persist across a session and the values of those
+	// attributes.
+	SessionAttributes map[string]string
+
+	noSmithyDocumentSerde
+}
+
 // Contains details of the source files.
 type InputFile struct {
 
@@ -968,12 +2126,33 @@ type InputFile struct {
 	noSmithyDocumentSerde
 }
 
+// Contains information about the prompt to optimize.
+//
+// The following types satisfy this interface:
+//
+//	InputPromptMemberTextPrompt
+type InputPrompt interface {
+	isInputPrompt()
+}
+
+// Contains information about the text prompt to optimize.
+type InputPromptMemberTextPrompt struct {
+	Value TextPrompt
+
+	noSmithyDocumentSerde
+}
+
+func (*InputPromptMemberTextPrompt) isInputPrompt() {}
+
 // Contains information pertaining to the action group or knowledge base that is
 // being invoked.
 type InvocationInput struct {
 
 	// Contains information about the action group to be invoked.
 	ActionGroupInvocationInput *ActionGroupInvocationInput
+
+	// The collaborator's invocation input.
+	AgentCollaboratorInvocationInput *AgentCollaboratorInvocationInput
 
 	// Contains information about the code interpreter to be invoked.
 	CodeInterpreterInvocationInput *CodeInterpreterInvocationInput
@@ -1062,6 +2241,135 @@ type InvocationResultMemberMemberFunctionResult struct {
 }
 
 func (*InvocationResultMemberMemberFunctionResult) isInvocationResultMember() {}
+
+// Stores fine-grained state checkpoints, including text and images, for each
+// interaction in an invocation in a session. For more information about sessions,
+// see [Store and retrieve conversation history and context with Amazon Bedrock sessions].
+//
+// [Store and retrieve conversation history and context with Amazon Bedrock sessions]: https://docs.aws.amazon.com/bedrock/latest/userguide/sessions.html
+type InvocationStep struct {
+
+	// The unique identifier (in UUID format) for the invocation that includes the
+	// invocation step.
+	//
+	// This member is required.
+	InvocationId *string
+
+	// The unique identifier (in UUID format) for the invocation step.
+	//
+	// This member is required.
+	InvocationStepId *string
+
+	// The timestamp for when the invocation step was created.
+	//
+	// This member is required.
+	InvocationStepTime *time.Time
+
+	// Payload content, such as text and images, for the invocation step.
+	//
+	// This member is required.
+	Payload InvocationStepPayload
+
+	// The unique identifier of the session containing the invocation step.
+	//
+	// This member is required.
+	SessionId *string
+
+	noSmithyDocumentSerde
+}
+
+// Payload content, such as text and images, for the invocation step.
+//
+// The following types satisfy this interface:
+//
+//	InvocationStepPayloadMemberContentBlocks
+type InvocationStepPayload interface {
+	isInvocationStepPayload()
+}
+
+// The content for the invocation step.
+type InvocationStepPayloadMemberContentBlocks struct {
+	Value []BedrockSessionContentBlock
+
+	noSmithyDocumentSerde
+}
+
+func (*InvocationStepPayloadMemberContentBlocks) isInvocationStepPayload() {}
+
+// Contains details about an invocation step within an invocation in a session.
+// For more information about sessions, see [Store and retrieve conversation history and context with Amazon Bedrock sessions].
+//
+// [Store and retrieve conversation history and context with Amazon Bedrock sessions]: https://docs.aws.amazon.com/bedrock/latest/userguide/sessions.html
+type InvocationStepSummary struct {
+
+	// A unique identifier for the invocation in UUID format.
+	//
+	// This member is required.
+	InvocationId *string
+
+	// The unique identifier (in UUID format) for the invocation step.
+	//
+	// This member is required.
+	InvocationStepId *string
+
+	// The timestamp for when the invocation step was created.
+	//
+	// This member is required.
+	InvocationStepTime *time.Time
+
+	// The unique identifier for the session associated with the invocation step.
+	//
+	// This member is required.
+	SessionId *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains details about an invocation in a session. For more information about
+// sessions, see [Store and retrieve conversation history and context with Amazon Bedrock sessions].
+//
+// [Store and retrieve conversation history and context with Amazon Bedrock sessions]: https://docs.aws.amazon.com/bedrock/latest/userguide/sessions.html
+type InvocationSummary struct {
+
+	// The timestamp for when the invocation was created.
+	//
+	// This member is required.
+	CreatedAt *time.Time
+
+	// A unique identifier for the invocation in UUID format.
+	//
+	// This member is required.
+	InvocationId *string
+
+	// The unique identifier for the session associated with the invocation.
+	//
+	// This member is required.
+	SessionId *string
+
+	noSmithyDocumentSerde
+}
+
+// Details of the knowledge base associated withe inline agent.
+type KnowledgeBase struct {
+
+	//  The description of the knowledge base associated with the inline agent.
+	//
+	// This member is required.
+	Description *string
+
+	//  The unique identifier for a knowledge base associated with the inline agent.
+	//
+	// This member is required.
+	KnowledgeBaseId *string
+
+	//  The configurations to apply to the knowledge base during query. For more
+	// information, see [Query configurations].
+	//
+	// [Query configurations]: https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html
+	RetrievalConfiguration *KnowledgeBaseRetrievalConfiguration
+
+	noSmithyDocumentSerde
+}
 
 // Configurations to apply to a knowledge base attached to the agent during query.
 // For more information, see [Knowledge base retrieval configurations].
@@ -1160,7 +2468,7 @@ type KnowledgeBaseRetrievalConfiguration struct {
 // [Retrieve response]: https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_Retrieve.html#API_agent-runtime_Retrieve_ResponseSyntax
 type KnowledgeBaseRetrievalResult struct {
 
-	// Contains a chunk of text from a data source in the knowledge base.
+	// Contains information about the content of the chunk.
 	//
 	// This member is required.
 	Content *RetrievalResultContent
@@ -1194,13 +2502,14 @@ type KnowledgeBaseRetrievalResult struct {
 // [Retrieve request]: https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_Retrieve.html#API_agent-runtime_Retrieve_RequestSyntax
 type KnowledgeBaseRetrieveAndGenerateConfiguration struct {
 
-	// The unique identifier of the knowledge base that is queried and the foundation
-	// model used for generation.
+	// The unique identifier of the knowledge base that is queried.
 	//
 	// This member is required.
 	KnowledgeBaseId *string
 
-	// The ARN of the foundation model used to generate a response.
+	// The ARN of the foundation model or [inference profile] used to generate a response.
+	//
+	// [inference profile]: https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html
 	//
 	// This member is required.
 	ModelArn *string
@@ -1241,6 +2550,9 @@ type KnowledgeBaseVectorSearchConfiguration struct {
 	// [Query configurations]: https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html
 	Filter RetrievalFilter
 
+	// Settings for implicit filtering.
+	ImplicitFilterConfiguration *ImplicitFilterConfiguration
+
 	// The number of source chunks to retrieve.
 	NumberOfResults *int32
 
@@ -1253,6 +2565,12 @@ type KnowledgeBaseVectorSearchConfiguration struct {
 	//
 	// [Test a knowledge base]: https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-test.html
 	OverrideSearchType SearchType
+
+	// Contains configurations for reranking the retrieved results. For more
+	// information, see [Improve the relevance of query responses with a reranker model].
+	//
+	// [Improve the relevance of query responses with a reranker model]: https://docs.aws.amazon.com/bedrock/latest/userguide/rerank.html
+	RerankingConfiguration *VectorSearchRerankingConfiguration
 
 	noSmithyDocumentSerde
 }
@@ -1296,11 +2614,65 @@ type MemorySessionSummary struct {
 	noSmithyDocumentSerde
 }
 
+// Details about a message.
+type Message struct {
+
+	// The message's content.
+	//
+	// This member is required.
+	Content []ContentBlock
+
+	// The message's role.
+	//
+	// This member is required.
+	Role ConversationRole
+
+	noSmithyDocumentSerde
+}
+
 // Provides details of the foundation model.
 type Metadata struct {
 
 	// Contains details of the foundation model usage.
 	Usage *Usage
+
+	noSmithyDocumentSerde
+}
+
+// Details about a metadata attribute.
+type MetadataAttributeSchema struct {
+
+	// The attribute's description.
+	//
+	// This member is required.
+	Description *string
+
+	// The attribute's key.
+	//
+	// This member is required.
+	Key *string
+
+	// The attribute's type.
+	//
+	// This member is required.
+	Type AttributeType
+
+	noSmithyDocumentSerde
+}
+
+// Contains configurations for the metadata to use in reranking.
+type MetadataConfigurationForReranking struct {
+
+	// Specifies whether to consider all metadata when reranking, or only the metadata
+	// that you select. If you specify SELECTIVE , include the
+	// selectiveModeConfiguration field.
+	//
+	// This member is required.
+	SelectionMode RerankingMetadataSelectionMode
+
+	// Contains configurations for the metadata fields to include or exclude when
+	// considering reranking.
+	SelectiveModeConfiguration RerankingMetadataSelectiveModeConfiguration
 
 	noSmithyDocumentSerde
 }
@@ -1316,6 +2688,9 @@ type Metadata struct {
 //
 // [PromptOverrideConfiguration]: https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_PromptOverrideConfiguration.html
 type ModelInvocationInput struct {
+
+	// The identifier of a foundation model.
+	FoundationModel *string
 
 	// Specifications about the inference parameters that were provided alongside the
 	// prompt. These are specified in the [PromptOverrideConfiguration]object that was set when the agent was
@@ -1353,6 +2728,15 @@ type ModelInvocationInput struct {
 	noSmithyDocumentSerde
 }
 
+// The performance configuration for a model called with InvokeFlow.
+type ModelPerformanceConfiguration struct {
+
+	// The latency configuration for the model.
+	PerformanceConfig *PerformanceConfiguration
+
+	noSmithyDocumentSerde
+}
+
 // Contains the result or output of an action group or knowledge base, or the
 // response to the user.
 type Observation struct {
@@ -1360,6 +2744,9 @@ type Observation struct {
 	// Contains the JSON-formatted string returned by the API invoked by the action
 	// group.
 	ActionGroupInvocationOutput *ActionGroupInvocationOutput
+
+	// A collaborator's invocation output.
+	AgentCollaboratorInvocationOutput *AgentCollaboratorInvocationOutput
 
 	// Contains the JSON-formatted string returned by the API invoked by the code
 	// interpreter.
@@ -1394,14 +2781,87 @@ type Observation struct {
 	noSmithyDocumentSerde
 }
 
+// Contains information about the optimized prompt.
+//
+// The following types satisfy this interface:
+//
+//	OptimizedPromptMemberTextPrompt
+type OptimizedPrompt interface {
+	isOptimizedPrompt()
+}
+
+// Contains information about the text in the prompt that was optimized.
+type OptimizedPromptMemberTextPrompt struct {
+	Value TextPrompt
+
+	noSmithyDocumentSerde
+}
+
+func (*OptimizedPromptMemberTextPrompt) isOptimizedPrompt() {}
+
+// An event in which the prompt was optimized.
+type OptimizedPromptEvent struct {
+
+	// Contains information about the optimized prompt.
+	OptimizedPrompt OptimizedPrompt
+
+	noSmithyDocumentSerde
+}
+
+// The stream containing events in the prompt optimization process.
+//
+// The following types satisfy this interface:
+//
+//	OptimizedPromptStreamMemberAnalyzePromptEvent
+//	OptimizedPromptStreamMemberOptimizedPromptEvent
+type OptimizedPromptStream interface {
+	isOptimizedPromptStream()
+}
+
+// An event in which the prompt was analyzed in preparation for optimization.
+type OptimizedPromptStreamMemberAnalyzePromptEvent struct {
+	Value AnalyzePromptEvent
+
+	noSmithyDocumentSerde
+}
+
+func (*OptimizedPromptStreamMemberAnalyzePromptEvent) isOptimizedPromptStream() {}
+
+// An event in which the prompt was optimized.
+type OptimizedPromptStreamMemberOptimizedPromptEvent struct {
+	Value OptimizedPromptEvent
+
+	noSmithyDocumentSerde
+}
+
+func (*OptimizedPromptStreamMemberOptimizedPromptEvent) isOptimizedPromptStream() {}
+
 // Settings for how the model processes the prompt prior to retrieval and
 // generation.
 type OrchestrationConfiguration struct {
 
+	//  Additional model parameters and corresponding values not included in the
+	// textInferenceConfig structure for a knowledge base. This allows users to provide
+	// custom model parameters specific to the language model being used.
+	AdditionalModelRequestFields map[string]document.Interface
+
+	//  Configuration settings for inference when using RetrieveAndGenerate to
+	// generate responses while using a knowledge base as a source.
+	InferenceConfig *InferenceConfig
+
+	// The latency configuration for the model.
+	PerformanceConfig *PerformanceConfiguration
+
+	// Contains the template for the prompt that's sent to the model. Orchestration
+	// prompts must include the $conversation_history$ and
+	// $output_format_instructions$ variables. For more information, see [Use placeholder variables] in the user
+	// guide.
+	//
+	// [Use placeholder variables]: https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-placeholders.html
+	PromptTemplate *PromptTemplate
+
 	// To split up the prompt and retrieve multiple sources, set the transformation
 	// type to QUERY_DECOMPOSITION .
-	//
-	// This member is required.
 	QueryTransformationConfiguration *QueryTransformationConfiguration
 
 	noSmithyDocumentSerde
@@ -1410,11 +2870,16 @@ type OrchestrationConfiguration struct {
 // The foundation model output from the orchestration step.
 type OrchestrationModelInvocationOutput struct {
 
-	// Contains information about the foundation model output.
+	// Contains information about the foundation model output from the orchestration
+	// step.
 	Metadata *Metadata
 
 	// Contains details of the raw response from the foundation model output.
 	RawResponse *RawResponse
+
+	// Contains content about the reasoning that the model made during the
+	// orchestration step.
+	ReasoningContent ReasoningContentBlock
 
 	// The unique identifier of the trace.
 	TraceId *string
@@ -1524,6 +2989,25 @@ type Parameter struct {
 	noSmithyDocumentSerde
 }
 
+// Contains details about a parameter in a function for an action group.
+type ParameterDetail struct {
+
+	//  The data type of the parameter.
+	//
+	// This member is required.
+	Type ParameterType
+
+	//  A description of the parameter. Helps the foundation model determine how to
+	// elicit the parameters from the user.
+	Description *string
+
+	//  Whether the parameter is required for the agent to complete the function for
+	// action group invocation.
+	Required *bool
+
+	noSmithyDocumentSerde
+}
+
 // Contains a part of an agent response and citations for it.
 type PayloadPart struct {
 
@@ -1536,12 +3020,32 @@ type PayloadPart struct {
 	noSmithyDocumentSerde
 }
 
+// Performance settings for a model.
+type PerformanceConfiguration struct {
+
+	// To use a latency-optimized version of the model, set to optimized .
+	Latency PerformanceConfigLatency
+
+	noSmithyDocumentSerde
+}
+
 // The foundation model output from the post-processing step.
 type PostProcessingModelInvocationOutput struct {
+
+	//  Contains information about the foundation model output from the
+	// post-processing step.
+	Metadata *Metadata
 
 	// Details about the response from the Lambda parsing of the output of the
 	// post-processing step.
 	ParsedResponse *PostProcessingParsedResponse
+
+	//  Details of the raw response from the foundation model output.
+	RawResponse *RawResponse
+
+	// Contains content about the reasoning that the model made during the
+	// post-processing step.
+	ReasoningContent ReasoningContentBlock
 
 	// The unique identifier of the trace.
 	TraceId *string
@@ -1599,9 +3103,20 @@ func (*PostProcessingTraceMemberModelInvocationOutput) isPostProcessingTrace() {
 // The foundation model output from the pre-processing step.
 type PreProcessingModelInvocationOutput struct {
 
+	//  Contains information about the foundation model output from the pre-processing
+	// step.
+	Metadata *Metadata
+
 	// Details about the response from the Lambda parsing of the output of the
 	// pre-processing step.
 	ParsedResponse *PreProcessingParsedResponse
+
+	//  Details of the raw response from the foundation model output.
+	RawResponse *RawResponse
+
+	// Contains content about the reasoning that the model made during the
+	// pre-processing step.
+	ReasoningContent ReasoningContentBlock
 
 	// The unique identifier of the trace.
 	TraceId *string
@@ -1662,6 +3177,97 @@ type PreProcessingTraceMemberModelInvocationOutput struct {
 
 func (*PreProcessingTraceMemberModelInvocationOutput) isPreProcessingTrace() {}
 
+//	Contains configurations to override a prompt template in one part of an agent
+//
+// sequence. For more information, see [Advanced prompts].
+//
+// [Advanced prompts]: https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts.html
+type PromptConfiguration struct {
+
+	// If the Converse or ConverseStream operations support the model,
+	// additionalModelRequestFields contains additional inference parameters, beyond
+	// the base set of inference parameters in the inferenceConfiguration field.
+	//
+	// For more information, see Inference request parameters and response fields for
+	// foundation models in the Amazon Bedrock user guide.
+	AdditionalModelRequestFields document.Interface
+
+	// Defines the prompt template with which to replace the default prompt template.
+	// You can use placeholder variables in the base prompt template to customize the
+	// prompt. For more information, see [Prompt template placeholder variables]. For more information, see [Configure the prompt templates].
+	//
+	// [Configure the prompt templates]: https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts-configure.html
+	// [Prompt template placeholder variables]: https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-placeholders.html
+	BasePromptTemplate *string
+
+	//  The foundation model to use.
+	FoundationModel *string
+
+	// Contains inference parameters to use when the agent invokes a foundation model
+	// in the part of the agent sequence defined by the promptType . For more
+	// information, see [Inference parameters for foundation models].
+	//
+	// [Inference parameters for foundation models]: https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html
+	InferenceConfiguration *InferenceConfiguration
+
+	// Specifies whether to override the default parser Lambda function when parsing
+	// the raw foundation model output in the part of the agent sequence defined by the
+	// promptType . If you set the field as OVERRIDDEN , the overrideLambda field in
+	// the [PromptOverrideConfiguration]must be specified with the ARN of a Lambda function.
+	//
+	// [PromptOverrideConfiguration]: https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_PromptOverrideConfiguration.html
+	ParserMode CreationMode
+
+	// Specifies whether to override the default prompt template for this promptType .
+	// Set this value to OVERRIDDEN to use the prompt that you provide in the
+	// basePromptTemplate . If you leave it as DEFAULT , the agent uses a default
+	// prompt template.
+	PromptCreationMode CreationMode
+
+	// Specifies whether to allow the inline agent to carry out the step specified in
+	// the promptType . If you set this value to DISABLED , the agent skips that step.
+	// The default state for each promptType is as follows.
+	//
+	//   - PRE_PROCESSING – ENABLED
+	//
+	//   - ORCHESTRATION – ENABLED
+	//
+	//   - KNOWLEDGE_BASE_RESPONSE_GENERATION – ENABLED
+	//
+	//   - POST_PROCESSING – DISABLED
+	PromptState PromptState
+
+	//  The step in the agent sequence that this prompt configuration applies to.
+	PromptType PromptType
+
+	noSmithyDocumentSerde
+}
+
+// Contains configurations to override prompts in different parts of an agent
+// sequence. For more information, see [Advanced prompts].
+//
+// [Advanced prompts]: https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts.html
+type PromptOverrideConfiguration struct {
+
+	// Contains configurations to override a prompt template in one part of an agent
+	// sequence. For more information, see [Advanced prompts].
+	//
+	// [Advanced prompts]: https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts.html
+	//
+	// This member is required.
+	PromptConfigurations []PromptConfiguration
+
+	// The ARN of the Lambda function to use when parsing the raw foundation model
+	// output in parts of the agent sequence. If you specify this field, at least one
+	// of the promptConfigurations must contain a parserMode value that is set to
+	// OVERRIDDEN . For more information, see [Parser Lambda function in Amazon Bedrock Agents].
+	//
+	// [Parser Lambda function in Amazon Bedrock Agents]: https://docs.aws.amazon.com/bedrock/latest/userguide/lambda-parser.html
+	OverrideLambda *string
+
+	noSmithyDocumentSerde
+}
+
 // Contains the template for the prompt that's sent to the model for response
 // generation. For more information, see [Knowledge base prompt templates].
 //
@@ -1702,6 +3308,22 @@ type PropertyParameters struct {
 	noSmithyDocumentSerde
 }
 
+// Contains information about a natural language query to transform into SQL.
+type QueryGenerationInput struct {
+
+	// The text of the query.
+	//
+	// This member is required.
+	Text *string
+
+	// The type of the query.
+	//
+	// This member is required.
+	Type InputQueryType
+
+	noSmithyDocumentSerde
+}
+
 // To split up the prompt and retrieve multiple sources, set the transformation
 // type to QUERY_DECOMPOSITION .
 type QueryTransformationConfiguration struct {
@@ -1736,6 +3358,58 @@ type RawResponse struct {
 	noSmithyDocumentSerde
 }
 
+// Contains content regarding the reasoning that the foundation model made with
+// respect to the content in the content block. Reasoning refers to a Chain of
+// Thought (CoT) that the model generates to enhance the accuracy of its final
+// response.
+//
+// The following types satisfy this interface:
+//
+//	ReasoningContentBlockMemberReasoningText
+//	ReasoningContentBlockMemberRedactedContent
+type ReasoningContentBlock interface {
+	isReasoningContentBlock()
+}
+
+// Contains information about the reasoning that the model used to return the
+// content in the content block.
+type ReasoningContentBlockMemberReasoningText struct {
+	Value ReasoningTextBlock
+
+	noSmithyDocumentSerde
+}
+
+func (*ReasoningContentBlockMemberReasoningText) isReasoningContentBlock() {}
+
+// The content in the reasoning that was encrypted by the model provider for trust
+// and safety reasons.
+type ReasoningContentBlockMemberRedactedContent struct {
+	Value []byte
+
+	noSmithyDocumentSerde
+}
+
+func (*ReasoningContentBlockMemberRedactedContent) isReasoningContentBlock() {}
+
+// Contains information about the reasoning that the model used to return the
+// content in the content block.
+type ReasoningTextBlock struct {
+
+	// Text describing the reasoning that the model used to return the content in the
+	// content block.
+	//
+	// This member is required.
+	Text *string
+
+	// A hash of all the messages in the conversation to ensure that the content in
+	// the reasoning text block isn't tampered with. You must submit the signature in
+	// subsequent Converse requests, in addition to the previous messages. If the
+	// previous messages are tampered with, the response throws an error.
+	Signature *string
+
+	noSmithyDocumentSerde
+}
+
 // Contains details about the agent's response to reprompt the input.
 type RepromptResponse struct {
 
@@ -1753,6 +3427,137 @@ type RequestBody struct {
 
 	// The content in the request body.
 	Content map[string][]Parameter
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about a document to rerank. Choose the type to define and
+// include the field that corresponds to the type.
+type RerankDocument struct {
+
+	// The type of document to rerank.
+	//
+	// This member is required.
+	Type RerankDocumentType
+
+	// Contains a JSON document to rerank.
+	JsonDocument document.Interface
+
+	// Contains information about a text document to rerank.
+	TextDocument *RerankTextDocument
+
+	noSmithyDocumentSerde
+}
+
+// Contains configurations for reranking.
+type RerankingConfiguration struct {
+
+	// Contains configurations for an Amazon Bedrock reranker.
+	//
+	// This member is required.
+	BedrockRerankingConfiguration *BedrockRerankingConfiguration
+
+	// The type of reranker that the configurations apply to.
+	//
+	// This member is required.
+	Type RerankingConfigurationType
+
+	noSmithyDocumentSerde
+}
+
+// Contains configurations for the metadata fields to include or exclude when
+// considering reranking. If you include the fieldsToExclude field, the reranker
+// ignores all the metadata fields that you specify. If you include the
+// fieldsToInclude field, the reranker uses only the metadata fields that you
+// specify and ignores all others. You can include only one of these fields.
+//
+// The following types satisfy this interface:
+//
+//	RerankingMetadataSelectiveModeConfigurationMemberFieldsToExclude
+//	RerankingMetadataSelectiveModeConfigurationMemberFieldsToInclude
+type RerankingMetadataSelectiveModeConfiguration interface {
+	isRerankingMetadataSelectiveModeConfiguration()
+}
+
+// An array of objects, each of which specifies a metadata field to exclude from
+// consideration when reranking.
+type RerankingMetadataSelectiveModeConfigurationMemberFieldsToExclude struct {
+	Value []FieldForReranking
+
+	noSmithyDocumentSerde
+}
+
+func (*RerankingMetadataSelectiveModeConfigurationMemberFieldsToExclude) isRerankingMetadataSelectiveModeConfiguration() {
+}
+
+// An array of objects, each of which specifies a metadata field to include in
+// consideration when reranking. The remaining metadata fields are ignored.
+type RerankingMetadataSelectiveModeConfigurationMemberFieldsToInclude struct {
+	Value []FieldForReranking
+
+	noSmithyDocumentSerde
+}
+
+func (*RerankingMetadataSelectiveModeConfigurationMemberFieldsToInclude) isRerankingMetadataSelectiveModeConfiguration() {
+}
+
+// Contains information about a query to submit to the reranker model.
+type RerankQuery struct {
+
+	// Contains information about a text query.
+	//
+	// This member is required.
+	TextQuery *RerankTextDocument
+
+	// The type of the query.
+	//
+	// This member is required.
+	Type RerankQueryContentType
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about a document that was reranked.
+type RerankResult struct {
+
+	// The ranking of the document. The lower a number, the higher the document is
+	// ranked.
+	//
+	// This member is required.
+	Index *int32
+
+	// The relevance score of the document.
+	//
+	// This member is required.
+	RelevanceScore *float32
+
+	// Contains information about the document.
+	Document *RerankDocument
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about a source for reranking.
+type RerankSource struct {
+
+	// Contains an inline definition of a source for reranking.
+	//
+	// This member is required.
+	InlineDocumentSource *RerankDocument
+
+	// The type of the source.
+	//
+	// This member is required.
+	Type RerankSourceType
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about a text document to rerank.
+type RerankTextDocument struct {
+
+	// The text of the document.
+	Text *string
 
 	noSmithyDocumentSerde
 }
@@ -1970,9 +3775,12 @@ type RetrievalFilterMemberListContains struct {
 
 func (*RetrievalFilterMemberListContains) isRetrievalFilter() {}
 
-// Knowledge base data sources that contain a metadata attribute whose name
-// matches the key and whose value doesn't match the value in this object are
-// returned.
+// Knowledge base data sources are returned when:
+//
+//   - It contains a metadata attribute whose name matches the key and whose value
+//     doesn't match the value in this object.
+//
+//   - The key is not present in the document.
 //
 // The following example would return data sources that don't contain an animal
 // attribute whose value is cat .
@@ -2061,7 +3869,9 @@ type RetrievalResultConfluenceLocation struct {
 	noSmithyDocumentSerde
 }
 
-// Contains the cited text from the data source.
+// Contains information about a chunk of text from a data source in the knowledge
+// base. If the result is from a structured data source, the cell in the database
+// and the type of the value is also identified.
 //
 // This data type is used in the following API operations:
 //
@@ -2079,10 +3889,52 @@ type RetrievalResultConfluenceLocation struct {
 // [InvokeAgent response]: https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeAgent.html#API_agent-runtime_InvokeAgent_ResponseSyntax
 type RetrievalResultContent struct {
 
+	// A data URI with base64-encoded content from the data source. The URI is in the
+	// following format: returned in the following format:
+	// data:image/jpeg;base64,${base64-encoded string} .
+	ByteContent *string
+
+	// Specifies information about the rows with the cells to return in retrieval.
+	Row []RetrievalResultContentColumn
+
 	// The cited text from the data source.
-	//
-	// This member is required.
 	Text *string
+
+	// The type of content in the retrieval result.
+	Type RetrievalResultContentType
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about a column with a cell to return in retrieval.
+type RetrievalResultContentColumn struct {
+
+	// The name of the column.
+	ColumnName *string
+
+	// The value in the column.
+	ColumnValue *string
+
+	// The data type of the value.
+	Type RetrievalResultContentColumnType
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about the location of a document in a custom data source.
+type RetrievalResultCustomDocumentLocation struct {
+
+	// The ID of the document.
+	Id *string
+
+	noSmithyDocumentSerde
+}
+
+// The location of a result in Amazon Kendra.
+type RetrievalResultKendraDocumentLocation struct {
+
+	// The document's uri.
+	Uri *string
 
 	noSmithyDocumentSerde
 }
@@ -2098,7 +3950,7 @@ type RetrievalResultContent struct {
 //   - – in the location field
 //
 // [InvokeAgent response]
-//   - – in the locatino field
+//   - – in the location field
 //
 // [RetrieveAndGenerate response]: https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html#API_agent-runtime_RetrieveAndGenerate_ResponseSyntax
 // [Retrieve response]: https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_Retrieve.html#API_agent-runtime_Retrieve_ResponseSyntax
@@ -2113,6 +3965,12 @@ type RetrievalResultLocation struct {
 	// The Confluence data source location.
 	ConfluenceLocation *RetrievalResultConfluenceLocation
 
+	// Specifies the location of a document in a custom data source.
+	CustomDocumentLocation *RetrievalResultCustomDocumentLocation
+
+	// The location of a document in Amazon Kendra.
+	KendraDocumentLocation *RetrievalResultKendraDocumentLocation
+
 	// The S3 data source location.
 	S3Location *RetrievalResultS3Location
 
@@ -2121,6 +3979,9 @@ type RetrievalResultLocation struct {
 
 	// The SharePoint data source location.
 	SharePointLocation *RetrievalResultSharePointLocation
+
+	// Specifies information about the SQL query used to retrieve the result.
+	SqlLocation *RetrievalResultSqlLocation
 
 	// The web URL/URLs data source location.
 	WebLocation *RetrievalResultWebLocation
@@ -2170,6 +4031,15 @@ type RetrievalResultSharePointLocation struct {
 	noSmithyDocumentSerde
 }
 
+// Contains information about the SQL query used to retrieve the result.
+type RetrievalResultSqlLocation struct {
+
+	// The SQL query used to retrieve the result.
+	Query *string
+
+	noSmithyDocumentSerde
+}
+
 // The web URL/URLs data source location.
 type RetrievalResultWebLocation struct {
 
@@ -2189,16 +4059,21 @@ type RetrievalResultWebLocation struct {
 // [RetrieveAndGenerate request]: https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html#API_agent-runtime_RetrieveAndGenerate_RequestSyntax
 type RetrieveAndGenerateConfiguration struct {
 
-	// The type of resource that is queried by the request.
+	// The type of resource that contains your data for retrieving information and
+	// generating responses.
+	//
+	// If you choose to use EXTERNAL_SOURCES , then currently only Anthropic Claude 3
+	// Sonnet models for knowledge bases are supported.
 	//
 	// This member is required.
 	Type RetrieveAndGenerateType
 
-	// The configuration used with the external source wrapper object in the
+	// The configuration for the external source wrapper object in the
 	// retrieveAndGenerate function.
 	ExternalSourcesConfiguration *ExternalSourcesRetrieveAndGenerateConfiguration
 
-	// Contains details about the resource being queried.
+	// Contains details about the knowledge base for retrieving information and
+	// generating responses.
 	KnowledgeBaseConfiguration *KnowledgeBaseRetrieveAndGenerateConfiguration
 
 	noSmithyDocumentSerde
@@ -2240,6 +4115,17 @@ type RetrieveAndGenerateOutput struct {
 	noSmithyDocumentSerde
 }
 
+// A retrieve and generate output event.
+type RetrieveAndGenerateOutputEvent struct {
+
+	// A text response.
+	//
+	// This member is required.
+	Text *string
+
+	noSmithyDocumentSerde
+}
+
 // Contains configuration about the session with the knowledge base.
 //
 // This data type is used in the following API operations:
@@ -2256,6 +4142,47 @@ type RetrieveAndGenerateSessionConfiguration struct {
 	KmsKeyArn *string
 
 	noSmithyDocumentSerde
+}
+
+// A retrieve and generate stream response output.
+//
+// The following types satisfy this interface:
+//
+//	RetrieveAndGenerateStreamResponseOutputMemberCitation
+//	RetrieveAndGenerateStreamResponseOutputMemberGuardrail
+//	RetrieveAndGenerateStreamResponseOutputMemberOutput
+type RetrieveAndGenerateStreamResponseOutput interface {
+	isRetrieveAndGenerateStreamResponseOutput()
+}
+
+// A citation event.
+type RetrieveAndGenerateStreamResponseOutputMemberCitation struct {
+	Value CitationEvent
+
+	noSmithyDocumentSerde
+}
+
+func (*RetrieveAndGenerateStreamResponseOutputMemberCitation) isRetrieveAndGenerateStreamResponseOutput() {
+}
+
+// A guardrail event.
+type RetrieveAndGenerateStreamResponseOutputMemberGuardrail struct {
+	Value GuardrailEvent
+
+	noSmithyDocumentSerde
+}
+
+func (*RetrieveAndGenerateStreamResponseOutputMemberGuardrail) isRetrieveAndGenerateStreamResponseOutput() {
+}
+
+// An output event.
+type RetrieveAndGenerateStreamResponseOutputMemberOutput struct {
+	Value RetrieveAndGenerateOutputEvent
+
+	noSmithyDocumentSerde
+}
+
+func (*RetrieveAndGenerateStreamResponseOutputMemberOutput) isRetrieveAndGenerateStreamResponseOutput() {
 }
 
 // Contains metadata about a source cited for the generated response.
@@ -2308,6 +4235,104 @@ type ReturnControlPayload struct {
 	noSmithyDocumentSerde
 }
 
+// An action invocation result.
+type ReturnControlResults struct {
+
+	// The action's invocation ID.
+	InvocationId *string
+
+	// The action invocation result.
+	ReturnControlInvocationResults []InvocationResultMember
+
+	noSmithyDocumentSerde
+}
+
+// Invocation output from a routing classifier model.
+type RoutingClassifierModelInvocationOutput struct {
+
+	// The invocation's metadata.
+	Metadata *Metadata
+
+	// The invocation's raw response.
+	RawResponse *RawResponse
+
+	// The invocation's trace ID.
+	TraceId *string
+
+	noSmithyDocumentSerde
+}
+
+// A trace for a routing classifier.
+//
+// The following types satisfy this interface:
+//
+//	RoutingClassifierTraceMemberInvocationInput
+//	RoutingClassifierTraceMemberModelInvocationInput
+//	RoutingClassifierTraceMemberModelInvocationOutput
+//	RoutingClassifierTraceMemberObservation
+type RoutingClassifierTrace interface {
+	isRoutingClassifierTrace()
+}
+
+// The classifier's invocation input.
+type RoutingClassifierTraceMemberInvocationInput struct {
+	Value InvocationInput
+
+	noSmithyDocumentSerde
+}
+
+func (*RoutingClassifierTraceMemberInvocationInput) isRoutingClassifierTrace() {}
+
+// The classifier's model invocation input.
+type RoutingClassifierTraceMemberModelInvocationInput struct {
+	Value ModelInvocationInput
+
+	noSmithyDocumentSerde
+}
+
+func (*RoutingClassifierTraceMemberModelInvocationInput) isRoutingClassifierTrace() {}
+
+// The classifier's model invocation output.
+type RoutingClassifierTraceMemberModelInvocationOutput struct {
+	Value RoutingClassifierModelInvocationOutput
+
+	noSmithyDocumentSerde
+}
+
+func (*RoutingClassifierTraceMemberModelInvocationOutput) isRoutingClassifierTrace() {}
+
+// The classifier's observation.
+type RoutingClassifierTraceMemberObservation struct {
+	Value Observation
+
+	noSmithyDocumentSerde
+}
+
+func (*RoutingClassifierTraceMemberObservation) isRoutingClassifierTrace() {}
+
+// The identifier information for an Amazon S3 bucket.
+type S3Identifier struct {
+
+	//  The name of the S3 bucket.
+	S3BucketName *string
+
+	//  The S3 object key for the S3 resource.
+	S3ObjectKey *string
+
+	noSmithyDocumentSerde
+}
+
+// Information about the Amazon S3 bucket where the image is stored.
+type S3Location struct {
+
+	// The path to the Amazon S3 bucket where the image is stored.
+	//
+	// This member is required.
+	Uri *string
+
+	noSmithyDocumentSerde
+}
+
 // The unique wrapper object of the document from the S3 location.
 type S3ObjectDoc struct {
 
@@ -2341,6 +4366,9 @@ type S3ObjectFile struct {
 // [Lambda function]: https://docs.aws.amazon.com/bedrock/latest/userguide/agents-lambda.html
 type SessionState struct {
 
+	// The state's conversation history.
+	ConversationHistory *ConversationHistory
+
 	// Contains information about the files used by code interpreter.
 	Files []InputFile
 
@@ -2358,10 +4386,15 @@ type SessionState struct {
 	KnowledgeBaseConfigurations []KnowledgeBaseConfiguration
 
 	// Contains attributes that persist across a prompt and the values of those
-	// attributes. These attributes replace the $prompt_session_attributes$
-	// placeholder variable in the orchestration prompt template. For more information,
-	// see [Prompt template placeholder variables].
+	// attributes.
 	//
+	//   - In orchestration prompt template, these attributes replace the
+	//   $prompt_session_attributes$ placeholder variable. For more information, see [Prompt template placeholder variables].
+	//
+	//   - In [multi-agent collaboration], the promptSessionAttributes will only be used by supervisor agent when
+	//   $prompt_session_attributes$ is present in prompt template.
+	//
+	// [multi-agent collaboration]: https://docs.aws.amazon.com/bedrock/latest/userguide/agents-multi-agent-collaboration.html
 	// [Prompt template placeholder variables]: https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-placeholders.html
 	PromptSessionAttributes map[string]string
 
@@ -2375,8 +4408,44 @@ type SessionState struct {
 	ReturnControlInvocationResults []InvocationResultMember
 
 	// Contains attributes that persist across a session and the values of those
-	// attributes.
+	// attributes. If sessionAttributes are passed to a supervisor agent in [multi-agent collaboration], it will
+	// be forwarded to all agent collaborators.
+	//
+	// [multi-agent collaboration]: https://docs.aws.amazon.com/bedrock/latest/userguide/agents-multi-agent-collaboration.html
 	SessionAttributes map[string]string
+
+	noSmithyDocumentSerde
+}
+
+// Contains details about a session. For more information about sessions, see [Store and retrieve conversation history and context with Amazon Bedrock sessions].
+//
+// [Store and retrieve conversation history and context with Amazon Bedrock sessions]: https://docs.aws.amazon.com/bedrock/latest/userguide/sessions.html
+type SessionSummary struct {
+
+	// The timestamp for when the session was created.
+	//
+	// This member is required.
+	CreatedAt *time.Time
+
+	// The timestamp for when the session was last modified.
+	//
+	// This member is required.
+	LastUpdatedAt *time.Time
+
+	// The Amazon Resource Name (ARN) of the session.
+	//
+	// This member is required.
+	SessionArn *string
+
+	// The unique identifier for the session.
+	//
+	// This member is required.
+	SessionId *string
+
+	// The current status of the session.
+	//
+	// This member is required.
+	SessionStatus SessionStatus
 
 	noSmithyDocumentSerde
 }
@@ -2401,6 +4470,33 @@ type Span struct {
 
 	// Where the text with a citation starts in the generated output.
 	Start *int32
+
+	noSmithyDocumentSerde
+}
+
+// Configurations for streaming.
+type StreamingConfigurations struct {
+
+	//  The guardrail interval to apply as response is generated. By default, the
+	// guardrail interval is set to 50 characters. If a larger interval is specified,
+	// the response will be generated in larger chunks with fewer ApplyGuardrail
+	// calls. The following examples show the response generated for Hello, I am an
+	// agent input string.
+	//
+	// Example response in chunks: Interval set to 3 characters
+	//
+	//     'Hel', 'lo, ','I am', ' an', ' Age', 'nt'
+	//
+	// Each chunk has at least 3 characters except for the last chunk
+	//
+	// Example response in chunks: Interval set to 20 or more characters
+	//
+	//     Hello, I am an Agent
+	ApplyGuardrailInterval *int32
+
+	//  Specifies whether to enable streaming for the final response. This is set to
+	// false by default.
+	StreamFinalResponse bool
 
 	noSmithyDocumentSerde
 }
@@ -2443,6 +4539,17 @@ type TextInferenceConfig struct {
 	noSmithyDocumentSerde
 }
 
+// Contains information about the text prompt to optimize.
+type TextPrompt struct {
+
+	// The text in the text prompt to optimize.
+	//
+	// This member is required.
+	Text *string
+
+	noSmithyDocumentSerde
+}
+
 // Contains the part of the generated text that contains a citation, alongside
 // where it begins and ends.
 //
@@ -2468,6 +4575,31 @@ type TextResponsePart struct {
 	noSmithyDocumentSerde
 }
 
+// Contains configurations for transforming text to SQL.
+type TextToSqlConfiguration struct {
+
+	// The type of resource to use in transformation.
+	//
+	// This member is required.
+	Type TextToSqlConfigurationType
+
+	// Specifies configurations for a knowledge base to use in transformation.
+	KnowledgeBaseConfiguration *TextToSqlKnowledgeBaseConfiguration
+
+	noSmithyDocumentSerde
+}
+
+// Contains configurations for a knowledge base to use in transformation.
+type TextToSqlKnowledgeBaseConfiguration struct {
+
+	// The ARN of the knowledge base
+	//
+	// This member is required.
+	KnowledgeBaseArn *string
+
+	noSmithyDocumentSerde
+}
+
 // Contains one part of the agent's reasoning process and results from calling API
 // actions and querying knowledge bases. You can use the trace to understand how
 // the agent arrived at the response it provided the customer. For more
@@ -2475,16 +4607,29 @@ type TextResponsePart struct {
 //
 // The following types satisfy this interface:
 //
+//	TraceMemberCustomOrchestrationTrace
 //	TraceMemberFailureTrace
 //	TraceMemberGuardrailTrace
 //	TraceMemberOrchestrationTrace
 //	TraceMemberPostProcessingTrace
 //	TraceMemberPreProcessingTrace
+//	TraceMemberRoutingClassifierTrace
 //
 // [Trace enablement]: https://docs.aws.amazon.com/bedrock/latest/userguide/agents-test.html#trace-enablement
 type Trace interface {
 	isTrace()
 }
+
+//	Details about the custom orchestration step in which the agent determines the
+//
+// order in which actions are executed.
+type TraceMemberCustomOrchestrationTrace struct {
+	Value CustomOrchestrationTrace
+
+	noSmithyDocumentSerde
+}
+
+func (*TraceMemberCustomOrchestrationTrace) isTrace() {}
 
 // Contains information about the failure of the interaction.
 type TraceMemberFailureTrace struct {
@@ -2533,6 +4678,15 @@ type TraceMemberPreProcessingTrace struct {
 
 func (*TraceMemberPreProcessingTrace) isTrace() {}
 
+// A routing classifier's trace.
+type TraceMemberRoutingClassifierTrace struct {
+	Value RoutingClassifierTrace
+
+	noSmithyDocumentSerde
+}
+
+func (*TraceMemberRoutingClassifierTrace) isTrace() {}
+
 // Contains information about the agent and session, alongside the agent's
 // reasoning process and results from calling API actions and querying knowledge
 // bases and metadata about the trace. You can use the trace to understand how the
@@ -2551,6 +4705,15 @@ type TracePart struct {
 	// The version of the agent.
 	AgentVersion *string
 
+	// The part's caller chain.
+	CallerChain []Caller
+
+	// The part's collaborator name.
+	CollaboratorName *string
+
+	//  The time of the trace.
+	EventTime *time.Time
+
 	// The unique identifier of the session with the agent.
 	SessionId *string
 
@@ -2561,6 +4724,20 @@ type TracePart struct {
 	//
 	// [Trace enablement]: https://docs.aws.amazon.com/bedrock/latest/userguide/agents-test.html#trace-enablement
 	Trace Trace
+
+	noSmithyDocumentSerde
+}
+
+// Contains configurations for transforming the natural language query into SQL.
+type TransformationConfiguration struct {
+
+	// The mode of the transformation.
+	//
+	// This member is required.
+	Mode QueryTransformationMode
+
+	// Specifies configurations for transforming text to SQL.
+	TextToSqlConfiguration *TextToSqlConfiguration
 
 	noSmithyDocumentSerde
 }
@@ -2577,6 +4754,52 @@ type Usage struct {
 	noSmithyDocumentSerde
 }
 
+// Contains configurations for reranking with an Amazon Bedrock reranker model.
+type VectorSearchBedrockRerankingConfiguration struct {
+
+	// Contains configurations for the reranker model.
+	//
+	// This member is required.
+	ModelConfiguration *VectorSearchBedrockRerankingModelConfiguration
+
+	// Contains configurations for the metadata to use in reranking.
+	MetadataConfiguration *MetadataConfigurationForReranking
+
+	// The number of results to return after reranking.
+	NumberOfRerankedResults *int32
+
+	noSmithyDocumentSerde
+}
+
+// Contains configurations for an Amazon Bedrock reranker model.
+type VectorSearchBedrockRerankingModelConfiguration struct {
+
+	// The ARN of the reranker model to use.
+	//
+	// This member is required.
+	ModelArn *string
+
+	// A JSON object whose keys are request fields for the model and whose values are
+	// values for those fields.
+	AdditionalModelRequestFields map[string]document.Interface
+
+	noSmithyDocumentSerde
+}
+
+// Contains configurations for reranking the retrieved results.
+type VectorSearchRerankingConfiguration struct {
+
+	// The type of reranker model.
+	//
+	// This member is required.
+	Type VectorSearchRerankingConfigurationType
+
+	// Contains configurations for an Amazon Bedrock reranker model.
+	BedrockRerankingConfiguration *VectorSearchBedrockRerankingConfiguration
+
+	noSmithyDocumentSerde
+}
+
 type noSmithyDocumentSerde = smithydocument.NoSerde
 
 // UnknownUnionMember is returned when a union member is returned over the wire,
@@ -2588,15 +4811,36 @@ type UnknownUnionMember struct {
 	noSmithyDocumentSerde
 }
 
-func (*UnknownUnionMember) isFlowInputContent()       {}
-func (*UnknownUnionMember) isFlowOutputContent()      {}
-func (*UnknownUnionMember) isFlowResponseStream()     {}
-func (*UnknownUnionMember) isInvocationInputMember()  {}
-func (*UnknownUnionMember) isInvocationResultMember() {}
-func (*UnknownUnionMember) isMemory()                 {}
-func (*UnknownUnionMember) isOrchestrationTrace()     {}
-func (*UnknownUnionMember) isPostProcessingTrace()    {}
-func (*UnknownUnionMember) isPreProcessingTrace()     {}
-func (*UnknownUnionMember) isResponseStream()         {}
-func (*UnknownUnionMember) isRetrievalFilter()        {}
-func (*UnknownUnionMember) isTrace()                  {}
+func (*UnknownUnionMember) isActionGroupExecutor()                         {}
+func (*UnknownUnionMember) isAPISchema()                                   {}
+func (*UnknownUnionMember) isBedrockSessionContentBlock()                  {}
+func (*UnknownUnionMember) isCaller()                                      {}
+func (*UnknownUnionMember) isContentBlock()                                {}
+func (*UnknownUnionMember) isFlowInputContent()                            {}
+func (*UnknownUnionMember) isFlowMultiTurnInputContent()                   {}
+func (*UnknownUnionMember) isFlowOutputContent()                           {}
+func (*UnknownUnionMember) isFlowResponseStream()                          {}
+func (*UnknownUnionMember) isFlowTrace()                                   {}
+func (*UnknownUnionMember) isFlowTraceNodeInputContent()                   {}
+func (*UnknownUnionMember) isFlowTraceNodeOutputContent()                  {}
+func (*UnknownUnionMember) isFunctionSchema()                              {}
+func (*UnknownUnionMember) isImageInputSource()                            {}
+func (*UnknownUnionMember) isImageSource()                                 {}
+func (*UnknownUnionMember) isInlineAgentResponseStream()                   {}
+func (*UnknownUnionMember) isInputPrompt()                                 {}
+func (*UnknownUnionMember) isInvocationInputMember()                       {}
+func (*UnknownUnionMember) isInvocationResultMember()                      {}
+func (*UnknownUnionMember) isInvocationStepPayload()                       {}
+func (*UnknownUnionMember) isMemory()                                      {}
+func (*UnknownUnionMember) isOptimizedPrompt()                             {}
+func (*UnknownUnionMember) isOptimizedPromptStream()                       {}
+func (*UnknownUnionMember) isOrchestrationTrace()                          {}
+func (*UnknownUnionMember) isPostProcessingTrace()                         {}
+func (*UnknownUnionMember) isPreProcessingTrace()                          {}
+func (*UnknownUnionMember) isReasoningContentBlock()                       {}
+func (*UnknownUnionMember) isRerankingMetadataSelectiveModeConfiguration() {}
+func (*UnknownUnionMember) isResponseStream()                              {}
+func (*UnknownUnionMember) isRetrievalFilter()                             {}
+func (*UnknownUnionMember) isRetrieveAndGenerateStreamResponseOutput()     {}
+func (*UnknownUnionMember) isRoutingClassifierTrace()                      {}
+func (*UnknownUnionMember) isTrace()                                       {}

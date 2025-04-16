@@ -14,6 +14,9 @@ import (
 //	Specifies whether a control is currently enabled or disabled in each enabled
 //
 // standard in the calling account.
+//
+// This operation omits standards control associations for standard subscriptions
+// where StandardsControlsUpdatable has value NOT_READY_FOR_UPDATES .
 func (c *Client) ListStandardsControlAssociations(ctx context.Context, params *ListStandardsControlAssociationsInput, optFns ...func(*Options)) (*ListStandardsControlAssociationsOutput, error) {
 	if params == nil {
 		params = &ListStandardsControlAssociationsInput{}
@@ -114,6 +117,9 @@ func (c *Client) addOperationListStandardsControlAssociationsMiddlewares(stack *
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -130,6 +136,9 @@ func (c *Client) addOperationListStandardsControlAssociationsMiddlewares(stack *
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListStandardsControlAssociationsValidationMiddleware(stack); err != nil {
@@ -151,6 +160,18 @@ func (c *Client) addOperationListStandardsControlAssociationsMiddlewares(stack *
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

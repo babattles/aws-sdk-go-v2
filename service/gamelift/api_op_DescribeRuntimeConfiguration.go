@@ -14,9 +14,8 @@ import (
 // Retrieves a fleet's runtime configuration settings. The runtime configuration
 // determines which server processes run, and how, on computes in the fleet. For
 // managed EC2 fleets, the runtime configuration describes server processes that
-// run on each fleet instance. For container fleets, the runtime configuration
-// describes server processes that run in each replica container group. You can
-// update a fleet's runtime configuration at any time using UpdateRuntimeConfiguration.
+// run on each fleet instance. can update a fleet's runtime configuration at any
+// time using [UpdateRuntimeConfiguration].
 //
 // To get the current runtime configuration for a fleet, provide the fleet ID.
 //
@@ -29,6 +28,7 @@ import (
 //
 // [Running multiple processes on a fleet]
 //
+// [UpdateRuntimeConfiguration]: https://docs.aws.amazon.com/gamelift/latest/apireference/API_UpdateRuntimeConfiguration.html
 // [Setting up Amazon GameLift fleets]: https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-intro.html
 // [Running multiple processes on a fleet]: https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-multiprocess.html
 func (c *Client) DescribeRuntimeConfiguration(ctx context.Context, params *DescribeRuntimeConfigurationInput, optFns ...func(*Options)) (*DescribeRuntimeConfigurationOutput, error) {
@@ -112,6 +112,9 @@ func (c *Client) addOperationDescribeRuntimeConfigurationMiddlewares(stack *midd
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -128,6 +131,9 @@ func (c *Client) addOperationDescribeRuntimeConfigurationMiddlewares(stack *midd
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeRuntimeConfigurationValidationMiddleware(stack); err != nil {
@@ -149,6 +155,18 @@ func (c *Client) addOperationDescribeRuntimeConfigurationMiddlewares(stack *midd
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

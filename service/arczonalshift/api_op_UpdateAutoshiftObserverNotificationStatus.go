@@ -15,10 +15,10 @@ import (
 // notification enables you to be notified, through Amazon EventBridge, when there
 // is an autoshift event for zonal autoshift.
 //
-// If the status is ENABLED , Route 53 ARC includes all autoshift events when you
-// use the EventBridge pattern Autoshift In Progress . When the status is DISABLED
-// , Route 53 ARC includes only autoshift events for autoshifts when one or more of
-// your resources is included in the autoshift.
+// If the status is ENABLED , ARC includes all autoshift events when you use the
+// EventBridge pattern Autoshift In Progress . When the status is DISABLED , ARC
+// includes only autoshift events for autoshifts when one or more of your resources
+// is included in the autoshift.
 //
 // For more information, see [Notifications for practice runs and autoshifts] in the Amazon Route 53 Application Recovery
 // Controller Developer Guide.
@@ -42,10 +42,10 @@ func (c *Client) UpdateAutoshiftObserverNotificationStatus(ctx context.Context, 
 type UpdateAutoshiftObserverNotificationStatusInput struct {
 
 	// The status to set for autoshift observer notification. If the status is ENABLED
-	// , Route 53 ARC includes all autoshift events when you use the Amazon EventBridge
-	// pattern Autoshift In Progress . When the status is DISABLED , Route 53 ARC
-	// includes only autoshift events for autoshifts when one or more of your resources
-	// is included in the autoshift.
+	// , ARC includes all autoshift events when you use the Amazon EventBridge pattern
+	// Autoshift In Progress . When the status is DISABLED , ARC includes only
+	// autoshift events for autoshifts when one or more of your resources is included
+	// in the autoshift.
 	//
 	// This member is required.
 	Status types.AutoshiftObserverNotificationStatus
@@ -109,6 +109,9 @@ func (c *Client) addOperationUpdateAutoshiftObserverNotificationStatusMiddleware
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -125,6 +128,9 @@ func (c *Client) addOperationUpdateAutoshiftObserverNotificationStatusMiddleware
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateAutoshiftObserverNotificationStatusValidationMiddleware(stack); err != nil {
@@ -146,6 +152,18 @@ func (c *Client) addOperationUpdateAutoshiftObserverNotificationStatusMiddleware
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

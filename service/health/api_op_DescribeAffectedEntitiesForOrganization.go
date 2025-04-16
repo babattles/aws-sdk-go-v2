@@ -14,7 +14,8 @@ import (
 // Returns a list of entities that have been affected by one or more events for
 // one or more accounts in your organization in Organizations, based on the filter
 // criteria. Entities can refer to individual customer resources, groups of
-// customer resources, or any other construct, depending on the Amazon Web Service.
+// customer resources, or any other construct, depending on the Amazon Web Services
+// service.
 //
 // At least one event Amazon Resource Name (ARN) and account ID are required.
 //
@@ -142,6 +143,9 @@ func (c *Client) addOperationDescribeAffectedEntitiesForOrganizationMiddlewares(
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -158,6 +162,9 @@ func (c *Client) addOperationDescribeAffectedEntitiesForOrganizationMiddlewares(
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeAffectedEntitiesForOrganizationValidationMiddleware(stack); err != nil {
@@ -179,6 +186,18 @@ func (c *Client) addOperationDescribeAffectedEntitiesForOrganizationMiddlewares(
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

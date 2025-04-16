@@ -34,7 +34,7 @@ type GetDataSourceInput struct {
 	// This member is required.
 	DataSourceId *string
 
-	// The unique identifier of the knowledge base that the data source was added to.
+	// The unique identifier of the knowledge base for the data source.
 	//
 	// This member is required.
 	KnowledgeBaseId *string
@@ -98,6 +98,9 @@ func (c *Client) addOperationGetDataSourceMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -114,6 +117,9 @@ func (c *Client) addOperationGetDataSourceMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetDataSourceValidationMiddleware(stack); err != nil {
@@ -135,6 +141,18 @@ func (c *Client) addOperationGetDataSourceMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

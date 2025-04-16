@@ -82,6 +82,9 @@ type PutLogEventsInput struct {
 	// This member is required.
 	LogStreamName *string
 
+	// The entity associated with the log events.
+	Entity *types.Entity
+
 	// The sequence token obtained from the response of the previous PutLogEvents call.
 	//
 	// The sequenceToken parameter is now ignored in PutLogEvents actions. PutLogEvents
@@ -104,6 +107,12 @@ type PutLogEventsOutput struct {
 	// wait for the response of a previous PutLogEvents action to obtain the
 	// nextSequenceToken value.
 	NextSequenceToken *string
+
+	// Information about why the entity is rejected when calling PutLogEvents . Only
+	// returned when the entity is rejected.
+	//
+	// When the entity is rejected, the events may still be accepted.
+	RejectedEntityInfo *types.RejectedEntityInfo
 
 	// The rejected events.
 	RejectedLogEventsInfo *types.RejectedLogEventsInfo
@@ -157,6 +166,9 @@ func (c *Client) addOperationPutLogEventsMiddlewares(stack *middleware.Stack, op
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -173,6 +185,9 @@ func (c *Client) addOperationPutLogEventsMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpPutLogEventsValidationMiddleware(stack); err != nil {
@@ -194,6 +209,18 @@ func (c *Client) addOperationPutLogEventsMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

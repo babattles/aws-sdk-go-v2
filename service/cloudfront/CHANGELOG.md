@@ -1,3 +1,150 @@
+# v1.45.3 (2025-04-03)
+
+* No change notes available for this release.
+
+# v1.45.2 (2025-03-07)
+
+* **Documentation**: Documentation updates for Amazon CloudFront.
+
+# v1.45.1 (2025-03-04.2)
+
+* **Bug Fix**: Add assurance test for operation order.
+
+# v1.45.0 (2025-02-27)
+
+* **Feature**: Track credential providers via User-Agent Feature ids
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.44.12 (2025-02-26)
+
+* **Documentation**: Documentation update for VPC origin config.
+
+# v1.44.11 (2025-02-18)
+
+* **Bug Fix**: Bump go version to 1.22
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.44.10 (2025-02-10)
+
+* **Documentation**: Doc-only update that adds defaults for CloudFront VpcOriginEndpointConfig values.
+
+# v1.44.9 (2025-02-05)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.44.8 (2025-01-31)
+
+* **Dependency Update**: Switch to code-generated waiter matchers, removing the dependency on go-jmespath.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.44.7 (2025-01-30)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.44.6 (2025-01-24)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+* **Dependency Update**: Upgrade to smithy-go v1.22.2.
+
+# v1.44.5 (2025-01-17)
+
+* **Bug Fix**: Fix bug where credentials weren't refreshed during retry loop.
+
+# v1.44.4 (2025-01-15)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.44.3 (2025-01-14)
+
+* **Bug Fix**: Fix issue where waiters were not failing on unmatched errors as they should. This may have breaking behavioral changes for users in fringe cases. See [this announcement](https://github.com/aws/aws-sdk-go-v2/discussions/2954) for more information.
+
+# v1.44.2 (2025-01-09)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.44.1 (2024-12-19)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.44.0 (2024-12-17)
+
+* **Feature**: Adds support for OriginReadTimeout and OriginKeepaliveTimeout to create CloudFront Distributions with VPC Origins.
+
+# v1.43.1 (2024-12-02)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.43.0 (2024-11-21)
+
+* **Feature**: Adds support for Origin Selection between EMPv2 origins based on media quality score.
+
+# v1.42.0 (2024-11-20)
+
+* **Feature**: Add support for gRPC, VPC origins, and Anycast IP Lists. Allow LoggingConfig IncludeCookies to be set regardless of whether the LoggingConfig is enabled.
+
+# v1.41.1 (2024-11-18)
+
+* **Dependency Update**: Update to smithy-go v1.22.1.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.41.0 (2024-11-11)
+
+* **Feature**: No API changes from previous release. This release migrated the model to Smithy keeping all features unchanged.
+
+# v1.40.4 (2024-11-06)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.40.3 (2024-10-28)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.40.2 (2024-10-08)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.40.1 (2024-10-07)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.40.0 (2024-10-04)
+
+* **Feature**: Add support for HTTP client metrics.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.39.4 (2024-10-03)
+
+* No change notes available for this release.
+
+# v1.39.3 (2024-09-27)
+
+* No change notes available for this release.
+
+# v1.39.2 (2024-09-25)
+
+* No change notes available for this release.
+
+# v1.39.1 (2024-09-23)
+
+* No change notes available for this release.
+
+# v1.39.0 (2024-09-20)
+
+* **Feature**: Add tracing and metrics support to service clients.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.38.8 (2024-09-17)
+
+* **Bug Fix**: **BREAKFIX**: Only generate AccountIDEndpointMode config for services that use it. This is a compiler break, but removes no actual functionality, as no services currently use the account ID in endpoint resolution.
+
+# v1.38.7 (2024-09-04)
+
+* No change notes available for this release.
+
+# v1.38.6 (2024-09-03)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
 # v1.38.5 (2024-08-15)
 
 * **Dependency Update**: Bump minimum Go version to 1.21.

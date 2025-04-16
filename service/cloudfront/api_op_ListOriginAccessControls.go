@@ -11,14 +11,18 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Gets the list of CloudFront origin access controls in this Amazon Web Services
-// account.
+// Gets the list of CloudFront origin access controls (OACs) in this Amazon Web
+// Services account.
 //
 // You can optionally specify the maximum number of items to receive in the
 // response. If the total number of items in the list exceeds the maximum that you
 // specify, or the default maximum, the response is paginated. To get the next page
 // of items, send another request that specifies the NextMarker value from the
 // current response as the Marker value in the next request.
+//
+// If you're not using origin access controls for your Amazon Web Services
+// account, the ListOriginAccessControls operation doesn't return the Items
+// element in the response.
 func (c *Client) ListOriginAccessControls(ctx context.Context, params *ListOriginAccessControlsInput, optFns ...func(*Options)) (*ListOriginAccessControlsOutput, error) {
 	if params == nil {
 		params = &ListOriginAccessControlsInput{}
@@ -102,6 +106,9 @@ func (c *Client) addOperationListOriginAccessControlsMiddlewares(stack *middlewa
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -120,6 +127,9 @@ func (c *Client) addOperationListOriginAccessControlsMiddlewares(stack *middlewa
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListOriginAccessControls(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -136,6 +146,18 @@ func (c *Client) addOperationListOriginAccessControlsMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

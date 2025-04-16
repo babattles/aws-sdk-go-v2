@@ -190,7 +190,15 @@ type RestoreDBClusterFromS3Input struct {
 	//
 	// Aurora MySQL
 	//
-	// Possible values are audit , error , general , and slowquery .
+	// Possible values are audit , error , general , instance , slowquery , and
+	// iam-db-auth-error .
+	//
+	// Aurora PostgreSQL
+	//
+	// Possible value are instance , postgresql , and iam-db-auth-error .
+	//
+	// For more information about exporting CloudWatch Logs for Amazon RDS, see [Publishing Database Logs to Amazon CloudWatch Logs] in
+	// the Amazon RDS User Guide.
 	//
 	// For more information about exporting CloudWatch Logs for Amazon Aurora, see [Publishing Database Logs to Amazon CloudWatch Logs] in
 	// the Amazon Aurora User Guide.
@@ -221,7 +229,7 @@ type RestoreDBClusterFromS3Input struct {
 	// version on your DB cluster past the end of standard support for that engine
 	// version. For more information, see the following sections:
 	//
-	//   - Amazon Aurora (PostgreSQL only) - [Using Amazon RDS Extended Support]in the Amazon Aurora User Guide
+	//   - Amazon Aurora - [Using Amazon RDS Extended Support]in the Amazon Aurora User Guide
 	//
 	//   - Amazon RDS - [Using Amazon RDS Extended Support]in the Amazon RDS User Guide
 	//
@@ -485,6 +493,9 @@ func (c *Client) addOperationRestoreDBClusterFromS3Middlewares(stack *middleware
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -501,6 +512,9 @@ func (c *Client) addOperationRestoreDBClusterFromS3Middlewares(stack *middleware
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpRestoreDBClusterFromS3ValidationMiddleware(stack); err != nil {
@@ -522,6 +536,18 @@ func (c *Client) addOperationRestoreDBClusterFromS3Middlewares(stack *middleware
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

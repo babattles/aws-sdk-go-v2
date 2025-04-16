@@ -1,3 +1,157 @@
+# v1.51.4 (2025-04-03)
+
+* No change notes available for this release.
+
+# v1.51.3 (2025-03-14)
+
+* **Documentation**: Minor description updates to API parameters
+
+# v1.51.2 (2025-03-07)
+
+* No change notes available for this release.
+
+# v1.51.1 (2025-03-04.2)
+
+* **Bug Fix**: Add assurance test for operation order.
+
+# v1.51.0 (2025-03-04)
+
+* **Feature**: Added the capacity to return available challenges in admin authentication and to set version 3 of the pre token generation event for M2M ATC.
+
+# v1.50.0 (2025-02-27)
+
+* **Feature**: Track credential providers via User-Agent Feature ids
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.49.5 (2025-02-18)
+
+* **Bug Fix**: Bump go version to 1.22
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.49.4 (2025-02-05)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.49.3 (2025-01-31)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.49.2 (2025-01-30)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.49.1 (2025-01-24)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+* **Dependency Update**: Upgrade to smithy-go v1.22.2.
+
+# v1.49.0 (2025-01-21)
+
+* **Feature**: corrects the dual-stack endpoint configuration for cognitoidp
+
+# v1.48.6 (2025-01-17)
+
+* **Bug Fix**: Fix bug where credentials weren't refreshed during retry loop.
+
+# v1.48.5 (2025-01-15)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.48.4 (2025-01-09)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.48.3 (2024-12-20)
+
+* No change notes available for this release.
+
+# v1.48.2 (2024-12-19)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.48.1 (2024-12-11)
+
+* **Documentation**: Updated descriptions for some API operations and parameters, corrected some errors in Cognito user pools
+
+# v1.48.0 (2024-12-09)
+
+* **Feature**: Change `CustomDomainConfig` from a required to an optional parameter for the `UpdateUserPoolDomain` operation.
+
+# v1.47.1 (2024-12-02)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.47.0 (2024-11-22)
+
+* **Feature**: Add support for users to sign up and sign in without passwords, using email and SMS OTPs and Passkeys. Add support for Passkeys based on WebAuthn. Add support for enhanced branding customization for hosted authentication pages with Amazon Cognito Managed Login. Add feature tiers with new pricing.
+
+# v1.46.6 (2024-11-18)
+
+* **Dependency Update**: Update to smithy-go v1.22.1.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.46.5 (2024-11-07)
+
+* **Bug Fix**: Adds case-insensitive handling of error message fields in service responses
+
+# v1.46.4 (2024-11-06)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.46.3 (2024-10-28)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.46.2 (2024-10-08)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.46.1 (2024-10-07)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.46.0 (2024-10-04)
+
+* **Feature**: Add support for HTTP client metrics.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.45.4 (2024-10-03)
+
+* No change notes available for this release.
+
+# v1.45.3 (2024-09-27)
+
+* No change notes available for this release.
+
+# v1.45.2 (2024-09-25)
+
+* No change notes available for this release.
+
+# v1.45.1 (2024-09-23)
+
+* No change notes available for this release.
+
+# v1.45.0 (2024-09-20)
+
+* **Feature**: Add tracing and metrics support to service clients.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.44.1 (2024-09-17)
+
+* **Bug Fix**: **BREAKFIX**: Only generate AccountIDEndpointMode config for services that use it. This is a compiler break, but removes no actual functionality, as no services currently use the account ID in endpoint resolution.
+
+# v1.44.0 (2024-09-12)
+
+* **Feature**: Added email MFA option to user pools with advanced security features.
+
+# v1.43.4 (2024-09-04)
+
+* No change notes available for this release.
+
+# v1.43.3 (2024-09-03)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
 # v1.43.2 (2024-08-15)
 
 * **Dependency Update**: Bump minimum Go version to 1.21.

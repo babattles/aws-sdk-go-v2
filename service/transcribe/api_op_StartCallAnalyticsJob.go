@@ -29,7 +29,10 @@ import (
 // into an Amazon S3 bucket; you can then specify the Amazon S3 location of the
 // file using the Media parameter.
 //
-// Note that job queuing is enabled by default for Call Analytics jobs.
+// Job queuing is available for Call Analytics jobs. If you pass a
+// DataAccessRoleArn in your request and you exceed your Concurrent Job Limit, your
+// job will automatically be added to a queue to be processed once your concurrent
+// job count is below the limit.
 //
 // You must include the following parameters in your StartCallAnalyticsJob request:
 //
@@ -39,9 +42,6 @@ import (
 //
 //   - CallAnalyticsJobName : A custom name that you create for your transcription
 //     job that's unique within your Amazon Web Services account.
-//
-//   - DataAccessRoleArn : The Amazon Resource Name (ARN) of an IAM role that has
-//     permissions to access the Amazon S3 bucket that contains your input files.
 //
 //   - Media ( MediaFileUri or RedactedMediaFileUri ): The Amazon S3 location of
 //     your media file.
@@ -171,6 +171,14 @@ type StartCallAnalyticsJobInput struct {
 	// custom vocabularies to your Call Analytics job.
 	Settings *types.CallAnalyticsJobSettings
 
+	// Adds one or more custom tags, each in the form of a key:value pair, to a new
+	// call analytics job at the time you start this new job.
+	//
+	// To learn more about using tags with Amazon Transcribe, refer to [Tagging resources].
+	//
+	// [Tagging resources]: https://docs.aws.amazon.com/transcribe/latest/dg/tagging.html
+	Tags []types.Tag
+
 	noSmithyDocumentSerde
 }
 
@@ -229,6 +237,9 @@ func (c *Client) addOperationStartCallAnalyticsJobMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -245,6 +256,9 @@ func (c *Client) addOperationStartCallAnalyticsJobMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpStartCallAnalyticsJobValidationMiddleware(stack); err != nil {
@@ -266,6 +280,18 @@ func (c *Client) addOperationStartCallAnalyticsJobMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

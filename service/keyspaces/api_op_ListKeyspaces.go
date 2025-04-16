@@ -11,7 +11,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Returns a list of keyspaces.
+// The ListKeyspaces operation returns a list of keyspaces.
 func (c *Client) ListKeyspaces(ctx context.Context, params *ListKeyspacesInput, optFns ...func(*Options)) (*ListKeyspacesOutput, error) {
 	if params == nil {
 		params = &ListKeyspacesInput{}
@@ -102,6 +102,9 @@ func (c *Client) addOperationListKeyspacesMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -120,6 +123,9 @@ func (c *Client) addOperationListKeyspacesMiddlewares(stack *middleware.Stack, o
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListKeyspaces(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -136,6 +142,18 @@ func (c *Client) addOperationListKeyspacesMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

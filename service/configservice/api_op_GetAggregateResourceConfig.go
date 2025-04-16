@@ -13,6 +13,8 @@ import (
 
 // Returns configuration item that is aggregated for your specific resource in a
 // specific source account and region.
+//
+// The API does not return results for deleted resources.
 func (c *Client) GetAggregateResourceConfig(ctx context.Context, params *GetAggregateResourceConfigInput, optFns ...func(*Options)) (*GetAggregateResourceConfigOutput, error) {
 	if params == nil {
 		params = &GetAggregateResourceConfigInput{}
@@ -97,6 +99,9 @@ func (c *Client) addOperationGetAggregateResourceConfigMiddlewares(stack *middle
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -113,6 +118,9 @@ func (c *Client) addOperationGetAggregateResourceConfigMiddlewares(stack *middle
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetAggregateResourceConfigValidationMiddleware(stack); err != nil {
@@ -134,6 +142,18 @@ func (c *Client) addOperationGetAggregateResourceConfigMiddlewares(stack *middle
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

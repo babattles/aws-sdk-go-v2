@@ -21,6 +21,27 @@ func (AcceptRuleBehavior) Values() []AcceptRuleBehavior {
 	}
 }
 
+type AuthenticationType string
+
+// Enum values for AuthenticationType
+const (
+	AuthenticationTypeBasic  AuthenticationType = "BASIC"
+	AuthenticationTypeOauth2 AuthenticationType = "OAUTH2"
+	AuthenticationTypeCustom AuthenticationType = "CUSTOM"
+)
+
+// Values returns all known values for AuthenticationType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AuthenticationType) Values() []AuthenticationType {
+	return []AuthenticationType{
+		"BASIC",
+		"OAUTH2",
+		"CUSTOM",
+	}
+}
+
 type AuthType string
 
 // Enum values for AuthType
@@ -59,6 +80,27 @@ func (ChangeAction) Values() []ChangeAction {
 	}
 }
 
+type ComputeEnvironments string
+
+// Enum values for ComputeEnvironments
+const (
+	ComputeEnvironmentsSpark  ComputeEnvironments = "SPARK"
+	ComputeEnvironmentsAthena ComputeEnvironments = "ATHENA"
+	ComputeEnvironmentsPython ComputeEnvironments = "PYTHON"
+)
+
+// Values returns all known values for ComputeEnvironments. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ComputeEnvironments) Values() []ComputeEnvironments {
+	return []ComputeEnvironments{
+		"SPARK",
+		"ATHENA",
+		"PYTHON",
+	}
+}
+
 type ConfigurableActionTypeAuthorization string
 
 // Enum values for ConfigurableActionTypeAuthorization
@@ -76,6 +118,90 @@ func (ConfigurableActionTypeAuthorization) Values() []ConfigurableActionTypeAuth
 	return []ConfigurableActionTypeAuthorization{
 		"IAM",
 		"HTTPS",
+	}
+}
+
+type ConnectionStatus string
+
+// Enum values for ConnectionStatus
+const (
+	ConnectionStatusCreating     ConnectionStatus = "CREATING"
+	ConnectionStatusCreateFailed ConnectionStatus = "CREATE_FAILED"
+	ConnectionStatusDeleting     ConnectionStatus = "DELETING"
+	ConnectionStatusDeleteFailed ConnectionStatus = "DELETE_FAILED"
+	ConnectionStatusReady        ConnectionStatus = "READY"
+	ConnectionStatusUpdating     ConnectionStatus = "UPDATING"
+	ConnectionStatusUpdateFailed ConnectionStatus = "UPDATE_FAILED"
+	ConnectionStatusDeleted      ConnectionStatus = "DELETED"
+)
+
+// Values returns all known values for ConnectionStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ConnectionStatus) Values() []ConnectionStatus {
+	return []ConnectionStatus{
+		"CREATING",
+		"CREATE_FAILED",
+		"DELETING",
+		"DELETE_FAILED",
+		"READY",
+		"UPDATING",
+		"UPDATE_FAILED",
+		"DELETED",
+	}
+}
+
+type ConnectionType string
+
+// Enum values for ConnectionType
+const (
+	ConnectionTypeAthena        ConnectionType = "ATHENA"
+	ConnectionTypeBigquery      ConnectionType = "BIGQUERY"
+	ConnectionTypeDatabricks    ConnectionType = "DATABRICKS"
+	ConnectionTypeDocumentdb    ConnectionType = "DOCUMENTDB"
+	ConnectionTypeDynamodb      ConnectionType = "DYNAMODB"
+	ConnectionTypeHyperpod      ConnectionType = "HYPERPOD"
+	ConnectionTypeIam           ConnectionType = "IAM"
+	ConnectionTypeMysql         ConnectionType = "MYSQL"
+	ConnectionTypeOpensearch    ConnectionType = "OPENSEARCH"
+	ConnectionTypeOracle        ConnectionType = "ORACLE"
+	ConnectionTypePostgresql    ConnectionType = "POSTGRESQL"
+	ConnectionTypeRedshift      ConnectionType = "REDSHIFT"
+	ConnectionTypeSaphana       ConnectionType = "SAPHANA"
+	ConnectionTypeSnowflake     ConnectionType = "SNOWFLAKE"
+	ConnectionTypeSpark         ConnectionType = "SPARK"
+	ConnectionTypeSqlserver     ConnectionType = "SQLSERVER"
+	ConnectionTypeTeradata      ConnectionType = "TERADATA"
+	ConnectionTypeVertica       ConnectionType = "VERTICA"
+	ConnectionTypeWorkflowsMwaa ConnectionType = "WORKFLOWS_MWAA"
+)
+
+// Values returns all known values for ConnectionType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ConnectionType) Values() []ConnectionType {
+	return []ConnectionType{
+		"ATHENA",
+		"BIGQUERY",
+		"DATABRICKS",
+		"DOCUMENTDB",
+		"DYNAMODB",
+		"HYPERPOD",
+		"IAM",
+		"MYSQL",
+		"OPENSEARCH",
+		"ORACLE",
+		"POSTGRESQL",
+		"REDSHIFT",
+		"SAPHANA",
+		"SNOWFLAKE",
+		"SPARK",
+		"SQLSERVER",
+		"TERADATA",
+		"VERTICA",
+		"WORKFLOWS_MWAA",
 	}
 }
 
@@ -252,6 +378,42 @@ func (DataSourceStatus) Values() []DataSourceStatus {
 	}
 }
 
+type DataZoneEntityType string
+
+// Enum values for DataZoneEntityType
+const (
+	DataZoneEntityTypeDomainUnit DataZoneEntityType = "DOMAIN_UNIT"
+)
+
+// Values returns all known values for DataZoneEntityType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DataZoneEntityType) Values() []DataZoneEntityType {
+	return []DataZoneEntityType{
+		"DOMAIN_UNIT",
+	}
+}
+
+type DeploymentMode string
+
+// Enum values for DeploymentMode
+const (
+	DeploymentModeOnCreate DeploymentMode = "ON_CREATE"
+	DeploymentModeOnDemand DeploymentMode = "ON_DEMAND"
+)
+
+// Values returns all known values for DeploymentMode. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DeploymentMode) Values() []DeploymentMode {
+	return []DeploymentMode{
+		"ON_CREATE",
+		"ON_DEMAND",
+	}
+}
+
 type DeploymentStatus string
 
 // Enum values for DeploymentStatus
@@ -320,6 +482,42 @@ func (DomainStatus) Values() []DomainStatus {
 		"DELETING",
 		"DELETED",
 		"DELETION_FAILED",
+	}
+}
+
+type DomainUnitDesignation string
+
+// Enum values for DomainUnitDesignation
+const (
+	DomainUnitDesignationOwner DomainUnitDesignation = "OWNER"
+)
+
+// Values returns all known values for DomainUnitDesignation. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DomainUnitDesignation) Values() []DomainUnitDesignation {
+	return []DomainUnitDesignation{
+		"OWNER",
+	}
+}
+
+type DomainVersion string
+
+// Enum values for DomainVersion
+const (
+	DomainVersionV1 DomainVersion = "V1"
+	DomainVersionV2 DomainVersion = "V2"
+)
+
+// Values returns all known values for DomainVersion. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DomainVersion) Values() []DomainVersion {
+	return []DomainVersion{
+		"V1",
+		"V2",
 	}
 }
 
@@ -516,6 +714,66 @@ func (GlossaryTermStatus) Values() []GlossaryTermStatus {
 	}
 }
 
+type GlueConnectionType string
+
+// Enum values for GlueConnectionType
+const (
+	GlueConnectionTypeSnowflake  GlueConnectionType = "SNOWFLAKE"
+	GlueConnectionTypeBigquery   GlueConnectionType = "BIGQUERY"
+	GlueConnectionTypeDocumentdb GlueConnectionType = "DOCUMENTDB"
+	GlueConnectionTypeDynamodb   GlueConnectionType = "DYNAMODB"
+	GlueConnectionTypeMysql      GlueConnectionType = "MYSQL"
+	GlueConnectionTypeOpensearch GlueConnectionType = "OPENSEARCH"
+	GlueConnectionTypeOracle     GlueConnectionType = "ORACLE"
+	GlueConnectionTypePostgresql GlueConnectionType = "POSTGRESQL"
+	GlueConnectionTypeRedshift   GlueConnectionType = "REDSHIFT"
+	GlueConnectionTypeSaphana    GlueConnectionType = "SAPHANA"
+	GlueConnectionTypeSqlserver  GlueConnectionType = "SQLSERVER"
+	GlueConnectionTypeTeradata   GlueConnectionType = "TERADATA"
+	GlueConnectionTypeVertica    GlueConnectionType = "VERTICA"
+)
+
+// Values returns all known values for GlueConnectionType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (GlueConnectionType) Values() []GlueConnectionType {
+	return []GlueConnectionType{
+		"SNOWFLAKE",
+		"BIGQUERY",
+		"DOCUMENTDB",
+		"DYNAMODB",
+		"MYSQL",
+		"OPENSEARCH",
+		"ORACLE",
+		"POSTGRESQL",
+		"REDSHIFT",
+		"SAPHANA",
+		"SQLSERVER",
+		"TERADATA",
+		"VERTICA",
+	}
+}
+
+type GovernanceType string
+
+// Enum values for GovernanceType
+const (
+	GovernanceTypeAwsManaged  GovernanceType = "AWS_MANAGED"
+	GovernanceTypeUserManaged GovernanceType = "USER_MANAGED"
+)
+
+// Values returns all known values for GovernanceType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (GovernanceType) Values() []GovernanceType {
+	return []GovernanceType{
+		"AWS_MANAGED",
+		"USER_MANAGED",
+	}
+}
+
 type GroupProfileStatus string
 
 // Enum values for GroupProfileStatus
@@ -554,6 +812,25 @@ func (GroupSearchType) Values() []GroupSearchType {
 	}
 }
 
+type HyperPodOrchestrator string
+
+// Enum values for HyperPodOrchestrator
+const (
+	HyperPodOrchestratorEks   HyperPodOrchestrator = "EKS"
+	HyperPodOrchestratorSlurm HyperPodOrchestrator = "SLURM"
+)
+
+// Values returns all known values for HyperPodOrchestrator. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (HyperPodOrchestrator) Values() []HyperPodOrchestrator {
+	return []HyperPodOrchestrator{
+		"EKS",
+		"SLURM",
+	}
+}
+
 type InventorySearchScope string
 
 // Enum values for InventorySearchScope
@@ -577,6 +854,120 @@ func (InventorySearchScope) Values() []InventorySearchScope {
 	}
 }
 
+type JobRunMode string
+
+// Enum values for JobRunMode
+const (
+	JobRunModeScheduled JobRunMode = "SCHEDULED"
+	JobRunModeOnDemand  JobRunMode = "ON_DEMAND"
+)
+
+// Values returns all known values for JobRunMode. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (JobRunMode) Values() []JobRunMode {
+	return []JobRunMode{
+		"SCHEDULED",
+		"ON_DEMAND",
+	}
+}
+
+type JobRunStatus string
+
+// Enum values for JobRunStatus
+const (
+	JobRunStatusScheduled          JobRunStatus = "SCHEDULED"
+	JobRunStatusInProgress         JobRunStatus = "IN_PROGRESS"
+	JobRunStatusSuccess            JobRunStatus = "SUCCESS"
+	JobRunStatusPartiallySucceeded JobRunStatus = "PARTIALLY_SUCCEEDED"
+	JobRunStatusFailed             JobRunStatus = "FAILED"
+	JobRunStatusAborted            JobRunStatus = "ABORTED"
+	JobRunStatusTimedOut           JobRunStatus = "TIMED_OUT"
+	JobRunStatusCanceled           JobRunStatus = "CANCELED"
+)
+
+// Values returns all known values for JobRunStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (JobRunStatus) Values() []JobRunStatus {
+	return []JobRunStatus{
+		"SCHEDULED",
+		"IN_PROGRESS",
+		"SUCCESS",
+		"PARTIALLY_SUCCEEDED",
+		"FAILED",
+		"ABORTED",
+		"TIMED_OUT",
+		"CANCELED",
+	}
+}
+
+type JobType string
+
+// Enum values for JobType
+const (
+	JobTypeLineage JobType = "LINEAGE"
+)
+
+// Values returns all known values for JobType. Note that this can be expanded in
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (JobType) Values() []JobType {
+	return []JobType{
+		"LINEAGE",
+	}
+}
+
+type LineageEventProcessingStatus string
+
+// Enum values for LineageEventProcessingStatus
+const (
+	LineageEventProcessingStatusRequested  LineageEventProcessingStatus = "REQUESTED"
+	LineageEventProcessingStatusProcessing LineageEventProcessingStatus = "PROCESSING"
+	LineageEventProcessingStatusSuccess    LineageEventProcessingStatus = "SUCCESS"
+	LineageEventProcessingStatusFailed     LineageEventProcessingStatus = "FAILED"
+)
+
+// Values returns all known values for LineageEventProcessingStatus. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (LineageEventProcessingStatus) Values() []LineageEventProcessingStatus {
+	return []LineageEventProcessingStatus{
+		"REQUESTED",
+		"PROCESSING",
+		"SUCCESS",
+		"FAILED",
+	}
+}
+
+type LineageImportStatus string
+
+// Enum values for LineageImportStatus
+const (
+	LineageImportStatusInProgress         LineageImportStatus = "IN_PROGRESS"
+	LineageImportStatusSuccess            LineageImportStatus = "SUCCESS"
+	LineageImportStatusFailed             LineageImportStatus = "FAILED"
+	LineageImportStatusPartiallySucceeded LineageImportStatus = "PARTIALLY_SUCCEEDED"
+)
+
+// Values returns all known values for LineageImportStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (LineageImportStatus) Values() []LineageImportStatus {
+	return []LineageImportStatus{
+		"IN_PROGRESS",
+		"SUCCESS",
+		"FAILED",
+		"PARTIALLY_SUCCEEDED",
+	}
+}
+
 type ListingStatus string
 
 // Enum values for ListingStatus
@@ -595,6 +986,47 @@ func (ListingStatus) Values() []ListingStatus {
 		"CREATING",
 		"ACTIVE",
 		"INACTIVE",
+	}
+}
+
+type ManagedPolicyType string
+
+// Enum values for ManagedPolicyType
+const (
+	ManagedPolicyTypeCreateDomainUnit                 ManagedPolicyType = "CREATE_DOMAIN_UNIT"
+	ManagedPolicyTypeOverrideDomainUnitOwners         ManagedPolicyType = "OVERRIDE_DOMAIN_UNIT_OWNERS"
+	ManagedPolicyTypeAddToProjectMemberPool           ManagedPolicyType = "ADD_TO_PROJECT_MEMBER_POOL"
+	ManagedPolicyTypeOverrideProjectOwners            ManagedPolicyType = "OVERRIDE_PROJECT_OWNERS"
+	ManagedPolicyTypeCreateGlossary                   ManagedPolicyType = "CREATE_GLOSSARY"
+	ManagedPolicyTypeCreateFormType                   ManagedPolicyType = "CREATE_FORM_TYPE"
+	ManagedPolicyTypeCreateAssetType                  ManagedPolicyType = "CREATE_ASSET_TYPE"
+	ManagedPolicyTypeCreateProject                    ManagedPolicyType = "CREATE_PROJECT"
+	ManagedPolicyTypeCreateEnvironmentProfile         ManagedPolicyType = "CREATE_ENVIRONMENT_PROFILE"
+	ManagedPolicyTypeDelegateCreateEnvironmentProfile ManagedPolicyType = "DELEGATE_CREATE_ENVIRONMENT_PROFILE"
+	ManagedPolicyTypeCreateEnvironment                ManagedPolicyType = "CREATE_ENVIRONMENT"
+	ManagedPolicyTypeCreateEnvironmentFromBlueprint   ManagedPolicyType = "CREATE_ENVIRONMENT_FROM_BLUEPRINT"
+	ManagedPolicyTypeCreateProjectFromProjectProfile  ManagedPolicyType = "CREATE_PROJECT_FROM_PROJECT_PROFILE"
+)
+
+// Values returns all known values for ManagedPolicyType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ManagedPolicyType) Values() []ManagedPolicyType {
+	return []ManagedPolicyType{
+		"CREATE_DOMAIN_UNIT",
+		"OVERRIDE_DOMAIN_UNIT_OWNERS",
+		"ADD_TO_PROJECT_MEMBER_POOL",
+		"OVERRIDE_PROJECT_OWNERS",
+		"CREATE_GLOSSARY",
+		"CREATE_FORM_TYPE",
+		"CREATE_ASSET_TYPE",
+		"CREATE_PROJECT",
+		"CREATE_ENVIRONMENT_PROFILE",
+		"DELEGATE_CREATE_ENVIRONMENT_PROFILE",
+		"CREATE_ENVIRONMENT",
+		"CREATE_ENVIRONMENT_FROM_BLUEPRINT",
+		"CREATE_PROJECT_FROM_PROJECT_PROFILE",
 	}
 }
 
@@ -719,6 +1151,100 @@ func (NotificationType) Values() []NotificationType {
 	}
 }
 
+type OAuth2GrantType string
+
+// Enum values for OAuth2GrantType
+const (
+	OAuth2GrantTypeAuthorizationCode OAuth2GrantType = "AUTHORIZATION_CODE"
+	OAuth2GrantTypeClientCredentials OAuth2GrantType = "CLIENT_CREDENTIALS"
+	OAuth2GrantTypeJwtBearer         OAuth2GrantType = "JWT_BEARER"
+)
+
+// Values returns all known values for OAuth2GrantType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (OAuth2GrantType) Values() []OAuth2GrantType {
+	return []OAuth2GrantType{
+		"AUTHORIZATION_CODE",
+		"CLIENT_CREDENTIALS",
+		"JWT_BEARER",
+	}
+}
+
+type OpenLineageRunState string
+
+// Enum values for OpenLineageRunState
+const (
+	OpenLineageRunStateStart    OpenLineageRunState = "START"
+	OpenLineageRunStateRunning  OpenLineageRunState = "RUNNING"
+	OpenLineageRunStateComplete OpenLineageRunState = "COMPLETE"
+	OpenLineageRunStateAbort    OpenLineageRunState = "ABORT"
+	OpenLineageRunStateFail     OpenLineageRunState = "FAIL"
+	OpenLineageRunStateOther    OpenLineageRunState = "OTHER"
+)
+
+// Values returns all known values for OpenLineageRunState. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (OpenLineageRunState) Values() []OpenLineageRunState {
+	return []OpenLineageRunState{
+		"START",
+		"RUNNING",
+		"COMPLETE",
+		"ABORT",
+		"FAIL",
+		"OTHER",
+	}
+}
+
+type OverallDeploymentStatus string
+
+// Enum values for OverallDeploymentStatus
+const (
+	OverallDeploymentStatusPendingDeployment OverallDeploymentStatus = "PENDING_DEPLOYMENT"
+	OverallDeploymentStatusInProgress        OverallDeploymentStatus = "IN_PROGRESS"
+	OverallDeploymentStatusSuccessful        OverallDeploymentStatus = "SUCCESSFUL"
+	OverallDeploymentStatusFailedValidation  OverallDeploymentStatus = "FAILED_VALIDATION"
+	OverallDeploymentStatusFailedDeployment  OverallDeploymentStatus = "FAILED_DEPLOYMENT"
+)
+
+// Values returns all known values for OverallDeploymentStatus. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (OverallDeploymentStatus) Values() []OverallDeploymentStatus {
+	return []OverallDeploymentStatus{
+		"PENDING_DEPLOYMENT",
+		"IN_PROGRESS",
+		"SUCCESSFUL",
+		"FAILED_VALIDATION",
+		"FAILED_DEPLOYMENT",
+	}
+}
+
+type ProjectDesignation string
+
+// Enum values for ProjectDesignation
+const (
+	ProjectDesignationOwner                 ProjectDesignation = "OWNER"
+	ProjectDesignationContributor           ProjectDesignation = "CONTRIBUTOR"
+	ProjectDesignationProjectCatalogSteward ProjectDesignation = "PROJECT_CATALOG_STEWARD"
+)
+
+// Values returns all known values for ProjectDesignation. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ProjectDesignation) Values() []ProjectDesignation {
+	return []ProjectDesignation{
+		"OWNER",
+		"CONTRIBUTOR",
+		"PROJECT_CATALOG_STEWARD",
+	}
+}
+
 type ProjectStatus string
 
 // Enum values for ProjectStatus
@@ -726,6 +1252,8 @@ const (
 	ProjectStatusActive       ProjectStatus = "ACTIVE"
 	ProjectStatusDeleting     ProjectStatus = "DELETING"
 	ProjectStatusDeleteFailed ProjectStatus = "DELETE_FAILED"
+	ProjectStatusUpdating     ProjectStatus = "UPDATING"
+	ProjectStatusUpdateFailed ProjectStatus = "UPDATE_FAILED"
 )
 
 // Values returns all known values for ProjectStatus. Note that this can be
@@ -737,6 +1265,37 @@ func (ProjectStatus) Values() []ProjectStatus {
 		"ACTIVE",
 		"DELETING",
 		"DELETE_FAILED",
+		"UPDATING",
+		"UPDATE_FAILED",
+	}
+}
+
+type Protocol string
+
+// Enum values for Protocol
+const (
+	ProtocolAthena                 Protocol = "ATHENA"
+	ProtocolGlueInteractiveSession Protocol = "GLUE_INTERACTIVE_SESSION"
+	ProtocolHttps                  Protocol = "HTTPS"
+	ProtocolJdbc                   Protocol = "JDBC"
+	ProtocolLivy                   Protocol = "LIVY"
+	ProtocolOdbc                   Protocol = "ODBC"
+	ProtocolPrism                  Protocol = "PRISM"
+)
+
+// Values returns all known values for Protocol. Note that this can be expanded in
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (Protocol) Values() []Protocol {
+	return []Protocol{
+		"ATHENA",
+		"GLUE_INTERACTIVE_SESSION",
+		"HTTPS",
+		"JDBC",
+		"LIVY",
+		"ODBC",
+		"PRISM",
 	}
 }
 
@@ -756,6 +1315,78 @@ func (RejectRuleBehavior) Values() []RejectRuleBehavior {
 	return []RejectRuleBehavior{
 		"ALL",
 		"NONE",
+	}
+}
+
+type RuleAction string
+
+// Enum values for RuleAction
+const (
+	RuleActionCreateListingChangeSet    RuleAction = "CREATE_LISTING_CHANGE_SET"
+	RuleActionCreateSubscriptionRequest RuleAction = "CREATE_SUBSCRIPTION_REQUEST"
+)
+
+// Values returns all known values for RuleAction. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RuleAction) Values() []RuleAction {
+	return []RuleAction{
+		"CREATE_LISTING_CHANGE_SET",
+		"CREATE_SUBSCRIPTION_REQUEST",
+	}
+}
+
+type RuleScopeSelectionMode string
+
+// Enum values for RuleScopeSelectionMode
+const (
+	RuleScopeSelectionModeAll      RuleScopeSelectionMode = "ALL"
+	RuleScopeSelectionModeSpecific RuleScopeSelectionMode = "SPECIFIC"
+)
+
+// Values returns all known values for RuleScopeSelectionMode. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RuleScopeSelectionMode) Values() []RuleScopeSelectionMode {
+	return []RuleScopeSelectionMode{
+		"ALL",
+		"SPECIFIC",
+	}
+}
+
+type RuleTargetType string
+
+// Enum values for RuleTargetType
+const (
+	RuleTargetTypeDomainUnit RuleTargetType = "DOMAIN_UNIT"
+)
+
+// Values returns all known values for RuleTargetType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RuleTargetType) Values() []RuleTargetType {
+	return []RuleTargetType{
+		"DOMAIN_UNIT",
+	}
+}
+
+type RuleType string
+
+// Enum values for RuleType
+const (
+	RuleTypeMetadataFormEnforcement RuleType = "METADATA_FORM_ENFORCEMENT"
+)
+
+// Values returns all known values for RuleType. Note that this can be expanded in
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RuleType) Values() []RuleType {
+	return []RuleType{
+		"METADATA_FORM_ENFORCEMENT",
 	}
 }
 
@@ -805,6 +1436,23 @@ func (SelfGrantStatus) Values() []SelfGrantStatus {
 		"GRANTED",
 		"GRANT_FAILED",
 		"REVOKE_FAILED",
+	}
+}
+
+type SortFieldConnection string
+
+// Enum values for SortFieldConnection
+const (
+	SortFieldConnectionName SortFieldConnection = "NAME"
+)
+
+// Values returns all known values for SortFieldConnection. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (SortFieldConnection) Values() []SortFieldConnection {
+	return []SortFieldConnection{
+		"NAME",
 	}
 }
 
@@ -860,6 +1508,25 @@ func (SortOrder) Values() []SortOrder {
 	return []SortOrder{
 		"ASCENDING",
 		"DESCENDING",
+	}
+}
+
+type Status string
+
+// Enum values for Status
+const (
+	StatusEnabled  Status = "ENABLED"
+	StatusDisabled Status = "DISABLED"
+)
+
+// Values returns all known values for Status. Note that this can be expanded in
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (Status) Values() []Status {
+	return []Status{
+		"ENABLED",
+		"DISABLED",
 	}
 }
 
@@ -963,6 +1630,27 @@ func (SubscriptionStatus) Values() []SubscriptionStatus {
 		"APPROVED",
 		"REVOKED",
 		"CANCELLED",
+	}
+}
+
+type TargetEntityType string
+
+// Enum values for TargetEntityType
+const (
+	TargetEntityTypeDomainUnit                        TargetEntityType = "DOMAIN_UNIT"
+	TargetEntityTypeEnvironmentBlueprintConfiguration TargetEntityType = "ENVIRONMENT_BLUEPRINT_CONFIGURATION"
+	TargetEntityTypeEnvironmentProfile                TargetEntityType = "ENVIRONMENT_PROFILE"
+)
+
+// Values returns all known values for TargetEntityType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (TargetEntityType) Values() []TargetEntityType {
+	return []TargetEntityType{
+		"DOMAIN_UNIT",
+		"ENVIRONMENT_BLUEPRINT_CONFIGURATION",
+		"ENVIRONMENT_PROFILE",
 	}
 }
 
@@ -1191,8 +1879,11 @@ type UserDesignation string
 
 // Enum values for UserDesignation
 const (
-	UserDesignationProjectOwner       UserDesignation = "PROJECT_OWNER"
-	UserDesignationProjectContributor UserDesignation = "PROJECT_CONTRIBUTOR"
+	UserDesignationProjectOwner           UserDesignation = "PROJECT_OWNER"
+	UserDesignationProjectContributor     UserDesignation = "PROJECT_CONTRIBUTOR"
+	UserDesignationProjectCatalogViewer   UserDesignation = "PROJECT_CATALOG_VIEWER"
+	UserDesignationProjectCatalogConsumer UserDesignation = "PROJECT_CATALOG_CONSUMER"
+	UserDesignationProjectCatalogSteward  UserDesignation = "PROJECT_CATALOG_STEWARD"
 )
 
 // Values returns all known values for UserDesignation. Note that this can be
@@ -1203,6 +1894,9 @@ func (UserDesignation) Values() []UserDesignation {
 	return []UserDesignation{
 		"PROJECT_OWNER",
 		"PROJECT_CONTRIBUTOR",
+		"PROJECT_CATALOG_VIEWER",
+		"PROJECT_CATALOG_CONSUMER",
+		"PROJECT_CATALOG_STEWARD",
 	}
 }
 

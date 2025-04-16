@@ -11,8 +11,8 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Registers the user in the specified user pool and creates a user name,
-// password, and user attributes.
+// Registers a user with an app client and requests a user name, password, and
+// user attributes in the user pool.
 //
 // Amazon Cognito doesn't evaluate Identity and Access Management (IAM) policies
 // in requests for this API operation. For this operation, you can't use IAM
@@ -34,6 +34,12 @@ import (
 // numbers. After you test your app while in the sandbox environment, you can move
 // out of the sandbox and into production. For more information, see [SMS message settings for Amazon Cognito user pools]in the Amazon
 // Cognito Developer Guide.
+//
+// You might receive a LimitExceeded exception in response to this request if you
+// have exceeded a rate quota for email or SMS messages, and if your user pool
+// automatically verifies email addresses or phone numbers. When you get this
+// exception in the response, the user is successfully created and is in an
+// UNCONFIRMED state.
 //
 // [SMS message settings for Amazon Cognito user pools]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-sms-settings.html
 // [Using the Amazon Cognito user pools API and user pool endpoints]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html
@@ -57,15 +63,10 @@ func (c *Client) SignUp(ctx context.Context, params *SignUpInput, optFns ...func
 // Represents the request to register a user.
 type SignUpInput struct {
 
-	// The ID of the client associated with the user pool.
+	// The ID of the app client where the user wants to sign up.
 	//
 	// This member is required.
 	ClientId *string
-
-	// The password of the user you want to register.
-	//
-	// This member is required.
-	Password *string
 
 	// The username of the user that you want to sign up. The value of this parameter
 	// is typically a username, but can be any alias attribute in your user pool.
@@ -73,8 +74,10 @@ type SignUpInput struct {
 	// This member is required.
 	Username *string
 
-	// The Amazon Pinpoint analytics metadata that contributes to your metrics for
-	// SignUp calls.
+	// Information that supports analytics outcomes with Amazon Pinpoint, including
+	// the user's endpoint ID. The endpoint ID is a destination for Amazon Pinpoint
+	// push notifications, for example a device identifier, email address, or phone
+	// number.
 	AnalyticsMetadata *types.AnalyticsMetadataType
 
 	// A map of custom key-value pairs that you can provide as input for any custom
@@ -90,10 +93,10 @@ type SignUpInput struct {
 	// function code in Lambda, you can process the clientMetadata value to enhance
 	// your workflow for your specific needs.
 	//
-	// For more information, see [Customizing user pool Workflows with Lambda Triggers] in the Amazon Cognito Developer Guide.
+	// For more information, see [Using Lambda triggers] in the Amazon Cognito Developer Guide.
 	//
-	// When you use the ClientMetadata parameter, remember that Amazon Cognito won't
-	// do the following:
+	// When you use the ClientMetadata parameter, note that Amazon Cognito won't do
+	// the following:
 	//
 	//   - Store the ClientMetadata value. This data is available only to Lambda
 	//   triggers that are assigned to a user pool to support custom workflows. If your
@@ -102,26 +105,44 @@ type SignUpInput struct {
 	//
 	//   - Validate the ClientMetadata value.
 	//
-	//   - Encrypt the ClientMetadata value. Don't use Amazon Cognito to provide
-	//   sensitive information.
+	//   - Encrypt the ClientMetadata value. Don't send sensitive information in this
+	//   parameter.
 	//
-	// [Customizing user pool Workflows with Lambda Triggers]: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html
+	// [Using Lambda triggers]: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html
 	ClientMetadata map[string]string
 
+	// The user's proposed password. The password must comply with the [password requirements] of your user
+	// pool.
+	//
+	// Users can sign up without a password when your user pool supports passwordless
+	// sign-in with email or SMS OTPs. To create a user with no password, omit this
+	// parameter or submit a blank value. You can only create a passwordless user when
+	// passwordless sign-in is available.
+	//
+	// [password requirements]: https://docs.aws.amazon.com/cognito/latest/developerguide/managing-users-passwords.html
+	Password *string
+
 	// A keyed-hash message authentication code (HMAC) calculated using the secret key
-	// of a user pool client and username plus the client ID in the message.
+	// of a user pool client and username plus the client ID in the message. For more
+	// information about SecretHash , see [Computing secret hash values].
+	//
+	// [Computing secret hash values]: https://docs.aws.amazon.com/cognito/latest/developerguide/signing-up-users-in-your-app.html#cognito-user-pools-computing-secret-hash
 	SecretHash *string
 
 	// An array of name-value pairs representing user attributes.
 	//
-	// For custom attributes, you must prepend the custom: prefix to the attribute
-	// name.
+	// For custom attributes, include a custom: prefix in the attribute name, for
+	// example custom:department .
 	UserAttributes []types.AttributeType
 
-	// Contextual data about your user session, such as the device fingerprint, IP
-	// address, or location. Amazon Cognito advanced security evaluates the risk of an
+	// Contextual data about your user session like the device fingerprint, IP
+	// address, or location. Amazon Cognito threat protection evaluates the risk of an
 	// authentication event based on the context that your app generates and passes to
 	// Amazon Cognito when it makes API requests.
+	//
+	// For more information, see [Collecting data for threat protection in applications].
+	//
+	// [Collecting data for threat protection in applications]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-viewing-threat-protection-app.html
 	UserContextData *types.UserContextDataType
 
 	// Temporary user attributes that contribute to the outcomes of your pre sign-up
@@ -129,10 +150,9 @@ type SignUpInput struct {
 	// information that you collect from your users but don't need to retain.
 	//
 	// Your Lambda function can analyze this additional data and act on it. Your
-	// function might perform external API operations like logging user attributes and
-	// validation data to Amazon CloudWatch Logs. Validation data might also affect the
-	// response that your function returns to Amazon Cognito, like automatically
-	// confirming the user if they sign up from within your network.
+	// function can automatically confirm and verify select users or perform external
+	// API operations like logging user attributes and validation data to Amazon
+	// CloudWatch Logs.
 	//
 	// For more information about the pre sign-up Lambda trigger, see [Pre sign-up Lambda trigger].
 	//
@@ -145,20 +165,29 @@ type SignUpInput struct {
 // The response from the server for a registration request.
 type SignUpOutput struct {
 
-	// A response from the server indicating that a user registration has been
-	// confirmed.
+	// Indicates whether the user was automatically confirmed. You can auto-confirm
+	// users with a [pre sign-up Lambda trigger].
+	//
+	// [pre sign-up Lambda trigger]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-lambda-pre-sign-up.html
 	//
 	// This member is required.
 	UserConfirmed bool
 
-	// The 128-bit ID of the authenticated user. This isn't the same as username .
+	// The unique identifier of the new user, for example
+	// a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 .
 	//
 	// This member is required.
 	UserSub *string
 
-	// The code delivery details returned by the server response to the user
-	// registration request.
+	// In user pools that automatically verify and confirm new users, Amazon Cognito
+	// sends users a message with a code or link that confirms ownership of the phone
+	// number or email address that they entered. The CodeDeliveryDetails object is
+	// information about the delivery destination for that link or code.
 	CodeDeliveryDetails *types.CodeDeliveryDetailsType
+
+	// A session Id that you can pass to ConfirmSignUp when you want to immediately
+	// sign in your user with the USER_AUTH flow after they complete sign-up.
+	Session *string
 
 	// Metadata pertaining to the operation's result.
 	ResultMetadata middleware.Metadata
@@ -206,6 +235,9 @@ func (c *Client) addOperationSignUpMiddlewares(stack *middleware.Stack, options 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -222,6 +254,9 @@ func (c *Client) addOperationSignUpMiddlewares(stack *middleware.Stack, options 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpSignUpValidationMiddleware(stack); err != nil {
@@ -243,6 +278,18 @@ func (c *Client) addOperationSignUpMiddlewares(stack *middleware.Stack, options 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

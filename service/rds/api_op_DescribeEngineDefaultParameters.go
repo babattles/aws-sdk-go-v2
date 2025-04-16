@@ -135,7 +135,10 @@ type DescribeEngineDefaultParametersInput struct {
 	// This member is required.
 	DBParameterGroupFamily *string
 
-	// This parameter isn't currently supported.
+	// A filter that specifies one or more parameters to describe.
+	//
+	// The only supported filter is parameter-name . The results list only includes
+	// information about the parameters with these names.
 	Filters []types.Filter
 
 	// An optional pagination token provided by a previous
@@ -211,6 +214,9 @@ func (c *Client) addOperationDescribeEngineDefaultParametersMiddlewares(stack *m
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -227,6 +233,9 @@ func (c *Client) addOperationDescribeEngineDefaultParametersMiddlewares(stack *m
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeEngineDefaultParametersValidationMiddleware(stack); err != nil {
@@ -248,6 +257,18 @@ func (c *Client) addOperationDescribeEngineDefaultParametersMiddlewares(stack *m
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

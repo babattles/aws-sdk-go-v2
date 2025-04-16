@@ -45,17 +45,15 @@ type CreateSubscriptionGrantInput struct {
 	// This member is required.
 	GrantedEntity types.GrantedEntityInput
 
-	// The ID of the subscription target for which the subscription grant is created.
-	//
-	// This member is required.
-	SubscriptionTargetIdentifier *string
-
 	// The names of the assets for which the subscription grant is created.
 	AssetTargetNames []types.AssetTargetNameMap
 
 	// A unique, case-sensitive identifier that is provided to ensure the idempotency
 	// of the request.
 	ClientToken *string
+
+	// The ID of the subscription target for which the subscription grant is created.
+	SubscriptionTargetIdentifier *string
 
 	noSmithyDocumentSerde
 }
@@ -162,6 +160,9 @@ func (c *Client) addOperationCreateSubscriptionGrantMiddlewares(stack *middlewar
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -178,6 +179,9 @@ func (c *Client) addOperationCreateSubscriptionGrantMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateSubscriptionGrantMiddleware(stack, options); err != nil {
@@ -202,6 +206,18 @@ func (c *Client) addOperationCreateSubscriptionGrantMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

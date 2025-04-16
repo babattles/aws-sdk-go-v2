@@ -12,34 +12,60 @@ import (
 )
 
 // Creates a placement queue that processes requests for new game sessions. A
-// queue uses FleetIQ algorithms to determine the best placement locations and find
-// an available game server there, then prompts the game server process to start a
-// new game session.
+// queue uses FleetIQ algorithms to locate the best available placement locations
+// for a new game session, and then prompts the game server process to start a new
+// game session.
 //
 // A game session queue is configured with a set of destinations (Amazon GameLift
-// fleets or aliases), which determine the locations where the queue can place new
-// game sessions. These destinations can span multiple fleet types (Spot and
-// On-Demand), instance types, and Amazon Web Services Regions. If the queue
-// includes multi-location fleets, the queue is able to place game sessions in all
-// of a fleet's remote locations. You can opt to filter out individual locations if
-// needed.
+// fleets or aliases) that determine where the queue can place new game sessions.
+// These destinations can span multiple Amazon Web Services Regions, can use
+// different instance types, and can include both Spot and On-Demand fleets. If the
+// queue includes multi-location fleets, the queue can place game sessions in any
+// of a fleet's remote locations.
 //
-// The queue configuration also determines how FleetIQ selects the best available
-// placement for a new game session. Before searching for an available game server,
-// FleetIQ first prioritizes the queue's destinations and locations, with the best
-// placement locations on top. You can set up the queue to use the FleetIQ default
-// prioritization or provide an alternate set of priorities.
+// You can configure a queue to determine how it selects the best available
+// placement for a new game session. Queues can prioritize placement decisions
+// based on a combination of location, hosting cost, and player latency. You can
+// set up the queue to use the default prioritization or provide alternate
+// instructions using PriorityConfiguration .
 //
-// To create a new queue, provide a name, timeout value, and a list of
-// destinations. Optionally, specify a sort configuration and/or a filter, and
-// define a set of latency cap policies. You can also include the ARN for an Amazon
-// Simple Notification Service (SNS) topic to receive notifications of game session
-// placement activity. Notifications using SNS or CloudWatch events is the
-// preferred way to track placement activity.
+// # Request options
 //
-// If successful, a new GameSessionQueue object is returned with an assigned queue
-// ARN. New game session requests, which are submitted to queue with [StartGameSessionPlacement]or [StartMatchmaking],
-// reference a queue's name or ARN.
+// Use this operation to make these common types of requests.
+//
+//   - Create a queue with the minimum required parameters.
+//
+//   - Name
+//
+//   - Destinations (This parameter isn't required, but a queue can't make
+//     placements without at least one destination.)
+//
+//   - Create a queue with placement notification. Queues that have high placement
+//     activity must use a notification system, such as with Amazon Simple Notification
+//     Service (Amazon SNS) or Amazon CloudWatch.
+//
+//   - Required parameters Name and Destinations
+//
+//   - NotificationTarget
+//
+//   - Create a queue with custom prioritization settings. These custom settings
+//     replace the default prioritization configuration for a queue.
+//
+//   - Required parameters Name and Destinations
+//
+//   - PriorityConfiguration
+//
+//   - Create a queue with special rules for processing player latency data.
+//
+//   - Required parameters Name and Destinations
+//
+//   - PlayerLatencyPolicies
+//
+// # Results
+//
+// If successful, this operation returns a new GameSessionQueue object with an
+// assigned queue ARN. Use the queue's name or ARN when submitting new game session
+// requests with [StartGameSessionPlacement]or [StartMatchmaking].
 //
 // # Learn more
 //
@@ -104,12 +130,10 @@ type CreateGameSessionQueueInput struct {
 	// [Setting up notifications for game session placement]: https://docs.aws.amazon.com/gamelift/latest/developerguide/queue-notification.html
 	NotificationTarget *string
 
-	// A set of policies that act as a sliding cap on player latency. FleetIQ works to
-	// deliver low latency for most players in a game session. These policies ensure
-	// that no individual player can be placed into a game with unreasonably high
-	// latency. Use multiple policies to gradually relax latency requirements a step at
-	// a time. Multiple policies are applied based on their maximum allowed latency,
-	// starting with the lowest value.
+	// A set of policies that enforce a sliding cap on player latency when processing
+	// game sessions placement requests. Use multiple policies to gradually relax the
+	// cap over time if Amazon GameLift can't make a placement. Policies are evaluated
+	// in order starting with the lowest maximum latency value.
 	PlayerLatencyPolicies []types.PlayerLatencyPolicy
 
 	// Custom settings to use when prioritizing destinations and locations for game
@@ -128,7 +152,8 @@ type CreateGameSessionQueueInput struct {
 
 	// The maximum time, in seconds, that a new game session placement request remains
 	// in the queue. When a request exceeds this time, the game session placement
-	// changes to a TIMED_OUT status. By default, this property is set to 600 .
+	// changes to a TIMED_OUT status. If you don't specify a request timeout, the
+	// queue uses a default value.
 	TimeoutInSeconds *int32
 
 	noSmithyDocumentSerde
@@ -188,6 +213,9 @@ func (c *Client) addOperationCreateGameSessionQueueMiddlewares(stack *middleware
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -204,6 +232,9 @@ func (c *Client) addOperationCreateGameSessionQueueMiddlewares(stack *middleware
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateGameSessionQueueValidationMiddleware(stack); err != nil {
@@ -225,6 +256,18 @@ func (c *Client) addOperationCreateGameSessionQueueMiddlewares(stack *middleware
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

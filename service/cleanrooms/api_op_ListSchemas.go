@@ -35,15 +35,15 @@ type ListSchemasInput struct {
 	// This member is required.
 	CollaborationIdentifier *string
 
-	// The maximum size of the results that is returned per call.
+	// The maximum number of results that are returned for an API request call. The
+	// service chooses a default number if you don't set one. The service might return
+	// a `nextToken` even if the `maxResults` value has not been met.
 	MaxResults *int32
 
-	// The token value retrieved from a previous call to access the next page of
-	// results.
+	// The pagination token that's used to fetch the next set of results.
 	NextToken *string
 
-	// If present, filter schemas by schema type. The only valid schema type is
-	// currently `TABLE`.
+	// If present, filter schemas by schema type.
 	SchemaType types.SchemaType
 
 	noSmithyDocumentSerde
@@ -56,8 +56,7 @@ type ListSchemasOutput struct {
 	// This member is required.
 	SchemaSummaries []types.SchemaSummary
 
-	// The token value retrieved from a previous call to access the next page of
-	// results.
+	// The pagination token that's used to fetch the next set of results.
 	NextToken *string
 
 	// Metadata pertaining to the operation's result.
@@ -109,6 +108,9 @@ func (c *Client) addOperationListSchemasMiddlewares(stack *middleware.Stack, opt
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -125,6 +127,9 @@ func (c *Client) addOperationListSchemasMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListSchemasValidationMiddleware(stack); err != nil {
@@ -148,12 +153,26 @@ func (c *Client) addOperationListSchemasMiddlewares(stack *middleware.Stack, opt
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
+		return err
+	}
 	return nil
 }
 
 // ListSchemasPaginatorOptions is the paginator options for ListSchemas
 type ListSchemasPaginatorOptions struct {
-	// The maximum size of the results that is returned per call.
+	// The maximum number of results that are returned for an API request call. The
+	// service chooses a default number if you don't set one. The service might return
+	// a `nextToken` even if the `maxResults` value has not been met.
 	Limit int32
 
 	// Set to true if pagination should stop if the service returns a pagination token

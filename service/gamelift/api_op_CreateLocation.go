@@ -34,10 +34,10 @@ type CreateLocationInput struct {
 	// This member is required.
 	LocationName *string
 
-	// A list of labels to assign to the new matchmaking configuration resource. Tags
-	// are developer-defined key-value pairs. Tagging Amazon Web Services resources are
-	// useful for resource management, access management and cost allocation. For more
-	// information, see [Tagging Amazon Web Services Resources]in the Amazon Web Services General Rareference.
+	// A list of labels to assign to the new resource. Tags are developer-defined
+	// key-value pairs. Tagging Amazon Web Services resources are useful for resource
+	// management, access management, and cost allocation. For more information, see [Tagging Amazon Web Services Resources]
+	// in the Amazon Web Services General Rareference.
 	//
 	// [Tagging Amazon Web Services Resources]: https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html
 	Tags []types.Tag
@@ -99,6 +99,9 @@ func (c *Client) addOperationCreateLocationMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -115,6 +118,9 @@ func (c *Client) addOperationCreateLocationMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateLocationValidationMiddleware(stack); err != nil {
@@ -136,6 +142,18 @@ func (c *Client) addOperationCreateLocationMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

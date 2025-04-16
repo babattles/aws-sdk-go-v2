@@ -72,9 +72,16 @@ type DescribeGatewayCapabilityConfigurationOutput struct {
 	//
 	//   - IN_SYNC – The gateway is running the capability configuration.
 	//
+	//   - NOT_APPLICABLE – Synchronization is not required for this capability
+	//   configuration. This is most common when integrating partner data sources,
+	//   because the data integration is handled externally by the partner.
+	//
 	//   - OUT_OF_SYNC – The gateway hasn't received the capability configuration.
 	//
 	//   - SYNC_FAILED – The gateway rejected the capability configuration.
+	//
+	//   - UNKNOWN – The synchronization status is currently unknown due to an
+	//   undetermined or temporary error.
 	//
 	// This member is required.
 	CapabilitySyncStatus types.CapabilitySyncStatus
@@ -133,6 +140,9 @@ func (c *Client) addOperationDescribeGatewayCapabilityConfigurationMiddlewares(s
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -149,6 +159,9 @@ func (c *Client) addOperationDescribeGatewayCapabilityConfigurationMiddlewares(s
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addEndpointPrefix_opDescribeGatewayCapabilityConfigurationMiddleware(stack); err != nil {
@@ -173,6 +186,18 @@ func (c *Client) addOperationDescribeGatewayCapabilityConfigurationMiddlewares(s
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -35,8 +35,9 @@ type CreateQueueEnvironmentInput struct {
 	FarmId *string
 
 	// Sets the priority of the environments in the queue from 0 to 10,000, where 0 is
-	// the highest priority. If two environments share the same priority value, the
-	// environment created first takes higher priority.
+	// the highest priority (activated first and deactivated last). If two environments
+	// share the same priority value, the environment created first takes higher
+	// priority.
 	//
 	// This member is required.
 	Priority *int32
@@ -118,6 +119,9 @@ func (c *Client) addOperationCreateQueueEnvironmentMiddlewares(stack *middleware
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -134,6 +138,9 @@ func (c *Client) addOperationCreateQueueEnvironmentMiddlewares(stack *middleware
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addEndpointPrefix_opCreateQueueEnvironmentMiddleware(stack); err != nil {
@@ -161,6 +168,18 @@ func (c *Client) addOperationCreateQueueEnvironmentMiddlewares(stack *middleware
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

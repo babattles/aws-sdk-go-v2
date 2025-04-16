@@ -34,7 +34,8 @@ type DescribeProblemInput struct {
 	// This member is required.
 	ProblemId *string
 
-	// The AWS account ID for the owner of the resource group affected by the problem.
+	// The Amazon Web Services account ID for the owner of the resource group affected
+	// by the problem.
 	AccountId *string
 
 	noSmithyDocumentSerde
@@ -44,6 +45,9 @@ type DescribeProblemOutput struct {
 
 	// Information about the problem.
 	Problem *types.Problem
+
+	//  The SNS notification topic ARN of the problem.
+	SNSNotificationArn *string
 
 	// Metadata pertaining to the operation's result.
 	ResultMetadata middleware.Metadata
@@ -94,6 +98,9 @@ func (c *Client) addOperationDescribeProblemMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -110,6 +117,9 @@ func (c *Client) addOperationDescribeProblemMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeProblemValidationMiddleware(stack); err != nil {
@@ -131,6 +141,18 @@ func (c *Client) addOperationDescribeProblemMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

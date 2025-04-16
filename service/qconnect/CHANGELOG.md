@@ -1,3 +1,133 @@
+# v1.16.3 (2025-04-03)
+
+* No change notes available for this release.
+
+# v1.16.2 (2025-03-24)
+
+* **Documentation**: Provides the correct value for supported model ID.
+
+# v1.16.1 (2025-03-04.2)
+
+* **Bug Fix**: Add assurance test for operation order.
+
+# v1.16.0 (2025-02-27)
+
+* **Feature**: Track credential providers via User-Agent Feature ids
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.15.8 (2025-02-18)
+
+* **Bug Fix**: Bump go version to 1.22
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.15.7 (2025-02-05)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.15.6 (2025-01-31)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.15.5 (2025-01-30)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.15.4 (2025-01-24)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+* **Dependency Update**: Upgrade to smithy-go v1.22.2.
+
+# v1.15.3 (2025-01-17)
+
+* **Bug Fix**: Fix bug where credentials weren't refreshed during retry loop.
+
+# v1.15.2 (2025-01-15)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.15.1 (2025-01-09)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.15.0 (2024-12-19)
+
+* **Feature**: Amazon Q in Connect enables agents to ask Q for assistance in multiple languages and Q will provide answers and recommended step-by-step guides in those languages. Qs default language is English (United States) and you can switch this by setting the locale configuration on the AI Agent.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.14.0 (2024-12-02)
+
+* **Feature**: This release adds following capabilities: Configuring safeguards via AIGuardrails for Q in Connect inferencing, and APIs to support Q&A self-service use cases
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.13.0 (2024-11-18)
+
+* **Feature**: This release introduces MessageTemplate as a resource in Amazon Q in Connect, along with APIs to create, read, search, update, and delete MessageTemplate resources.
+* **Dependency Update**: Update to smithy-go v1.22.1.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.12.5 (2024-11-07)
+
+* **Bug Fix**: Adds case-insensitive handling of error message fields in service responses
+
+# v1.12.4 (2024-11-06)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.12.3 (2024-10-28)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.12.2 (2024-10-09)
+
+* No change notes available for this release.
+
+# v1.12.1 (2024-10-08)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.12.0 (2024-10-07)
+
+* **Feature**: This release adds support for the following capabilities: Configuration of the Gen AI system via AIAgent and AIPrompts. Integration support for Bedrock Knowledge Base.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.11.0 (2024-10-04)
+
+* **Feature**: Add support for HTTP client metrics.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.10.4 (2024-10-03)
+
+* No change notes available for this release.
+
+# v1.10.3 (2024-09-27)
+
+* No change notes available for this release.
+
+# v1.10.2 (2024-09-25)
+
+* No change notes available for this release.
+
+# v1.10.1 (2024-09-23)
+
+* No change notes available for this release.
+
+# v1.10.0 (2024-09-20)
+
+* **Feature**: Add tracing and metrics support to service clients.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.9.7 (2024-09-17)
+
+* **Bug Fix**: **BREAKFIX**: Only generate AccountIDEndpointMode config for services that use it. This is a compiler break, but removes no actual functionality, as no services currently use the account ID in endpoint resolution.
+
+# v1.9.6 (2024-09-04)
+
+* No change notes available for this release.
+
+# v1.9.5 (2024-09-03)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
 # v1.9.4 (2024-08-15)
 
 * **Dependency Update**: Bump minimum Go version to 1.21.

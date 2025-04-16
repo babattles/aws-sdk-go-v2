@@ -47,11 +47,11 @@ type DescribeRegionSettingsOutput struct {
 	// by enabling [Backup's advanced DynamoDB backup features].
 	//
 	// [Full Backup management]: https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#full-management
-	// [Feature availability by resource]: https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource
+	// [Feature availability by resource]: https://docs.aws.amazon.com/aws-backup/latest/devguide/backup-feature-availability.html#features-by-resource
 	// [Backup's advanced DynamoDB backup features]: https://docs.aws.amazon.com/aws-backup/latest/devguide/advanced-ddb-backup.html#advanced-ddb-backup-enable-cli
 	ResourceTypeManagementPreference map[string]bool
 
-	// Returns a list of all services along with the opt-in preferences in the Region.
+	// The services along with the opt-in preferences in the Region.
 	ResourceTypeOptInPreference map[string]bool
 
 	// Metadata pertaining to the operation's result.
@@ -103,6 +103,9 @@ func (c *Client) addOperationDescribeRegionSettingsMiddlewares(stack *middleware
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -121,6 +124,9 @@ func (c *Client) addOperationDescribeRegionSettingsMiddlewares(stack *middleware
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeRegionSettings(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -137,6 +143,18 @@ func (c *Client) addOperationDescribeRegionSettingsMiddlewares(stack *middleware
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

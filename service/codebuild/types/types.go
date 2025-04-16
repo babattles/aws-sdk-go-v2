@@ -7,6 +7,29 @@ import (
 	"time"
 )
 
+// Information about the auto-retry configuration for the build.
+type AutoRetryConfig struct {
+
+	// The maximum number of additional automatic retries after a failed build. For
+	// example, if the auto-retry limit is set to 2, CodeBuild will call the RetryBuild
+	// API to automatically retry your build for up to 2 additional times.
+	AutoRetryLimit *int32
+
+	// The number of times that the build has been retried. The initial build will
+	// have an auto-retry number of 0.
+	AutoRetryNumber *int32
+
+	// The build ARN of the auto-retried build triggered by the current build. The
+	// next auto-retry will be null for builds that don't trigger an auto-retry.
+	NextAutoRetry *string
+
+	// The build ARN of the build that triggered the current auto-retry build. The
+	// previous auto-retry will be null for the initial build.
+	PreviousAutoRetry *string
+
+	noSmithyDocumentSerde
+}
+
 // Specifies restrictions for the batch build.
 type BatchRestrictions struct {
 
@@ -15,6 +38,12 @@ type BatchRestrictions struct {
 	//
 	// [Build environment compute types]: https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-compute-types.html
 	ComputeTypesAllowed []string
+
+	// An array of strings that specify the fleets that are allowed for the batch
+	// build. See [Run builds on reserved capacity fleets]in the CodeBuild User Guide for more information.
+	//
+	// [Run builds on reserved capacity fleets]: https://docs.aws.amazon.com/codebuild/latest/userguide/fleets.html
+	FleetsAllowed []string
 
 	// Specifies the maximum number of builds allowed.
 	MaximumBuildsAllowed *int32
@@ -30,6 +59,9 @@ type Build struct {
 
 	// Information about the output artifacts for the build.
 	Artifacts *BuildArtifacts
+
+	// Information about the auto-retry configuration for the build.
+	AutoRetryConfig *AutoRetryConfig
 
 	// The ARN of the batch build that this build is a member of, if applicable.
 	BuildBatchArn *string
@@ -359,6 +391,10 @@ type BuildBatch struct {
 	// Specifies the amount of time, in minutes, that the batch build is allowed to be
 	// queued before it times out.
 	QueuedTimeoutInMinutes *int32
+
+	// An array that contains the ARNs of reports created by merging reports from
+	// builds associated with this batch build.
+	ReportArns []string
 
 	// The identifier of the resolved version of this batch build's source code.
 	//
@@ -744,6 +780,25 @@ type CodeCoverageReportSummary struct {
 	noSmithyDocumentSerde
 }
 
+// Contains compute attributes. These attributes only need be specified when your
+// project's or fleet's computeType is set to ATTRIBUTE_BASED_COMPUTE .
+type ComputeConfiguration struct {
+
+	// The amount of disk space of the instance type included in your fleet.
+	Disk *int64
+
+	// The machine type of the instance type included in your fleet.
+	MachineType MachineType
+
+	// The amount of memory of the instance type included in your fleet.
+	Memory *int64
+
+	// The number of vCPUs of the instance type included in your fleet.
+	VCpu *int64
+
+	noSmithyDocumentSerde
+}
+
 // Contains information about the debug session for a build. For more information,
 // see [Viewing a running build in Session Manager].
 //
@@ -880,48 +935,76 @@ type Fleet struct {
 	// number of builds that can run in parallel.
 	BaseCapacity *int32
 
+	// The compute configuration of the compute fleet. This is only required if
+	// computeType is set to ATTRIBUTE_BASED_COMPUTE .
+	ComputeConfiguration *ComputeConfiguration
+
 	// Information about the compute resources the compute fleet uses. Available
 	// values include:
 	//
-	//   - BUILD_GENERAL1_SMALL : Use up to 3 GB memory and 2 vCPUs for builds.
+	//   - ATTRIBUTE_BASED_COMPUTE : Specify the amount of vCPUs, memory, disk space,
+	//   and the type of machine.
 	//
-	//   - BUILD_GENERAL1_MEDIUM : Use up to 7 GB memory and 4 vCPUs for builds.
+	// If you use ATTRIBUTE_BASED_COMPUTE , you must define your attributes by using
+	//   computeConfiguration . CodeBuild will select the cheapest instance that
+	//   satisfies your specified attributes. For more information, see [Reserved capacity environment types]in the
+	//   CodeBuild User Guide.
 	//
-	//   - BUILD_GENERAL1_LARGE : Use up to 16 GB memory and 8 vCPUs for builds,
+	//   - BUILD_GENERAL1_SMALL : Use up to 4 GiB memory and 2 vCPUs for builds.
+	//
+	//   - BUILD_GENERAL1_MEDIUM : Use up to 8 GiB memory and 4 vCPUs for builds.
+	//
+	//   - BUILD_GENERAL1_LARGE : Use up to 16 GiB memory and 8 vCPUs for builds,
 	//   depending on your environment type.
 	//
-	//   - BUILD_GENERAL1_XLARGE : Use up to 70 GB memory and 36 vCPUs for builds,
+	//   - BUILD_GENERAL1_XLARGE : Use up to 72 GiB memory and 36 vCPUs for builds,
 	//   depending on your environment type.
 	//
-	//   - BUILD_GENERAL1_2XLARGE : Use up to 145 GB memory, 72 vCPUs, and 824 GB of
+	//   - BUILD_GENERAL1_2XLARGE : Use up to 144 GiB memory, 72 vCPUs, and 824 GB of
 	//   SSD storage for builds. This compute type supports Docker images up to 100 GB
 	//   uncompressed.
 	//
+	//   - BUILD_LAMBDA_1GB : Use up to 1 GiB memory for builds. Only available for
+	//   environment type LINUX_LAMBDA_CONTAINER and ARM_LAMBDA_CONTAINER .
+	//
+	//   - BUILD_LAMBDA_2GB : Use up to 2 GiB memory for builds. Only available for
+	//   environment type LINUX_LAMBDA_CONTAINER and ARM_LAMBDA_CONTAINER .
+	//
+	//   - BUILD_LAMBDA_4GB : Use up to 4 GiB memory for builds. Only available for
+	//   environment type LINUX_LAMBDA_CONTAINER and ARM_LAMBDA_CONTAINER .
+	//
+	//   - BUILD_LAMBDA_8GB : Use up to 8 GiB memory for builds. Only available for
+	//   environment type LINUX_LAMBDA_CONTAINER and ARM_LAMBDA_CONTAINER .
+	//
+	//   - BUILD_LAMBDA_10GB : Use up to 10 GiB memory for builds. Only available for
+	//   environment type LINUX_LAMBDA_CONTAINER and ARM_LAMBDA_CONTAINER .
+	//
 	// If you use BUILD_GENERAL1_SMALL :
 	//
-	//   - For environment type LINUX_CONTAINER , you can use up to 3 GB memory and 2
+	//   - For environment type LINUX_CONTAINER , you can use up to 4 GiB memory and 2
 	//   vCPUs for builds.
 	//
-	//   - For environment type LINUX_GPU_CONTAINER , you can use up to 16 GB memory, 4
-	//   vCPUs, and 1 NVIDIA A10G Tensor Core GPU for builds.
+	//   - For environment type LINUX_GPU_CONTAINER , you can use up to 16 GiB memory,
+	//   4 vCPUs, and 1 NVIDIA A10G Tensor Core GPU for builds.
 	//
-	//   - For environment type ARM_CONTAINER , you can use up to 4 GB memory and 2
+	//   - For environment type ARM_CONTAINER , you can use up to 4 GiB memory and 2
 	//   vCPUs on ARM-based processors for builds.
 	//
 	// If you use BUILD_GENERAL1_LARGE :
 	//
-	//   - For environment type LINUX_CONTAINER , you can use up to 15 GB memory and 8
+	//   - For environment type LINUX_CONTAINER , you can use up to 16 GiB memory and 8
 	//   vCPUs for builds.
 	//
-	//   - For environment type LINUX_GPU_CONTAINER , you can use up to 255 GB memory,
+	//   - For environment type LINUX_GPU_CONTAINER , you can use up to 255 GiB memory,
 	//   32 vCPUs, and 4 NVIDIA Tesla V100 GPUs for builds.
 	//
-	//   - For environment type ARM_CONTAINER , you can use up to 16 GB memory and 8
+	//   - For environment type ARM_CONTAINER , you can use up to 16 GiB memory and 8
 	//   vCPUs on ARM-based processors for builds.
 	//
-	// For more information, see [Build environment compute types] in the CodeBuild User Guide.
+	// For more information, see [On-demand environment types] in the CodeBuild User Guide.
 	//
-	// [Build environment compute types]: https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-compute-types.html
+	// [Reserved capacity environment types]: https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-compute-types.html#environment-reserved-capacity.types
+	// [On-demand environment types]: https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-compute-types.html#environment.types
 	ComputeType ComputeType
 
 	// The time at which the compute fleet was created.
@@ -934,10 +1017,20 @@ type Fleet struct {
 	//   (Mumbai), Asia Pacific (Tokyo), Asia Pacific (Singapore), Asia Pacific (Sydney),
 	//   EU (Frankfurt), and South America (São Paulo).
 	//
+	//   - The environment type ARM_EC2 is available only in regions US East (N.
+	//   Virginia), US East (Ohio), US West (Oregon), EU (Ireland), EU (Frankfurt), Asia
+	//   Pacific (Tokyo), Asia Pacific (Singapore), Asia Pacific (Sydney), South America
+	//   (São Paulo), and Asia Pacific (Mumbai).
+	//
 	//   - The environment type LINUX_CONTAINER is available only in regions US East
 	//   (N. Virginia), US East (Ohio), US West (Oregon), EU (Ireland), EU (Frankfurt),
 	//   Asia Pacific (Tokyo), Asia Pacific (Singapore), Asia Pacific (Sydney), South
 	//   America (São Paulo), and Asia Pacific (Mumbai).
+	//
+	//   - The environment type LINUX_EC2 is available only in regions US East (N.
+	//   Virginia), US East (Ohio), US West (Oregon), EU (Ireland), EU (Frankfurt), Asia
+	//   Pacific (Tokyo), Asia Pacific (Singapore), Asia Pacific (Sydney), South America
+	//   (São Paulo), and Asia Pacific (Mumbai).
 	//
 	//   - The environment type LINUX_GPU_CONTAINER is available only in regions US
 	//   East (N. Virginia), US East (Ohio), US West (Oregon), EU (Ireland), EU
@@ -950,6 +1043,11 @@ type Fleet struct {
 	//   - The environment type MAC_ARM is available for Large fleets only in regions
 	//   US East (N. Virginia), US East (Ohio), US West (Oregon), and Asia Pacific
 	//   (Sydney).
+	//
+	//   - The environment type WINDOWS_EC2 is available only in regions US East (N.
+	//   Virginia), US East (Ohio), US West (Oregon), EU (Ireland), EU (Frankfurt), Asia
+	//   Pacific (Tokyo), Asia Pacific (Singapore), Asia Pacific (Sydney), South America
+	//   (São Paulo), and Asia Pacific (Mumbai).
 	//
 	//   - The environment type WINDOWS_SERVER_2019_CONTAINER is available only in
 	//   regions US East (N. Virginia), US East (Ohio), US West (Oregon), Asia Pacific
@@ -998,6 +1096,9 @@ type Fleet struct {
 	// [Example policy statement to allow CodeBuild access to Amazon Web Services services required to create a VPC network interface]: https://docs.aws.amazon.com/codebuild/latest/userguide/auth-and-access-control-iam-identity-based-access-control.html#customer-managed-policies-example-create-vpc-network-interface
 	OverflowBehavior FleetOverflowBehavior
 
+	// The proxy configuration of the compute fleet.
+	ProxyConfiguration *ProxyConfiguration
+
 	// The scaling configuration of the compute fleet.
 	ScalingConfiguration *ScalingConfigurationOutput
 
@@ -1012,6 +1113,27 @@ type Fleet struct {
 
 	// Information about the VPC configuration that CodeBuild accesses.
 	VpcConfig *VpcConfig
+
+	noSmithyDocumentSerde
+}
+
+// Information about the proxy rule for your reserved capacity instances.
+type FleetProxyRule struct {
+
+	// The behavior of the proxy rule.
+	//
+	// This member is required.
+	Effect FleetProxyRuleEffectType
+
+	// The destination of the proxy rule.
+	//
+	// This member is required.
+	Entities []string
+
+	// The type of proxy rule.
+	//
+	// This member is required.
+	Type FleetProxyRuleType
 
 	noSmithyDocumentSerde
 }
@@ -1155,6 +1277,11 @@ type Project struct {
 
 	// Information about the build output artifacts for the build project.
 	Artifacts *ProjectArtifacts
+
+	// The maximum number of additional automatic retries after a failed build. For
+	// example, if the auto-retry limit is set to 2, CodeBuild will call the RetryBuild
+	// API to automatically retry your build for up to 2 additional times.
+	AutoRetryLimit *int32
 
 	// Information about the build badge for the build project.
 	Badge *ProjectBadge
@@ -1518,6 +1645,12 @@ type ProjectCache struct {
 	// This member is required.
 	Type CacheType
 
+	// Defines the scope of the cache. You can use this namespace to share a cache
+	// across multiple projects. For more information, see [Cache sharing between projects]in the CodeBuild User Guide.
+	//
+	// [Cache sharing between projects]: https://docs.aws.amazon.com/codebuild/latest/userguide/caching-s3.html#caching-s3-sharing
+	CacheNamespace *string
+
 	// Information about the cache location:
 	//
 	//   - NO_CACHE or LOCAL : This value is ignored.
@@ -1572,63 +1705,69 @@ type ProjectEnvironment struct {
 	// Information about the compute resources the build project uses. Available
 	// values include:
 	//
-	//   - BUILD_GENERAL1_SMALL : Use up to 3 GB memory and 2 vCPUs for builds.
+	//   - ATTRIBUTE_BASED_COMPUTE : Specify the amount of vCPUs, memory, disk space,
+	//   and the type of machine.
 	//
-	//   - BUILD_GENERAL1_MEDIUM : Use up to 7 GB memory and 4 vCPUs for builds.
+	// If you use ATTRIBUTE_BASED_COMPUTE , you must define your attributes by using
+	//   computeConfiguration . CodeBuild will select the cheapest instance that
+	//   satisfies your specified attributes. For more information, see [Reserved capacity environment types]in the
+	//   CodeBuild User Guide.
 	//
-	//   - BUILD_GENERAL1_LARGE : Use up to 16 GB memory and 8 vCPUs for builds,
+	//   - BUILD_GENERAL1_SMALL : Use up to 4 GiB memory and 2 vCPUs for builds.
+	//
+	//   - BUILD_GENERAL1_MEDIUM : Use up to 8 GiB memory and 4 vCPUs for builds.
+	//
+	//   - BUILD_GENERAL1_LARGE : Use up to 16 GiB memory and 8 vCPUs for builds,
 	//   depending on your environment type.
 	//
-	//   - BUILD_GENERAL1_XLARGE : Use up to 70 GB memory and 36 vCPUs for builds,
+	//   - BUILD_GENERAL1_XLARGE : Use up to 72 GiB memory and 36 vCPUs for builds,
 	//   depending on your environment type.
 	//
-	//   - BUILD_GENERAL1_2XLARGE : Use up to 145 GB memory, 72 vCPUs, and 824 GB of
+	//   - BUILD_GENERAL1_2XLARGE : Use up to 144 GiB memory, 72 vCPUs, and 824 GB of
 	//   SSD storage for builds. This compute type supports Docker images up to 100 GB
 	//   uncompressed.
 	//
-	//   - BUILD_LAMBDA_1GB : Use up to 1 GB memory for builds. Only available for
+	//   - BUILD_LAMBDA_1GB : Use up to 1 GiB memory for builds. Only available for
 	//   environment type LINUX_LAMBDA_CONTAINER and ARM_LAMBDA_CONTAINER .
 	//
-	//   - BUILD_LAMBDA_2GB : Use up to 2 GB memory for builds. Only available for
+	//   - BUILD_LAMBDA_2GB : Use up to 2 GiB memory for builds. Only available for
 	//   environment type LINUX_LAMBDA_CONTAINER and ARM_LAMBDA_CONTAINER .
 	//
-	//   - BUILD_LAMBDA_4GB : Use up to 4 GB memory for builds. Only available for
+	//   - BUILD_LAMBDA_4GB : Use up to 4 GiB memory for builds. Only available for
 	//   environment type LINUX_LAMBDA_CONTAINER and ARM_LAMBDA_CONTAINER .
 	//
-	//   - BUILD_LAMBDA_8GB : Use up to 8 GB memory for builds. Only available for
+	//   - BUILD_LAMBDA_8GB : Use up to 8 GiB memory for builds. Only available for
 	//   environment type LINUX_LAMBDA_CONTAINER and ARM_LAMBDA_CONTAINER .
 	//
-	//   - BUILD_LAMBDA_10GB : Use up to 10 GB memory for builds. Only available for
+	//   - BUILD_LAMBDA_10GB : Use up to 10 GiB memory for builds. Only available for
 	//   environment type LINUX_LAMBDA_CONTAINER and ARM_LAMBDA_CONTAINER .
 	//
 	// If you use BUILD_GENERAL1_SMALL :
 	//
-	//   - For environment type LINUX_CONTAINER , you can use up to 3 GB memory and 2
+	//   - For environment type LINUX_CONTAINER , you can use up to 4 GiB memory and 2
 	//   vCPUs for builds.
 	//
-	//   - For environment type LINUX_GPU_CONTAINER , you can use up to 16 GB memory, 4
-	//   vCPUs, and 1 NVIDIA A10G Tensor Core GPU for builds.
+	//   - For environment type LINUX_GPU_CONTAINER , you can use up to 16 GiB memory,
+	//   4 vCPUs, and 1 NVIDIA A10G Tensor Core GPU for builds.
 	//
-	//   - For environment type ARM_CONTAINER , you can use up to 4 GB memory and 2
+	//   - For environment type ARM_CONTAINER , you can use up to 4 GiB memory and 2
 	//   vCPUs on ARM-based processors for builds.
 	//
 	// If you use BUILD_GENERAL1_LARGE :
 	//
-	//   - For environment type LINUX_CONTAINER , you can use up to 15 GB memory and 8
+	//   - For environment type LINUX_CONTAINER , you can use up to 16 GiB memory and 8
 	//   vCPUs for builds.
 	//
-	//   - For environment type LINUX_GPU_CONTAINER , you can use up to 255 GB memory,
+	//   - For environment type LINUX_GPU_CONTAINER , you can use up to 255 GiB memory,
 	//   32 vCPUs, and 4 NVIDIA Tesla V100 GPUs for builds.
 	//
-	//   - For environment type ARM_CONTAINER , you can use up to 16 GB memory and 8
+	//   - For environment type ARM_CONTAINER , you can use up to 16 GiB memory and 8
 	//   vCPUs on ARM-based processors for builds.
 	//
-	// If you're using compute fleets during project creation, computeType will be
-	// ignored.
+	// For more information, see [On-demand environment types] in the CodeBuild User Guide.
 	//
-	// For more information, see [Build Environment Compute Types] in the CodeBuild User Guide.
-	//
-	// [Build Environment Compute Types]: https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-compute-types.html
+	// [Reserved capacity environment types]: https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-compute-types.html#environment-reserved-capacity.types
+	// [On-demand environment types]: https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-compute-types.html#environment.types
 	//
 	// This member is required.
 	ComputeType ComputeType
@@ -1652,32 +1791,6 @@ type ProjectEnvironment struct {
 
 	// The type of build environment to use for related builds.
 	//
-	//   - The environment type ARM_CONTAINER is available only in regions US East (N.
-	//   Virginia), US East (Ohio), US West (Oregon), EU (Ireland), Asia Pacific
-	//   (Mumbai), Asia Pacific (Tokyo), Asia Pacific (Sydney), and EU (Frankfurt).
-	//
-	//   - The environment type LINUX_CONTAINER is available only in regions US East
-	//   (N. Virginia), US East (Ohio), US West (Oregon), Canada (Central), EU (Ireland),
-	//   EU (London), EU (Frankfurt), Asia Pacific (Tokyo), Asia Pacific (Seoul), Asia
-	//   Pacific (Singapore), Asia Pacific (Sydney), China (Beijing), and China
-	//   (Ningxia).
-	//
-	//   - The environment type LINUX_GPU_CONTAINER is available only in regions US
-	//   East (N. Virginia), US East (Ohio), US West (Oregon), Canada (Central), EU
-	//   (Ireland), EU (London), EU (Frankfurt), Asia Pacific (Tokyo), Asia Pacific
-	//   (Seoul), Asia Pacific (Singapore), Asia Pacific (Sydney) , China (Beijing), and
-	//   China (Ningxia).
-	//
-	//   - The environment types ARM_LAMBDA_CONTAINER and LINUX_LAMBDA_CONTAINER are
-	//   available only in regions US East (N. Virginia), US East (Ohio), US West
-	//   (Oregon), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific
-	//   (Sydney), Asia Pacific (Tokyo), EU (Frankfurt), EU (Ireland), and South America
-	//   (São Paulo).
-	//
-	//   - The environment types WINDOWS_CONTAINER and WINDOWS_SERVER_2019_CONTAINER
-	//   are available only in regions US East (N. Virginia), US East (Ohio), US West
-	//   (Oregon), and EU (Ireland).
-	//
 	// If you're using compute fleets during project creation, type will be ignored.
 	//
 	// For more information, see [Build environment compute types] in the CodeBuild user guide.
@@ -1693,6 +1806,10 @@ type ProjectEnvironment struct {
 	//
 	// [certificate]: https://docs.aws.amazon.com/codebuild/latest/userguide/create-project-cli.html#cli.environment.certificate
 	Certificate *string
+
+	// The compute configuration of the build project. This is only required if
+	// computeType is set to ATTRIBUTE_BASED_COMPUTE .
+	ComputeConfiguration *ComputeConfiguration
 
 	// A set of environment variables to make available to builds for this build
 	// project.
@@ -1923,8 +2040,9 @@ type ProjectSource struct {
 
 	//  Set to true to report the status of a build's start and finish to your source
 	// provider. This option is valid only when your source provider is GitHub, GitHub
-	// Enterprise, GitLab, GitLab Self Managed, or Bitbucket. If this is set and you
-	// use a different source provider, an invalidInputException is thrown.
+	// Enterprise, GitLab, GitLab Self Managed, GitLab, GitLab Self Managed, or
+	// Bitbucket. If this is set and you use a different source provider, an
+	// invalidInputException is thrown.
 	//
 	// To be able to report the build status to the source provider, the user
 	// associated with the source provider must have write access to the repo. If the
@@ -1985,6 +2103,20 @@ type ProjectSourceVersion struct {
 	//
 	// This member is required.
 	SourceVersion *string
+
+	noSmithyDocumentSerde
+}
+
+// Information about the proxy configurations that apply network access control to
+// your reserved capacity instances.
+type ProxyConfiguration struct {
+
+	// The default behavior of outgoing traffic.
+	DefaultBehavior FleetProxyRuleBehavior
+
+	// An array of FleetProxyRule objects that represent the specified destination
+	// domains or IPs to allow or deny network access control to.
+	OrderedProxyRules []FleetProxyRule
 
 	noSmithyDocumentSerde
 }
@@ -2315,20 +2447,20 @@ type ScalingConfigurationOutput struct {
 // Contains configuration information about the scope for a webhook.
 type ScopeConfiguration struct {
 
-	// The name of either the enterprise or organization that will send webhook events
-	// to CodeBuild, depending on if the webhook is a global or organization webhook
-	// respectively.
+	// The name of either the group, enterprise, or organization that will send
+	// webhook events to CodeBuild, depending on the type of webhook.
 	//
 	// This member is required.
 	Name *string
 
-	// The type of scope for a GitHub webhook.
+	// The type of scope for a GitHub or GitLab webhook.
 	//
 	// This member is required.
 	Scope WebhookScopeType
 
-	// The domain of the GitHub Enterprise organization. Note that this parameter is
-	// only required if your project's source type is GITHUB_ENTERPRISE
+	// The domain of the GitHub Enterprise organization or the GitLab Self Managed
+	// group. Note that this parameter is only required if your project's source type
+	// is GITHUB_ENTERPRISE or GITLAB_SELF_MANAGED.
 	Domain *string
 
 	noSmithyDocumentSerde
@@ -2433,6 +2565,9 @@ type TestCase struct {
 	//  The path to the raw data file that contains the test result.
 	TestRawDataPath *string
 
+	// The name of the test suite that the test case is a part of.
+	TestSuiteName *string
+
 	noSmithyDocumentSerde
 }
 
@@ -2512,6 +2647,12 @@ type Webhook struct {
 	BranchFilter *string
 
 	// Specifies the type of build this webhook will trigger.
+	//
+	// RUNNER_BUILDKITE_BUILD is only available for NO_SOURCE source type projects
+	// configured for Buildkite runner builds. For more information about
+	// CodeBuild-hosted Buildkite runner builds, see [Tutorial: Configure a CodeBuild-hosted Buildkite runner]in the CodeBuild user guide.
+	//
+	// [Tutorial: Configure a CodeBuild-hosted Buildkite runner]: https://docs.aws.amazon.com/codebuild/latest/userguide/sample-runner-buildkite.html
 	BuildType WebhookBuildType
 
 	// An array of arrays of WebhookFilter objects used to determine which webhooks
@@ -2548,6 +2689,20 @@ type Webhook struct {
 	// A Bitbucket webhook does not support secret .
 	Secret *string
 
+	// The status of the webhook. Valid values include:
+	//
+	//   - CREATING : The webhook is being created.
+	//
+	//   - CREATE_FAILED : The webhook has failed to create.
+	//
+	//   - ACTIVE : The webhook has succeeded and is active.
+	//
+	//   - DELETING : The webhook is being deleted.
+	Status WebhookStatus
+
+	// A message associated with the status of a webhook.
+	StatusMessage *string
+
 	// The URL to the webhook.
 	Url *string
 
@@ -2570,9 +2725,9 @@ type WebhookFilter struct {
 	// This member is required.
 	Pattern *string
 
-	//  The type of webhook filter. There are nine webhook filter types: EVENT ,
+	//  The type of webhook filter. There are 11 webhook filter types: EVENT ,
 	// ACTOR_ACCOUNT_ID , HEAD_REF , BASE_REF , FILE_PATH , COMMIT_MESSAGE , TAG_NAME ,
-	// RELEASE_NAME , and WORKFLOW_NAME .
+	// RELEASE_NAME , REPOSITORY_NAME , ORGANIZATION_NAME , and WORKFLOW_NAME .
 	//
 	//   - EVENT
 	//
@@ -2613,18 +2768,14 @@ type WebhookFilter struct {
 	//   - A webhook triggers a build when the path of a changed file matches the
 	//   regular expression pattern .
 	//
-	// Works with GitHub and Bitbucket events push and pull requests events. Also
-	//   works with GitHub Enterprise push events, but does not work with GitHub
-	//   Enterprise pull request events.
+	// Works with push and pull request events only.
 	//
 	//   - COMMIT_MESSAGE
 	//
 	//   - A webhook triggers a build when the head commit message matches the regular
 	//   expression pattern .
 	//
-	// Works with GitHub and Bitbucket events push and pull requests events. Also
-	//   works with GitHub Enterprise push events, but does not work with GitHub
-	//   Enterprise pull request events.
+	// Works with push and pull request events only.
 	//
 	//   - TAG_NAME
 	//
@@ -2643,9 +2794,16 @@ type WebhookFilter struct {
 	//   - REPOSITORY_NAME
 	//
 	//   - A webhook triggers a build when the repository name matches the regular
-	//   expression pattern.
+	//   expression pattern .
 	//
 	// Works with GitHub global or organization webhooks only.
+	//
+	//   - ORGANIZATION_NAME
+	//
+	//   - A webhook triggers a build when the organization name matches the regular
+	//   expression pattern .
+	//
+	// Works with GitHub global webhooks only.
 	//
 	//   - WORKFLOW_NAME
 	//
@@ -2653,6 +2811,9 @@ type WebhookFilter struct {
 	//   expression pattern .
 	//
 	// Works with WORKFLOW_JOB_QUEUED events only.
+	//
+	// For CodeBuild-hosted Buildkite runner builds, WORKFLOW_NAME filters will filter
+	//   by pipeline name.
 	//
 	// This member is required.
 	Type WebhookFilterType

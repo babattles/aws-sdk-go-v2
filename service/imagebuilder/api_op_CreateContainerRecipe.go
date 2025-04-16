@@ -99,7 +99,7 @@ type CreateContainerRecipeInput struct {
 	// testing container images.
 	InstanceConfiguration *types.InstanceConfiguration
 
-	// Identifies which KMS key is used to encrypt the container image.
+	// Identifies which KMS key is used to encrypt the Dockerfile template.
 	KmsKeyId *string
 
 	// Specifies the operating system platform when you use a custom base image.
@@ -175,6 +175,9 @@ func (c *Client) addOperationCreateContainerRecipeMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -191,6 +194,9 @@ func (c *Client) addOperationCreateContainerRecipeMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateContainerRecipeMiddleware(stack, options); err != nil {
@@ -215,6 +221,18 @@ func (c *Client) addOperationCreateContainerRecipeMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

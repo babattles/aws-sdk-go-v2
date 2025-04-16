@@ -10,7 +10,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Deletes a Chime Webhook Configuration
+// Deletes a Amazon Chime webhook configuration for AWS Chatbot.
 func (c *Client) DeleteChimeWebhookConfiguration(ctx context.Context, params *DeleteChimeWebhookConfigurationInput, optFns ...func(*Options)) (*DeleteChimeWebhookConfigurationOutput, error) {
 	if params == nil {
 		params = &DeleteChimeWebhookConfigurationInput{}
@@ -28,7 +28,7 @@ func (c *Client) DeleteChimeWebhookConfiguration(ctx context.Context, params *De
 
 type DeleteChimeWebhookConfigurationInput struct {
 
-	// The ARN of the ChimeWebhookConfiguration to delete.
+	// The Amazon Resource Name (ARN) of the ChimeWebhookConfiguration to delete.
 	//
 	// This member is required.
 	ChatConfigurationArn *string
@@ -86,6 +86,9 @@ func (c *Client) addOperationDeleteChimeWebhookConfigurationMiddlewares(stack *m
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -102,6 +105,9 @@ func (c *Client) addOperationDeleteChimeWebhookConfigurationMiddlewares(stack *m
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteChimeWebhookConfigurationValidationMiddleware(stack); err != nil {
@@ -123,6 +129,18 @@ func (c *Client) addOperationDeleteChimeWebhookConfigurationMiddlewares(stack *m
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

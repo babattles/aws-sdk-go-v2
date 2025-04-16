@@ -32,6 +32,14 @@ type DescribeMigrationProjectsInput struct {
 
 	// Filters applied to the migration projects described in the form of key-value
 	// pairs.
+	//
+	// Valid filter names and values:
+	//
+	//   - instance-profile-identifier, instance profile arn or name
+	//
+	//   - data-provider-identifier, data provider arn or name
+	//
+	//   - migration-project-identifier, migration project arn or name
 	Filters []types.Filter
 
 	// Specifies the unique pagination token that makes it possible to display the
@@ -116,6 +124,9 @@ func (c *Client) addOperationDescribeMigrationProjectsMiddlewares(stack *middlew
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -132,6 +143,9 @@ func (c *Client) addOperationDescribeMigrationProjectsMiddlewares(stack *middlew
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeMigrationProjectsValidationMiddleware(stack); err != nil {
@@ -153,6 +167,18 @@ func (c *Client) addOperationDescribeMigrationProjectsMiddlewares(stack *middlew
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

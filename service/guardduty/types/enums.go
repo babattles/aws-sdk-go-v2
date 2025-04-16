@@ -444,6 +444,31 @@ func (FindingPublishingFrequency) Values() []FindingPublishingFrequency {
 	}
 }
 
+type FindingResourceType string
+
+// Enum values for FindingResourceType
+const (
+	FindingResourceTypeEc2Instance         FindingResourceType = "EC2_INSTANCE"
+	FindingResourceTypeEc2NetworkInterface FindingResourceType = "EC2_NETWORK_INTERFACE"
+	FindingResourceTypeS3Bucket            FindingResourceType = "S3_BUCKET"
+	FindingResourceTypeS3Object            FindingResourceType = "S3_OBJECT"
+	FindingResourceTypeAccessKey           FindingResourceType = "ACCESS_KEY"
+)
+
+// Values returns all known values for FindingResourceType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (FindingResourceType) Values() []FindingResourceType {
+	return []FindingResourceType{
+		"EC2_INSTANCE",
+		"EC2_NETWORK_INTERFACE",
+		"S3_BUCKET",
+		"S3_OBJECT",
+		"ACCESS_KEY",
+	}
+}
+
 type FindingStatisticType string
 
 // Enum values for FindingStatisticType
@@ -495,6 +520,66 @@ func (FreeTrialFeatureResult) Values() []FreeTrialFeatureResult {
 		"LAMBDA_NETWORK_LOGS",
 		"FARGATE_RUNTIME_MONITORING",
 		"EC2_RUNTIME_MONITORING",
+	}
+}
+
+type GroupByType string
+
+// Enum values for GroupByType
+const (
+	GroupByTypeAccount     GroupByType = "ACCOUNT"
+	GroupByTypeDate        GroupByType = "DATE"
+	GroupByTypeFindingType GroupByType = "FINDING_TYPE"
+	GroupByTypeResource    GroupByType = "RESOURCE"
+	GroupByTypeSeverity    GroupByType = "SEVERITY"
+)
+
+// Values returns all known values for GroupByType. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (GroupByType) Values() []GroupByType {
+	return []GroupByType{
+		"ACCOUNT",
+		"DATE",
+		"FINDING_TYPE",
+		"RESOURCE",
+		"SEVERITY",
+	}
+}
+
+type IndicatorType string
+
+// Enum values for IndicatorType
+const (
+	IndicatorTypeSuspiciousUserAgent  IndicatorType = "SUSPICIOUS_USER_AGENT"
+	IndicatorTypeSuspiciousNetwork    IndicatorType = "SUSPICIOUS_NETWORK"
+	IndicatorTypeMaliciousIp          IndicatorType = "MALICIOUS_IP"
+	IndicatorTypeTorIp                IndicatorType = "TOR_IP"
+	IndicatorTypeAttackTactic         IndicatorType = "ATTACK_TACTIC"
+	IndicatorTypeHighRiskApi          IndicatorType = "HIGH_RISK_API"
+	IndicatorTypeAttackTechnique      IndicatorType = "ATTACK_TECHNIQUE"
+	IndicatorTypeUnusualApiForAccount IndicatorType = "UNUSUAL_API_FOR_ACCOUNT"
+	IndicatorTypeUnusualAsnForAccount IndicatorType = "UNUSUAL_ASN_FOR_ACCOUNT"
+	IndicatorTypeUnusualAsnForUser    IndicatorType = "UNUSUAL_ASN_FOR_USER"
+)
+
+// Values returns all known values for IndicatorType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (IndicatorType) Values() []IndicatorType {
+	return []IndicatorType{
+		"SUSPICIOUS_USER_AGENT",
+		"SUSPICIOUS_NETWORK",
+		"MALICIOUS_IP",
+		"TOR_IP",
+		"ATTACK_TACTIC",
+		"HIGH_RISK_API",
+		"ATTACK_TECHNIQUE",
+		"UNUSUAL_API_FOR_ACCOUNT",
+		"UNUSUAL_ASN_FOR_ACCOUNT",
+		"UNUSUAL_ASN_FOR_USER",
 	}
 }
 
@@ -613,6 +698,44 @@ func (ManagementType) Values() []ManagementType {
 		"AUTO_MANAGED",
 		"MANUAL",
 		"DISABLED",
+	}
+}
+
+type MfaStatus string
+
+// Enum values for MfaStatus
+const (
+	MfaStatusEnabled  MfaStatus = "ENABLED"
+	MfaStatusDisabled MfaStatus = "DISABLED"
+)
+
+// Values returns all known values for MfaStatus. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (MfaStatus) Values() []MfaStatus {
+	return []MfaStatus{
+		"ENABLED",
+		"DISABLED",
+	}
+}
+
+type NetworkDirection string
+
+// Enum values for NetworkDirection
+const (
+	NetworkDirectionInbound  NetworkDirection = "INBOUND"
+	NetworkDirectionOutbound NetworkDirection = "OUTBOUND"
+)
+
+// Values returns all known values for NetworkDirection. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (NetworkDirection) Values() []NetworkDirection {
+	return []NetworkDirection{
+		"INBOUND",
+		"OUTBOUND",
 	}
 }
 
@@ -747,6 +870,64 @@ func (ProfileType) Values() []ProfileType {
 	}
 }
 
+type PublicAccessStatus string
+
+// Enum values for PublicAccessStatus
+const (
+	PublicAccessStatusBlocked PublicAccessStatus = "BLOCKED"
+	PublicAccessStatusAllowed PublicAccessStatus = "ALLOWED"
+)
+
+// Values returns all known values for PublicAccessStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (PublicAccessStatus) Values() []PublicAccessStatus {
+	return []PublicAccessStatus{
+		"BLOCKED",
+		"ALLOWED",
+	}
+}
+
+type PublicAclIgnoreBehavior string
+
+// Enum values for PublicAclIgnoreBehavior
+const (
+	PublicAclIgnoreBehaviorIgnored    PublicAclIgnoreBehavior = "IGNORED"
+	PublicAclIgnoreBehaviorNotIgnored PublicAclIgnoreBehavior = "NOT_IGNORED"
+)
+
+// Values returns all known values for PublicAclIgnoreBehavior. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (PublicAclIgnoreBehavior) Values() []PublicAclIgnoreBehavior {
+	return []PublicAclIgnoreBehavior{
+		"IGNORED",
+		"NOT_IGNORED",
+	}
+}
+
+type PublicBucketRestrictBehavior string
+
+// Enum values for PublicBucketRestrictBehavior
+const (
+	PublicBucketRestrictBehaviorRestricted    PublicBucketRestrictBehavior = "RESTRICTED"
+	PublicBucketRestrictBehaviorNotRestricted PublicBucketRestrictBehavior = "NOT_RESTRICTED"
+)
+
+// Values returns all known values for PublicBucketRestrictBehavior. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (PublicBucketRestrictBehavior) Values() []PublicBucketRestrictBehavior {
+	return []PublicBucketRestrictBehavior{
+		"RESTRICTED",
+		"NOT_RESTRICTED",
+	}
+}
+
 type PublishingStatus string
 
 // Enum values for PublishingStatus
@@ -866,6 +1047,27 @@ func (ScanType) Values() []ScanType {
 	return []ScanType{
 		"GUARDDUTY_INITIATED",
 		"ON_DEMAND",
+	}
+}
+
+type SignalType string
+
+// Enum values for SignalType
+const (
+	SignalTypeFinding      SignalType = "FINDING"
+	SignalTypeCloudTrail   SignalType = "CLOUD_TRAIL"
+	SignalTypeS3DataEvents SignalType = "S3_DATA_EVENTS"
+)
+
+// Values returns all known values for SignalType. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (SignalType) Values() []SignalType {
+	return []SignalType{
+		"FINDING",
+		"CLOUD_TRAIL",
+		"S3_DATA_EVENTS",
 	}
 }
 

@@ -84,7 +84,11 @@ type UpdateMaintenanceStartTimeInput struct {
 	//
 	// ALL_VERSIONS - Enables regular gateway maintenance updates.
 	//
-	// EMERGENCY_VERSIONS_ONLY - Disables regular gateway maintenance updates.
+	// EMERGENCY_VERSIONS_ONLY - Disables regular gateway maintenance updates. The
+	// gateway will still receive emergency version updates on rare occasions if
+	// necessary to remedy highly critical security or durability issues. You will be
+	// notified before an emergency version update is applied. These updates are
+	// applied during your gateway's scheduled maintenance window.
 	SoftwareUpdatePreferences *types.SoftwareUpdatePreferences
 
 	noSmithyDocumentSerde
@@ -147,6 +151,9 @@ func (c *Client) addOperationUpdateMaintenanceStartTimeMiddlewares(stack *middle
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -163,6 +170,9 @@ func (c *Client) addOperationUpdateMaintenanceStartTimeMiddlewares(stack *middle
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateMaintenanceStartTimeValidationMiddleware(stack); err != nil {
@@ -184,6 +194,18 @@ func (c *Client) addOperationUpdateMaintenanceStartTimeMiddlewares(stack *middle
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -6,6 +6,42 @@ import (
 	smithydocument "github.com/aws/smithy-go/document"
 )
 
+// Details about the analysis.
+type AnalysisDetails struct {
+
+	// Details about the Savings Plans purchase analysis.
+	SavingsPlansPurchaseAnalysisDetails *SavingsPlansPurchaseAnalysisDetails
+
+	noSmithyDocumentSerde
+}
+
+// A summary of the analysis.
+type AnalysisSummary struct {
+
+	// The completion time of the analysis.
+	AnalysisCompletionTime *string
+
+	// The analysis ID that's associated with the commitment purchase analysis.
+	AnalysisId *string
+
+	// The start time of the analysis.
+	AnalysisStartedTime *string
+
+	// The status of the analysis.
+	AnalysisStatus AnalysisStatus
+
+	// The configuration for the commitment purchase analysis.
+	CommitmentPurchaseAnalysisConfiguration *CommitmentPurchaseAnalysisConfiguration
+
+	// The error code used for the analysis.
+	ErrorCode ErrorCode
+
+	// The estimated time for when the analysis will complete.
+	EstimatedCompletionTime *string
+
+	noSmithyDocumentSerde
+}
+
 // An unusual cost pattern. This consists of the detailed metadata and the current
 // status of the anomaly object.
 type Anomaly struct {
@@ -37,8 +73,8 @@ type Anomaly struct {
 	// The first day the anomaly is detected.
 	AnomalyStartDate *string
 
-	// The dimension for the anomaly (for example, an Amazon Web Service in a service
-	// monitor).
+	// The dimension for the anomaly (for example, an Amazon Web Services service in a
+	// service monitor).
 	DimensionValue *string
 
 	// The feedback value.
@@ -295,6 +331,15 @@ type AnomalySubscription struct {
 	// [Impact]: https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_Impact.html
 	// [Expression]: https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_Expression.html
 	ThresholdExpression *Expression
+
+	noSmithyDocumentSerde
+}
+
+// The configuration for the commitment purchase analysis.
+type CommitmentPurchaseAnalysisConfiguration struct {
+
+	// The configuration for the Savings Plans purchase analysis.
+	SavingsPlansPurchaseAnalysisConfiguration *SavingsPlansPurchaseAnalysisConfiguration
 
 	noSmithyDocumentSerde
 }
@@ -818,6 +863,18 @@ type DiskResourceUtilization struct {
 
 	// The maximum number of write operations per second.
 	DiskWriteOpsPerSecond *string
+
+	noSmithyDocumentSerde
+}
+
+// The DynamoDB reservations that Amazon Web Services recommends that you purchase.
+type DynamoDBCapacityDetails struct {
+
+	// The capacity unit of the recommended reservation.
+	CapacityUnits *string
+
+	// The Amazon Web Services Region of the recommended reservation.
+	Region *string
 
 	noSmithyDocumentSerde
 }
@@ -1595,6 +1652,14 @@ type ReservationPurchaseRecommendationDetail struct {
 	// reservation purchases.
 	AverageNormalizedUnitsUsedPerHour *string
 
+	// The average number of provisioned capacity units that you used in an hour
+	// during the
+	//
+	// historical period. Amazon Web Services uses this to calculate your recommended
+	//
+	// reservation purchases.
+	AverageNumberOfCapacityUnitsUsedPerHour *string
+
 	// The average number of instances that you used in an hour during the historical
 	// period. Amazon Web Services uses this to calculate your recommended reservation
 	// purchases.
@@ -1637,6 +1702,14 @@ type ReservationPurchaseRecommendationDetail struct {
 	// reservation purchases.
 	MaximumNormalizedUnitsUsedPerHour *string
 
+	// The maximum number of provisioned capacity units that you used in an hour
+	// during the
+	//
+	// historical period. Amazon Web Services uses this to calculate your recommended
+	//
+	// reservation purchases.
+	MaximumNumberOfCapacityUnitsUsedPerHour *string
+
 	// The maximum number of instances that you used in an hour during the historical
 	// period. Amazon Web Services uses this to calculate your recommended reservation
 	// purchases.
@@ -1647,6 +1720,14 @@ type ReservationPurchaseRecommendationDetail struct {
 	// reservation purchases.
 	MinimumNormalizedUnitsUsedPerHour *string
 
+	// The minimum number of provisioned capacity units that you used in an hour
+	// during the
+	//
+	// historical period. Amazon Web Services uses this to calculate your recommended
+	//
+	// reservation purchases.
+	MinimumNumberOfCapacityUnitsUsedPerHour *string
+
 	// The minimum number of instances that you used in an hour during the historical
 	// period. Amazon Web Services uses this to calculate your recommended reservation
 	// purchases.
@@ -1656,11 +1737,22 @@ type ReservationPurchaseRecommendationDetail struct {
 	// purchase.
 	RecommendedNormalizedUnitsToPurchase *string
 
+	// The number of reserved capacity units that Amazon Web Services recommends that
+	// you
+	//
+	// purchase.
+	RecommendedNumberOfCapacityUnitsToPurchase *string
+
 	// The number of instances that Amazon Web Services recommends that you purchase.
 	RecommendedNumberOfInstancesToPurchase *string
 
 	// How much purchasing this instance costs you on a monthly basis.
 	RecurringStandardMonthlyCost *string
+
+	// Details about the reservations that Amazon Web Services recommends that you
+	//
+	// purchase.
+	ReservedCapacityDetails *ReservedCapacityDetails
 
 	// How much purchasing this instance costs you upfront.
 	UpfrontCost *string
@@ -1717,6 +1809,17 @@ type ReservationUtilizationGroup struct {
 
 	// The value of a specific reservation attribute.
 	Value *string
+
+	noSmithyDocumentSerde
+}
+
+// Details about the reservations that Amazon Web Services recommends that you
+//
+// purchase.
+type ReservedCapacityDetails struct {
+
+	// The DynamoDB reservations that Amazon Web Services recommends that you purchase.
+	DynamoDBCapacityDetails *DynamoDBCapacityDetails
 
 	noSmithyDocumentSerde
 }
@@ -1868,10 +1971,14 @@ type RightsizingRecommendationSummary struct {
 	noSmithyDocumentSerde
 }
 
-// The combination of Amazon Web Service, linked account, linked account name,
-// Region, and usage type where a cost anomaly is observed. The linked account name
-// will only be available when the account name can be identified.
+// The combination of Amazon Web Services service, linked account, linked account
+// name, Region, and usage type where a cost anomaly is observed, along with the
+// dollar and percentage amount of the anomaly impact. The linked account name will
+// only be available when the account name can be identified.
 type RootCause struct {
+
+	// The dollar impact for the root cause.
+	Impact *RootCauseImpact
 
 	// The member account value that's associated with the cost anomaly.
 	LinkedAccount *string
@@ -1882,11 +1989,50 @@ type RootCause struct {
 	// The Amazon Web Services Region that's associated with the cost anomaly.
 	Region *string
 
-	// The Amazon Web Service name that's associated with the cost anomaly.
+	// The Amazon Web Services service name that's associated with the cost anomaly.
 	Service *string
 
 	// The UsageType value that's associated with the cost anomaly.
 	UsageType *string
+
+	noSmithyDocumentSerde
+}
+
+// The dollar value of the root cause.
+type RootCauseImpact struct {
+
+	// The dollar amount that this root cause contributed to the anomaly's TotalImpact.
+	//
+	// This member is required.
+	Contribution float64
+
+	noSmithyDocumentSerde
+}
+
+// The Savings Plans commitment details.
+type SavingsPlans struct {
+
+	// The instance family of the Savings Plans commitment.
+	InstanceFamily *string
+
+	// The unique ID that's used to distinguish Savings Plans commitments from one
+	// another.
+	OfferingId *string
+
+	// The payment option for the Savings Plans commitment.
+	PaymentOption PaymentOption
+
+	// The Region associated with the Savings Plans commitment.
+	Region *string
+
+	// The Savings Plans commitment.
+	SavingsPlansCommitment *float64
+
+	// The Savings Plans type.
+	SavingsPlansType SupportedSavingsPlansType
+
+	// The term that you want the Savings Plans commitment for.
+	TermInYears TermInYears
 
 	noSmithyDocumentSerde
 }
@@ -1959,6 +2105,115 @@ type SavingsPlansDetails struct {
 	// A collection of Amazon Web Services resources in a geographic area. Each Amazon
 	// Web Services Region is isolated and independent of the other Regions.
 	Region *string
+
+	noSmithyDocumentSerde
+}
+
+// The configuration for the Savings Plans purchase analysis.
+type SavingsPlansPurchaseAnalysisConfiguration struct {
+
+	// The type of analysis.
+	//
+	// This member is required.
+	AnalysisType AnalysisType
+
+	// The time period associated with the analysis.
+	//
+	// This member is required.
+	LookBackTimePeriod *DateInterval
+
+	// Savings Plans to include in the analysis.
+	//
+	// This member is required.
+	SavingsPlansToAdd []SavingsPlans
+
+	// The account that the analysis is for.
+	AccountId *string
+
+	// The account scope that you want your analysis for.
+	AccountScope AccountScope
+
+	// Savings Plans to exclude from the analysis.
+	SavingsPlansToExclude []string
+
+	noSmithyDocumentSerde
+}
+
+// Details about the Savings Plans purchase analysis.
+type SavingsPlansPurchaseAnalysisDetails struct {
+
+	// Additional metadata that might be applicable to the commitment.
+	AdditionalMetadata *string
+
+	// The currency code used for the analysis.
+	CurrencyCode *string
+
+	// The average value of hourly coverage over the lookback period.
+	CurrentAverageCoverage *string
+
+	// The average value of hourly On-Demand spend over the lookback period.
+	CurrentAverageHourlyOnDemandSpend *string
+
+	// The highest value of hourly On-Demand spend over the lookback period.
+	CurrentMaximumHourlyOnDemandSpend *string
+
+	// The lowest value of hourly On-Demand spend over the lookback period.
+	CurrentMinimumHourlyOnDemandSpend *string
+
+	// The current total On-Demand spend over the lookback period.
+	CurrentOnDemandSpend *string
+
+	// The estimated coverage of the Savings Plan.
+	EstimatedAverageCoverage *string
+
+	// The estimated utilization of the Savings Plan.
+	EstimatedAverageUtilization *string
+
+	// The estimated cost of the Savings Plan over the length of the lookback period.
+	EstimatedCommitmentCost *string
+
+	// The estimated monthly savings amount based on the Savings Plan.
+	EstimatedMonthlySavingsAmount *string
+
+	// The remaining On-Demand cost estimated to not be covered by the Savings Plan
+	// over the length of the lookback period.
+	EstimatedOnDemandCost *string
+
+	// The estimated On-Demand cost you expect with no additional commitment based on
+	// your usage of the selected time period and the Savings Plan you own.
+	EstimatedOnDemandCostWithCurrentCommitment *string
+
+	// The estimated return on investment that's based on the Savings Plan and
+	// estimated savings. This is calculated as
+	// estimatedSavingsAmount/estimatedSPCost*100.
+	EstimatedROI *string
+
+	// The estimated savings amount that's based on the Savings Plan over the length
+	// of the lookback period.
+	EstimatedSavingsAmount *string
+
+	// The estimated savings percentage relative to the total cost over the cost
+	// calculation lookback period.
+	EstimatedSavingsPercentage *string
+
+	// The existing hourly commitment for the Savings Plan type.
+	ExistingHourlyCommitment *string
+
+	// The recommended or custom hourly commitment.
+	HourlyCommitmentToPurchase *string
+
+	// The date and time of the last hour that went into the analysis.
+	LatestUsageTimestamp *string
+
+	// The lookback period in hours that's used to generate the analysis.
+	LookbackPeriodInHours *string
+
+	// The related hourly cost, coverage, and utilization metrics over the lookback
+	// period.
+	MetricsOverLookbackPeriod []RecommendationDetailHourlyMetrics
+
+	// The upfront cost of the Savings Plan based on the selected payment option.
+	UpfrontCost *string
 
 	noSmithyDocumentSerde
 }

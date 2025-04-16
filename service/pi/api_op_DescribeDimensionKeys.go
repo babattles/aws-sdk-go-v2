@@ -104,6 +104,8 @@ type DescribeDimensionKeysInput struct {
 	// group in the GroupBy parameter is db.sql_tokenized , you can specify per-SQL
 	// metrics to get the values for the top N SQL digests. The response syntax is as
 	// follows: "AdditionalMetrics" : { "string" : "string" } .
+	//
+	// The only supported statistic function is .avg .
 	AdditionalMetrics []string
 
 	// One or more filters to apply in the request. Restrictions:
@@ -224,6 +226,9 @@ func (c *Client) addOperationDescribeDimensionKeysMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -240,6 +245,9 @@ func (c *Client) addOperationDescribeDimensionKeysMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeDimensionKeysValidationMiddleware(stack); err != nil {
@@ -261,6 +269,18 @@ func (c *Client) addOperationDescribeDimensionKeysMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

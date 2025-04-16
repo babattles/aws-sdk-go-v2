@@ -1,3 +1,153 @@
+# v1.60.1 (2025-04-03)
+
+* No change notes available for this release.
+
+# v1.60.0 (2025-03-26)
+
+* **Feature**: This release adds the ability to associate an AWS WAF v2 web ACL with an AWS Amplify App.
+
+# v1.59.0 (2025-03-17)
+
+* **Feature**: AWS WAF now lets you inspect fragments of request URIs. You can specify the scope of the URI to inspect and narrow the set of URI fragments.
+
+# v1.58.0 (2025-03-06)
+
+* **Feature**: You can now perform an exact match or rate limit aggregation against the web request's JA4 fingerprint.
+
+# v1.57.2 (2025-03-05)
+
+* No change notes available for this release.
+
+# v1.57.1 (2025-03-04.2)
+
+* **Bug Fix**: Add assurance test for operation order.
+
+# v1.57.0 (2025-02-27)
+
+* **Feature**: Track credential providers via User-Agent Feature ids
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.56.1 (2025-02-18)
+
+* **Bug Fix**: Bump go version to 1.22
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.56.0 (2025-02-14)
+
+* **Feature**: The WAFv2 API now supports configuring data protection in webACLs.
+
+# v1.55.14 (2025-02-05)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.55.13 (2025-01-31)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.55.12 (2025-01-30)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.55.11 (2025-01-24)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+* **Dependency Update**: Upgrade to smithy-go v1.22.2.
+
+# v1.55.10 (2025-01-17)
+
+* **Bug Fix**: Fix bug where credentials weren't refreshed during retry loop.
+
+# v1.55.9 (2025-01-15)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.55.8 (2025-01-09)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.55.7 (2024-12-19)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.55.6 (2024-12-02)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.55.5 (2024-11-18)
+
+* **Dependency Update**: Update to smithy-go v1.22.1.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.55.4 (2024-11-07)
+
+* **Bug Fix**: Adds case-insensitive handling of error message fields in service responses
+
+# v1.55.3 (2024-11-06)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.55.2 (2024-10-31)
+
+* No change notes available for this release.
+
+# v1.55.1 (2024-10-28)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.55.0 (2024-10-21)
+
+* **Feature**: Add a property to WebACL to indicate whether it's been retrofitted by Firewall Manager.
+
+# v1.54.2 (2024-10-08)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.54.1 (2024-10-07)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.54.0 (2024-10-04)
+
+* **Feature**: Add support for HTTP client metrics.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.53.4 (2024-10-03)
+
+* No change notes available for this release.
+
+# v1.53.3 (2024-09-27)
+
+* No change notes available for this release.
+
+# v1.53.2 (2024-09-25)
+
+* No change notes available for this release.
+
+# v1.53.1 (2024-09-23)
+
+* No change notes available for this release.
+
+# v1.53.0 (2024-09-20)
+
+* **Feature**: Add tracing and metrics support to service clients.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.52.3 (2024-09-17)
+
+* **Bug Fix**: **BREAKFIX**: Only generate AccountIDEndpointMode config for services that use it. This is a compiler break, but removes no actual functionality, as no services currently use the account ID in endpoint resolution.
+
+# v1.52.2 (2024-09-04)
+
+* No change notes available for this release.
+
+# v1.52.1 (2024-09-03)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.52.0 (2024-08-29)
+
+* **Feature**: The minimum request rate for a rate-based rule is now 10. Before this, it was 100.
+
 # v1.51.5 (2024-08-15)
 
 * **Dependency Update**: Bump minimum Go version to 1.21.

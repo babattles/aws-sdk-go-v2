@@ -74,6 +74,30 @@ func TestCheckSnapshot_AddProfileKey(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_BatchGetCalculatedAttributeForProfile(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.BatchGetCalculatedAttributeForProfile(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "BatchGetCalculatedAttributeForProfile")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_BatchGetProfile(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.BatchGetProfile(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "BatchGetProfile")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_CreateCalculatedAttributeDefinition(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.CreateCalculatedAttributeDefinition(context.Background(), nil, func(o *Options) {
@@ -110,6 +134,18 @@ func TestCheckSnapshot_CreateEventStream(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_CreateEventTrigger(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateEventTrigger(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "CreateEventTrigger")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_CreateIntegrationWorkflow(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.CreateIntegrationWorkflow(context.Background(), nil, func(o *Options) {
@@ -127,6 +163,42 @@ func TestCheckSnapshot_CreateProfile(t *testing.T) {
 	_, err := svc.CreateProfile(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "CreateProfile")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_CreateSegmentDefinition(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateSegmentDefinition(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "CreateSegmentDefinition")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_CreateSegmentEstimate(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateSegmentEstimate(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "CreateSegmentEstimate")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_CreateSegmentSnapshot(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateSegmentSnapshot(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "CreateSegmentSnapshot")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -163,6 +235,18 @@ func TestCheckSnapshot_DeleteEventStream(t *testing.T) {
 	_, err := svc.DeleteEventStream(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "DeleteEventStream")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_DeleteEventTrigger(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteEventTrigger(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DeleteEventTrigger")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -223,6 +307,18 @@ func TestCheckSnapshot_DeleteProfileObjectType(t *testing.T) {
 	_, err := svc.DeleteProfileObjectType(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "DeleteProfileObjectType")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_DeleteSegmentDefinition(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteSegmentDefinition(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DeleteSegmentDefinition")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -314,6 +410,18 @@ func TestCheckSnapshot_GetEventStream(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_GetEventTrigger(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetEventTrigger(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GetEventTrigger")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_GetIdentityResolutionJob(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.GetIdentityResolutionJob(context.Background(), nil, func(o *Options) {
@@ -367,6 +475,54 @@ func TestCheckSnapshot_GetProfileObjectTypeTemplate(t *testing.T) {
 	_, err := svc.GetProfileObjectTypeTemplate(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "GetProfileObjectTypeTemplate")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_GetSegmentDefinition(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetSegmentDefinition(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GetSegmentDefinition")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_GetSegmentEstimate(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetSegmentEstimate(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GetSegmentEstimate")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_GetSegmentMembership(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetSegmentMembership(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GetSegmentMembership")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_GetSegmentSnapshot(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetSegmentSnapshot(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GetSegmentSnapshot")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -470,6 +626,18 @@ func TestCheckSnapshot_ListEventStreams(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_ListEventTriggers(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListEventTriggers(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListEventTriggers")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_ListIdentityResolutionJobs(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ListIdentityResolutionJobs(context.Background(), nil, func(o *Options) {
@@ -487,6 +655,30 @@ func TestCheckSnapshot_ListIntegrations(t *testing.T) {
 	_, err := svc.ListIntegrations(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "ListIntegrations")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_ListObjectTypeAttributes(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListObjectTypeAttributes(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListObjectTypeAttributes")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_ListProfileAttributeValues(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListProfileAttributeValues(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListProfileAttributeValues")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -535,6 +727,18 @@ func TestCheckSnapshot_ListRuleBasedMatches(t *testing.T) {
 	_, err := svc.ListRuleBasedMatches(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "ListRuleBasedMatches")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_ListSegmentDefinitions(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListSegmentDefinitions(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListSegmentDefinitions")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -674,6 +878,18 @@ func TestCheckSnapshot_UpdateDomain(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_UpdateEventTrigger(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateEventTrigger(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "UpdateEventTrigger")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_UpdateProfile(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.UpdateProfile(context.Background(), nil, func(o *Options) {
@@ -690,6 +906,30 @@ func TestUpdateSnapshot_AddProfileKey(t *testing.T) {
 	_, err := svc.AddProfileKey(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "AddProfileKey")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_BatchGetCalculatedAttributeForProfile(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.BatchGetCalculatedAttributeForProfile(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "BatchGetCalculatedAttributeForProfile")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_BatchGetProfile(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.BatchGetProfile(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "BatchGetProfile")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -733,6 +973,18 @@ func TestUpdateSnapshot_CreateEventStream(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_CreateEventTrigger(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateEventTrigger(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "CreateEventTrigger")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_CreateIntegrationWorkflow(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.CreateIntegrationWorkflow(context.Background(), nil, func(o *Options) {
@@ -750,6 +1002,42 @@ func TestUpdateSnapshot_CreateProfile(t *testing.T) {
 	_, err := svc.CreateProfile(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "CreateProfile")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_CreateSegmentDefinition(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateSegmentDefinition(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "CreateSegmentDefinition")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_CreateSegmentEstimate(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateSegmentEstimate(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "CreateSegmentEstimate")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_CreateSegmentSnapshot(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateSegmentSnapshot(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "CreateSegmentSnapshot")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -786,6 +1074,18 @@ func TestUpdateSnapshot_DeleteEventStream(t *testing.T) {
 	_, err := svc.DeleteEventStream(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "DeleteEventStream")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_DeleteEventTrigger(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteEventTrigger(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DeleteEventTrigger")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -846,6 +1146,18 @@ func TestUpdateSnapshot_DeleteProfileObjectType(t *testing.T) {
 	_, err := svc.DeleteProfileObjectType(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "DeleteProfileObjectType")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_DeleteSegmentDefinition(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteSegmentDefinition(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DeleteSegmentDefinition")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -937,6 +1249,18 @@ func TestUpdateSnapshot_GetEventStream(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_GetEventTrigger(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetEventTrigger(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GetEventTrigger")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_GetIdentityResolutionJob(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.GetIdentityResolutionJob(context.Background(), nil, func(o *Options) {
@@ -990,6 +1314,54 @@ func TestUpdateSnapshot_GetProfileObjectTypeTemplate(t *testing.T) {
 	_, err := svc.GetProfileObjectTypeTemplate(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "GetProfileObjectTypeTemplate")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_GetSegmentDefinition(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetSegmentDefinition(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GetSegmentDefinition")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_GetSegmentEstimate(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetSegmentEstimate(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GetSegmentEstimate")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_GetSegmentMembership(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetSegmentMembership(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GetSegmentMembership")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_GetSegmentSnapshot(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetSegmentSnapshot(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GetSegmentSnapshot")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -1093,6 +1465,18 @@ func TestUpdateSnapshot_ListEventStreams(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_ListEventTriggers(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListEventTriggers(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListEventTriggers")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_ListIdentityResolutionJobs(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ListIdentityResolutionJobs(context.Background(), nil, func(o *Options) {
@@ -1110,6 +1494,30 @@ func TestUpdateSnapshot_ListIntegrations(t *testing.T) {
 	_, err := svc.ListIntegrations(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "ListIntegrations")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_ListObjectTypeAttributes(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListObjectTypeAttributes(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListObjectTypeAttributes")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_ListProfileAttributeValues(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListProfileAttributeValues(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListProfileAttributeValues")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -1158,6 +1566,18 @@ func TestUpdateSnapshot_ListRuleBasedMatches(t *testing.T) {
 	_, err := svc.ListRuleBasedMatches(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "ListRuleBasedMatches")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_ListSegmentDefinitions(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListSegmentDefinitions(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListSegmentDefinitions")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -1290,6 +1710,18 @@ func TestUpdateSnapshot_UpdateDomain(t *testing.T) {
 	_, err := svc.UpdateDomain(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "UpdateDomain")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_UpdateEventTrigger(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateEventTrigger(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "UpdateEventTrigger")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {

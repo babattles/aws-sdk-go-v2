@@ -65,6 +65,19 @@ type GetQAppSessionOutput struct {
 	// This member is required.
 	Status types.ExecutionStatus
 
+	// The version of the Q App used for the session.
+	AppVersion *int32
+
+	// The latest published version of the Q App used for the session.
+	LatestPublishedAppVersion *int32
+
+	// The name of the Q App session.
+	SessionName *string
+
+	// Indicates whether the current user is the owner of the Q App data collection
+	// session.
+	UserIsHost *bool
+
 	// Metadata pertaining to the operation's result.
 	ResultMetadata middleware.Metadata
 
@@ -114,6 +127,9 @@ func (c *Client) addOperationGetQAppSessionMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -130,6 +146,9 @@ func (c *Client) addOperationGetQAppSessionMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetQAppSessionValidationMiddleware(stack); err != nil {
@@ -151,6 +170,18 @@ func (c *Client) addOperationGetQAppSessionMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

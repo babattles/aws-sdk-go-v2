@@ -22,8 +22,8 @@ import (
 // The create load balancer operation supports tag-based access control via
 // request tags. For more information, see the [Amazon Lightsail Developer Guide].
 //
-// [Configure your Lightsail instances for load balancing]: https://lightsail.aws.amazon.com/ls/docs/en_us/articles/configure-lightsail-instances-for-load-balancing
-// [Amazon Lightsail Developer Guide]: https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-controlling-access-using-tags
+// [Configure your Lightsail instances for load balancing]: https://docs.aws.amazon.com/lightsail/latest/userguide/configure-lightsail-instances-for-load-balancing
+// [Amazon Lightsail Developer Guide]: https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags
 func (c *Client) CreateLoadBalancer(ctx context.Context, params *CreateLoadBalancerInput, optFns ...func(*Options)) (*CreateLoadBalancerOutput, error) {
 	if params == nil {
 		params = &CreateLoadBalancerInput{}
@@ -96,7 +96,7 @@ type CreateLoadBalancerInput struct {
 	// For more information about load balancer TLS policies, see [Configuring TLS security policies on your Amazon Lightsail load balancers] in the Amazon
 	// Lightsail Developer Guide.
 	//
-	// [Configuring TLS security policies on your Amazon Lightsail load balancers]: https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-configure-load-balancer-tls-security-policy
+	// [Configuring TLS security policies on your Amazon Lightsail load balancers]: https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-configure-load-balancer-tls-security-policy
 	// [GetLoadBalancerTlsPolicies]: https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_GetLoadBalancerTlsPolicies.html
 	TlsPolicyName *string
 
@@ -159,6 +159,9 @@ func (c *Client) addOperationCreateLoadBalancerMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -175,6 +178,9 @@ func (c *Client) addOperationCreateLoadBalancerMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateLoadBalancerValidationMiddleware(stack); err != nil {
@@ -196,6 +202,18 @@ func (c *Client) addOperationCreateLoadBalancerMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

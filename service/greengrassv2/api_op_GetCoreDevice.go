@@ -83,6 +83,13 @@ type GetCoreDeviceOutput struct {
 	// The operating system platform that the core device runs.
 	Platform *string
 
+	// The runtime for the core device. The runtime can be:
+	//
+	//   - aws_nucleus_classic
+	//
+	//   - aws_nucleus_lite
+	Runtime *string
+
 	// The status of the core device. The core device status can be:
 	//
 	//   - HEALTHY – The IoT Greengrass Core software and all components run on the
@@ -147,6 +154,9 @@ func (c *Client) addOperationGetCoreDeviceMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -163,6 +173,9 @@ func (c *Client) addOperationGetCoreDeviceMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetCoreDeviceValidationMiddleware(stack); err != nil {
@@ -184,6 +197,18 @@ func (c *Client) addOperationGetCoreDeviceMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

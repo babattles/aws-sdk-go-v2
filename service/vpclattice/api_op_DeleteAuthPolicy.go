@@ -31,7 +31,7 @@ func (c *Client) DeleteAuthPolicy(ctx context.Context, params *DeleteAuthPolicyI
 
 type DeleteAuthPolicyInput struct {
 
-	// The ID or Amazon Resource Name (ARN) of the resource.
+	// The ID or ARN of the resource.
 	//
 	// This member is required.
 	ResourceIdentifier *string
@@ -89,6 +89,9 @@ func (c *Client) addOperationDeleteAuthPolicyMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -105,6 +108,9 @@ func (c *Client) addOperationDeleteAuthPolicyMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteAuthPolicyValidationMiddleware(stack); err != nil {
@@ -126,6 +132,18 @@ func (c *Client) addOperationDeleteAuthPolicyMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

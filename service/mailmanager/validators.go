@@ -50,6 +50,46 @@ func (m *validateOpCreateAddonSubscription) HandleInitialize(ctx context.Context
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpCreateAddressListImportJob struct {
+}
+
+func (*validateOpCreateAddressListImportJob) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpCreateAddressListImportJob) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*CreateAddressListImportJobInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpCreateAddressListImportJobInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpCreateAddressList struct {
+}
+
+func (*validateOpCreateAddressList) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpCreateAddressList) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*CreateAddressListInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpCreateAddressListInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpCreateArchive struct {
 }
 
@@ -190,6 +230,26 @@ func (m *validateOpDeleteAddonSubscription) HandleInitialize(ctx context.Context
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpDeleteAddressList struct {
+}
+
+func (*validateOpDeleteAddressList) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDeleteAddressList) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DeleteAddressListInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDeleteAddressListInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpDeleteArchive struct {
 }
 
@@ -290,6 +350,26 @@ func (m *validateOpDeleteTrafficPolicy) HandleInitialize(ctx context.Context, in
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpDeregisterMemberFromAddressList struct {
+}
+
+func (*validateOpDeregisterMemberFromAddressList) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDeregisterMemberFromAddressList) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DeregisterMemberFromAddressListInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDeregisterMemberFromAddressListInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpGetAddonInstance struct {
 }
 
@@ -325,6 +405,46 @@ func (m *validateOpGetAddonSubscription) HandleInitialize(ctx context.Context, i
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpGetAddonSubscriptionInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpGetAddressListImportJob struct {
+}
+
+func (*validateOpGetAddressListImportJob) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetAddressListImportJob) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetAddressListImportJobInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetAddressListImportJobInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpGetAddressList struct {
+}
+
+func (*validateOpGetAddressList) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetAddressList) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetAddressListInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetAddressListInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -470,6 +590,26 @@ func (m *validateOpGetIngressPoint) HandleInitialize(ctx context.Context, in mid
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpGetMemberOfAddressList struct {
+}
+
+func (*validateOpGetMemberOfAddressList) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetMemberOfAddressList) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetMemberOfAddressListInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetMemberOfAddressListInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpGetRelay struct {
 }
 
@@ -530,6 +670,26 @@ func (m *validateOpGetTrafficPolicy) HandleInitialize(ctx context.Context, in mi
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpListAddressListImportJobs struct {
+}
+
+func (*validateOpListAddressListImportJobs) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListAddressListImportJobs) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListAddressListImportJobsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListAddressListImportJobsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpListArchiveExports struct {
 }
 
@@ -570,6 +730,26 @@ func (m *validateOpListArchiveSearches) HandleInitialize(ctx context.Context, in
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpListMembersOfAddressList struct {
+}
+
+func (*validateOpListMembersOfAddressList) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListMembersOfAddressList) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListMembersOfAddressListInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListMembersOfAddressListInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpListTagsForResource struct {
 }
 
@@ -585,6 +765,46 @@ func (m *validateOpListTagsForResource) HandleInitialize(ctx context.Context, in
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpListTagsForResourceInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpRegisterMemberToAddressList struct {
+}
+
+func (*validateOpRegisterMemberToAddressList) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpRegisterMemberToAddressList) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*RegisterMemberToAddressListInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpRegisterMemberToAddressListInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpStartAddressListImportJob struct {
+}
+
+func (*validateOpStartAddressListImportJob) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpStartAddressListImportJob) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*StartAddressListImportJobInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpStartAddressListImportJobInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -625,6 +845,26 @@ func (m *validateOpStartArchiveSearch) HandleInitialize(ctx context.Context, in 
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpStartArchiveSearchInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpStopAddressListImportJob struct {
+}
+
+func (*validateOpStopAddressListImportJob) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpStopAddressListImportJob) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*StopAddressListImportJobInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpStopAddressListImportJobInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -818,6 +1058,14 @@ func addOpCreateAddonSubscriptionValidationMiddleware(stack *middleware.Stack) e
 	return stack.Initialize.Add(&validateOpCreateAddonSubscription{}, middleware.After)
 }
 
+func addOpCreateAddressListImportJobValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpCreateAddressListImportJob{}, middleware.After)
+}
+
+func addOpCreateAddressListValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpCreateAddressList{}, middleware.After)
+}
+
 func addOpCreateArchiveValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpCreateArchive{}, middleware.After)
 }
@@ -846,6 +1094,10 @@ func addOpDeleteAddonSubscriptionValidationMiddleware(stack *middleware.Stack) e
 	return stack.Initialize.Add(&validateOpDeleteAddonSubscription{}, middleware.After)
 }
 
+func addOpDeleteAddressListValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDeleteAddressList{}, middleware.After)
+}
+
 func addOpDeleteArchiveValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDeleteArchive{}, middleware.After)
 }
@@ -866,12 +1118,24 @@ func addOpDeleteTrafficPolicyValidationMiddleware(stack *middleware.Stack) error
 	return stack.Initialize.Add(&validateOpDeleteTrafficPolicy{}, middleware.After)
 }
 
+func addOpDeregisterMemberFromAddressListValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDeregisterMemberFromAddressList{}, middleware.After)
+}
+
 func addOpGetAddonInstanceValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpGetAddonInstance{}, middleware.After)
 }
 
 func addOpGetAddonSubscriptionValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpGetAddonSubscription{}, middleware.After)
+}
+
+func addOpGetAddressListImportJobValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetAddressListImportJob{}, middleware.After)
+}
+
+func addOpGetAddressListValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetAddressList{}, middleware.After)
 }
 
 func addOpGetArchiveExportValidationMiddleware(stack *middleware.Stack) error {
@@ -902,6 +1166,10 @@ func addOpGetIngressPointValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpGetIngressPoint{}, middleware.After)
 }
 
+func addOpGetMemberOfAddressListValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetMemberOfAddressList{}, middleware.After)
+}
+
 func addOpGetRelayValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpGetRelay{}, middleware.After)
 }
@@ -914,6 +1182,10 @@ func addOpGetTrafficPolicyValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpGetTrafficPolicy{}, middleware.After)
 }
 
+func addOpListAddressListImportJobsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListAddressListImportJobs{}, middleware.After)
+}
+
 func addOpListArchiveExportsValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpListArchiveExports{}, middleware.After)
 }
@@ -922,8 +1194,20 @@ func addOpListArchiveSearchesValidationMiddleware(stack *middleware.Stack) error
 	return stack.Initialize.Add(&validateOpListArchiveSearches{}, middleware.After)
 }
 
+func addOpListMembersOfAddressListValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListMembersOfAddressList{}, middleware.After)
+}
+
 func addOpListTagsForResourceValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpListTagsForResource{}, middleware.After)
+}
+
+func addOpRegisterMemberToAddressListValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpRegisterMemberToAddressList{}, middleware.After)
+}
+
+func addOpStartAddressListImportJobValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpStartAddressListImportJob{}, middleware.After)
 }
 
 func addOpStartArchiveExportValidationMiddleware(stack *middleware.Stack) error {
@@ -932,6 +1216,10 @@ func addOpStartArchiveExportValidationMiddleware(stack *middleware.Stack) error 
 
 func addOpStartArchiveSearchValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpStartArchiveSearch{}, middleware.After)
+}
+
+func addOpStopAddressListImportJobValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpStopAddressListImportJob{}, middleware.After)
 }
 
 func addOpStopArchiveExportValidationMiddleware(stack *middleware.Stack) error {
@@ -1141,6 +1429,42 @@ func validateDeliverToMailboxAction(v *types.DeliverToMailboxAction) error {
 	}
 }
 
+func validateDeliverToQBusinessAction(v *types.DeliverToQBusinessAction) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DeliverToQBusinessAction"}
+	if v.ApplicationId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ApplicationId"))
+	}
+	if v.IndexId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("IndexId"))
+	}
+	if v.RoleArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RoleArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateImportDataFormat(v *types.ImportDataFormat) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ImportDataFormat"}
+	if len(v.ImportDataType) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("ImportDataType"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateIngressAnalysis(v *types.IngressAnalysis) error {
 	if v == nil {
 		return nil
@@ -1192,6 +1516,11 @@ func validateIngressBooleanToEvaluate(v types.IngressBooleanToEvaluate) error {
 			invalidParams.AddNested("[Analysis]", err.(smithy.InvalidParamsError))
 		}
 
+	case *types.IngressBooleanToEvaluateMemberIsInAddressList:
+		if err := validateIngressIsInAddressList(&uv.Value); err != nil {
+			invalidParams.AddNested("[IsInAddressList]", err.(smithy.InvalidParamsError))
+		}
+
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1221,11 +1550,11 @@ func validateIngressIpv4Expression(v *types.IngressIpv4Expression) error {
 	}
 }
 
-func validateIngressStringExpression(v *types.IngressStringExpression) error {
+func validateIngressIpv6Expression(v *types.IngressIpv6Expression) error {
 	if v == nil {
 		return nil
 	}
-	invalidParams := smithy.InvalidParamsError{Context: "IngressStringExpression"}
+	invalidParams := smithy.InvalidParamsError{Context: "IngressIpv6Expression"}
 	if v.Evaluate == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("Evaluate"))
 	}
@@ -1234,6 +1563,68 @@ func validateIngressStringExpression(v *types.IngressStringExpression) error {
 	}
 	if v.Values == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("Values"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateIngressIsInAddressList(v *types.IngressIsInAddressList) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "IngressIsInAddressList"}
+	if len(v.Attribute) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Attribute"))
+	}
+	if v.AddressLists == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AddressLists"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateIngressStringExpression(v *types.IngressStringExpression) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "IngressStringExpression"}
+	if v.Evaluate == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Evaluate"))
+	} else if v.Evaluate != nil {
+		if err := validateIngressStringToEvaluate(v.Evaluate); err != nil {
+			invalidParams.AddNested("Evaluate", err.(smithy.InvalidParamsError))
+		}
+	}
+	if len(v.Operator) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Operator"))
+	}
+	if v.Values == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Values"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateIngressStringToEvaluate(v types.IngressStringToEvaluate) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "IngressStringToEvaluate"}
+	switch uv := v.(type) {
+	case *types.IngressStringToEvaluateMemberAnalysis:
+		if err := validateIngressAnalysis(&uv.Value); err != nil {
+			invalidParams.AddNested("[Analysis]", err.(smithy.InvalidParamsError))
+		}
+
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1263,6 +1654,30 @@ func validateIngressTlsProtocolExpression(v *types.IngressTlsProtocolExpression)
 	}
 }
 
+func validateNetworkConfiguration(v types.NetworkConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "NetworkConfiguration"}
+	switch uv := v.(type) {
+	case *types.NetworkConfigurationMemberPrivateNetworkConfiguration:
+		if err := validatePrivateNetworkConfiguration(&uv.Value); err != nil {
+			invalidParams.AddNested("[PrivateNetworkConfiguration]", err.(smithy.InvalidParamsError))
+		}
+
+	case *types.NetworkConfigurationMemberPublicNetworkConfiguration:
+		if err := validatePublicNetworkConfiguration(&uv.Value); err != nil {
+			invalidParams.AddNested("[PublicNetworkConfiguration]", err.(smithy.InvalidParamsError))
+		}
+
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validatePolicyCondition(v types.PolicyCondition) error {
 	if v == nil {
 		return nil
@@ -1277,6 +1692,11 @@ func validatePolicyCondition(v types.PolicyCondition) error {
 	case *types.PolicyConditionMemberIpExpression:
 		if err := validateIngressIpv4Expression(&uv.Value); err != nil {
 			invalidParams.AddNested("[IpExpression]", err.(smithy.InvalidParamsError))
+		}
+
+	case *types.PolicyConditionMemberIpv6Expression:
+		if err := validateIngressIpv6Expression(&uv.Value); err != nil {
+			invalidParams.AddNested("[Ipv6Expression]", err.(smithy.InvalidParamsError))
 		}
 
 	case *types.PolicyConditionMemberStringExpression:
@@ -1353,6 +1773,36 @@ func validatePolicyStatementList(v []types.PolicyStatement) error {
 	}
 }
 
+func validatePrivateNetworkConfiguration(v *types.PrivateNetworkConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "PrivateNetworkConfiguration"}
+	if v.VpcEndpointId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("VpcEndpointId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validatePublicNetworkConfiguration(v *types.PublicNetworkConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "PublicNetworkConfiguration"}
+	if len(v.IpType) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("IpType"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateRelayAction(v *types.RelayAction) error {
 	if v == nil {
 		return nil
@@ -1418,6 +1868,11 @@ func validateRuleAction(v types.RuleAction) error {
 			invalidParams.AddNested("[DeliverToMailbox]", err.(smithy.InvalidParamsError))
 		}
 
+	case *types.RuleActionMemberDeliverToQBusiness:
+		if err := validateDeliverToQBusinessAction(&uv.Value); err != nil {
+			invalidParams.AddNested("[DeliverToQBusiness]", err.(smithy.InvalidParamsError))
+		}
+
 	case *types.RuleActionMemberRelay:
 		if err := validateRelayAction(&uv.Value); err != nil {
 			invalidParams.AddNested("[Relay]", err.(smithy.InvalidParamsError))
@@ -1465,9 +1920,37 @@ func validateRuleBooleanExpression(v *types.RuleBooleanExpression) error {
 	invalidParams := smithy.InvalidParamsError{Context: "RuleBooleanExpression"}
 	if v.Evaluate == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("Evaluate"))
+	} else if v.Evaluate != nil {
+		if err := validateRuleBooleanToEvaluate(v.Evaluate); err != nil {
+			invalidParams.AddNested("Evaluate", err.(smithy.InvalidParamsError))
+		}
 	}
 	if len(v.Operator) == 0 {
 		invalidParams.Add(smithy.NewErrParamRequired("Operator"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateRuleBooleanToEvaluate(v types.RuleBooleanToEvaluate) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "RuleBooleanToEvaluate"}
+	switch uv := v.(type) {
+	case *types.RuleBooleanToEvaluateMemberAnalysis:
+		if err := validateAnalysis(&uv.Value); err != nil {
+			invalidParams.AddNested("[Analysis]", err.(smithy.InvalidParamsError))
+		}
+
+	case *types.RuleBooleanToEvaluateMemberIsInAddressList:
+		if err := validateRuleIsInAddressList(&uv.Value); err != nil {
+			invalidParams.AddNested("[IsInAddressList]", err.(smithy.InvalidParamsError))
+		}
+
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1576,6 +2059,24 @@ func validateRuleIpExpression(v *types.RuleIpExpression) error {
 	}
 }
 
+func validateRuleIsInAddressList(v *types.RuleIsInAddressList) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "RuleIsInAddressList"}
+	if len(v.Attribute) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Attribute"))
+	}
+	if v.AddressLists == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AddressLists"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateRuleNumberExpression(v *types.RuleNumberExpression) error {
 	if v == nil {
 		return nil
@@ -1621,12 +2122,35 @@ func validateRuleStringExpression(v *types.RuleStringExpression) error {
 	invalidParams := smithy.InvalidParamsError{Context: "RuleStringExpression"}
 	if v.Evaluate == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("Evaluate"))
+	} else if v.Evaluate != nil {
+		if err := validateRuleStringToEvaluate(v.Evaluate); err != nil {
+			invalidParams.AddNested("Evaluate", err.(smithy.InvalidParamsError))
+		}
 	}
 	if len(v.Operator) == 0 {
 		invalidParams.Add(smithy.NewErrParamRequired("Operator"))
 	}
 	if v.Values == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("Values"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateRuleStringToEvaluate(v types.RuleStringToEvaluate) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "RuleStringToEvaluate"}
+	switch uv := v.(type) {
+	case *types.RuleStringToEvaluateMemberAnalysis:
+		if err := validateAnalysis(&uv.Value); err != nil {
+			invalidParams.AddNested("[Analysis]", err.(smithy.InvalidParamsError))
+		}
+
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1787,6 +2311,51 @@ func validateOpCreateAddonSubscriptionInput(v *CreateAddonSubscriptionInput) err
 	}
 }
 
+func validateOpCreateAddressListImportJobInput(v *CreateAddressListImportJobInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CreateAddressListImportJobInput"}
+	if v.AddressListId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AddressListId"))
+	}
+	if v.Name == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Name"))
+	}
+	if v.ImportDataFormat == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ImportDataFormat"))
+	} else if v.ImportDataFormat != nil {
+		if err := validateImportDataFormat(v.ImportDataFormat); err != nil {
+			invalidParams.AddNested("ImportDataFormat", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpCreateAddressListInput(v *CreateAddressListInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CreateAddressListInput"}
+	if v.AddressListName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AddressListName"))
+	}
+	if v.Tags != nil {
+		if err := validateTagList(v.Tags); err != nil {
+			invalidParams.AddNested("Tags", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpCreateArchiveInput(v *CreateArchiveInput) error {
 	if v == nil {
 		return nil
@@ -1823,6 +2392,11 @@ func validateOpCreateIngressPointInput(v *CreateIngressPointInput) error {
 	}
 	if v.TrafficPolicyId == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("TrafficPolicyId"))
+	}
+	if v.NetworkConfiguration != nil {
+		if err := validateNetworkConfiguration(v.NetworkConfiguration); err != nil {
+			invalidParams.AddNested("NetworkConfiguration", err.(smithy.InvalidParamsError))
+		}
 	}
 	if v.Tags != nil {
 		if err := validateTagList(v.Tags); err != nil {
@@ -1952,6 +2526,21 @@ func validateOpDeleteAddonSubscriptionInput(v *DeleteAddonSubscriptionInput) err
 	}
 }
 
+func validateOpDeleteAddressListInput(v *DeleteAddressListInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DeleteAddressListInput"}
+	if v.AddressListId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AddressListId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpDeleteArchiveInput(v *DeleteArchiveInput) error {
 	if v == nil {
 		return nil
@@ -2027,6 +2616,24 @@ func validateOpDeleteTrafficPolicyInput(v *DeleteTrafficPolicyInput) error {
 	}
 }
 
+func validateOpDeregisterMemberFromAddressListInput(v *DeregisterMemberFromAddressListInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DeregisterMemberFromAddressListInput"}
+	if v.AddressListId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AddressListId"))
+	}
+	if v.Address == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Address"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpGetAddonInstanceInput(v *GetAddonInstanceInput) error {
 	if v == nil {
 		return nil
@@ -2049,6 +2656,36 @@ func validateOpGetAddonSubscriptionInput(v *GetAddonSubscriptionInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "GetAddonSubscriptionInput"}
 	if v.AddonSubscriptionId == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("AddonSubscriptionId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpGetAddressListImportJobInput(v *GetAddressListImportJobInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetAddressListImportJobInput"}
+	if v.JobId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("JobId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpGetAddressListInput(v *GetAddressListInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetAddressListInput"}
+	if v.AddressListId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AddressListId"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -2162,6 +2799,24 @@ func validateOpGetIngressPointInput(v *GetIngressPointInput) error {
 	}
 }
 
+func validateOpGetMemberOfAddressListInput(v *GetMemberOfAddressListInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetMemberOfAddressListInput"}
+	if v.AddressListId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AddressListId"))
+	}
+	if v.Address == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Address"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpGetRelayInput(v *GetRelayInput) error {
 	if v == nil {
 		return nil
@@ -2207,6 +2862,21 @@ func validateOpGetTrafficPolicyInput(v *GetTrafficPolicyInput) error {
 	}
 }
 
+func validateOpListAddressListImportJobsInput(v *ListAddressListImportJobsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListAddressListImportJobsInput"}
+	if v.AddressListId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AddressListId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpListArchiveExportsInput(v *ListArchiveExportsInput) error {
 	if v == nil {
 		return nil
@@ -2237,6 +2907,21 @@ func validateOpListArchiveSearchesInput(v *ListArchiveSearchesInput) error {
 	}
 }
 
+func validateOpListMembersOfAddressListInput(v *ListMembersOfAddressListInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListMembersOfAddressListInput"}
+	if v.AddressListId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AddressListId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpListTagsForResourceInput(v *ListTagsForResourceInput) error {
 	if v == nil {
 		return nil
@@ -2244,6 +2929,39 @@ func validateOpListTagsForResourceInput(v *ListTagsForResourceInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "ListTagsForResourceInput"}
 	if v.ResourceArn == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("ResourceArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpRegisterMemberToAddressListInput(v *RegisterMemberToAddressListInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "RegisterMemberToAddressListInput"}
+	if v.AddressListId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AddressListId"))
+	}
+	if v.Address == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Address"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpStartAddressListImportJobInput(v *StartAddressListImportJobInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "StartAddressListImportJobInput"}
+	if v.JobId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("JobId"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -2302,6 +3020,21 @@ func validateOpStartArchiveSearchInput(v *StartArchiveSearchInput) error {
 	}
 	if v.MaxResults == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("MaxResults"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpStopAddressListImportJobInput(v *StopAddressListImportJobInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "StopAddressListImportJobInput"}
+	if v.JobId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("JobId"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams

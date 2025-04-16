@@ -153,6 +153,7 @@ const (
 	HistoryEventTypeMapRunSucceeded              HistoryEventType = "MapRunSucceeded"
 	HistoryEventTypeExecutionRedriven            HistoryEventType = "ExecutionRedriven"
 	HistoryEventTypeMapRunRedriven               HistoryEventType = "MapRunRedriven"
+	HistoryEventTypeEvaluationFailed             HistoryEventType = "EvaluationFailed"
 )
 
 // Values returns all known values for HistoryEventType. Note that this can be
@@ -222,6 +223,7 @@ func (HistoryEventType) Values() []HistoryEventType {
 		"MapRunSucceeded",
 		"ExecutionRedriven",
 		"MapRunRedriven",
+		"EvaluationFailed",
 	}
 }
 
@@ -442,7 +444,8 @@ type ValidateStateMachineDefinitionSeverity string
 
 // Enum values for ValidateStateMachineDefinitionSeverity
 const (
-	ValidateStateMachineDefinitionSeverityError ValidateStateMachineDefinitionSeverity = "ERROR"
+	ValidateStateMachineDefinitionSeverityError   ValidateStateMachineDefinitionSeverity = "ERROR"
+	ValidateStateMachineDefinitionSeverityWarning ValidateStateMachineDefinitionSeverity = "WARNING"
 )
 
 // Values returns all known values for ValidateStateMachineDefinitionSeverity.
@@ -453,6 +456,7 @@ const (
 func (ValidateStateMachineDefinitionSeverity) Values() []ValidateStateMachineDefinitionSeverity {
 	return []ValidateStateMachineDefinitionSeverity{
 		"ERROR",
+		"WARNING",
 	}
 }
 

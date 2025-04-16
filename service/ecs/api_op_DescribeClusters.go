@@ -12,6 +12,10 @@ import (
 )
 
 // Describes one or more of your clusters.
+//
+// For CLI examples, see [describe-clusters.rst] on GitHub.
+//
+// [describe-clusters.rst]: https://github.com/aws/aws-cli/blob/develop/awscli/examples/ecs/describe-clusters.rst
 func (c *Client) DescribeClusters(ctx context.Context, params *DescribeClustersInput, optFns ...func(*Options)) (*DescribeClustersOutput, error) {
 	if params == nil {
 		params = &DescribeClustersInput{}
@@ -110,6 +114,9 @@ func (c *Client) addOperationDescribeClustersMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -128,6 +135,9 @@ func (c *Client) addOperationDescribeClustersMiddlewares(stack *middleware.Stack
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeClusters(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -144,6 +154,18 @@ func (c *Client) addOperationDescribeClustersMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

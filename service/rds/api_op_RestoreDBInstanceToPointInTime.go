@@ -60,6 +60,8 @@ type RestoreDBInstanceToPointInTimeInput struct {
 	// The amount of storage (in gibibytes) to allocate initially for the DB instance.
 	// Follow the allocation rules specified in CreateDBInstance .
 	//
+	// This setting isn't valid for RDS for SQL Server.
+	//
 	// Be sure to allocate enough storage for your new DB instance so that the restore
 	// operation can succeed. You can also allocate additional storage for future
 	// growth.
@@ -370,10 +372,10 @@ type RestoreDBInstanceToPointInTimeInput struct {
 	// The license model information for the restored DB instance.
 	//
 	// License models for RDS for Db2 require additional configuration. The Bring Your
-	// Own License (BYOL) model requires a custom parameter group. The Db2 license
-	// through Amazon Web Services Marketplace model requires an Amazon Web Services
-	// Marketplace subscription. For more information, see [RDS for Db2 licensing options]in the Amazon RDS User
-	// Guide.
+	// Own License (BYOL) model requires a custom parameter group and an Amazon Web
+	// Services License Manager self-managed license. The Db2 license through Amazon
+	// Web Services Marketplace model requires an Amazon Web Services Marketplace
+	// subscription. For more information, see [Amazon RDS for Db2 licensing options]in the Amazon RDS User Guide.
 	//
 	// This setting doesn't apply to Amazon Aurora or RDS Custom DB instances.
 	//
@@ -393,7 +395,7 @@ type RestoreDBInstanceToPointInTimeInput struct {
 	//
 	// Default: Same as the source.
 	//
-	// [RDS for Db2 licensing options]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/db2-licensing.html
+	// [Amazon RDS for Db2 licensing options]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/db2-licensing.html
 	LicenseModel *string
 
 	// The upper limit in gibibytes (GiB) to which Amazon RDS can automatically scale
@@ -512,7 +514,7 @@ type RestoreDBInstanceToPointInTimeInput struct {
 	//
 	// Valid Values: gp2 | gp3 | io1 | io2 | standard
 	//
-	// Default: io1 , if the Iops parameter is specified. Otherwise, gp2 .
+	// Default: io1 , if the Iops parameter is specified. Otherwise, gp3 .
 	//
 	// Constraints:
 	//
@@ -622,6 +624,9 @@ func (c *Client) addOperationRestoreDBInstanceToPointInTimeMiddlewares(stack *mi
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -638,6 +643,9 @@ func (c *Client) addOperationRestoreDBInstanceToPointInTimeMiddlewares(stack *mi
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpRestoreDBInstanceToPointInTimeValidationMiddleware(stack); err != nil {
@@ -659,6 +667,18 @@ func (c *Client) addOperationRestoreDBInstanceToPointInTimeMiddlewares(stack *mi
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

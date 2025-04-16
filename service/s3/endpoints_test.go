@@ -12104,11 +12104,11 @@ func TestEndpointCase273(t *testing.T) {
 	}
 }
 
-// Data Plane with short AZ
+// Data Plane with short zone name
 func TestEndpointCase274(t *testing.T) {
 	var params = EndpointParameters{
 		Region:                      ptr.String("us-east-1"),
-		Bucket:                      ptr.String("mybucket--use1-az1--x-s3"),
+		Bucket:                      ptr.String("mybucket--abcd-ab1--x-s3"),
 		UseFIPS:                     ptr.Bool(false),
 		UseDualStack:                ptr.Bool(false),
 		Accelerate:                  ptr.Bool(false),
@@ -12123,7 +12123,7 @@ func TestEndpointCase274(t *testing.T) {
 		t.Fatalf("expect no error, got %v", err)
 	}
 
-	uri, _ := url.Parse("https://mybucket--use1-az1--x-s3.s3express-use1-az1.us-east-1.amazonaws.com")
+	uri, _ := url.Parse("https://mybucket--abcd-ab1--x-s3.s3express-abcd-ab1.us-east-1.amazonaws.com")
 
 	expectEndpoint := smithyendpoints.Endpoint{
 		URI:     *uri,
@@ -12163,12 +12163,12 @@ func TestEndpointCase274(t *testing.T) {
 	}
 }
 
-// Data Plane with short AZ fips
+// Data Plane with short zone name china region
 func TestEndpointCase275(t *testing.T) {
 	var params = EndpointParameters{
-		Region:                      ptr.String("us-east-1"),
-		Bucket:                      ptr.String("mybucket--use1-az1--x-s3"),
-		UseFIPS:                     ptr.Bool(true),
+		Region:                      ptr.String("cn-north-1"),
+		Bucket:                      ptr.String("mybucket--abcd-ab1--x-s3"),
+		UseFIPS:                     ptr.Bool(false),
 		UseDualStack:                ptr.Bool(false),
 		Accelerate:                  ptr.Bool(false),
 		UseS3ExpressControlEndpoint: ptr.Bool(false),
@@ -12182,7 +12182,66 @@ func TestEndpointCase275(t *testing.T) {
 		t.Fatalf("expect no error, got %v", err)
 	}
 
-	uri, _ := url.Parse("https://mybucket--use1-az1--x-s3.s3express-fips-use1-az1.us-east-1.amazonaws.com")
+	uri, _ := url.Parse("https://mybucket--abcd-ab1--x-s3.s3express-abcd-ab1.cn-north-1.amazonaws.com.cn")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "sigv4-s3express",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "cn-north-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// Data Plane with short zone name with AP
+func TestEndpointCase276(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-east-1"),
+		Bucket:                      ptr.String("myaccesspoint--abcd-ab1--xa-s3"),
+		UseFIPS:                     ptr.Bool(false),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		UseS3ExpressControlEndpoint: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://myaccesspoint--abcd-ab1--xa-s3.s3express-abcd-ab1.us-east-1.amazonaws.com")
 
 	expectEndpoint := smithyendpoints.Endpoint{
 		URI:     *uri,
@@ -12198,6 +12257,937 @@ func TestEndpointCase275(t *testing.T) {
 						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
 
 						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// Data Plane with short zone name with AP china region
+func TestEndpointCase277(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("cn-north-1"),
+		Bucket:                      ptr.String("myaccesspoint--abcd-ab1--xa-s3"),
+		UseFIPS:                     ptr.Bool(false),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		UseS3ExpressControlEndpoint: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://myaccesspoint--abcd-ab1--xa-s3.s3express-abcd-ab1.cn-north-1.amazonaws.com.cn")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "sigv4-s3express",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "cn-north-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// Data Plane with short zone names (13 chars)
+func TestEndpointCase278(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-west-2"),
+		Bucket:                      ptr.String("mybucket--test-zone-ab1--x-s3"),
+		UseFIPS:                     ptr.Bool(false),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		UseS3ExpressControlEndpoint: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://mybucket--test-zone-ab1--x-s3.s3express-test-zone-ab1.us-west-2.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "sigv4-s3express",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// Data Plane with short zone names (13 chars) with AP
+func TestEndpointCase279(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-west-2"),
+		Bucket:                      ptr.String("myaccesspoint--test-zone-ab1--xa-s3"),
+		UseFIPS:                     ptr.Bool(false),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		UseS3ExpressControlEndpoint: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://myaccesspoint--test-zone-ab1--xa-s3.s3express-test-zone-ab1.us-west-2.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "sigv4-s3express",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// Data Plane with medium zone names (14 chars)
+func TestEndpointCase280(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-west-2"),
+		Bucket:                      ptr.String("mybucket--test1-zone-ab1--x-s3"),
+		UseFIPS:                     ptr.Bool(false),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		UseS3ExpressControlEndpoint: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://mybucket--test1-zone-ab1--x-s3.s3express-test1-zone-ab1.us-west-2.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "sigv4-s3express",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// Data Plane with medium zone names (14 chars) with AP
+func TestEndpointCase281(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-west-2"),
+		Bucket:                      ptr.String("myaccesspoint--test1-zone-ab1--xa-s3"),
+		UseFIPS:                     ptr.Bool(false),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		UseS3ExpressControlEndpoint: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://myaccesspoint--test1-zone-ab1--xa-s3.s3express-test1-zone-ab1.us-west-2.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "sigv4-s3express",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// Data Plane with long zone names (20 chars)
+func TestEndpointCase282(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-west-2"),
+		Bucket:                      ptr.String("mybucket--test1-long1-zone-ab1--x-s3"),
+		UseFIPS:                     ptr.Bool(false),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		UseS3ExpressControlEndpoint: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://mybucket--test1-long1-zone-ab1--x-s3.s3express-test1-long1-zone-ab1.us-west-2.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "sigv4-s3express",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// Data Plane with long zone names (20 chars)
+func TestEndpointCase283(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-west-2"),
+		Bucket:                      ptr.String("myaccesspoint--test1-long1-zone-ab1--xa-s3"),
+		UseFIPS:                     ptr.Bool(false),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		UseS3ExpressControlEndpoint: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://myaccesspoint--test1-long1-zone-ab1--xa-s3.s3express-test1-long1-zone-ab1.us-west-2.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "sigv4-s3express",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// Data Plane with short zone fips
+func TestEndpointCase284(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-east-1"),
+		Bucket:                      ptr.String("mybucket--test-ab1--x-s3"),
+		UseFIPS:                     ptr.Bool(true),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		UseS3ExpressControlEndpoint: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://mybucket--test-ab1--x-s3.s3express-fips-test-ab1.us-east-1.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "sigv4-s3express",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// Data Plane with short zone fips china region
+func TestEndpointCase285(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("cn-north-1"),
+		Bucket:                      ptr.String("mybucket--test-ab1--x-s3"),
+		UseFIPS:                     ptr.Bool(true),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		UseS3ExpressControlEndpoint: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err == nil {
+		t.Fatalf("expect error, got none")
+	}
+	if e, a := "Partition does not support FIPS", err.Error(); !strings.Contains(a, e) {
+		t.Errorf("expect %v error in %v", e, a)
+	}
+}
+
+// Data Plane with short zone fips with AP
+func TestEndpointCase286(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-east-1"),
+		Bucket:                      ptr.String("myaccesspoint--test-ab1--xa-s3"),
+		UseFIPS:                     ptr.Bool(true),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		UseS3ExpressControlEndpoint: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://myaccesspoint--test-ab1--xa-s3.s3express-fips-test-ab1.us-east-1.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "sigv4-s3express",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// Data Plane with short zone fips with AP china region
+func TestEndpointCase287(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("cn-north-1"),
+		Bucket:                      ptr.String("myaccesspoint--test-ab1--xa-s3"),
+		UseFIPS:                     ptr.Bool(true),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		UseS3ExpressControlEndpoint: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err == nil {
+		t.Fatalf("expect error, got none")
+	}
+	if e, a := "Partition does not support FIPS", err.Error(); !strings.Contains(a, e) {
+		t.Errorf("expect %v error in %v", e, a)
+	}
+}
+
+// Data Plane with short zone (13 chars) fips
+func TestEndpointCase288(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-west-2"),
+		Bucket:                      ptr.String("mybucket--test-zone-ab1--x-s3"),
+		UseFIPS:                     ptr.Bool(true),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		UseS3ExpressControlEndpoint: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://mybucket--test-zone-ab1--x-s3.s3express-fips-test-zone-ab1.us-west-2.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "sigv4-s3express",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// Data Plane with short zone (13 chars) fips with AP
+func TestEndpointCase289(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-west-2"),
+		Bucket:                      ptr.String("myaccesspoint--test-zone-ab1--xa-s3"),
+		UseFIPS:                     ptr.Bool(true),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		UseS3ExpressControlEndpoint: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://myaccesspoint--test-zone-ab1--xa-s3.s3express-fips-test-zone-ab1.us-west-2.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "sigv4-s3express",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// Data Plane with medium zone (14 chars) fips
+func TestEndpointCase290(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-west-2"),
+		Bucket:                      ptr.String("mybucket--test1-zone-ab1--x-s3"),
+		UseFIPS:                     ptr.Bool(true),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		UseS3ExpressControlEndpoint: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://mybucket--test1-zone-ab1--x-s3.s3express-fips-test1-zone-ab1.us-west-2.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "sigv4-s3express",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// Data Plane with medium zone (14 chars) fips with AP
+func TestEndpointCase291(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-west-2"),
+		Bucket:                      ptr.String("myaccesspoint--test1-zone-ab1--xa-s3"),
+		UseFIPS:                     ptr.Bool(true),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		UseS3ExpressControlEndpoint: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://myaccesspoint--test1-zone-ab1--xa-s3.s3express-fips-test1-zone-ab1.us-west-2.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "sigv4-s3express",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// Data Plane with long zone (20 chars) fips
+func TestEndpointCase292(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-west-2"),
+		Bucket:                      ptr.String("mybucket--test1-long1-zone-ab1--x-s3"),
+		UseFIPS:                     ptr.Bool(true),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		UseS3ExpressControlEndpoint: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://mybucket--test1-long1-zone-ab1--x-s3.s3express-fips-test1-long1-zone-ab1.us-west-2.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "sigv4-s3express",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// Data Plane with long zone (20 chars) fips with AP
+func TestEndpointCase293(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-west-2"),
+		Bucket:                      ptr.String("myaccesspoint--test1-long1-zone-ab1--xa-s3"),
+		UseFIPS:                     ptr.Bool(true),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		UseS3ExpressControlEndpoint: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://myaccesspoint--test1-long1-zone-ab1--xa-s3.s3express-fips-test1-long1-zone-ab1.us-west-2.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "sigv4-s3express",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
 
 						smithyhttp.SetDisableDoubleEncoding(&sp, true)
 						return sp
@@ -12223,10 +13213,10 @@ func TestEndpointCase275(t *testing.T) {
 }
 
 // Data Plane with long AZ
-func TestEndpointCase276(t *testing.T) {
+func TestEndpointCase294(t *testing.T) {
 	var params = EndpointParameters{
-		Region:                      ptr.String("ap-northeast-1"),
-		Bucket:                      ptr.String("mybucket--apne1-az1--x-s3"),
+		Region:                      ptr.String("us-west-2"),
+		Bucket:                      ptr.String("mybucket--test1-az1--x-s3"),
 		UseFIPS:                     ptr.Bool(false),
 		UseDualStack:                ptr.Bool(false),
 		Accelerate:                  ptr.Bool(false),
@@ -12241,7 +13231,7 @@ func TestEndpointCase276(t *testing.T) {
 		t.Fatalf("expect no error, got %v", err)
 	}
 
-	uri, _ := url.Parse("https://mybucket--apne1-az1--x-s3.s3express-apne1-az1.ap-northeast-1.amazonaws.com")
+	uri, _ := url.Parse("https://mybucket--test1-az1--x-s3.s3express-test1-az1.us-west-2.amazonaws.com")
 
 	expectEndpoint := smithyendpoints.Endpoint{
 		URI:     *uri,
@@ -12256,7 +13246,66 @@ func TestEndpointCase276(t *testing.T) {
 						smithyhttp.SetSigV4SigningName(&sp, "s3express")
 						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
 
-						smithyhttp.SetSigV4SigningRegion(&sp, "ap-northeast-1")
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// Data Plane with long AZ with AP
+func TestEndpointCase295(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-west-2"),
+		Bucket:                      ptr.String("myaccesspoint--test1-az1--xa-s3"),
+		UseFIPS:                     ptr.Bool(false),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		UseS3ExpressControlEndpoint: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://myaccesspoint--test1-az1--xa-s3.s3express-test1-az1.us-west-2.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "sigv4-s3express",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
 
 						smithyhttp.SetDisableDoubleEncoding(&sp, true)
 						return sp
@@ -12282,10 +13331,10 @@ func TestEndpointCase276(t *testing.T) {
 }
 
 // Data Plane with long AZ fips
-func TestEndpointCase277(t *testing.T) {
+func TestEndpointCase296(t *testing.T) {
 	var params = EndpointParameters{
-		Region:                      ptr.String("ap-northeast-1"),
-		Bucket:                      ptr.String("mybucket--apne1-az1--x-s3"),
+		Region:                      ptr.String("us-west-2"),
+		Bucket:                      ptr.String("mybucket--test1-az1--x-s3"),
 		UseFIPS:                     ptr.Bool(true),
 		UseDualStack:                ptr.Bool(false),
 		Accelerate:                  ptr.Bool(false),
@@ -12300,7 +13349,7 @@ func TestEndpointCase277(t *testing.T) {
 		t.Fatalf("expect no error, got %v", err)
 	}
 
-	uri, _ := url.Parse("https://mybucket--apne1-az1--x-s3.s3express-fips-apne1-az1.ap-northeast-1.amazonaws.com")
+	uri, _ := url.Parse("https://mybucket--test1-az1--x-s3.s3express-fips-test1-az1.us-west-2.amazonaws.com")
 
 	expectEndpoint := smithyendpoints.Endpoint{
 		URI:     *uri,
@@ -12315,7 +13364,66 @@ func TestEndpointCase277(t *testing.T) {
 						smithyhttp.SetSigV4SigningName(&sp, "s3express")
 						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
 
-						smithyhttp.SetSigV4SigningRegion(&sp, "ap-northeast-1")
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// Data Plane with long AZ fips with AP
+func TestEndpointCase297(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-west-2"),
+		Bucket:                      ptr.String("myaccesspoint--test1-az1--xa-s3"),
+		UseFIPS:                     ptr.Bool(true),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		UseS3ExpressControlEndpoint: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://myaccesspoint--test1-az1--xa-s3.s3express-fips-test1-az1.us-west-2.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "sigv4-s3express",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
 
 						smithyhttp.SetDisableDoubleEncoding(&sp, true)
 						return sp
@@ -12341,10 +13449,10 @@ func TestEndpointCase277(t *testing.T) {
 }
 
 // Control plane with short AZ bucket
-func TestEndpointCase278(t *testing.T) {
+func TestEndpointCase298(t *testing.T) {
 	var params = EndpointParameters{
 		Region:                      ptr.String("us-east-1"),
-		Bucket:                      ptr.String("mybucket--use1-az1--x-s3"),
+		Bucket:                      ptr.String("mybucket--test-ab1--x-s3"),
 		UseFIPS:                     ptr.Bool(false),
 		UseDualStack:                ptr.Bool(false),
 		Accelerate:                  ptr.Bool(false),
@@ -12360,7 +13468,7 @@ func TestEndpointCase278(t *testing.T) {
 		t.Fatalf("expect no error, got %v", err)
 	}
 
-	uri, _ := url.Parse("https://s3express-control.us-east-1.amazonaws.com/mybucket--use1-az1--x-s3")
+	uri, _ := url.Parse("https://s3express-control.us-east-1.amazonaws.com/mybucket--test-ab1--x-s3")
 
 	expectEndpoint := smithyendpoints.Endpoint{
 		URI:     *uri,
@@ -12376,6 +13484,66 @@ func TestEndpointCase278(t *testing.T) {
 						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
 
 						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// Control plane with short AZ bucket china region
+func TestEndpointCase299(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("cn-north-1"),
+		Bucket:                      ptr.String("mybucket--test-ab1--x-s3"),
+		UseFIPS:                     ptr.Bool(false),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		UseS3ExpressControlEndpoint: ptr.Bool(true),
+		DisableS3ExpressSessionAuth: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://s3express-control.cn-north-1.amazonaws.com.cn/mybucket--test-ab1--x-s3")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "cn-north-1")
 
 						smithyhttp.SetDisableDoubleEncoding(&sp, true)
 						return sp
@@ -12401,10 +13569,10 @@ func TestEndpointCase278(t *testing.T) {
 }
 
 // Control plane with short AZ bucket and fips
-func TestEndpointCase279(t *testing.T) {
+func TestEndpointCase300(t *testing.T) {
 	var params = EndpointParameters{
 		Region:                      ptr.String("us-east-1"),
-		Bucket:                      ptr.String("mybucket--use1-az1--x-s3"),
+		Bucket:                      ptr.String("mybucket--test-ab1--x-s3"),
 		UseFIPS:                     ptr.Bool(true),
 		UseDualStack:                ptr.Bool(false),
 		Accelerate:                  ptr.Bool(false),
@@ -12420,7 +13588,7 @@ func TestEndpointCase279(t *testing.T) {
 		t.Fatalf("expect no error, got %v", err)
 	}
 
-	uri, _ := url.Parse("https://s3express-control-fips.us-east-1.amazonaws.com/mybucket--use1-az1--x-s3")
+	uri, _ := url.Parse("https://s3express-control-fips.us-east-1.amazonaws.com/mybucket--test-ab1--x-s3")
 
 	expectEndpoint := smithyendpoints.Endpoint{
 		URI:     *uri,
@@ -12460,8 +13628,32 @@ func TestEndpointCase279(t *testing.T) {
 	}
 }
 
+// Control plane with short AZ bucket and fips china region
+func TestEndpointCase301(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("cn-north-1"),
+		Bucket:                      ptr.String("mybucket--test-ab1--x-s3"),
+		UseFIPS:                     ptr.Bool(true),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		UseS3ExpressControlEndpoint: ptr.Bool(true),
+		DisableS3ExpressSessionAuth: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err == nil {
+		t.Fatalf("expect error, got none")
+	}
+	if e, a := "Partition does not support FIPS", err.Error(); !strings.Contains(a, e) {
+		t.Errorf("expect %v error in %v", e, a)
+	}
+}
+
 // Control plane without bucket
-func TestEndpointCase280(t *testing.T) {
+func TestEndpointCase302(t *testing.T) {
 	var params = EndpointParameters{
 		Region:                      ptr.String("us-east-1"),
 		UseFIPS:                     ptr.Bool(false),
@@ -12520,7 +13712,7 @@ func TestEndpointCase280(t *testing.T) {
 }
 
 // Control plane without bucket and fips
-func TestEndpointCase281(t *testing.T) {
+func TestEndpointCase303(t *testing.T) {
 	var params = EndpointParameters{
 		Region:                      ptr.String("us-east-1"),
 		UseFIPS:                     ptr.Bool(true),
@@ -12579,7 +13771,7 @@ func TestEndpointCase281(t *testing.T) {
 }
 
 // Data Plane sigv4 auth with short AZ
-func TestEndpointCase282(t *testing.T) {
+func TestEndpointCase304(t *testing.T) {
 	var params = EndpointParameters{
 		Region:                      ptr.String("us-west-2"),
 		Bucket:                      ptr.String("mybucket--usw2-az1--x-s3"),
@@ -12637,8 +13829,185 @@ func TestEndpointCase282(t *testing.T) {
 	}
 }
 
+// Data Plane sigv4 auth with short AZ with AP
+func TestEndpointCase305(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-west-2"),
+		Bucket:                      ptr.String("myaccesspoint--usw2-az1--xa-s3"),
+		UseFIPS:                     ptr.Bool(false),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		DisableS3ExpressSessionAuth: ptr.Bool(true),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://myaccesspoint--usw2-az1--xa-s3.s3express-usw2-az1.us-west-2.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// Data Plane sigv4 auth with short zone (13 chars)
+func TestEndpointCase306(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-west-2"),
+		Bucket:                      ptr.String("mybucket--test-zone-ab1--x-s3"),
+		UseFIPS:                     ptr.Bool(false),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		DisableS3ExpressSessionAuth: ptr.Bool(true),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://mybucket--test-zone-ab1--x-s3.s3express-test-zone-ab1.us-west-2.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// Data Plane sigv4 auth with short zone (13 chars) with AP
+func TestEndpointCase307(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-west-2"),
+		Bucket:                      ptr.String("myaccesspoint--test-zone-ab1--xa-s3"),
+		UseFIPS:                     ptr.Bool(false),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		DisableS3ExpressSessionAuth: ptr.Bool(true),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://myaccesspoint--test-zone-ab1--xa-s3.s3express-test-zone-ab1.us-west-2.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
 // Data Plane sigv4 auth with short AZ fips
-func TestEndpointCase283(t *testing.T) {
+func TestEndpointCase308(t *testing.T) {
 	var params = EndpointParameters{
 		Region:                      ptr.String("us-west-2"),
 		Bucket:                      ptr.String("mybucket--usw2-az1--x-s3"),
@@ -12696,11 +14065,188 @@ func TestEndpointCase283(t *testing.T) {
 	}
 }
 
-// Data Plane sigv4 auth with long AZ
-func TestEndpointCase284(t *testing.T) {
+// Data Plane sigv4 auth with short AZ fips with AP
+func TestEndpointCase309(t *testing.T) {
 	var params = EndpointParameters{
-		Region:                      ptr.String("ap-northeast-1"),
-		Bucket:                      ptr.String("mybucket--apne1-az1--x-s3"),
+		Region:                      ptr.String("us-west-2"),
+		Bucket:                      ptr.String("myaccesspoint--usw2-az1--xa-s3"),
+		UseFIPS:                     ptr.Bool(true),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		DisableS3ExpressSessionAuth: ptr.Bool(true),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://myaccesspoint--usw2-az1--xa-s3.s3express-fips-usw2-az1.us-west-2.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// Data Plane sigv4 auth with short zone (13 chars) fips
+func TestEndpointCase310(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-west-2"),
+		Bucket:                      ptr.String("mybucket--test-zone-ab1--x-s3"),
+		UseFIPS:                     ptr.Bool(true),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		DisableS3ExpressSessionAuth: ptr.Bool(true),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://mybucket--test-zone-ab1--x-s3.s3express-fips-test-zone-ab1.us-west-2.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// Data Plane sigv4 auth with short zone (13 chars) fips with AP
+func TestEndpointCase311(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-west-2"),
+		Bucket:                      ptr.String("myaccesspoint--test-zone-ab1--xa-s3"),
+		UseFIPS:                     ptr.Bool(true),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		DisableS3ExpressSessionAuth: ptr.Bool(true),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://myaccesspoint--test-zone-ab1--xa-s3.s3express-fips-test-zone-ab1.us-west-2.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// Data Plane sigv4 auth with long AZ
+func TestEndpointCase312(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-west-2"),
+		Bucket:                      ptr.String("mybucket--test1-az1--x-s3"),
 		UseFIPS:                     ptr.Bool(false),
 		UseDualStack:                ptr.Bool(false),
 		Accelerate:                  ptr.Bool(false),
@@ -12716,7 +14262,7 @@ func TestEndpointCase284(t *testing.T) {
 		t.Fatalf("expect no error, got %v", err)
 	}
 
-	uri, _ := url.Parse("https://mybucket--apne1-az1--x-s3.s3express-apne1-az1.ap-northeast-1.amazonaws.com")
+	uri, _ := url.Parse("https://mybucket--test1-az1--x-s3.s3express-test1-az1.us-west-2.amazonaws.com")
 
 	expectEndpoint := smithyendpoints.Endpoint{
 		URI:     *uri,
@@ -12731,7 +14277,307 @@ func TestEndpointCase284(t *testing.T) {
 						smithyhttp.SetSigV4SigningName(&sp, "s3express")
 						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
 
-						smithyhttp.SetSigV4SigningRegion(&sp, "ap-northeast-1")
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// Data Plane sigv4 auth with long AZ with AP
+func TestEndpointCase313(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-west-2"),
+		Bucket:                      ptr.String("myaccesspoint--test1-az1--xa-s3"),
+		UseFIPS:                     ptr.Bool(false),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		UseS3ExpressControlEndpoint: ptr.Bool(false),
+		DisableS3ExpressSessionAuth: ptr.Bool(true),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://myaccesspoint--test1-az1--xa-s3.s3express-test1-az1.us-west-2.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// Data Plane sigv4 auth with medium zone(14 chars)
+func TestEndpointCase314(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-west-2"),
+		Bucket:                      ptr.String("mybucket--test1-zone-ab1--x-s3"),
+		UseFIPS:                     ptr.Bool(false),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		UseS3ExpressControlEndpoint: ptr.Bool(false),
+		DisableS3ExpressSessionAuth: ptr.Bool(true),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://mybucket--test1-zone-ab1--x-s3.s3express-test1-zone-ab1.us-west-2.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// Data Plane sigv4 auth with medium zone(14 chars) with AP
+func TestEndpointCase315(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-west-2"),
+		Bucket:                      ptr.String("myaccesspoint--test1-zone-ab1--xa-s3"),
+		UseFIPS:                     ptr.Bool(false),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		UseS3ExpressControlEndpoint: ptr.Bool(false),
+		DisableS3ExpressSessionAuth: ptr.Bool(true),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://myaccesspoint--test1-zone-ab1--xa-s3.s3express-test1-zone-ab1.us-west-2.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// Data Plane sigv4 auth with long zone(20 chars)
+func TestEndpointCase316(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-west-2"),
+		Bucket:                      ptr.String("mybucket--test1-long1-zone-ab1--x-s3"),
+		UseFIPS:                     ptr.Bool(false),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		UseS3ExpressControlEndpoint: ptr.Bool(false),
+		DisableS3ExpressSessionAuth: ptr.Bool(true),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://mybucket--test1-long1-zone-ab1--x-s3.s3express-test1-long1-zone-ab1.us-west-2.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// Data Plane sigv4 auth with long zone(20 chars) with AP
+func TestEndpointCase317(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-west-2"),
+		Bucket:                      ptr.String("myaccesspoint--test1-long1-zone-ab1--xa-s3"),
+		UseFIPS:                     ptr.Bool(false),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		UseS3ExpressControlEndpoint: ptr.Bool(false),
+		DisableS3ExpressSessionAuth: ptr.Bool(true),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://myaccesspoint--test1-long1-zone-ab1--xa-s3.s3express-test1-long1-zone-ab1.us-west-2.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
 
 						smithyhttp.SetDisableDoubleEncoding(&sp, true)
 						return sp
@@ -12757,10 +14603,10 @@ func TestEndpointCase284(t *testing.T) {
 }
 
 // Data Plane sigv4 auth with long AZ fips
-func TestEndpointCase285(t *testing.T) {
+func TestEndpointCase318(t *testing.T) {
 	var params = EndpointParameters{
-		Region:                      ptr.String("ap-northeast-1"),
-		Bucket:                      ptr.String("mybucket--apne1-az1--x-s3"),
+		Region:                      ptr.String("us-west-2"),
+		Bucket:                      ptr.String("mybucket--test1-az1--x-s3"),
 		UseFIPS:                     ptr.Bool(true),
 		UseDualStack:                ptr.Bool(false),
 		Accelerate:                  ptr.Bool(false),
@@ -12776,7 +14622,7 @@ func TestEndpointCase285(t *testing.T) {
 		t.Fatalf("expect no error, got %v", err)
 	}
 
-	uri, _ := url.Parse("https://mybucket--apne1-az1--x-s3.s3express-fips-apne1-az1.ap-northeast-1.amazonaws.com")
+	uri, _ := url.Parse("https://mybucket--test1-az1--x-s3.s3express-fips-test1-az1.us-west-2.amazonaws.com")
 
 	expectEndpoint := smithyendpoints.Endpoint{
 		URI:     *uri,
@@ -12791,7 +14637,307 @@ func TestEndpointCase285(t *testing.T) {
 						smithyhttp.SetSigV4SigningName(&sp, "s3express")
 						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
 
-						smithyhttp.SetSigV4SigningRegion(&sp, "ap-northeast-1")
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// Data Plane sigv4 auth with long AZ fips with AP
+func TestEndpointCase319(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-west-2"),
+		Bucket:                      ptr.String("myaccesspoint--test1-az1--xa-s3"),
+		UseFIPS:                     ptr.Bool(true),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		UseS3ExpressControlEndpoint: ptr.Bool(false),
+		DisableS3ExpressSessionAuth: ptr.Bool(true),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://myaccesspoint--test1-az1--xa-s3.s3express-fips-test1-az1.us-west-2.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// Data Plane sigv4 auth with medium zone (14 chars) fips
+func TestEndpointCase320(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-west-2"),
+		Bucket:                      ptr.String("mybucket--test1-zone-ab1--x-s3"),
+		UseFIPS:                     ptr.Bool(true),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		UseS3ExpressControlEndpoint: ptr.Bool(false),
+		DisableS3ExpressSessionAuth: ptr.Bool(true),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://mybucket--test1-zone-ab1--x-s3.s3express-fips-test1-zone-ab1.us-west-2.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// Data Plane sigv4 auth with medium zone (14 chars) fips with AP
+func TestEndpointCase321(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-west-2"),
+		Bucket:                      ptr.String("myaccesspoint--test1-zone-ab1--xa-s3"),
+		UseFIPS:                     ptr.Bool(true),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		UseS3ExpressControlEndpoint: ptr.Bool(false),
+		DisableS3ExpressSessionAuth: ptr.Bool(true),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://myaccesspoint--test1-zone-ab1--xa-s3.s3express-fips-test1-zone-ab1.us-west-2.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// Data Plane sigv4 auth with long zone (20 chars) fips
+func TestEndpointCase322(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-west-2"),
+		Bucket:                      ptr.String("mybucket--test1-long1-zone-ab1--x-s3"),
+		UseFIPS:                     ptr.Bool(true),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		UseS3ExpressControlEndpoint: ptr.Bool(false),
+		DisableS3ExpressSessionAuth: ptr.Bool(true),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://mybucket--test1-long1-zone-ab1--x-s3.s3express-fips-test1-long1-zone-ab1.us-west-2.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// Data Plane sigv4 auth with long zone (20 chars) fips with AP
+func TestEndpointCase323(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-west-2"),
+		Bucket:                      ptr.String("myaccesspoint--test1-long1-zone-ab1--xa-s3"),
+		UseFIPS:                     ptr.Bool(true),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		UseS3ExpressControlEndpoint: ptr.Bool(false),
+		DisableS3ExpressSessionAuth: ptr.Bool(true),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://myaccesspoint--test1-long1-zone-ab1--xa-s3.s3express-fips-test1-long1-zone-ab1.us-west-2.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
 
 						smithyhttp.SetDisableDoubleEncoding(&sp, true)
 						return sp
@@ -12817,7 +14963,7 @@ func TestEndpointCase285(t *testing.T) {
 }
 
 // Control Plane host override
-func TestEndpointCase286(t *testing.T) {
+func TestEndpointCase324(t *testing.T) {
 	var params = EndpointParameters{
 		Region:                      ptr.String("us-west-2"),
 		Bucket:                      ptr.String("mybucket--usw2-az1--x-s3"),
@@ -12877,8 +15023,69 @@ func TestEndpointCase286(t *testing.T) {
 	}
 }
 
+// Control Plane host override with AP
+func TestEndpointCase325(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-west-2"),
+		Bucket:                      ptr.String("myaccesspoint--usw2-az1--xa-s3"),
+		UseFIPS:                     ptr.Bool(false),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		UseS3ExpressControlEndpoint: ptr.Bool(true),
+		DisableS3ExpressSessionAuth: ptr.Bool(true),
+		Endpoint:                    ptr.String("https://custom.com"),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://myaccesspoint--usw2-az1--xa-s3.custom.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
 // Control Plane host override no bucket
-func TestEndpointCase287(t *testing.T) {
+func TestEndpointCase326(t *testing.T) {
 	var params = EndpointParameters{
 		Region:                      ptr.String("us-west-2"),
 		UseFIPS:                     ptr.Bool(false),
@@ -12938,7 +15145,7 @@ func TestEndpointCase287(t *testing.T) {
 }
 
 // Data plane host override non virtual session auth
-func TestEndpointCase288(t *testing.T) {
+func TestEndpointCase327(t *testing.T) {
 	var params = EndpointParameters{
 		Region:       ptr.String("us-west-2"),
 		Bucket:       ptr.String("mybucket--usw2-az1--x-s3"),
@@ -12996,8 +15203,67 @@ func TestEndpointCase288(t *testing.T) {
 	}
 }
 
+// Data plane host override non virtual session auth with AP
+func TestEndpointCase328(t *testing.T) {
+	var params = EndpointParameters{
+		Region:       ptr.String("us-west-2"),
+		Bucket:       ptr.String("myaccesspoint--usw2-az1--xa-s3"),
+		UseFIPS:      ptr.Bool(false),
+		UseDualStack: ptr.Bool(false),
+		Accelerate:   ptr.Bool(false),
+		Endpoint:     ptr.String("https://10.0.0.1"),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://10.0.0.1/myaccesspoint--usw2-az1--xa-s3")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "sigv4-s3express",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
 // Control Plane host override ip
-func TestEndpointCase289(t *testing.T) {
+func TestEndpointCase329(t *testing.T) {
 	var params = EndpointParameters{
 		Region:                      ptr.String("us-west-2"),
 		Bucket:                      ptr.String("mybucket--usw2-az1--x-s3"),
@@ -13057,8 +15323,69 @@ func TestEndpointCase289(t *testing.T) {
 	}
 }
 
+// Control Plane host override ip with AP
+func TestEndpointCase330(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-west-2"),
+		Bucket:                      ptr.String("myaccesspoint--usw2-az1--xa-s3"),
+		UseFIPS:                     ptr.Bool(false),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		UseS3ExpressControlEndpoint: ptr.Bool(true),
+		DisableS3ExpressSessionAuth: ptr.Bool(true),
+		Endpoint:                    ptr.String("https://10.0.0.1"),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://10.0.0.1/myaccesspoint--usw2-az1--xa-s3")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
 // Data plane host override
-func TestEndpointCase290(t *testing.T) {
+func TestEndpointCase331(t *testing.T) {
 	var params = EndpointParameters{
 		Region:       ptr.String("us-west-2"),
 		Bucket:       ptr.String("mybucket--usw2-az1--x-s3"),
@@ -13116,8 +15443,67 @@ func TestEndpointCase290(t *testing.T) {
 	}
 }
 
+// Data plane host override with AP
+func TestEndpointCase332(t *testing.T) {
+	var params = EndpointParameters{
+		Region:       ptr.String("us-west-2"),
+		Bucket:       ptr.String("myaccesspoint--usw2-az1--xa-s3"),
+		UseFIPS:      ptr.Bool(false),
+		UseDualStack: ptr.Bool(false),
+		Accelerate:   ptr.Bool(false),
+		Endpoint:     ptr.String("https://custom.com"),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://myaccesspoint--usw2-az1--xa-s3.custom.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "sigv4-s3express",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3express")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3express")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			out.Set("backend", "S3Express")
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
 // bad format error
-func TestEndpointCase291(t *testing.T) {
+func TestEndpointCase333(t *testing.T) {
 	var params = EndpointParameters{
 		Region:                      ptr.String("us-east-1"),
 		Bucket:                      ptr.String("mybucket--usaz1--x-s3"),
@@ -13139,8 +15525,31 @@ func TestEndpointCase291(t *testing.T) {
 	}
 }
 
+// bad AP format error
+func TestEndpointCase334(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-east-1"),
+		Bucket:                      ptr.String("myaccesspoint--usaz1--xa-s3"),
+		UseFIPS:                     ptr.Bool(false),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		UseS3ExpressControlEndpoint: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err == nil {
+		t.Fatalf("expect error, got none")
+	}
+	if e, a := "Unrecognized S3Express bucket name format.", err.Error(); !strings.Contains(a, e) {
+		t.Errorf("expect %v error in %v", e, a)
+	}
+}
+
 // bad format error no session auth
-func TestEndpointCase292(t *testing.T) {
+func TestEndpointCase335(t *testing.T) {
 	var params = EndpointParameters{
 		Region:                      ptr.String("us-east-1"),
 		Bucket:                      ptr.String("mybucket--usaz1--x-s3"),
@@ -13163,11 +15572,58 @@ func TestEndpointCase292(t *testing.T) {
 	}
 }
 
-// dual-stack error
-func TestEndpointCase293(t *testing.T) {
+// bad AP format error no session auth
+func TestEndpointCase336(t *testing.T) {
 	var params = EndpointParameters{
 		Region:                      ptr.String("us-east-1"),
-		Bucket:                      ptr.String("mybucket--use1-az1--x-s3"),
+		Bucket:                      ptr.String("myaccesspoint--usaz1--xa-s3"),
+		UseFIPS:                     ptr.Bool(false),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		UseS3ExpressControlEndpoint: ptr.Bool(false),
+		DisableS3ExpressSessionAuth: ptr.Bool(true),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err == nil {
+		t.Fatalf("expect error, got none")
+	}
+	if e, a := "Unrecognized S3Express bucket name format.", err.Error(); !strings.Contains(a, e) {
+		t.Errorf("expect %v error in %v", e, a)
+	}
+}
+
+// dual-stack error
+func TestEndpointCase337(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-east-1"),
+		Bucket:                      ptr.String("mybucket--test-ab1--x-s3"),
+		UseFIPS:                     ptr.Bool(false),
+		UseDualStack:                ptr.Bool(true),
+		Accelerate:                  ptr.Bool(false),
+		UseS3ExpressControlEndpoint: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err == nil {
+		t.Fatalf("expect error, got none")
+	}
+	if e, a := "S3Express does not support Dual-stack.", err.Error(); !strings.Contains(a, e) {
+		t.Errorf("expect %v error in %v", e, a)
+	}
+}
+
+// dual-stack error with AP
+func TestEndpointCase338(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-east-1"),
+		Bucket:                      ptr.String("myaccesspoint--test-ab1--xa-s3"),
 		UseFIPS:                     ptr.Bool(false),
 		UseDualStack:                ptr.Bool(true),
 		Accelerate:                  ptr.Bool(false),
@@ -13187,10 +15643,33 @@ func TestEndpointCase293(t *testing.T) {
 }
 
 // accelerate error
-func TestEndpointCase294(t *testing.T) {
+func TestEndpointCase339(t *testing.T) {
 	var params = EndpointParameters{
 		Region:                      ptr.String("us-east-1"),
-		Bucket:                      ptr.String("mybucket--use1-az1--x-s3"),
+		Bucket:                      ptr.String("mybucket--test-ab1--x-s3"),
+		UseFIPS:                     ptr.Bool(false),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(true),
+		UseS3ExpressControlEndpoint: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err == nil {
+		t.Fatalf("expect error, got none")
+	}
+	if e, a := "S3Express does not support S3 Accelerate.", err.Error(); !strings.Contains(a, e) {
+		t.Errorf("expect %v error in %v", e, a)
+	}
+}
+
+// accelerate error with AP
+func TestEndpointCase340(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-east-1"),
+		Bucket:                      ptr.String("myaccesspoint--test-ab1--xa-s3"),
 		UseFIPS:                     ptr.Bool(false),
 		UseDualStack:                ptr.Bool(false),
 		Accelerate:                  ptr.Bool(true),
@@ -13210,10 +15689,33 @@ func TestEndpointCase294(t *testing.T) {
 }
 
 // Data plane bucket format error
-func TestEndpointCase295(t *testing.T) {
+func TestEndpointCase341(t *testing.T) {
 	var params = EndpointParameters{
 		Region:                      ptr.String("us-east-1"),
-		Bucket:                      ptr.String("my.bucket--use1-az1--x-s3"),
+		Bucket:                      ptr.String("my.bucket--test-ab1--x-s3"),
+		UseFIPS:                     ptr.Bool(false),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		UseS3ExpressControlEndpoint: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err == nil {
+		t.Fatalf("expect error, got none")
+	}
+	if e, a := "S3Express bucket name is not a valid virtual hostable name.", err.Error(); !strings.Contains(a, e) {
+		t.Errorf("expect %v error in %v", e, a)
+	}
+}
+
+// Data plane AP format error
+func TestEndpointCase342(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-east-1"),
+		Bucket:                      ptr.String("my.myaccesspoint--test-ab1--xa-s3"),
 		UseFIPS:                     ptr.Bool(false),
 		UseDualStack:                ptr.Bool(false),
 		Accelerate:                  ptr.Bool(false),
@@ -13233,7 +15735,7 @@ func TestEndpointCase295(t *testing.T) {
 }
 
 // host override data plane bucket error session auth
-func TestEndpointCase296(t *testing.T) {
+func TestEndpointCase343(t *testing.T) {
 	var params = EndpointParameters{
 		Region:       ptr.String("us-west-2"),
 		Bucket:       ptr.String("my.bucket--usw2-az1--x-s3"),
@@ -13255,11 +15757,58 @@ func TestEndpointCase296(t *testing.T) {
 	}
 }
 
+// host override data plane AP error session auth
+func TestEndpointCase344(t *testing.T) {
+	var params = EndpointParameters{
+		Region:       ptr.String("us-west-2"),
+		Bucket:       ptr.String("my.myaccesspoint--usw2-az1--xa-s3"),
+		UseFIPS:      ptr.Bool(false),
+		UseDualStack: ptr.Bool(false),
+		Accelerate:   ptr.Bool(false),
+		Endpoint:     ptr.String("https://custom.com"),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err == nil {
+		t.Fatalf("expect error, got none")
+	}
+	if e, a := "S3Express bucket name is not a valid virtual hostable name.", err.Error(); !strings.Contains(a, e) {
+		t.Errorf("expect %v error in %v", e, a)
+	}
+}
+
 // host override data plane bucket error
-func TestEndpointCase297(t *testing.T) {
+func TestEndpointCase345(t *testing.T) {
 	var params = EndpointParameters{
 		Region:                      ptr.String("us-west-2"),
 		Bucket:                      ptr.String("my.bucket--usw2-az1--x-s3"),
+		UseFIPS:                     ptr.Bool(false),
+		UseDualStack:                ptr.Bool(false),
+		Accelerate:                  ptr.Bool(false),
+		Endpoint:                    ptr.String("https://custom.com"),
+		DisableS3ExpressSessionAuth: ptr.Bool(true),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err == nil {
+		t.Fatalf("expect error, got none")
+	}
+	if e, a := "S3Express bucket name is not a valid virtual hostable name.", err.Error(); !strings.Contains(a, e) {
+		t.Errorf("expect %v error in %v", e, a)
+	}
+}
+
+// host override data plane AP error
+func TestEndpointCase346(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                      ptr.String("us-west-2"),
+		Bucket:                      ptr.String("my.myaccesspoint--usw2-az1--xa-s3"),
 		UseFIPS:                     ptr.Bool(false),
 		UseDualStack:                ptr.Bool(false),
 		Accelerate:                  ptr.Bool(false),

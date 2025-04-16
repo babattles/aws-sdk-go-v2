@@ -11,7 +11,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Adds Sources to flow
+// Adds sources to a flow.
 func (c *Client) AddFlowSources(ctx context.Context, params *AddFlowSourcesInput, optFns ...func(*Options)) (*AddFlowSourcesOutput, error) {
 	if params == nil {
 		params = &AddFlowSourcesInput{}
@@ -27,15 +27,14 @@ func (c *Client) AddFlowSources(ctx context.Context, params *AddFlowSourcesInput
 	return out, nil
 }
 
-// A request to add sources to the flow.
 type AddFlowSourcesInput struct {
 
-	// The flow that you want to mutate.
+	//  The Amazon Resource Name (ARN) of the flow that you want to update.
 	//
 	// This member is required.
 	FlowArn *string
 
-	// A list of sources that you want to add.
+	//  A list of sources that you want to add to the flow.
 	//
 	// This member is required.
 	Sources []types.SetSourceRequest
@@ -45,10 +44,10 @@ type AddFlowSourcesInput struct {
 
 type AddFlowSourcesOutput struct {
 
-	// The ARN of the flow that these sources were added to.
+	//  The ARN of the flow that these sources were added to.
 	FlowArn *string
 
-	// The details of the newly added sources.
+	//  The details of the newly added sources.
 	Sources []types.Source
 
 	// Metadata pertaining to the operation's result.
@@ -100,6 +99,9 @@ func (c *Client) addOperationAddFlowSourcesMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -116,6 +118,9 @@ func (c *Client) addOperationAddFlowSourcesMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpAddFlowSourcesValidationMiddleware(stack); err != nil {
@@ -137,6 +142,18 @@ func (c *Client) addOperationAddFlowSourcesMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

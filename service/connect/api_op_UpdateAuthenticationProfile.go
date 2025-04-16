@@ -11,7 +11,7 @@ import (
 )
 
 // This API is in preview release for Amazon Connect and is subject to change. To
-// request access to this API, contact Amazon Web Services Support.
+// request access to this API, contact Amazon Web ServicesSupport.
 //
 // Updates the selected authentication profile.
 func (c *Client) UpdateAuthenticationProfile(ctx context.Context, params *UpdateAuthenticationProfileInput, optFns ...func(*Options)) (*UpdateAuthenticationProfileOutput, error) {
@@ -126,6 +126,9 @@ func (c *Client) addOperationUpdateAuthenticationProfileMiddlewares(stack *middl
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -142,6 +145,9 @@ func (c *Client) addOperationUpdateAuthenticationProfileMiddlewares(stack *middl
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateAuthenticationProfileValidationMiddleware(stack); err != nil {
@@ -163,6 +169,18 @@ func (c *Client) addOperationUpdateAuthenticationProfileMiddlewares(stack *middl
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

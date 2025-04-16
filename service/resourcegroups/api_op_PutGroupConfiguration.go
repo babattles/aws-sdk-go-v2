@@ -50,8 +50,8 @@ type PutGroupConfigurationInput struct {
 	// [Service configurations for Resource Groups]: https://docs.aws.amazon.com/ARG/latest/APIReference/about-slg.html
 	Configuration []types.GroupConfigurationItem
 
-	// The name or ARN of the resource group with the configuration that you want to
-	// update.
+	// The name or Amazon resource name (ARN) of the resource group with the
+	// configuration that you want to update.
 	Group *string
 
 	noSmithyDocumentSerde
@@ -107,6 +107,9 @@ func (c *Client) addOperationPutGroupConfigurationMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -123,6 +126,9 @@ func (c *Client) addOperationPutGroupConfigurationMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpPutGroupConfigurationValidationMiddleware(stack); err != nil {
@@ -144,6 +150,18 @@ func (c *Client) addOperationPutGroupConfigurationMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

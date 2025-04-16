@@ -32,8 +32,7 @@ type StartBackupJobInput struct {
 
 	// The name of a logical container where backups are stored. Backup vaults are
 	// identified by names that are unique to the account used to create them and the
-	// Amazon Web Services Region where they are created. They consist of lowercase
-	// letters, numbers, and hyphens.
+	// Amazon Web Services Region where they are created.
 	//
 	// This member is required.
 	BackupVaultName *string
@@ -50,8 +49,8 @@ type StartBackupJobInput struct {
 	// This member is required.
 	ResourceArn *string
 
-	// Specifies the backup option for a selected resource. This option is only
-	// available for Windows Volume Shadow Copy Service (VSS) backup jobs.
+	// The backup option for a selected resource. This option is only available for
+	// Windows Volume Shadow Copy Service (VSS) backup jobs.
 	//
 	// Valid values: Set to "WindowsVSS":"enabled" to enable the WindowsVSS backup
 	// option and create a Windows VSS backup. Set to "WindowsVSS""disabled" to create
@@ -72,6 +71,23 @@ type StartBackupJobInput struct {
 	// idempotency token results in a success message with no action taken.
 	IdempotencyToken *string
 
+	// Include this parameter to enable index creation if your backup job has a
+	// resource type that supports backup indexes.
+	//
+	// Resource types that support backup indexes include:
+	//
+	//   - EBS for Amazon Elastic Block Store
+	//
+	//   - S3 for Amazon Simple Storage Service (Amazon S3)
+	//
+	// Index can have 1 of 2 possible values, either ENABLED or DISABLED .
+	//
+	// To create a backup index for an eligible ACTIVE recovery point that does not
+	// yet have a backup index, set value to ENABLED .
+	//
+	// To delete a backup index, set value to DISABLED .
+	Index types.Index
+
 	// The lifecycle defines when a protected resource is transitioned to cold storage
 	// and when it expires. Backup will transition and expire backups automatically
 	// according to the lifecycle that you define.
@@ -81,17 +97,15 @@ type StartBackupJobInput struct {
 	// than the “transition to cold after days” setting. The “transition to cold after
 	// days” setting cannot be changed after a backup has been transitioned to cold.
 	//
-	// Resource types that are able to be transitioned to cold storage are listed in
-	// the "Lifecycle to cold storage" section of the [Feature availability by resource]table. Backup ignores this
-	// expression for other resource types.
+	// Resource types that can transition to cold storage are listed in the [Feature availability by resource] table.
+	// Backup ignores this expression for other resource types.
 	//
 	// This parameter has a maximum value of 100 years (36,500 days).
 	//
-	// [Feature availability by resource]: https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource
+	// [Feature availability by resource]: https://docs.aws.amazon.com/aws-backup/latest/devguide/backup-feature-availability.html#features-by-resource
 	Lifecycle *types.Lifecycle
 
-	// To help organize your resources, you can assign your own metadata to the
-	// resources that you create. Each tag is a key-value pair.
+	// The tags to assign to the resources.
 	RecoveryPointTags map[string]string
 
 	// A value in minutes after a backup is scheduled before a job will be canceled if
@@ -185,6 +199,9 @@ func (c *Client) addOperationStartBackupJobMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -201,6 +218,9 @@ func (c *Client) addOperationStartBackupJobMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpStartBackupJobValidationMiddleware(stack); err != nil {
@@ -222,6 +242,18 @@ func (c *Client) addOperationStartBackupJobMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

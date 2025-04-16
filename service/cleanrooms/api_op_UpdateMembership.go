@@ -34,12 +34,27 @@ type UpdateMembershipInput struct {
 	// This member is required.
 	MembershipIdentifier *string
 
+	//  The default job result configuration.
+	DefaultJobResultConfiguration *types.MembershipProtectedJobResultConfiguration
+
 	// The default protected query result configuration as specified by the member who
 	// can receive results.
 	DefaultResultConfiguration *types.MembershipProtectedQueryResultConfiguration
 
+	// An indicator as to whether job logging has been enabled or disabled for the
+	// collaboration.
+	//
+	// When ENABLED , Clean Rooms logs details about jobs run within this collaboration
+	// and those logs can be viewed in Amazon CloudWatch Logs. The default value is
+	// DISABLED .
+	JobLogStatus types.MembershipJobLogStatus
+
 	// An indicator as to whether query logging has been enabled or disabled for the
 	// membership.
+	//
+	// When ENABLED , Clean Rooms logs details about queries run within this
+	// collaboration and those logs can be viewed in Amazon CloudWatch Logs. The
+	// default value is DISABLED .
 	QueryLogStatus types.MembershipQueryLogStatus
 
 	noSmithyDocumentSerde
@@ -101,6 +116,9 @@ func (c *Client) addOperationUpdateMembershipMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -117,6 +135,9 @@ func (c *Client) addOperationUpdateMembershipMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateMembershipValidationMiddleware(stack); err != nil {
@@ -138,6 +159,18 @@ func (c *Client) addOperationUpdateMembershipMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

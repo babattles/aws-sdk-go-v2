@@ -3,54 +3,68 @@
 package types
 
 import (
+	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider/document"
 	smithydocument "github.com/aws/smithy-go/document"
 	"time"
 )
 
-// The data type for AccountRecoverySetting .
+// The settings for user message delivery in forgot-password operations. Contains
+// preference for email or SMS message delivery of password reset codes, or for
+// admin-only password reset.
 type AccountRecoverySettingType struct {
 
-	// The list of RecoveryOptionTypes .
+	// The list of options and priorities for user message delivery in forgot-password
+	// operations. Sets or displays user pool preferences for email or SMS message
+	// priority, whether users should fall back to a second delivery method, and
+	// whether passwords should only be reset by administrators.
 	RecoveryMechanisms []RecoveryOptionType
 
 	noSmithyDocumentSerde
 }
 
-// Account takeover actions type.
+// A list of account-takeover actions for each level of risk that Amazon Cognito
+// might assess with threat protection features.
 type AccountTakeoverActionsType struct {
 
-	// Action to take for a high risk.
+	// The action that you assign to a high-risk assessment by threat protection.
 	HighAction *AccountTakeoverActionType
 
-	// Action to take for a low risk.
+	// The action that you assign to a low-risk assessment by threat protection.
 	LowAction *AccountTakeoverActionType
 
-	// Action to take for a medium risk.
+	// The action that you assign to a medium-risk assessment by threat protection.
 	MediumAction *AccountTakeoverActionType
 
 	noSmithyDocumentSerde
 }
 
-// Account takeover action type.
+// The automated response to a risk level for adaptive authentication in
+// full-function, or ENFORCED , mode. You can assign an action to each risk level
+// that threat protection evaluates.
 type AccountTakeoverActionType struct {
 
-	// The action to take in response to the account takeover action. Valid values are
-	// as follows:
+	// The action to take for the attempted account takeover action for the associated
+	// risk level. Valid values are as follows:
 	//
-	//   - BLOCK Choosing this action will block the request.
+	//   - BLOCK : Block the request.
 	//
-	//   - MFA_IF_CONFIGURED Present an MFA challenge if user has configured it, else
-	//   allow the request.
-	//
-	//   - MFA_REQUIRED Present an MFA challenge if user has configured it, else block
+	//   - MFA_IF_CONFIGURED : Present an MFA challenge if possible. MFA is possible if
+	//   the user pool has active MFA methods that the user can set up. For example, if
+	//   the user pool only supports SMS message MFA but the user doesn't have a phone
+	//   number attribute, MFA setup isn't possible. If MFA setup isn't possible, allow
 	//   the request.
 	//
-	//   - NO_ACTION Allow the user to sign in.
+	//   - MFA_REQUIRED : Present an MFA challenge if possible. Block the request if a
+	//   user hasn't set up MFA. To sign in with required MFA, users must have an email
+	//   address or phone number attribute, or a registered TOTP factor.
+	//
+	//   - NO_ACTION : Take no action. Permit sign-in.
 	//
 	// This member is required.
 	EventAction AccountTakeoverEventActionType
 
-	// Flag specifying whether to send a notification.
+	// Determines whether Amazon Cognito sends a user a notification message when your
+	// user pools assesses a user's session at the associated risk level.
 	//
 	// This member is required.
 	Notify bool
@@ -58,54 +72,62 @@ type AccountTakeoverActionType struct {
 	noSmithyDocumentSerde
 }
 
-// Configuration for mitigation actions and notification for different levels of
-// risk detected for a potential account takeover.
+// The settings for automated responses and notification templates for adaptive
+// authentication with threat protection features.
 type AccountTakeoverRiskConfigurationType struct {
 
-	// Account takeover risk configuration actions.
+	// A list of account-takeover actions for each level of risk that Amazon Cognito
+	// might assess with threat protection.
 	//
 	// This member is required.
 	Actions *AccountTakeoverActionsType
 
-	// The notify configuration used to construct email notifications.
+	// The settings for composing and sending an email message when threat protection
+	// assesses a risk level with adaptive authentication. When you choose to notify
+	// users in AccountTakeoverRiskConfiguration , Amazon Cognito sends an email
+	// message using the method and template that you set with this data type.
 	NotifyConfiguration *NotifyConfigurationType
 
 	noSmithyDocumentSerde
 }
 
-// The configuration for creating a new user profile.
+// The settings for administrator creation of users in a user pool. Contains
+// settings for allowing user sign-up, customizing invitation messages to new
+// users, and the amount of time before temporary passwords expire.
 type AdminCreateUserConfigType struct {
 
-	// Set to True if only the administrator is allowed to create user profiles. Set
-	// to False if users can sign themselves up via an app.
+	// The setting for allowing self-service sign-up. When true , only administrators
+	// can create new user profiles. When false , users can register themselves and
+	// create a new user profile with the SignUp operation.
 	AllowAdminCreateUserOnly bool
 
-	// The message template to be used for the welcome message to new users.
+	// The template for the welcome message to new users. This template must include
+	// the {####} temporary password placeholder if you are creating users with
+	// passwords. If your users don't have passwords, you can omit the placeholder.
 	//
 	// See also [Customizing User Invitation Messages].
 	//
 	// [Customizing User Invitation Messages]: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-message-customizations.html#cognito-user-pool-settings-user-invitation-message-customization
 	InviteMessageTemplate *MessageTemplateType
 
-	// The user account expiration limit, in days, after which a new account that
-	// hasn't signed in is no longer usable. To reset the account after that time
-	// limit, you must call AdminCreateUser again, specifying "RESEND" for the
-	// MessageAction parameter. The default value for this parameter is 7.
+	// This parameter is no longer in use.
 	//
-	// If you set a value for TemporaryPasswordValidityDays in PasswordPolicy , that
-	// value will be used, and UnusedAccountValidityDays will be no longer be an
-	// available parameter for that user pool.
+	// The password expiration limit in days for administrator-created users. When
+	// this time expires, the user can't sign in with their temporary password. To
+	// reset the account after that time limit, you must call AdminCreateUser again,
+	// specifying RESEND for the MessageAction parameter.
+	//
+	// The default value for this parameter is 7.
 	UnusedAccountValidityDays int32
 
 	noSmithyDocumentSerde
 }
 
-// Advanced security configuration options for additional authentication types in
+// Threat protection configuration options for additional authentication types in
 // your user pool, including custom authentication.
 type AdvancedSecurityAdditionalFlowsType struct {
 
-	// The operating mode of advanced security features in custom authentication with [Custom authentication challenge Lambda triggers]
-	// .
+	// The operating mode of threat protection in custom authentication with [Custom authentication challenge Lambda triggers].
 	//
 	// [Custom authentication challenge Lambda triggers]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-lambda-challenge.html
 	CustomAuthMode AdvancedSecurityEnabledModeType
@@ -113,29 +135,35 @@ type AdvancedSecurityAdditionalFlowsType struct {
 	noSmithyDocumentSerde
 }
 
-// The Amazon Pinpoint analytics configuration necessary to collect metrics for a
-// user pool.
+// The settings for Amazon Pinpoint analytics configuration. With an analytics
+// configuration, your application can collect user-activity metrics for user
+// notifications with a Amazon Pinpoint campaign.
 //
-// In Regions where Amazon Pinpoint isn't available, user pools only support
-// sending events to Amazon Pinpoint projects in us-east-1. In Regions where Amazon
-// Pinpoint is available, user pools support sending events to Amazon Pinpoint
-// projects within that same Region.
+// Amazon Pinpoint isn't available in all Amazon Web Services Regions. For a list
+// of available Regions, see [Amazon Cognito and Amazon Pinpoint Region availability].
+//
+// [Amazon Cognito and Amazon Pinpoint Region availability]: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-pinpoint-integration.html#cognito-user-pools-find-region-mappings
 type AnalyticsConfigurationType struct {
 
-	// The Amazon Resource Name (ARN) of an Amazon Pinpoint project. You can use the
-	// Amazon Pinpoint project to integrate with the chosen user pool Client. Amazon
-	// Cognito publishes events to the Amazon Pinpoint project that the app ARN
-	// declares.
+	// The Amazon Resource Name (ARN) of an Amazon Pinpoint project that you want to
+	// connect to your user pool app client. Amazon Cognito publishes events to the
+	// Amazon Pinpoint project that ApplicationArn declares. You can also configure
+	// your application to pass an endpoint ID in the AnalyticsMetadata parameter of
+	// sign-in operations. The endpoint ID is information about the destination for
+	// push notifications
 	ApplicationArn *string
 
-	// The application ID for an Amazon Pinpoint application.
+	// Your Amazon Pinpoint project ID.
 	ApplicationId *string
 
-	// The external ID.
+	// The [external ID] of the role that Amazon Cognito assumes to send analytics data to Amazon
+	// Pinpoint.
+	//
+	// [external ID]: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-user_externalid.html
 	ExternalId *string
 
-	// The ARN of an Identity and Access Management role that authorizes Amazon
-	// Cognito to publish events to Amazon Pinpoint analytics.
+	// The ARN of an Identity and Access Management role that has the permissions
+	// required for Amazon Cognito to publish events to Amazon Pinpoint analytics.
 	RoleArn *string
 
 	// If UserDataShared is true , Amazon Cognito includes user data in the events that
@@ -145,23 +173,57 @@ type AnalyticsConfigurationType struct {
 	noSmithyDocumentSerde
 }
 
-// An Amazon Pinpoint analytics endpoint.
+// Information that your application adds to authentication requests. Applies an
+// endpoint ID to the analytics data that your user pool sends to Amazon Pinpoint.
 //
-// An endpoint uniquely identifies a mobile device, email address, or phone number
-// that can receive messages from Amazon Pinpoint analytics. For more information
-// about Amazon Web Services Regions that can contain Amazon Pinpoint resources for
-// use with Amazon Cognito user pools, see [Using Amazon Pinpoint analytics with Amazon Cognito user pools].
+// An endpoint ID uniquely identifies a mobile device, email address or phone
+// number that can receive messages from Amazon Pinpoint analytics. For more
+// information about Amazon Web Services Regions that can contain Amazon Pinpoint
+// resources for use with Amazon Cognito user pools, see [Using Amazon Pinpoint analytics with Amazon Cognito user pools].
 //
 // [Using Amazon Pinpoint analytics with Amazon Cognito user pools]: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-pinpoint-integration.html
 type AnalyticsMetadataType struct {
 
-	// The endpoint ID.
+	// The endpoint ID. Information that you want to pass to Amazon Pinpoint about
+	// where to send notifications.
 	AnalyticsEndpointId *string
 
 	noSmithyDocumentSerde
 }
 
-// Specifies whether the attribute is standard or custom.
+// An image file from a managed login branding style in a user pool.
+type AssetType struct {
+
+	// The category that the image corresponds to in your managed login configuration.
+	// Managed login has asset categories for different types of logos, backgrounds,
+	// and icons.
+	//
+	// This member is required.
+	Category AssetCategoryType
+
+	// The display-mode target of the asset: light, dark, or browser-adaptive. For
+	// example, Amazon Cognito displays a dark-mode image only when the browser or
+	// application is in dark mode, but displays a browser-adaptive file in all
+	// contexts.
+	//
+	// This member is required.
+	ColorMode ColorSchemeModeType
+
+	// The file type of the image file.
+	//
+	// This member is required.
+	Extension AssetExtensionType
+
+	// The image file, in Base64-encoded binary.
+	Bytes []byte
+
+	// The ID of the asset.
+	ResourceId *string
+
+	noSmithyDocumentSerde
+}
+
+// The name and value of a user attribute.
 type AttributeType struct {
 
 	// The name of the attribute.
@@ -175,35 +237,38 @@ type AttributeType struct {
 	noSmithyDocumentSerde
 }
 
-// The authentication result.
+// The object that your application receives after authentication. Contains tokens
+// and information for device authentication.
 type AuthenticationResultType struct {
 
-	// A valid access token that Amazon Cognito issued to the user who you want to
-	// authenticate.
+	// Your user's access token.
 	AccessToken *string
 
 	// The expiration period of the authentication result in seconds.
 	ExpiresIn int32
 
-	// The ID token.
+	// Your user's ID token.
 	IdToken *string
 
 	// The new device metadata from an authentication result.
 	NewDeviceMetadata *NewDeviceMetadataType
 
-	// The refresh token.
+	// Your user's refresh token.
 	RefreshToken *string
 
-	// The token type.
+	// The intended use of the token, for example Bearer .
 	TokenType *string
 
 	noSmithyDocumentSerde
 }
 
-// The authentication event type.
+// One authentication event that Amazon Cognito logged in a user pool with threat
+// protection active. Contains user and device metadata and a risk assessment from
+// your user pool.
 type AuthEventType struct {
 
-	// The challenge responses.
+	// A list of the challenges that the user was requested to answer, for example
+	// Password , and the result, for example Success .
 	ChallengeResponses []ChallengeResponseType
 
 	// The date and time when the item was created. Amazon Cognito returns this
@@ -216,8 +281,12 @@ type AuthEventType struct {
 	// received.
 	EventContextData *EventContextDataType
 
-	// A flag specifying the user feedback captured at the time of an event request is
-	// good or bad.
+	// The UpdateAuthEventFeedback or AdminUpdateAuthEventFeedback feedback that you
+	// or your user provided in response to the event. A value of Valid indicates that
+	// you disagreed with the level of risk that your user pool assigned, and evaluated
+	// a session to be valid, or likely safe. A value of Invalid indicates that you
+	// agreed with the user pool risk level and evaluated a session to be invalid, or
+	// likely malicious.
 	EventFeedback *EventFeedbackType
 
 	// The event ID.
@@ -226,30 +295,132 @@ type AuthEventType struct {
 	// The event response.
 	EventResponse EventResponseType
 
-	// The event risk.
+	// The threat evaluation from your user pool about an event. Contains information
+	// about whether your user pool detected compromised credentials, whether the event
+	// triggered an automated response, and the level of risk.
 	EventRisk *EventRiskType
 
-	// The event type.
+	// The type of authentication event.
 	EventType EventType
 
 	noSmithyDocumentSerde
 }
 
-// The challenge response type.
+// The responses to the challenge that you received in the previous request. Each
+// challenge has its own required response parameters. The following examples are
+// partial JSON request bodies that highlight challenge-response parameters.
+//
+// You must provide a SECRET_HASH parameter in all challenge responses to an app
+// client that has a client secret. Include a DEVICE_KEY for device authentication.
+//
+// SELECT_CHALLENGE "ChallengeName": "SELECT_CHALLENGE", "ChallengeResponses": {
+// "USERNAME": "[username]", "ANSWER": "[Challenge name]"}
+//
+// Available challenges are PASSWORD , PASSWORD_SRP , EMAIL_OTP , SMS_OTP , and
+// WEB_AUTHN .
+//
+// Complete authentication in the SELECT_CHALLENGE response for PASSWORD ,
+// PASSWORD_SRP , and WEB_AUTHN :
+//
+//   - "ChallengeName": "SELECT_CHALLENGE", "ChallengeResponses": { "ANSWER":
+//     "WEB_AUTHN", "USERNAME": "[username]", "CREDENTIAL":
+//     "[AuthenticationResponseJSON]"}
+//
+// See [AuthenticationResponseJSON].
+//
+//   - "ChallengeName": "SELECT_CHALLENGE", "ChallengeResponses": { "ANSWER":
+//     "PASSWORD", "USERNAME": "[username]", "PASSWORD": "[password]"}
+//
+//   - "ChallengeName": "SELECT_CHALLENGE", "ChallengeResponses": { "ANSWER":
+//     "PASSWORD_SRP", "USERNAME": "[username]", "SRP_A": "[SRP_A]"}
+//
+// For SMS_OTP and EMAIL_OTP , respond with the username and answer. Your user pool
+// will send a code for the user to submit in the next challenge response.
+//
+//   - "ChallengeName": "SELECT_CHALLENGE", "ChallengeResponses": { "ANSWER":
+//     "SMS_OTP", "USERNAME": "[username]"}
+//
+//   - "ChallengeName": "SELECT_CHALLENGE", "ChallengeResponses": { "ANSWER":
+//     "EMAIL_OTP", "USERNAME": "[username]"}
+//
+// SMS_OTP "ChallengeName": "SMS_OTP", "ChallengeResponses": {"SMS_OTP_CODE":
+// "[code]", "USERNAME": "[username]"}
+//
+// EMAIL_OTP "ChallengeName": "EMAIL_OTP", "ChallengeResponses":
+// {"EMAIL_OTP_CODE": "[code]", "USERNAME": "[username]"}
+//
+// SMS_MFA "ChallengeName": "SMS_MFA", "ChallengeResponses": {"SMS_MFA_CODE":
+// "[code]", "USERNAME": "[username]"}
+//
+// PASSWORD_VERIFIER This challenge response is part of the SRP flow. Amazon
+// Cognito requires that your application respond to this challenge within a few
+// seconds. When the response time exceeds this period, your user pool returns a
+// NotAuthorizedException error.
+//
+//	"ChallengeName": "PASSWORD_VERIFIER", "ChallengeResponses":
+//	{"PASSWORD_CLAIM_SIGNATURE": "[claim_signature]", "PASSWORD_CLAIM_SECRET_BLOCK":
+//	"[secret_block]", "TIMESTAMP": [timestamp], "USERNAME": "[username]"}
+//
+// Add "DEVICE_KEY" when you sign in with a remembered device.
+//
+// CUSTOM_CHALLENGE "ChallengeName": "CUSTOM_CHALLENGE", "ChallengeResponses":
+// {"USERNAME": "[username]", "ANSWER": "[challenge_answer]"}
+//
+// Add "DEVICE_KEY" when you sign in with a remembered device.
+//
+// NEW_PASSWORD_REQUIRED "ChallengeName": "NEW_PASSWORD_REQUIRED",
+// "ChallengeResponses": {"NEW_PASSWORD": "[new_password]", "USERNAME":
+// "[username]"}
+//
+// To set any required attributes that InitiateAuth returned in an
+// requiredAttributes parameter, add "userAttributes.[attribute_name]":
+// "[attribute_value]" . This parameter can also set values for writable attributes
+// that aren't required by your user pool.
+//
+// In a NEW_PASSWORD_REQUIRED challenge response, you can't modify a required
+// attribute that already has a value. In AdminRespondToAuthChallenge or
+// RespondToAuthChallenge , set a value for any keys that Amazon Cognito returned
+// in the requiredAttributes parameter, then use the AdminUpdateUserAttributes or
+// UpdateUserAttributes API operation to modify the value of any additional
+// attributes.
+//
+// SOFTWARE_TOKEN_MFA "ChallengeName": "SOFTWARE_TOKEN_MFA", "ChallengeResponses":
+// {"USERNAME": "[username]", "SOFTWARE_TOKEN_MFA_CODE": [authenticator_code]}
+//
+// DEVICE_SRP_AUTH "ChallengeName": "DEVICE_SRP_AUTH", "ChallengeResponses":
+// {"USERNAME": "[username]", "DEVICE_KEY": "[device_key]", "SRP_A": "[srp_a]"}
+//
+// DEVICE_PASSWORD_VERIFIER "ChallengeName": "DEVICE_PASSWORD_VERIFIER",
+// "ChallengeResponses": {"DEVICE_KEY": "[device_key]", "PASSWORD_CLAIM_SIGNATURE":
+// "[claim_signature]", "PASSWORD_CLAIM_SECRET_BLOCK": "[secret_block]",
+// "TIMESTAMP": [timestamp], "USERNAME": "[username]"}
+//
+// MFA_SETUP "ChallengeName": "MFA_SETUP", "ChallengeResponses": {"USERNAME":
+// "[username]"}, "SESSION": "[Session ID from VerifySoftwareToken]"
+//
+// SELECT_MFA_TYPE "ChallengeName": "SELECT_MFA_TYPE", "ChallengeResponses":
+// {"USERNAME": "[username]", "ANSWER": "[SMS_MFA or SOFTWARE_TOKEN_MFA]"}
+//
+// For more information about SECRET_HASH , see [Computing secret hash values]. For information about DEVICE_KEY
+// , see [Working with user devices in your user pool].
+//
+// [Computing secret hash values]: https://docs.aws.amazon.com/cognito/latest/developerguide/signing-up-users-in-your-app.html#cognito-user-pools-computing-secret-hash
+// [AuthenticationResponseJSON]: https://www.w3.org/TR/WebAuthn-3/#dictdef-authenticationresponsejson
+// [Working with user devices in your user pool]: https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-device-tracking.html
 type ChallengeResponseType struct {
 
-	// The challenge name.
+	// The type of challenge that your previous authentication request returned in the
+	// parameter ChallengeName , for example SMS_MFA .
 	ChallengeName ChallengeName
 
-	// The challenge response.
+	// The set of key-value pairs that provides a response to the requested challenge.
 	ChallengeResponse ChallengeResponse
 
 	noSmithyDocumentSerde
 }
 
 // Configuration for the CloudWatch log group destination of user pool detailed
-// activity logging, or of user activity log export with advanced security
-// features.
+// activity logging, or of user activity log export with threat protection.
 type CloudWatchLogsConfigurationType struct {
 
 	// The Amazon Resource Name (arn) of a CloudWatch Logs log group where your user
@@ -283,10 +454,11 @@ type CodeDeliveryDetailsType struct {
 	noSmithyDocumentSerde
 }
 
-// The compromised credentials actions type.
+// Settings for user pool actions when Amazon Cognito detects compromised
+// credentials with threat protection in full-function ENFORCED mode.
 type CompromisedCredentialsActionsType struct {
 
-	// The event action.
+	// The action that Amazon Cognito takes when it detects compromised credentials.
 	//
 	// This member is required.
 	EventAction CompromisedCredentialsEventActionType
@@ -294,26 +466,28 @@ type CompromisedCredentialsActionsType struct {
 	noSmithyDocumentSerde
 }
 
-// The compromised credentials risk configuration type.
+// Settings for compromised-credentials actions and authentication-event sources
+// with threat protection in full-function ENFORCED mode.
 type CompromisedCredentialsRiskConfigurationType struct {
 
-	// The compromised credentials risk configuration actions.
+	// Settings for the actions that you want your user pool to take when Amazon
+	// Cognito detects compromised credentials.
 	//
 	// This member is required.
 	Actions *CompromisedCredentialsActionsType
 
-	// Perform the action for these events. The default is to perform all events if no
-	// event filter is specified.
+	// Settings for the sign-in activity where you want to configure
+	// compromised-credentials actions. Defaults to all events.
 	EventFilter []EventFilterType
 
 	noSmithyDocumentSerde
 }
 
-// Contextual user data type used for evaluating the risk of an unexpected event
-// by Amazon Cognito advanced security.
+// Contextual user data used for evaluating the risk of an authentication event by
+// user pool threat protection.
 type ContextDataType struct {
 
-	// HttpHeaders received on your server in same order.
+	// The HTTP headers from your user's authentication request.
 	//
 	// This member is required.
 	HttpHeaders []HttpHeader
@@ -323,12 +497,12 @@ type ContextDataType struct {
 	// This member is required.
 	IpAddress *string
 
-	// Your server endpoint where this API is invoked.
+	// The name of your application's service endpoint.
 	//
 	// This member is required.
 	ServerName *string
 
-	// Your server path where this API is invoked.
+	// The path of your application's service endpoint.
 	//
 	// This member is required.
 	ServerPath *string
@@ -342,8 +516,7 @@ type ContextDataType struct {
 	noSmithyDocumentSerde
 }
 
-// The configuration for a custom domain that hosts the sign-up and sign-in
-// webpages for your application.
+// The configuration for a hosted UI custom domain.
 type CustomDomainConfigType struct {
 
 	// The Amazon Resource Name (ARN) of an Certificate Manager SSL certificate. You
@@ -395,27 +568,10 @@ type CustomSMSLambdaVersionConfigType struct {
 	noSmithyDocumentSerde
 }
 
-// The device-remembering configuration for a user pool. A [DescribeUserPool] request returns a null
-// value for this object when the user pool isn't configured to remember devices.
-// When device remembering is active, you can remember a user's device with a [ConfirmDevice]API
-// request. Additionally. when the property DeviceOnlyRememberedOnUserPrompt is
-// true , you must follow ConfirmDevice with an [UpdateDeviceStatus] API request that sets the user's
-// device to remembered or not_remembered .
-//
-// To sign in with a remembered device, include DEVICE_KEY in the authentication
-// parameters in your user's [InitiateAuth]request. If your app doesn't include a DEVICE_KEY
-// parameter, the [response]from Amazon Cognito includes newly-generated DEVICE_KEY and
-// DEVICE_GROUP_KEY values under NewDeviceMetadata . Store these values to use in
-// future device-authentication requests.
+// The device-remembering configuration for a user pool.
 //
 // When you provide a value for any property of DeviceConfiguration , you activate
 // the device remembering for the user pool.
-//
-// [UpdateDeviceStatus]: https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateDeviceStatus.html
-// [InitiateAuth]: https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_InitiateAuth.html
-// [response]: https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_InitiateAuth.html#API_InitiateAuth_ResponseSyntax
-// [DescribeUserPool]: https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html
-// [ConfirmDevice]: https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_ConfirmDevice.html
 type DeviceConfigurationType struct {
 
 	// When true, a remembered device can sign in with device authentication instead
@@ -428,47 +584,51 @@ type DeviceConfigurationType struct {
 	ChallengeRequiredOnNewDevice bool
 
 	// When true, Amazon Cognito doesn't automatically remember a user's device when
-	// your app sends a [ConfirmDevice]API request. In your app, create a prompt for your user to
-	// choose whether they want to remember their device. Return the user's choice in
-	// an [UpdateDeviceStatus]API request.
+	// your app sends a ConfirmDevice API request. In your app, create a prompt for
+	// your user to choose whether they want to remember their device. Return the
+	// user's choice in an UpdateDeviceStatus API request.
 	//
 	// When DeviceOnlyRememberedOnUserPrompt is false , Amazon Cognito immediately
 	// remembers devices that you register in a ConfirmDevice API request.
-	//
-	// [UpdateDeviceStatus]: https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateDeviceStatus.html
-	// [ConfirmDevice]: https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_ConfirmDevice.html
 	DeviceOnlyRememberedOnUserPrompt bool
 
 	noSmithyDocumentSerde
 }
 
-// The device verifier against which it is authenticated.
+// A Secure Remote Password (SRP) value that your application generates when you
+// register a user's device. For more information, see [Getting a device key].
+//
+// [Getting a device key]: https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-device-tracking.html#user-pools-remembered-devices-getting-a-device-key
 type DeviceSecretVerifierConfigType struct {
 
-	// The password verifier.
+	// A password verifier for a user's device. Used in SRP authentication.
 	PasswordVerifier *string
 
-	// The [salt]
-	//
-	// [salt]: https://en.wikipedia.org/wiki/Salt_(cryptography)
+	// The salt that you want to use in SRP authentication with the user's device.
 	Salt *string
 
 	noSmithyDocumentSerde
 }
 
-// The device type.
+// Information about a user's device that they've registered for device SRP
+// authentication in your application. For more information, see [Working with user devices in your user pool].
+//
+// [Working with user devices in your user pool]: https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-device-tracking.html
 type DeviceType struct {
 
-	// The device attributes.
+	// Metadata about a user's device, like name and last-access source IP.
 	DeviceAttributes []AttributeType
 
-	// The creation date of the device.
+	// The date and time when the item was created. Amazon Cognito returns this
+	// timestamp in UNIX epoch time format. Your SDK might render the output in a
+	// human-readable format like ISO 8601 or a Java Date object.
 	DeviceCreateDate *time.Time
 
-	// The device key.
+	// The device key, for example
+	// us-west-2_EXAMPLE-a1b2c3d4-5678-90ab-cdef-EXAMPLE22222 .
 	DeviceKey *string
 
-	// The date when the device was last authenticated.
+	// The date when the user last signed in with the device.
 	DeviceLastAuthenticatedDate *time.Time
 
 	// The date and time when the item was modified. Amazon Cognito returns this
@@ -479,14 +639,14 @@ type DeviceType struct {
 	noSmithyDocumentSerde
 }
 
-// A container for information about a domain.
+// A container for information about the user pool domain associated with the
+// hosted UI and OAuth endpoints.
 type DomainDescriptionType struct {
 
-	// The Amazon Web Services ID for the user pool owner.
+	// The Amazon Web Services account that you created the user pool in.
 	AWSAccountId *string
 
-	// The Amazon CloudFront endpoint that you use as the target of the alias that you
-	// set up with your Domain Name Service (DNS) provider.
+	// The Amazon CloudFront endpoint that hosts your custom domain.
 	CloudFrontDistribution *string
 
 	// The configuration for a custom domain that hosts the sign-up and sign-in
@@ -498,13 +658,23 @@ type DomainDescriptionType struct {
 	// alone, such as auth .
 	Domain *string
 
+	// The version of managed login branding that you want to apply to your domain. A
+	// value of 1 indicates hosted UI (classic) branding and a version of 2 indicates
+	// managed login branding.
+	//
+	// Managed login requires that your user pool be configured for any [feature plan] other than
+	// Lite .
+	//
+	// [feature plan]: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-sign-in-feature-plans.html
+	ManagedLoginVersion *int32
+
 	// The Amazon S3 bucket where the static files for this domain are stored.
 	S3Bucket *string
 
 	// The domain status.
 	Status DomainStatusType
 
-	// The user pool ID.
+	// The ID of the user pool that the domain is attached to.
 	UserPoolId *string
 
 	// The app version.
@@ -612,7 +782,49 @@ type EmailConfigurationType struct {
 	noSmithyDocumentSerde
 }
 
-// Specifies the user context data captured at the time of an event request.
+// Sets or shows configuration for user pool email message MFA and sign-in with
+// one-time passwords (OTPs). Includes the subject and body of the email message
+// template for sign-in and MFA messages. To activate this setting, your user pool
+// must be in the [Essentials tier]or higher.
+//
+// [Essentials tier]: https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-essentials.html
+type EmailMfaConfigType struct {
+
+	// The template for the email messages that your user pool sends to users with
+	// codes for MFA and sign-in with email OTPs. The message must contain the {####}
+	// placeholder. In the message, Amazon Cognito replaces this placeholder with the
+	// code. If you don't provide this parameter, Amazon Cognito sends messages in the
+	// default format.
+	Message *string
+
+	// The subject of the email messages that your user pool sends to users with codes
+	// for MFA and email OTP sign-in.
+	Subject *string
+
+	noSmithyDocumentSerde
+}
+
+// User preferences for multi-factor authentication with email messages. Activates
+// or deactivates email MFA and sets it as the preferred MFA method when multiple
+// methods are available. To activate this setting, your user pool must be in the [Essentials tier]
+// or higher.
+//
+// [Essentials tier]: https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-essentials.html
+type EmailMfaSettingsType struct {
+
+	// Specifies whether email message MFA is active for a user. When the value of
+	// this parameter is Enabled , the user will be prompted for MFA during all sign-in
+	// attempts, unless device tracking is turned on and the device has been trusted.
+	Enabled bool
+
+	// Specifies whether email message MFA is the user's preferred method.
+	PreferredMfa bool
+
+	noSmithyDocumentSerde
+}
+
+// The context data that your application submitted in an authentication request
+// with threat protection, as displayed in an AdminListUserAuthEvents response.
 type EventContextDataType struct {
 
 	// The user's city.
@@ -633,57 +845,70 @@ type EventContextDataType struct {
 	noSmithyDocumentSerde
 }
 
-// Specifies the event feedback type.
+// The feedback that your application submitted to a threat protection event log,
+// as displayed in an AdminListUserAuthEvents response.
 type EventFeedbackType struct {
 
-	// The authentication event feedback value. When you provide a FeedbackValue value
-	// of valid , you tell Amazon Cognito that you trust a user session where Amazon
-	// Cognito has evaluated some level of risk. When you provide a FeedbackValue
-	// value of invalid , you tell Amazon Cognito that you don't trust a user session,
-	// or you don't believe that Amazon Cognito evaluated a high-enough risk level.
+	// Your feedback to the authentication event. When you provide a FeedbackValue
+	// value of valid , you tell Amazon Cognito that you trust a user session where
+	// Amazon Cognito has evaluated some level of risk. When you provide a
+	// FeedbackValue value of invalid , you tell Amazon Cognito that you don't trust a
+	// user session, or you don't believe that Amazon Cognito evaluated a high-enough
+	// risk level.
 	//
 	// This member is required.
 	FeedbackValue FeedbackValueType
 
-	// The provider.
+	// The submitter of the event feedback. For example, if you submit event feedback
+	// in the Amazon Cognito console, this value is Admin .
 	//
 	// This member is required.
 	Provider *string
 
-	// The event feedback date.
+	// The date that you or your user submitted the feedback.
 	FeedbackDate *time.Time
 
 	noSmithyDocumentSerde
 }
 
-// The event risk type.
+// The risk evaluation by adaptive authentication, as displayed in an
+// AdminListUserAuthEvents response. Contains evaluations of
+// compromised-credentials detection and assessed risk level and action taken by
+// adaptive authentication.
 type EventRiskType struct {
 
 	// Indicates whether compromised credentials were detected during an
 	// authentication event.
 	CompromisedCredentialsDetected *bool
 
-	// The risk decision.
+	// The action taken by adaptive authentication. If NoRisk , your user pool took no
+	// action. If AccountTakeover , your user pool applied the adaptive authentication
+	// automated response that you configured. If Block , your user pool prevented the
+	// attempt.
 	RiskDecision RiskDecisionType
 
-	// The risk level.
+	// The risk level that adaptive authentication assessed for the authentication
+	// event.
 	RiskLevel RiskLevelType
 
 	noSmithyDocumentSerde
 }
 
 // Configuration for the Amazon Data Firehose stream destination of user activity
-// log export with advanced security features.
+// log export with threat protection.
 type FirehoseConfigurationType struct {
 
-	// The ARN of an Amazon Data Firehose stream that's the destination for advanced
-	// security features log export.
+	// The ARN of an Amazon Data Firehose stream that's the destination for threat
+	// protection log export.
 	StreamArn *string
 
 	noSmithyDocumentSerde
 }
 
-// The group type.
+// A user pool group. Contains details about the group and the way that it
+// contributes to IAM role decisions with identity pools. Identity pools can make
+// decisions about the IAM role to assign based on groups: users get credentials
+// for the role associated with their highest-priority group.
 type GroupType struct {
 
 	// The date and time when the item was created. Amazon Cognito returns this
@@ -691,7 +916,7 @@ type GroupType struct {
 	// human-readable format like ISO 8601 or a Java Date object.
 	CreationDate *time.Time
 
-	// A string containing the description of the group.
+	// A friendly description of the group.
 	Description *string
 
 	// The name of the group.
@@ -716,19 +941,21 @@ type GroupType struct {
 	// tokens for users in each group. If the two groups have different role ARNs, the
 	// cognito:preferred_role claim isn't set in users' tokens.
 	//
-	// The default Precedence value is null.
+	// The default Precedence value is null .
 	Precedence *int32
 
-	// The role Amazon Resource Name (ARN) for the group.
+	// The ARN of the IAM role associated with the group. If a group has the highest
+	// priority of a user's groups, users who authenticate with an identity pool get
+	// credentials for the RoleArn that's associated with the group.
 	RoleArn *string
 
-	// The user pool ID for the user pool.
+	// The ID of the user pool that contains the group.
 	UserPoolId *string
 
 	noSmithyDocumentSerde
 }
 
-// The HTTP header.
+// The HTTP header in the ContextData parameter.
 type HttpHeader struct {
 
 	// The header name.
@@ -740,7 +967,9 @@ type HttpHeader struct {
 	noSmithyDocumentSerde
 }
 
-// A container for information about an IdP.
+// A user pool identity provider (IdP). Contains information about a third-party
+// IdP to a user pool, the attributes that it populates to user profiles, and the
+// trust relationship between the IdP and your user pool.
 type IdentityProviderType struct {
 
 	// A mapping of IdP attributes to standard and custom user pool attributes.
@@ -751,7 +980,13 @@ type IdentityProviderType struct {
 	// human-readable format like ISO 8601 or a Java Date object.
 	CreationDate *time.Time
 
-	// A list of IdP identifiers.
+	// A list of IdP identifiers. IdP identifiers are strings that represent friendly
+	// names or domain names of IdPs, for example MyIdP or auth.example.com . You can
+	// choose to route user authorization requests to the right IdP with either IdP
+	// identifiers or IdP names. For more information, see identity_provider and
+	// idp_identifier at [Authorize endpoint].
+	//
+	// [Authorize endpoint]: https://docs.aws.amazon.com/cognito/latest/developerguide/authorization-endpoint.html#get-authorize-request-parameters
 	IdpIdentifiers []string
 
 	// The date and time when the item was modified. Amazon Cognito returns this
@@ -854,84 +1089,124 @@ type IdentityProviderType struct {
 	// "https://graph.facebook.com/v17.0/oauth/access_token" }
 	ProviderDetails map[string]string
 
-	// The IdP name.
+	// A friendly name for the IdP.
 	ProviderName *string
 
-	// The IdP type.
+	// The type of IdP. Either SAML, OIDC, or a named social identity provider.
 	ProviderType IdentityProviderTypeType
 
-	// The user pool ID.
+	// The ID of the user pool associated with the IdP.
 	UserPoolId *string
 
 	noSmithyDocumentSerde
 }
 
-// Specifies the configuration for Lambda triggers.
+// A collection of user pool Lambda triggers. Amazon Cognito invokes triggers at
+// several possible stages of user pool operations. Triggers can modify the outcome
+// of the operations that invoked them.
 type LambdaConfigType struct {
 
-	// Creates an authentication challenge.
+	// The configuration of a create auth challenge Lambda trigger, one of three
+	// triggers in the sequence of the [custom authentication challenge triggers].
+	//
+	// [custom authentication challenge triggers]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-lambda-challenge.html
 	CreateAuthChallenge *string
 
-	// A custom email sender Lambda trigger.
+	// The configuration of a custom email sender Lambda trigger. This trigger routes
+	// all email notifications from a user pool to a Lambda function that delivers the
+	// message using custom logic.
 	CustomEmailSender *CustomEmailLambdaVersionConfigType
 
-	// A custom Message Lambda trigger.
+	// A custom message Lambda trigger. This trigger is an opportunity to customize
+	// all SMS and email messages from your user pool. When a custom message trigger is
+	// active, your user pool routes all messages to a Lambda function that returns a
+	// runtime-customized message subject and body for your user pool to deliver to a
+	// user.
 	CustomMessage *string
 
-	// A custom SMS sender Lambda trigger.
+	// The configuration of a custom SMS sender Lambda trigger. This trigger routes
+	// all SMS notifications from a user pool to a Lambda function that delivers the
+	// message using custom logic.
 	CustomSMSSender *CustomSMSLambdaVersionConfigType
 
-	// Defines the authentication challenge.
+	// The configuration of a define auth challenge Lambda trigger, one of three
+	// triggers in the sequence of the [custom authentication challenge triggers].
+	//
+	// [custom authentication challenge triggers]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-lambda-challenge.html
 	DefineAuthChallenge *string
 
-	// The Amazon Resource Name (ARN) of an KMS key. Amazon Cognito uses the key to encrypt
-	// codes and temporary passwords sent to CustomEmailSender and CustomSMSSender .
+	// The ARN of an [KMS key]. Amazon Cognito uses the key to encrypt codes and temporary
+	// passwords sent to custom sender Lambda triggers.
+	//
+	// [KMS key]: https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#master_keys
 	KMSKeyID *string
 
-	// A post-authentication Lambda trigger.
+	// The configuration of a [post authentication Lambda trigger] in a user pool. This trigger can take custom actions
+	// after a user signs in.
+	//
+	// [post authentication Lambda trigger]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-lambda-post-authentication.html
 	PostAuthentication *string
 
-	// A post-confirmation Lambda trigger.
+	// The configuration of a [post confirmation Lambda trigger] in a user pool. This trigger can take custom actions
+	// after a user confirms their user account and their email address or phone
+	// number.
+	//
+	// [post confirmation Lambda trigger]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-lambda-post-confirmation.html
 	PostConfirmation *string
 
-	// A pre-authentication Lambda trigger.
+	// The configuration of a [pre authentication trigger] in a user pool. This trigger can evaluate and modify
+	// user sign-in events.
+	//
+	// [pre authentication trigger]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-lambda-pre-authentication.html
 	PreAuthentication *string
 
-	// A pre-registration Lambda trigger.
+	// The configuration of a [pre sign-up Lambda trigger] in a user pool. This trigger evaluates new users and
+	// can bypass confirmation, [link a federated user profile], or block sign-up requests.
+	//
+	// [link a federated user profile]: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-identity-federation-consolidate-users.html
+	// [pre sign-up Lambda trigger]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-lambda-pre-sign-up.html
 	PreSignUp *string
 
-	// The Amazon Resource Name (ARN) of the function that you want to assign to your
-	// Lambda trigger.
+	// The legacy configuration of a [pre token generation Lambda trigger] in a user pool.
 	//
 	// Set this parameter for legacy purposes. If you also set an ARN in
 	// PreTokenGenerationConfig , its value must be identical to PreTokenGeneration .
 	// For new instances of pre token generation triggers, set the LambdaArn of
 	// PreTokenGenerationConfig .
 	//
-	// You can set
+	// [pre token generation Lambda trigger]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-lambda-pre-token-generation.html
 	PreTokenGeneration *string
 
-	// The detailed configuration of a pre token generation trigger. If you also set
-	// an ARN in PreTokenGeneration , its value must be identical to
-	// PreTokenGenerationConfig .
+	// The detailed configuration of a [pre token generation Lambda trigger] in a user pool. If you also set an ARN in
+	// PreTokenGeneration , its value must be identical to PreTokenGenerationConfig .
+	//
+	// [pre token generation Lambda trigger]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-lambda-pre-token-generation.html
 	PreTokenGenerationConfig *PreTokenGenerationVersionConfigType
 
-	// The user migration Lambda config type.
+	// The configuration of a [migrate user Lambda trigger] in a user pool. This trigger can create user profiles
+	// when users sign in or attempt to reset their password with credentials that
+	// don't exist yet.
+	//
+	// [migrate user Lambda trigger]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-lambda-migrate-user.html
 	UserMigration *string
 
-	// Verifies the authentication challenge response.
+	// The configuration of a verify auth challenge Lambda trigger, one of three
+	// triggers in the sequence of the [custom authentication challenge triggers].
+	//
+	// [custom authentication challenge triggers]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-lambda-challenge.html
 	VerifyAuthChallengeResponse *string
 
 	noSmithyDocumentSerde
 }
 
-// The logging parameters of a user pool.
+// The configuration of user event logs to an external Amazon Web Services service
+// like Amazon Data Firehose, Amazon S3, or Amazon CloudWatch Logs.
 type LogConfigurationType struct {
 
 	// The source of events that your user pool sends for logging. To send error-level
 	// logs about user notification activity, set to userNotification . To send
-	// info-level logs about advanced security features user activity, set to
-	// userAuthEvents .
+	// info-level logs about threat-protection user activity in user pools with the
+	// Plus feature plan, set to userAuthEvents .
 	//
 	// This member is required.
 	EventSource EventSourceName
@@ -939,36 +1214,35 @@ type LogConfigurationType struct {
 	// The errorlevel selection of logs that a user pool sends for detailed activity
 	// logging. To send userNotification activity with [information about message delivery], choose ERROR with
 	// CloudWatchLogsConfiguration . To send userAuthEvents activity with user logs
-	// from advanced security features, choose INFO with one of
+	// from threat protection with the Plus feature plan, choose INFO with one of
 	// CloudWatchLogsConfiguration , FirehoseConfiguration , or S3Configuration .
 	//
-	// [information about message delivery]: https://docs.aws.amazon.com/cognito/latest/developerguide/tracking-quotas-and-usage-in-cloud-watch-logs.html
+	// [information about message delivery]: https://docs.aws.amazon.com/cognito/latest/developerguide/exporting-quotas-and-usage.html
 	//
 	// This member is required.
 	LogLevel LogLevel
 
 	// The CloudWatch log group destination of user pool detailed activity logs, or of
-	// user activity log export with advanced security features.
+	// user activity log export with threat protection.
 	CloudWatchLogsConfiguration *CloudWatchLogsConfigurationType
 
 	// The Amazon Data Firehose stream destination of user activity log export with
-	// advanced security features. To activate this setting, [advanced security features]must be active in your
-	// user pool.
+	// threat protection. To activate this setting, your user pool must be on the [Plus tier].
 	//
-	// [advanced security features]: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-advanced-security.html
+	// [Plus tier]: https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-plus.html
 	FirehoseConfiguration *FirehoseConfigurationType
 
-	// The Amazon S3 bucket destination of user activity log export with advanced
-	// security features. To activate this setting, [advanced security features]must be active in your user pool.
+	// The Amazon S3 bucket destination of user activity log export with threat
+	// protection. To activate this setting, your user pool must be on the [Plus tier].
 	//
-	// [advanced security features]: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-advanced-security.html
+	// [Plus tier]: https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-plus.html
 	S3Configuration *S3ConfigurationType
 
 	noSmithyDocumentSerde
 }
 
-// The logging parameters of a user pool returned in response to
-// GetLogDeliveryConfiguration .
+// The logging parameters of a user pool, as returned in the response to a
+// GetLogDeliveryConfiguration request.
 type LogDeliveryConfigurationType struct {
 
 	// A logging destination of a user pool. User pools can have multiple logging
@@ -980,6 +1254,45 @@ type LogDeliveryConfigurationType struct {
 	// The ID of the user pool where you configured logging.
 	//
 	// This member is required.
+	UserPoolId *string
+
+	noSmithyDocumentSerde
+}
+
+// A managed login branding style that's assigned to a user pool app client.
+type ManagedLoginBrandingType struct {
+
+	// An array of image files that you want to apply to roles like backgrounds,
+	// logos, and icons. Each object must also indicate whether it is for dark mode,
+	// light mode, or browser-adaptive mode.
+	Assets []AssetType
+
+	// The date and time when the item was created. Amazon Cognito returns this
+	// timestamp in UNIX epoch time format. Your SDK might render the output in a
+	// human-readable format like ISO 8601 or a Java Date object.
+	CreationDate *time.Time
+
+	// The date and time when the item was modified. Amazon Cognito returns this
+	// timestamp in UNIX epoch time format. Your SDK might render the output in a
+	// human-readable format like ISO 8601 or a Java Date object.
+	LastModifiedDate *time.Time
+
+	// The ID of the managed login branding style.
+	ManagedLoginBrandingId *string
+
+	// A JSON file, encoded as a Document type, with the the settings that you want to
+	// apply to your style.
+	Settings document.Interface
+
+	// When true, applies the default branding style options. This option reverts to
+	// default style options that are managed by Amazon Cognito. You can modify them
+	// later in the branding designer.
+	//
+	// When you specify true for this option, you must also omit values for Settings
+	// and Assets in the request.
+	UseCognitoProvidedValues bool
+
+	// The user pool where the branding style is assigned.
 	UserPoolId *string
 
 	noSmithyDocumentSerde
@@ -1022,19 +1335,27 @@ type MFAOptionType struct {
 	noSmithyDocumentSerde
 }
 
-// The new device metadata type.
+// Information that your user pool responds with in AuthenticationResult when you
+// configure it to remember devices and a user signs in with an unrecognized
+// device. Amazon Cognito presents a new device key that you can use to set up [device authentication]in
+// a "Remember me on this device" authentication model.
+//
+// [device authentication]: https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-device-tracking.html
 type NewDeviceMetadataType struct {
 
-	// The device group key.
+	// The device group key, an identifier used in generating the
+	// DEVICE_PASSWORD_VERIFIER for device SRP authentication.
 	DeviceGroupKey *string
 
-	// The device key.
+	// The device key, an identifier used in generating the DEVICE_PASSWORD_VERIFIER
+	// for device SRP authentication.
 	DeviceKey *string
 
 	noSmithyDocumentSerde
 }
 
-// The notify configuration type.
+// The configuration for Amazon SES email messages that threat protection sends to
+// a user when your adaptive authentication automated response has a Notify action.
 type NotifyConfigurationType struct {
 
 	// The Amazon Resource Name (ARN) of the identity that is associated with the
@@ -1044,45 +1365,51 @@ type NotifyConfigurationType struct {
 	// This member is required.
 	SourceArn *string
 
-	// Email template used when a detected risk event is blocked.
+	// The template for the email message that your user pool sends when a detected
+	// risk event is blocked.
 	BlockEmail *NotifyEmailType
 
-	// The email address that is sending the email. The address must be either
+	// The email address that sends the email message. The address must be either
 	// individually verified with Amazon Simple Email Service, or from a domain that
 	// has been verified with Amazon SES.
 	From *string
 
-	// The multi-factor authentication (MFA) email template used when MFA is
-	// challenged as part of a detected risk.
+	// The template for the email message that your user pool sends when MFA is
+	// challenged in response to a detected risk.
 	MfaEmail *NotifyEmailType
 
-	// The email template used when a detected risk event is allowed.
+	// The template for the email message that your user pool sends when no action is
+	// taken in response to a detected risk.
 	NoActionEmail *NotifyEmailType
 
-	// The destination to which the receiver of an email should reply to.
+	// The reply-to email address of an email template.
 	ReplyTo *string
 
 	noSmithyDocumentSerde
 }
 
-// The notify email type.
+// The template for email messages that threat protection sends to a user when
+// your threat protection automated response has a Notify action.
 type NotifyEmailType struct {
 
-	// The email subject.
+	// The subject of the threat protection email notification.
 	//
 	// This member is required.
 	Subject *string
 
-	// The email HTML body.
+	// The body of an email notification formatted in HTML. Choose an HtmlBody or a
+	// TextBody to send an HTML-formatted or plaintext message, respectively.
 	HtmlBody *string
 
-	// The email text body.
+	// The body of an email notification formatted in plaintext. Choose an HtmlBody or
+	// a TextBody to send an HTML-formatted or plaintext message, respectively.
 	TextBody *string
 
 	noSmithyDocumentSerde
 }
 
-// The minimum and maximum values of an attribute that is of the number data type.
+// The minimum and maximum values of an attribute that is of the number type, for
+// example custom:age .
 type NumberAttributeConstraintsType struct {
 
 	// The maximum length of a number attribute value. Must be a number less than or
@@ -1096,7 +1423,8 @@ type NumberAttributeConstraintsType struct {
 	noSmithyDocumentSerde
 }
 
-// The password policy type.
+// The password policy settings for a user pool, including complexity, history,
+// and length requirements.
 type PasswordPolicyType struct {
 
 	// The minimum length of the password in the policy that you have set. This value
@@ -1106,29 +1434,22 @@ type PasswordPolicyType struct {
 	// The number of previous passwords that you want Amazon Cognito to restrict each
 	// user from reusing. Users can't set a password that matches any of n previous
 	// passwords, where n is the value of PasswordHistorySize .
-	//
-	// Password history isn't enforced and isn't displayed in [DescribeUserPool] responses when you set
-	// this value to 0 or don't provide it. To activate this setting, [advanced security features] must be active
-	// in your user pool.
-	//
-	// [advanced security features]: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-advanced-security.html
-	// [DescribeUserPool]: https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html
 	PasswordHistorySize *int32
 
-	// In the password policy that you have set, refers to whether you have required
-	// users to use at least one lowercase letter in their password.
+	// The requirement in a password policy that users must include at least one
+	// lowercase letter in their password.
 	RequireLowercase bool
 
-	// In the password policy that you have set, refers to whether you have required
-	// users to use at least one number in their password.
+	// The requirement in a password policy that users must include at least one
+	// number in their password.
 	RequireNumbers bool
 
-	// In the password policy that you have set, refers to whether you have required
-	// users to use at least one symbol in their password.
+	// The requirement in a password policy that users must include at least one
+	// symbol in their password.
 	RequireSymbols bool
 
-	// In the password policy that you have set, refers to whether you have required
-	// users to use at least one uppercase letter in their password.
+	// The requirement in a password policy that users must include at least one
+	// uppercase letter in their password.
 	RequireUppercase bool
 
 	// The number of days a temporary password is valid in the password policy. If the
@@ -1165,7 +1486,7 @@ type PreTokenGenerationVersionConfigType struct {
 	noSmithyDocumentSerde
 }
 
-// A container for IdP details.
+// The details of a user pool identity provider (IdP), including name and type.
 type ProviderDescription struct {
 
 	// The date and time when the item was created. Amazon Cognito returns this
@@ -1173,19 +1494,24 @@ type ProviderDescription struct {
 	// human-readable format like ISO 8601 or a Java Date object.
 	CreationDate *time.Time
 
-	// The date the provider was last modified.
+	// The date and time when the item was modified. Amazon Cognito returns this
+	// timestamp in UNIX epoch time format. Your SDK might render the output in a
+	// human-readable format like ISO 8601 or a Java Date object.
 	LastModifiedDate *time.Time
 
-	// The IdP name.
+	// The name of the IdP, for example MySAMLProvider .
 	ProviderName *string
 
-	// The IdP type.
+	// The type of the provider, for example SAML . Amazon Cognito supports SAML 2.0,
+	// OIDC, and social IdPs. User pools list supported social IdPs by name in this
+	// response parameter: Facebook, Google, Login with Amazon, and Sign in with Apple.
 	ProviderType IdentityProviderTypeType
 
 	noSmithyDocumentSerde
 }
 
-// A container for information about an IdP for a user pool.
+// The characteristics of a source or destination user for linking a federated
+// user profile to a local user profile.
 type ProviderUserIdentifierType struct {
 
 	// The name of the provider attribute to link to, such as NameID .
@@ -1200,16 +1526,24 @@ type ProviderUserIdentifierType struct {
 	noSmithyDocumentSerde
 }
 
-// A map containing a priority as a key, and recovery method name as a value.
+// A recovery option for a user. The AccountRecoverySettingType data type is an
+// array of this object. Each RecoveryOptionType has a priority property that
+// determines whether it is a primary or secondary option.
+//
+// For example, if verified_email has a priority of 1 and verified_phone_number
+// has a priority of 2 , your user pool sends account-recovery messages to a
+// verified email address but falls back to an SMS message if the user has a
+// verified phone number. The admin_only option prevents self-service account
+// recovery.
 type RecoveryOptionType struct {
 
-	// The recovery method for a user.
+	// The recovery method that this object sets a recovery option for.
 	//
 	// This member is required.
 	Name RecoveryOptionNameType
 
-	// A positive integer specifying priority of a method with 1 being the highest
-	// priority.
+	// Your priority preference for using the specified attribute in account recovery.
+	// The highest priority is 1 .
 	//
 	// This member is required.
 	Priority *int32
@@ -1217,15 +1551,21 @@ type RecoveryOptionType struct {
 	noSmithyDocumentSerde
 }
 
-// A resource server scope.
+// One custom scope associated with a user pool resource server. This data type is
+// a member of ResourceServerScopeType . For more information, see [Scopes, M2M, and API authorization with resource servers].
+//
+// [Scopes, M2M, and API authorization with resource servers]: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-define-resource-servers.html
 type ResourceServerScopeType struct {
 
-	// A description of the scope.
+	// A friendly description of a custom scope.
 	//
 	// This member is required.
 	ScopeDescription *string
 
-	// The name of the scope.
+	// The name of the scope. Amazon Cognito renders custom scopes in the format
+	// resourceServerIdentifier/ScopeName . For example, if this parameter is
+	// exampleScope in the resource server with the identifier exampleResourceServer ,
+	// you request and receive the scope exampleResourceServer/exampleScope .
 	//
 	// This member is required.
 	ScopeName *string
@@ -1233,7 +1573,8 @@ type ResourceServerScopeType struct {
 	noSmithyDocumentSerde
 }
 
-// A container for information about a resource server for a user pool.
+// The details of a resource server configuration and associated custom scopes in
+// a user pool.
 type ResourceServerType struct {
 
 	// A unique resource server identifier for the resource server. The identifier can
@@ -1251,24 +1592,27 @@ type ResourceServerType struct {
 	// A list of scopes that are defined for the resource server.
 	Scopes []ResourceServerScopeType
 
-	// The user pool ID for the user pool that hosts the resource server.
+	// The ID of the user pool that contains the resource server configuration.
 	UserPoolId *string
 
 	noSmithyDocumentSerde
 }
 
-// The risk configuration type.
+// The settings of risk configuration for threat protection with threat protection
+// in a user pool.
 type RiskConfigurationType struct {
 
-	// The account takeover risk configuration object, including the
-	// NotifyConfiguration object and Actions to take if there is an account takeover.
+	// The settings for automated responses and notification templates for adaptive
+	// authentication with threat protection.
 	AccountTakeoverRiskConfiguration *AccountTakeoverRiskConfigurationType
 
-	// The app client ID.
+	// The app client where this configuration is applied. When this parameter isn't
+	// present, the risk configuration applies to all user pool app clients that don't
+	// have client-level settings.
 	ClientId *string
 
-	// The compromised credentials risk configuration object, including the EventFilter
-	// and the EventAction .
+	// Settings for compromised-credentials actions and authentication types with
+	// threat protection in full-function ENFORCED mode.
 	CompromisedCredentialsRiskConfiguration *CompromisedCredentialsRiskConfigurationType
 
 	// The date and time when the item was modified. Amazon Cognito returns this
@@ -1276,36 +1620,38 @@ type RiskConfigurationType struct {
 	// human-readable format like ISO 8601 or a Java Date object.
 	LastModifiedDate *time.Time
 
-	// The configuration to override the risk decision.
+	// Exceptions to the risk evaluation configuration, including always-allow and
+	// always-block IP address ranges.
 	RiskExceptionConfiguration *RiskExceptionConfigurationType
 
-	// The user pool ID.
+	// The ID of the user pool that has the risk configuration applied.
 	UserPoolId *string
 
 	noSmithyDocumentSerde
 }
 
-// The type of the configuration to override the risk decision.
+// Exceptions to the risk evaluation configuration, including always-allow and
+// always-block IP address ranges.
 type RiskExceptionConfigurationType struct {
 
-	// Overrides the risk decision to always block the pre-authentication requests.
-	// The IP range is in CIDR notation, a compact representation of an IP address and
-	// its routing prefix.
+	// An always-block IP address list. Overrides the risk decision and always blocks
+	// authentication requests. This parameter is displayed and set in CIDR notation.
 	BlockedIPRangeList []string
 
-	// Risk detection isn't performed on the IP addresses in this range list. The IP
-	// range is in CIDR notation.
+	// An always-allow IP address list. Risk detection isn't performed on the IP
+	// addresses in this range list. This parameter is displayed and set in CIDR
+	// notation.
 	SkippedIPRangeList []string
 
 	noSmithyDocumentSerde
 }
 
 // Configuration for the Amazon S3 bucket destination of user activity log export
-// with advanced security features.
+// with threat protection.
 type S3ConfigurationType struct {
 
-	// The ARN of an Amazon S3 bucket that's the destination for advanced security
-	// features log export.
+	// The ARN of an Amazon S3 bucket that's the destination for threat protection log
+	// export.
 	BucketArn *string
 
 	noSmithyDocumentSerde
@@ -1315,9 +1661,10 @@ type S3ConfigurationType struct {
 // attribute schema contains standard attributes, custom attributes with a custom:
 // prefix, and developer attributes with a dev: prefix. For more information, see [User pool attributes].
 //
-// Developer-only attributes are a legacy feature of user pools, are read-only to
-// all app clients. You can create and update developer-only attributes only with
-// IAM-authenticated API operations. Use app client read/write permissions instead.
+// Developer-only dev: attributes are a legacy feature of user pools, and are
+// read-only to all app clients. You can create and update developer-only
+// attributes only with IAM-authenticated API operations. Use app client read/write
+// permissions instead.
 //
 // [User pool attributes]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-attributes.html
 type SchemaAttributeType struct {
@@ -1374,11 +1721,24 @@ type SchemaAttributeType struct {
 	noSmithyDocumentSerde
 }
 
-// The SMS configuration type is the settings that your Amazon Cognito user pool
-// must use to send an SMS message from your Amazon Web Services account through
-// Amazon Simple Notification Service. To send SMS messages with Amazon SNS in the
-// Amazon Web Services Region that you want, the Amazon Cognito user pool uses an
-// Identity and Access Management (IAM) role in your Amazon Web Services account.
+// The policy for allowed types of authentication in a user pool. To activate this
+// setting, your user pool must be in the [Essentials tier]or higher.
+//
+// [Essentials tier]: https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-essentials.html
+type SignInPolicyType struct {
+
+	// The sign-in methods that a user pool supports as the first factor. You can
+	// permit users to start authentication with a standard username and password, or
+	// with other one-time password and hardware factors.
+	AllowedFirstAuthFactors []AuthFactorType
+
+	noSmithyDocumentSerde
+}
+
+// User pool configuration for delivery of SMS messages with Amazon Simple
+// Notification Service. To send SMS messages with Amazon SNS in the Amazon Web
+// Services Region that you want, the Amazon Cognito user pool uses an Identity and
+// Access Management (IAM) role in your Amazon Web Services account.
 type SmsConfigurationType struct {
 
 	// The Amazon Resource Name (ARN) of the Amazon SNS caller. This is the ARN of the
@@ -1400,7 +1760,7 @@ type SmsConfigurationType struct {
 	// the required permissions and a trust policy that demonstrates use of the
 	// ExternalId .
 	//
-	// For more information about the ExternalId of a role, see [How to use an external ID when granting access to your Amazon Web Services resources to a third party]
+	// For more information about the ExternalId of a role, see [How to use an external ID when granting access to your Amazon Web Services resources to a third party].
 	//
 	// [How to use an external ID when granting access to your Amazon Web Services resources to a third party]: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-user_externalid.html
 	ExternalId *string
@@ -1419,60 +1779,62 @@ type SmsConfigurationType struct {
 	noSmithyDocumentSerde
 }
 
-// The SMS text message multi-factor authentication (MFA) configuration type.
+// The configuration of multi-factor authentication (MFA) with SMS messages in a
+// user pool.
 type SmsMfaConfigType struct {
 
 	// The SMS authentication message that will be sent to users with the code they
-	// must sign in. The message must contain the ‘{####}’ placeholder, which is
-	// replaced with the code. If the message isn't included, and default message will
-	// be used.
+	// must sign in with. The message must contain the {####} placeholder. Your user
+	// pool replaces the placeholder with the MFA code. If this parameter isn't
+	// provided, your user pool sends a default message.
 	SmsAuthenticationMessage *string
 
-	// The SMS configuration with the settings that your Amazon Cognito user pool must
-	// use to send an SMS message from your Amazon Web Services account through Amazon
-	// Simple Notification Service. To request Amazon SNS in the Amazon Web Services
-	// Region that you want, the Amazon Cognito user pool uses an Identity and Access
-	// Management (IAM) role that you provide for your Amazon Web Services account.
+	// User pool configuration for delivery of SMS messages with Amazon Simple
+	// Notification Service. To send SMS messages with Amazon SNS in the Amazon Web
+	// Services Region that you want, the Amazon Cognito user pool uses an Identity and
+	// Access Management (IAM) role in your Amazon Web Services account.
+	//
+	// You can set SmsConfiguration in CreateUserPool and  UpdateUserPool , or in
+	// SetUserPoolMfaConfig .
 	SmsConfiguration *SmsConfigurationType
 
 	noSmithyDocumentSerde
 }
 
-// The type used for enabling SMS multi-factor authentication (MFA) at the user
-// level. Phone numbers don't need to be verified to be used for SMS MFA. If an MFA
-// type is activated for a user, the user will be prompted for MFA during all
-// sign-in attempts, unless device tracking is turned on and the device has been
-// trusted. If you would like MFA to be applied selectively based on the assessed
-// risk level of sign-in attempts, deactivate MFA for users and turn on Adaptive
-// Authentication for the user pool.
+// A user's preference for using SMS message multi-factor authentication (MFA).
+// Turns SMS MFA on and off, and can set SMS as preferred when other MFA options
+// are available. You can't turn off SMS MFA for any of your users when MFA is
+// required in your user pool; you can only set the type that your user prefers.
 type SMSMfaSettingsType struct {
 
-	// Specifies whether SMS text message MFA is activated. If an MFA type is
-	// activated for a user, the user will be prompted for MFA during all sign-in
-	// attempts, unless device tracking is turned on and the device has been trusted.
+	// Specifies whether SMS message MFA is activated. If an MFA type is activated for
+	// a user, the user will be prompted for MFA during all sign-in attempts, unless
+	// device tracking is turned on and the device has been trusted.
 	Enabled bool
 
-	// Specifies whether SMS is the preferred MFA method.
+	// Specifies whether SMS is the preferred MFA method. If true, your user pool
+	// prompts the specified user for a code delivered by SMS message after
+	// username-password sign-in succeeds.
 	PreferredMfa bool
 
 	noSmithyDocumentSerde
 }
 
-// The type used for enabling software token MFA at the user pool level.
+// Settings for time-based one-time password (TOTP) multi-factor authentication
+// (MFA) in a user pool. Enables and disables availability of this feature.
 type SoftwareTokenMfaConfigType struct {
 
-	// Specifies whether software token MFA is activated.
+	// The activation state of TOTP MFA.
 	Enabled bool
 
 	noSmithyDocumentSerde
 }
 
-// The type used for enabling software token MFA at the user level. If an MFA type
-// is activated for a user, the user will be prompted for MFA during all sign-in
-// attempts, unless device tracking is turned on and the device has been trusted.
-// If you want MFA to be applied selectively based on the assessed risk level of
-// sign-in attempts, deactivate MFA for users and turn on Adaptive Authentication
-// for the user pool.
+// A user's preference for using time-based one-time password (TOTP) multi-factor
+// authentication (MFA). Turns TOTP MFA on and off, and can set TOTP as preferred
+// when other MFA options are available. You can't turn off TOTP MFA for any of
+// your users when MFA is required in your user pool; you can only set the type
+// that your user prefers.
 type SoftwareTokenMfaSettingsType struct {
 
 	// Specifies whether software token MFA is activated. If an MFA type is activated
@@ -1486,7 +1848,8 @@ type SoftwareTokenMfaSettingsType struct {
 	noSmithyDocumentSerde
 }
 
-// The constraints associated with a string attribute.
+// The minimum and maximum length values of an attribute that is of the string
+// type, for example custom:department .
 type StringAttributeConstraintsType struct {
 
 	// The maximum length of a string attribute value. Must be a number less than or
@@ -1494,37 +1857,38 @@ type StringAttributeConstraintsType struct {
 	// fewer.
 	MaxLength *string
 
-	// The minimum length.
+	// The minimum length of a string attribute value.
 	MinLength *string
 
 	noSmithyDocumentSerde
 }
 
-// The data type TokenValidityUnits specifies the time units you use when you set
-// the duration of ID, access, and refresh tokens.
+// The time units that, with IdTokenValidity , AccessTokenValidity , and
+// RefreshTokenValidity , set and display the duration of ID, access, and refresh
+// tokens for an app client. You can assign a separate token validity unit to each
+// type of token.
 type TokenValidityUnitsType struct {
 
-	//  A time unit of seconds , minutes , hours , or days for the value that you set
-	// in the AccessTokenValidity parameter. The default AccessTokenValidity time unit
-	// is hours. AccessTokenValidity duration can range from five minutes to one day.
+	//  A time unit for the value that you set in the AccessTokenValidity parameter.
+	// The default AccessTokenValidity time unit is hours . AccessTokenValidity
+	// duration can range from five minutes to one day.
 	AccessToken TimeUnitsType
 
-	// A time unit of seconds , minutes , hours , or days for the value that you set
-	// in the IdTokenValidity parameter. The default IdTokenValidity time unit is
-	// hours. IdTokenValidity duration can range from five minutes to one day.
+	// A time unit for the value that you set in the IdTokenValidity parameter. The
+	// default IdTokenValidity time unit is hours . IdTokenValidity duration can range
+	// from five minutes to one day.
 	IdToken TimeUnitsType
 
-	// A time unit of seconds , minutes , hours , or days for the value that you set
-	// in the RefreshTokenValidity parameter. The default RefreshTokenValidity time
-	// unit is days. RefreshTokenValidity duration can range from 60 minutes to 10
-	// years.
+	// A time unit for the value that you set in the RefreshTokenValidity parameter.
+	// The default RefreshTokenValidity time unit is days . RefreshTokenValidity
+	// duration can range from 60 minutes to 10 years.
 	RefreshToken TimeUnitsType
 
 	noSmithyDocumentSerde
 }
 
-// A container for the UI customization information for a user pool's built-in app
-// UI.
+// A container for the UI customization information for the hosted UI in a user
+// pool.
 type UICustomizationType struct {
 
 	// The CSS values in the UI customization.
@@ -1533,7 +1897,9 @@ type UICustomizationType struct {
 	// The CSS version number.
 	CSSVersion *string
 
-	// The client ID for the client app.
+	// The app client ID for your UI customization. When this value isn't present, the
+	// customization applies to all user pool app clients that don't have client-level
+	// settings..
 	ClientId *string
 
 	// The date and time when the item was created. Amazon Cognito returns this
@@ -1541,7 +1907,7 @@ type UICustomizationType struct {
 	// human-readable format like ISO 8601 or a Java Date object.
 	CreationDate *time.Time
 
-	// The logo image for the UI customization.
+	// A URL path to the hosted logo image of your UI customization.
 	ImageUrl *string
 
 	// The date and time when the item was modified. Amazon Cognito returns this
@@ -1549,7 +1915,7 @@ type UICustomizationType struct {
 	// human-readable format like ISO 8601 or a Java Date object.
 	LastModifiedDate *time.Time
 
-	// The user pool ID for the user pool.
+	// The ID of the user pool with hosted UI customizations.
 	UserPoolId *string
 
 	noSmithyDocumentSerde
@@ -1570,18 +1936,11 @@ type UserAttributeUpdateSettingsType struct {
 	// doesn’t change the value of the attribute until your user responds to the
 	// verification message and confirms the new value.
 	//
-	// You can verify an updated email address or phone number with a [VerifyUserAttribute] API request.
-	// You can also call the [AdminUpdateUserAttributes]API and set email_verified or phone_number_verified to
-	// true.
-	//
 	// When AttributesRequireVerificationBeforeUpdate is false, your user pool doesn't
 	// require that your users verify attribute changes before Amazon Cognito updates
 	// them. In a user pool where AttributesRequireVerificationBeforeUpdate is false,
 	// API operations that change attribute values can immediately update a user’s
 	// email or phone_number attribute.
-	//
-	// [VerifyUserAttribute]: https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerifyUserAttribute.html
-	// [AdminUpdateUserAttributes]: https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminUpdateUserAttributes.html
 	AttributesRequireVerificationBeforeUpdate []VerifiedAttributeType
 
 	noSmithyDocumentSerde
@@ -1589,7 +1948,7 @@ type UserAttributeUpdateSettingsType struct {
 
 // Contextual data, such as the user's device fingerprint, IP address, or
 // location, used for evaluating the risk of an unexpected event by Amazon Cognito
-// advanced security.
+// threat protection.
 type UserContextDataType struct {
 
 	// Encoded device-fingerprint details that your app collected with the Amazon
@@ -1604,7 +1963,10 @@ type UserContextDataType struct {
 	noSmithyDocumentSerde
 }
 
-// The user import job type.
+// A user import job in a user pool. Describes the status of user import with a
+// CSV file. For more information, see [Importing users into user pools from a CSV file].
+//
+// [Importing users into user pools from a CSV file]: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-using-import-tool.html
 type UserImportJobType struct {
 
 	// The role Amazon Resource Name (ARN) for the Amazon CloudWatch Logging role for
@@ -1629,13 +1991,13 @@ type UserImportJobType struct {
 	// The number of users that were successfully imported.
 	ImportedUsers int64
 
-	// The job ID for the user import job.
+	// The ID of the user import job.
 	JobId *string
 
-	// The job name for the user import job.
+	// The friendly name of the user import job.
 	JobName *string
 
-	// The pre-signed URL to be used to upload the .csv file.
+	// The pre-signed URL target for uploading the CSV file.
 	PreSignedUrl *string
 
 	// The number of users that were skipped.
@@ -1666,13 +2028,13 @@ type UserImportJobType struct {
 	//   All data associated with the job was deleted, and the job can't be started.
 	Status UserImportJobStatusType
 
-	// The user pool ID for the user pool that the users are being imported into.
+	// The ID of the user pool that the users are being imported into.
 	UserPoolId *string
 
 	noSmithyDocumentSerde
 }
 
-// The username configuration type.
+// The configuration of a user pool for username case sensitivity.
 type UsernameConfigurationType struct {
 
 	// Specifies whether user name case sensitivity will be applied for all users in
@@ -1683,12 +2045,12 @@ type UsernameConfigurationType struct {
 	//
 	// Valid values include:
 	//
-	// True Enables case sensitivity for all username input. When this option is set
-	// to True , users must sign in using the exact capitalization of their given
+	// true Enables case sensitivity for all username input. When this option is set
+	// to true , users must sign in using the exact capitalization of their given
 	// username, such as “UserName”. This is the default value.
 	//
-	// False Enables case insensitivity for all username input. For example, when this
-	// option is set to False , users can sign in using username , USERNAME , or
+	// false Enables case insensitivity for all username input. For example, when this
+	// option is set to false , users can sign in using username , USERNAME , or
 	// UserName . This option also enables both preferred_username and email alias to
 	// be case insensitive, in addition to the username attribute.
 	//
@@ -1698,47 +2060,48 @@ type UsernameConfigurationType struct {
 	noSmithyDocumentSerde
 }
 
-// User pool add-ons. Contains settings for activation of advanced security
-// features. To log user security information but take no action, set to AUDIT . To
-// configure automatic security responses to risky traffic to your user pool, set
-// to ENFORCED .
+// Contains settings for activation of threat protection, including the operating
+// mode and additional authentication types. To log user security information but
+// take no action, set to AUDIT . To configure automatic security responses to
+// potentially unwanted traffic to your user pool, set to ENFORCED .
 //
-// For more information, see [Adding advanced security to a user pool].
+// For more information, see [Adding advanced security to a user pool]. To activate this setting, your user pool must be on
+// the [Plus tier].
 //
+// [Plus tier]: https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-plus.html
 // [Adding advanced security to a user pool]: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-advanced-security.html
 type UserPoolAddOnsType struct {
 
-	// The operating mode of advanced security features for standard authentication
-	// types in your user pool, including username-password and secure remote password
-	// (SRP) authentication.
+	// The operating mode of threat protection for standard authentication types in
+	// your user pool, including username-password and secure remote password (SRP)
+	// authentication.
 	//
 	// This member is required.
 	AdvancedSecurityMode AdvancedSecurityModeType
 
-	// Advanced security configuration options for additional authentication types in
+	// Threat protection configuration options for additional authentication types in
 	// your user pool, including custom authentication.
 	AdvancedSecurityAdditionalFlows *AdvancedSecurityAdditionalFlowsType
 
 	noSmithyDocumentSerde
 }
 
-// The description of the user pool client.
+// A short description of a user pool app client.
 type UserPoolClientDescription struct {
 
-	// The ID of the client associated with the user pool.
+	// The app client ID.
 	ClientId *string
 
-	// The client name from the user pool client description.
+	// The app client name.
 	ClientName *string
 
-	// The user pool ID for the user pool where you want to describe the user pool
-	// client.
+	// The ID of the user pool that's associated with the app client.
 	UserPoolId *string
 
 	noSmithyDocumentSerde
 }
 
-// Contains information about a user pool client.
+// The configuration of a user pool client.
 type UserPoolClientType struct {
 
 	// The access token time limit. After this limit expires, your user can't use
@@ -1756,7 +2119,9 @@ type UserPoolClientType struct {
 	// access tokens are valid for one hour.
 	AccessTokenValidity *int32
 
-	// The allowed OAuth flows.
+	// The OAuth grant types that you want your app client to generate. To create an
+	// app client that generates client credentials grants, you must add
+	// client_credentials as the only allowed OAuth flow.
 	//
 	// code Use a code grant flow, which provides an authorization code as the
 	// response. This code can be exchanged for access tokens with the /oauth2/token
@@ -1770,10 +2135,10 @@ type UserPoolClientType struct {
 	// secret.
 	AllowedOAuthFlows []OAuthFlowType
 
-	// Set to true to use OAuth 2.0 features in your user pool app client.
+	// Set to true to use OAuth 2.0 authorization server features in your app client.
 	//
-	// AllowedOAuthFlowsUserPoolClient must be true before you can configure the
-	// following features in your app client.
+	// This parameter must have a value of true before you can configure the following
+	// features in your app client.
 	//
 	//   - CallBackURLs : Callback URLs.
 	//
@@ -1784,24 +2149,27 @@ type UserPoolClientType struct {
 	//   - AllowedOAuthFlows : Support for authorization code, implicit, and client
 	//   credentials OAuth 2.0 grants.
 	//
-	// To use OAuth 2.0 features, configure one of these features in the Amazon
-	// Cognito console or set AllowedOAuthFlowsUserPoolClient to true in a
+	// To use authorization server features, configure one of these features in the
+	// Amazon Cognito console or set AllowedOAuthFlowsUserPoolClient to true in a
 	// CreateUserPoolClient or UpdateUserPoolClient API request. If you don't set a
 	// value for AllowedOAuthFlowsUserPoolClient in a request with the CLI or SDKs, it
-	// defaults to false .
+	// defaults to false . When false , only SDK-based API sign-in is permitted.
 	AllowedOAuthFlowsUserPoolClient *bool
 
-	// The OAuth scopes that your app client supports. Possible values that OAuth
-	// provides are phone , email , openid , and profile . Possible values that Amazon
-	// Web Services provides are aws.cognito.signin.user.admin . Amazon Cognito also
-	// supports custom scopes that you create in Resource Servers.
+	// The OAuth 2.0 scopes that you want your app client to support. Can include
+	// standard OAuth scopes like phone , email , openid , and profile . Can also
+	// include the aws.cognito.signin.user.admin scope that authorizes user profile
+	// self-service operations and custom scopes from resource servers.
 	AllowedOAuthScopes []string
 
-	// The Amazon Pinpoint analytics configuration for the user pool client.
+	// The user pool analytics configuration for collecting metrics and sending them
+	// to your Amazon Pinpoint campaign.
 	//
-	// Amazon Cognito user pools only support sending events to Amazon Pinpoint
-	// projects in the US East (N. Virginia) us-east-1 Region, regardless of the Region
-	// where the user pool resides.
+	// In Amazon Web Services Regions where Amazon Pinpoint isn't available, user
+	// pools only support sending events to Amazon Pinpoint projects in Amazon Web
+	// Services Region us-east-1. In Regions where Amazon Pinpoint is available, user
+	// pools support sending events to Amazon Pinpoint projects within that same
+	// Region.
 	AnalyticsConfiguration *AnalyticsConfigurationType
 
 	// Amazon Cognito creates a session token for each API request in an
@@ -1830,13 +2198,13 @@ type UserPoolClientType struct {
 	// [OAuth 2.0 - Redirection Endpoint]: https://tools.ietf.org/html/rfc6749#section-3.1.2
 	CallbackURLs []string
 
-	// The ID of the client associated with the user pool.
+	// The ID of the app client.
 	ClientId *string
 
-	// The client name from the user pool request of the client type.
+	// The name of the app client.
 	ClientName *string
 
-	// The client secret from the user pool request of the client type.
+	// The app client secret.
 	ClientSecret *string
 
 	// The date and time when the item was created. Amazon Cognito returns this
@@ -1866,12 +2234,12 @@ type UserPoolClientType struct {
 
 	// When EnablePropagateAdditionalUserContextData is true, Amazon Cognito accepts
 	// an IpAddress value that you send in the UserContextData parameter. The
-	// UserContextData parameter sends information to Amazon Cognito advanced security
+	// UserContextData parameter sends information to Amazon Cognito threat protection
 	// for risk analysis. You can send UserContextData when you sign in Amazon Cognito
 	// native users with the InitiateAuth and RespondToAuthChallenge API operations.
 	//
 	// When EnablePropagateAdditionalUserContextData is false, you can't send your
-	// user's source IP address to Amazon Cognito advanced security with
+	// user's source IP address to Amazon Cognito threat protection with
 	// unauthenticated API operations. EnablePropagateAdditionalUserContextData
 	// doesn't affect whether you can send a source IP address in a ContextData
 	// parameter with the authenticated API operations AdminInitiateAuth and
@@ -1885,22 +2253,29 @@ type UserPoolClientType struct {
 	EnablePropagateAdditionalUserContextData *bool
 
 	// Indicates whether token revocation is activated for the user pool client. When
-	// you create a new user pool client, token revocation is activated by default. For
-	// more information about revoking tokens, see [RevokeToken].
-	//
-	// [RevokeToken]: https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_RevokeToken.html
+	// you create a new user pool client, token revocation is activated by default.
 	EnableTokenRevocation *bool
 
-	// The authentication flows that you want your user pool client to support. For
-	// each app client in your user pool, you can sign in your users with any
-	// combination of one or more flows, including with a user name and Secure Remote
-	// Password (SRP), a user name and password, or a custom authentication process
-	// that you define with Lambda functions.
+	// The [authentication flows] that you want your user pool client to support. For each app client in
+	// your user pool, you can sign in your users with any combination of one or more
+	// flows, including with a user name and Secure Remote Password (SRP), a user name
+	// and password, or a custom authentication process that you define with Lambda
+	// functions.
 	//
-	// If you don't specify a value for ExplicitAuthFlows , your user client supports
+	// If you don't specify a value for ExplicitAuthFlows , your app client supports
 	// ALLOW_REFRESH_TOKEN_AUTH , ALLOW_USER_SRP_AUTH , and ALLOW_CUSTOM_AUTH .
 	//
-	// Valid values include:
+	// The values for authentication flow options include the following.
+	//
+	//   - ALLOW_USER_AUTH : Enable selection-based sign-in with USER_AUTH . This
+	//   setting covers username-password, secure remote password (SRP), passwordless,
+	//   and passkey authentication. This authentiation flow can do username-password and
+	//   SRP authentication without other ExplicitAuthFlows permitting them. For
+	//   example users can complete an SRP challenge through USER_AUTH without the flow
+	//   USER_SRP_AUTH being active for the app client. This flow doesn't include
+	//   CUSTOM_AUTH .
+	//
+	// To activate this setting, your user pool must be in the [Essentials tier]or higher.
 	//
 	//   - ALLOW_ADMIN_USER_PASSWORD_AUTH : Enable admin based user password
 	//   authentication flow ADMIN_USER_PASSWORD_AUTH . This setting replaces the
@@ -1922,6 +2297,9 @@ type UserPoolClientType struct {
 	// CUSTOM_AUTH_FLOW_ONLY , or USER_PASSWORD_AUTH . You can't assign these legacy
 	// ExplicitAuthFlows values to user pool clients at the same time as values that
 	// begin with ALLOW_ , like ALLOW_USER_SRP_AUTH .
+	//
+	// [authentication flows]: https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-authentication-flow-methods.html
+	// [Essentials tier]: https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-essentials.html
 	ExplicitAuthFlows []ExplicitAuthFlowsType
 
 	// The ID token time limit. After this limit expires, your user can't use their ID
@@ -1946,40 +2324,29 @@ type UserPoolClientType struct {
 	// A list of allowed logout URLs for the IdPs.
 	LogoutURLs []string
 
-	// Errors and responses that you want Amazon Cognito APIs to return during
-	// authentication, account confirmation, and password recovery when the user
-	// doesn't exist in the user pool. When set to ENABLED and the user doesn't exist,
-	// authentication returns an error indicating either the username or password was
-	// incorrect. Account confirmation and password recovery return a response
-	// indicating a code was sent to a simulated destination. When set to LEGACY ,
-	// those APIs return a UserNotFoundException exception if the user doesn't exist
-	// in the user pool.
+	// When ENABLED , suppresses messages that might indicate a valid user exists when
+	// someone attempts sign-in. This parameters sets your preference for the errors
+	// and responses that you want Amazon Cognito APIs to return during authentication,
+	// account confirmation, and password recovery when the user doesn't exist in the
+	// user pool. When set to ENABLED and the user doesn't exist, authentication
+	// returns an error indicating either the username or password was incorrect.
+	// Account confirmation and password recovery return a response indicating a code
+	// was sent to a simulated destination. When set to LEGACY , those APIs return a
+	// UserNotFoundException exception if the user doesn't exist in the user pool.
 	//
-	// Valid values include:
-	//
-	//   - ENABLED - This prevents user existence-related errors.
-	//
-	//   - LEGACY - This represents the early behavior of Amazon Cognito where user
-	//   existence related errors aren't prevented.
-	//
-	// Defaults to LEGACY when you don't provide a value.
+	// Defaults to LEGACY .
 	PreventUserExistenceErrors PreventUserExistenceErrorTypes
 
-	// The list of user attributes that you want your app client to have read-only
-	// access to. After your user authenticates in your app, their access token
-	// authorizes them to read their own attribute value for any attribute in this
-	// list. An example of this kind of activity is when your user selects a link to
-	// view their profile information. Your app makes a [GetUser]API request to retrieve and
-	// display your user's profile data.
+	// The list of user attributes that you want your app client to have read access
+	// to. After your user authenticates in your app, their access token authorizes
+	// them to read their own attribute value for any attribute in this list.
 	//
 	// When you don't specify the ReadAttributes for your app client, your app can
-	// read the values of email_verified , phone_number_verified , and the Standard
-	// attributes of your user pool. When your user pool has read access to these
-	// default attributes, ReadAttributes doesn't return any information. Amazon
+	// read the values of email_verified , phone_number_verified , and the standard
+	// attributes of your user pool. When your user pool app client has read access to
+	// these default attributes, ReadAttributes doesn't return any information. Amazon
 	// Cognito only populates ReadAttributes in the API response if you have specified
 	// your own custom set of read attributes.
-	//
-	// [GetUser]: https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_GetUser.html
 	ReadAttributes []string
 
 	// The refresh token time limit. After this limit expires, your user can't use
@@ -2000,24 +2367,34 @@ type UserPoolClientType struct {
 	// refresh tokens are valid for 30 days.
 	RefreshTokenValidity int32
 
-	// A list of provider names for the IdPs that this client supports. The following
-	// are supported: COGNITO , Facebook , Google , SignInWithApple , LoginWithAmazon ,
-	// and the names of your own SAML and OIDC providers.
+	// A list of provider names for the identity providers (IdPs) that are supported
+	// on this client. The following are supported: COGNITO , Facebook , Google ,
+	// SignInWithApple , and LoginWithAmazon . You can also specify the names that you
+	// configured for the SAML and OIDC IdPs in your user pool, for example MySAMLIdP
+	// or MyOIDCIdP .
+	//
+	// This parameter sets the IdPs that [managed login] will display on the login page for your app
+	// client. The removal of COGNITO from this list doesn't prevent authentication
+	// operations for local users with the user pools API in an Amazon Web Services
+	// SDK. The only way to prevent SDK-based authentication is to block access with a [WAF rule]
+	// .
+	//
+	// [WAF rule]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-waf.html
+	// [managed login]: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-managed-login.html
 	SupportedIdentityProviders []string
 
-	// The time units used to specify the token validity times of each token type: ID,
-	// access, and refresh.
+	// The time units that, with IdTokenValidity , AccessTokenValidity , and
+	// RefreshTokenValidity , set and display the duration of ID, access, and refresh
+	// tokens for an app client. You can assign a separate token validity unit to each
+	// type of token.
 	TokenValidityUnits *TokenValidityUnitsType
 
-	// The user pool ID for the user pool client.
+	// The ID of the user pool associated with the app client.
 	UserPoolId *string
 
 	// The list of user attributes that you want your app client to have write access
 	// to. After your user authenticates in your app, their access token authorizes
 	// them to set or modify their own attribute value for any attribute in this list.
-	// An example of this kind of activity is when you present your user with a form to
-	// update their profile information and they change their last name. Your app then
-	// makes an [UpdateUserAttributes]API request and sets family_name to the new value.
 	//
 	// When you don't specify the WriteAttributes for your app client, your app can
 	// write the values of the Standard attributes of your user pool. When your user
@@ -2033,13 +2410,12 @@ type UserPoolClientType struct {
 	// information, see [Specifying IdP Attribute Mappings for Your user pool].
 	//
 	// [Specifying IdP Attribute Mappings for Your user pool]: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-specifying-attribute-mapping.html
-	// [UpdateUserAttributes]: https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserAttributes.html
 	WriteAttributes []string
 
 	noSmithyDocumentSerde
 }
 
-// A user pool description.
+// A short description of a user pool.
 type UserPoolDescriptionType struct {
 
 	// The date and time when the item was created. Amazon Cognito returns this
@@ -2047,10 +2423,12 @@ type UserPoolDescriptionType struct {
 	// human-readable format like ISO 8601 or a Java Date object.
 	CreationDate *time.Time
 
-	// The ID in a user pool description.
+	// The user pool ID.
 	Id *string
 
-	// The Lambda configuration information in a user pool description.
+	// A collection of user pool Lambda triggers. Amazon Cognito invokes triggers at
+	// several possible stages of user pool operations. Triggers can modify the outcome
+	// of the operations that invoked them.
 	LambdaConfig *LambdaConfigType
 
 	// The date and time when the item was modified. Amazon Cognito returns this
@@ -2058,10 +2436,10 @@ type UserPoolDescriptionType struct {
 	// human-readable format like ISO 8601 or a Java Date object.
 	LastModifiedDate *time.Time
 
-	// The name in a user pool description.
+	// The user pool name.
 	Name *string
 
-	// The user pool status in a user pool description.
+	// The user pool status.
 	//
 	// Deprecated: This property is no longer available.
 	Status StatusType
@@ -2069,16 +2447,21 @@ type UserPoolDescriptionType struct {
 	noSmithyDocumentSerde
 }
 
-// The policy associated with a user pool.
+// A list of user pool policies. Contains the policy that sets password-complexity
+// requirements.
 type UserPoolPolicyType struct {
 
-	// The password policy.
+	// The password policy settings for a user pool, including complexity, history,
+	// and length requirements.
 	PasswordPolicy *PasswordPolicyType
+
+	// The policy for allowed types of authentication in a user pool.
+	SignInPolicy *SignInPolicyType
 
 	noSmithyDocumentSerde
 }
 
-// A container for information about the user pool.
+// The configuration of a user pool.
 type UserPoolType struct {
 
 	// The available verified method a user can use to recover their password when
@@ -2093,10 +2476,12 @@ type UserPoolType struct {
 	// The configuration for AdminCreateUser requests.
 	AdminCreateUserConfig *AdminCreateUserConfigType
 
-	// The attributes that are aliased in a user pool.
+	// Attributes supported as an alias for this user pool. An alias is an attribute
+	// that users can enter as an alternative username. Possible values: phone_number,
+	// email, or preferred_username.
 	AliasAttributes []AliasAttributeType
 
-	// The Amazon Resource Name (ARN) for the user pool.
+	// The Amazon Resource Name (ARN) of the user pool.
 	Arn *string
 
 	// The attributes that are auto-verified in a user pool.
@@ -2146,14 +2531,10 @@ type UserPoolType struct {
 	// problems with user pool email configuration.
 	EmailConfigurationFailure *string
 
-	// This parameter is no longer used. See [VerificationMessageTemplateType].
-	//
-	// [VerificationMessageTemplateType]: https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerificationMessageTemplateType.html
+	// This parameter is no longer used.
 	EmailVerificationMessage *string
 
-	// This parameter is no longer used. See [VerificationMessageTemplateType].
-	//
-	// [VerificationMessageTemplateType]: https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerificationMessageTemplateType.html
+	// This parameter is no longer used.
 	EmailVerificationSubject *string
 
 	// A number estimating the size of the user pool.
@@ -2162,7 +2543,9 @@ type UserPoolType struct {
 	// The ID of the user pool.
 	Id *string
 
-	// The Lambda triggers associated with the user pool.
+	// A collection of user pool Lambda triggers. Amazon Cognito invokes triggers at
+	// several possible stages of user pool operations. Triggers can modify the outcome
+	// of the operations that invoked them.
 	LambdaConfig *LambdaConfigType
 
 	// The date and time when the item was modified. Amazon Cognito returns this
@@ -2184,16 +2567,18 @@ type UserPoolType struct {
 	// The name of the user pool.
 	Name *string
 
-	// The policies associated with the user pool.
+	// A list of user pool policies. Contains the policy that sets password-complexity
+	// requirements.
 	Policies *UserPoolPolicyType
 
 	// A list of the user attributes and their properties in your user pool. The
 	// attribute schema contains standard attributes, custom attributes with a custom:
 	// prefix, and developer attributes with a dev: prefix. For more information, see [User pool attributes].
 	//
-	// Developer-only attributes are a legacy feature of user pools, are read-only to
-	// all app clients. You can create and update developer-only attributes only with
-	// IAM-authenticated API operations. Use app client read/write permissions instead.
+	// Developer-only attributes are a legacy feature of user pools, and are read-only
+	// to all app clients. You can create and update developer-only attributes only
+	// with IAM-authenticated API operations. Use app client read/write permissions
+	// instead.
 	//
 	// [User pool attributes]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-attributes.html
 	SchemaAttributes []SchemaAttributeType
@@ -2201,11 +2586,10 @@ type UserPoolType struct {
 	// The contents of the SMS authentication message.
 	SmsAuthenticationMessage *string
 
-	// The SMS configuration with the settings that your Amazon Cognito user pool must
-	// use to send an SMS message from your Amazon Web Services account through Amazon
-	// Simple Notification Service. To send SMS messages with Amazon SNS in the Amazon
-	// Web Services Region that you want, the Amazon Cognito user pool uses an Identity
-	// and Access Management (IAM) role in your Amazon Web Services account.
+	// User pool configuration for delivery of SMS messages with Amazon Simple
+	// Notification Service. To send SMS messages with Amazon SNS in the Amazon Web
+	// Services Region that you want, the Amazon Cognito user pool uses an Identity and
+	// Access Management (IAM) role in your Amazon Web Services account.
 	SmsConfiguration *SmsConfigurationType
 
 	// The reason why the SMS configuration can't send the messages to your users.
@@ -2226,9 +2610,7 @@ type UserPoolType struct {
 	// [SmsConfigurationType]: https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SmsConfigurationType.html
 	SmsConfigurationFailure *string
 
-	// This parameter is no longer used. See [VerificationMessageTemplateType].
-	//
-	// [VerificationMessageTemplateType]: https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerificationMessageTemplateType.html
+	// This parameter is no longer used.
 	SmsVerificationMessage *string
 
 	// This parameter is no longer used.
@@ -2244,13 +2626,15 @@ type UserPoolType struct {
 	// [Verifying updates to email addresses and phone numbers]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-email-phone-verification.html#user-pool-settings-verifications-verify-attribute-updates
 	UserAttributeUpdateSettings *UserAttributeUpdateSettingsType
 
-	// User pool add-ons. Contains settings for activation of advanced security
-	// features. To log user security information but take no action, set to AUDIT . To
-	// configure automatic security responses to risky traffic to your user pool, set
-	// to ENFORCED .
+	// Contains settings for activation of threat protection, including the operating
+	// mode and additional authentication types. To log user security information but
+	// take no action, set to AUDIT . To configure automatic security responses to
+	// potentially unwanted traffic to your user pool, set to ENFORCED .
 	//
-	// For more information, see [Adding advanced security to a user pool].
+	// For more information, see [Adding advanced security to a user pool]. To activate this setting, your user pool must be on
+	// the [Plus tier].
 	//
+	// [Plus tier]: https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-plus.html
 	// [Adding advanced security to a user pool]: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-advanced-security.html
 	UserPoolAddOns *UserPoolAddOnsType
 
@@ -2259,19 +2643,29 @@ type UserPoolType struct {
 	// purpose, owner, environment, or other criteria.
 	UserPoolTags map[string]string
 
+	// The user pool [feature plan], or tier. This parameter determines the eligibility of the user
+	// pool for features like managed login, access-token customization, and threat
+	// protection. Defaults to ESSENTIALS .
+	//
+	// [feature plan]: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-sign-in-feature-plans.html
+	UserPoolTier UserPoolTierType
+
 	// Specifies whether a user can use an email address or phone number as a username
 	// when they sign up.
 	UsernameAttributes []UsernameAttributeType
 
-	// Case sensitivity of the username input for the selected sign-in option. For
-	// example, when case sensitivity is set to False , users can sign in using either
-	// "username" or "Username". This configuration is immutable once it has been set.
-	// For more information, see [UsernameConfigurationType].
-	//
-	// [UsernameConfigurationType]: https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UsernameConfigurationType.html
+	// Case sensitivity of the username input for the selected sign-in option. When
+	// case sensitivity is set to False (case insensitive), users can sign in with any
+	// combination of capital and lowercase letters. For example, username , USERNAME ,
+	// or UserName , or for email, email@example.com or EMaiL@eXamplE.Com . For most
+	// use cases, set case sensitivity to False (case insensitive) as a best practice.
+	// When usernames and email addresses are case insensitive, Amazon Cognito treats
+	// any variation in case as the same user, and prevents a case variation from being
+	// assigned to the same attribute for a different user.
 	UsernameConfiguration *UsernameConfigurationType
 
-	// The template for verification messages.
+	// The template for the verification message that your user pool delivers to users
+	// who set an email address or phone number attribute.
 	VerificationMessageTemplate *VerificationMessageTemplateType
 
 	noSmithyDocumentSerde
@@ -2280,16 +2674,18 @@ type UserPoolType struct {
 // A user profile in a Amazon Cognito user pool.
 type UserType struct {
 
-	// A container with information about the user type attributes.
+	// Names and values of a user's attributes, for example email .
 	Attributes []AttributeType
 
-	// Specifies whether the user is enabled.
+	// Indicates whether the user's account is enabled or disabled.
 	Enabled bool
 
-	// The MFA options for the user.
+	// The user's MFA configuration.
 	MFAOptions []MFAOptionType
 
-	// The creation date of the user.
+	// The date and time when the item was created. Amazon Cognito returns this
+	// timestamp in UNIX epoch time format. Your SDK might render the output in a
+	// human-readable format like ISO 8601 or a Java Date object.
 	UserCreateDate *time.Time
 
 	// The date and time when the item was modified. Amazon Cognito returns this
@@ -2299,32 +2695,38 @@ type UserType struct {
 
 	// The user status. This can be one of the following:
 	//
-	//   - UNCONFIRMED - User has been created but not confirmed.
+	//   - UNCONFIRMED : User has been created but not confirmed.
 	//
-	//   - CONFIRMED - User has been confirmed.
+	//   - CONFIRMED : User has been confirmed.
 	//
-	//   - EXTERNAL_PROVIDER - User signed in with a third-party IdP.
+	//   - EXTERNAL_PROVIDER : User signed in with a third-party IdP.
 	//
-	//   - UNKNOWN - User status isn't known.
-	//
-	//   - RESET_REQUIRED - User is confirmed, but the user must request a code and
+	//   - RESET_REQUIRED : User is confirmed, but the user must request a code and
 	//   reset their password before they can sign in.
 	//
-	//   - FORCE_CHANGE_PASSWORD - The user is confirmed and the user can sign in
-	//   using a temporary password, but on first sign-in, the user must change their
-	//   password to a new value before doing anything else.
+	//   - FORCE_CHANGE_PASSWORD : The user is confirmed and the user can sign in using
+	//   a temporary password, but on first sign-in, the user must change their password
+	//   to a new value before doing anything else.
+	//
+	// The statuses ARCHIVED , UNKNOWN , and COMPROMISED are no longer used.
 	UserStatus UserStatusType
 
-	// The user name of the user you want to describe.
+	// The user's username.
 	Username *string
 
 	noSmithyDocumentSerde
 }
 
-// The template for verification messages.
+// The template for the verification message that your user pool delivers to users
+// who set an email address or phone number attribute.
 type VerificationMessageTemplateType struct {
 
-	// The default email option.
+	// The configuration of verification emails to contain a clickable link or a
+	// verification code.
+	//
+	// For link, your template body must contain link text in the format {##Click
+	// here##} . "Click here" in the example is a customizable string. For code, your
+	// template body must contain a code placeholder in the format {####} .
 	DefaultEmailOption DefaultEmailOptionType
 
 	// The template for email messages that Amazon Cognito sends to your users. You
@@ -2360,6 +2762,83 @@ type VerificationMessageTemplateType struct {
 
 	// The template for SMS messages that Amazon Cognito sends to your users.
 	SmsMessage *string
+
+	noSmithyDocumentSerde
+}
+
+// Settings for authentication (MFA) with passkey, or webauthN, biometric and
+// security-key devices in a user pool. Configures the following:
+//
+//   - Configuration for requiring user-verification support in passkeys.
+//
+//   - The user pool relying-party ID. This is the domain, typically your user
+//     pool domain, that user's passkey providers should trust as a receiver of passkey
+//     authentication.
+//
+//   - The providers that you want to allow as origins for passkey authentication.
+type WebAuthnConfigurationType struct {
+
+	// Sets or displays the authentication domain, typically your user pool domain,
+	// that passkey providers must use as a relying party (RP) in their configuration.
+	//
+	// Under the following conditions, the passkey relying party ID must be the
+	// fully-qualified domain name of your custom domain:
+	//
+	//   - The user pool is configured for passkey authentication.
+	//
+	//   - The user pool has a custom domain, whether or not it also has a prefix
+	//   domain.
+	//
+	//   - Your application performs authentication with managed login or the classic
+	//   hosted UI.
+	RelyingPartyId *string
+
+	// When required , users can only register and sign in users with passkeys that are
+	// capable of [user verification]. When preferred , your user pool doesn't require the use of
+	// authenticators with user verification but encourages it.
+	//
+	// [user verification]: https://www.w3.org/TR/webauthn-2/#enum-userVerificationRequirement
+	UserVerification UserVerificationType
+
+	noSmithyDocumentSerde
+}
+
+// The details of a passkey, or webauthN, biometric or security-key authentication
+// factor for a user.
+type WebAuthnCredentialDescription struct {
+
+	// Information about the transport methods of the passkey credential, for example
+	// USB or Bluetooth Low Energy.
+	//
+	// This member is required.
+	AuthenticatorTransports []string
+
+	// The date and time when the item was created. Amazon Cognito returns this
+	// timestamp in UNIX epoch time format. Your SDK might render the output in a
+	// human-readable format like ISO 8601 or a Java Date object.
+	//
+	// This member is required.
+	CreatedAt *time.Time
+
+	// The unique identifier of the passkey credential.
+	//
+	// This member is required.
+	CredentialId *string
+
+	// An automatically-generated friendly name for the passkey credential.
+	//
+	// This member is required.
+	FriendlyCredentialName *string
+
+	// The relying-party ID of the provider for the passkey credential.
+	//
+	// This member is required.
+	RelyingPartyId *string
+
+	// The general category of the passkey authenticator. Can be a platform, or
+	// on-device authenticator like a built-in fingerprint scanner, or a cross-platform
+	// device that's not attached to the device like a Bluetooth security key.
+	AuthenticatorAttachment *string
 
 	noSmithyDocumentSerde
 }

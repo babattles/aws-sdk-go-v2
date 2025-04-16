@@ -147,6 +147,93 @@ type ActionTarget struct {
 	noSmithyDocumentSerde
 }
 
+//	Information about the threat actor identified in an Amazon GuardDuty Extended
+//
+// Threat Detection attack sequence. GuardDuty generates an attack sequence finding
+// when multiple events align to a potentially suspicious activity. To receive
+// GuardDuty attack sequence findings in Security Hub, you must have GuardDuty
+// enabled. For more information, see [GuardDuty Extended Threat Detection]in the Amazon GuardDuty User Guide.
+//
+// [GuardDuty Extended Threat Detection]: https://docs.aws.amazon.com/guardduty/latest/ug/guardduty-extended-threat-detection.html
+type Actor struct {
+
+	//  The ID of the threat actor.
+	Id *string
+
+	//  Contains information about the user session where the activity initiated.
+	Session *ActorSession
+
+	//  Contains information about the user credentials used by the threat actor.
+	User *ActorUser
+
+	noSmithyDocumentSerde
+}
+
+//	Contains information about the authenticated session used by the threat actor
+//
+// identified in an Amazon GuardDuty Extended Threat Detection attack sequence.
+// GuardDuty generates an attack sequence finding when multiple events align to a
+// potentially suspicious activity. To receive GuardDuty attack sequence findings
+// in Security Hub, you must have GuardDuty enabled. For more information, see [GuardDuty Extended Threat Detection]in
+// the Amazon GuardDuty User Guide.
+//
+// [GuardDuty Extended Threat Detection]: https://docs.aws.amazon.com/guardduty/latest/ug/guardduty-extended-threat-detection.html
+type ActorSession struct {
+
+	// The timestamp for when the session was created.
+	//
+	// In CloudTrail, you can find this value as
+	// userIdentity.sessionContext.attributes.creationDate .
+	CreatedTime *int64
+
+	//  The issuer of the session.
+	//
+	// In CloudTrail, you can find this value as
+	// userIdentity.sessionContext.sessionIssuer.arn .
+	Issuer *string
+
+	//  Indicates whether multi-factor authentication (MFA) was used for
+	// authentication during the session.
+	//
+	// In CloudTrail, you can find this value as
+	// userIdentity.sessionContext.attributes.mfaAuthenticated .
+	MfaStatus ActorSessionMfaStatus
+
+	//  Unique identifier of the session.
+	Uid *string
+
+	noSmithyDocumentSerde
+}
+
+//	Contains information about the credentials used by the threat actor identified
+//
+// in an Amazon GuardDuty Extended Threat Detection attack sequence. GuardDuty
+// generates an attack sequence finding when multiple events align to a potentially
+// suspicious activity. To receive GuardDuty attack sequence findings in Security
+// Hub, you must have GuardDuty enabled. For more information, see [GuardDuty Extended Threat Detection]in the Amazon
+// GuardDuty User Guide.
+//
+// [GuardDuty Extended Threat Detection]: https://docs.aws.amazon.com/guardduty/latest/ug/guardduty-extended-threat-detection.html
+type ActorUser struct {
+
+	//  The account of the threat actor.
+	Account *UserAccount
+
+	//  Unique identifier of the threat actor’s user credentials.
+	CredentialUid *string
+
+	//  The name of the threat actor.
+	Name *string
+
+	//  The type of user.
+	Type *string
+
+	//  The unique identifier of the threat actor.
+	Uid *string
+
+	noSmithyDocumentSerde
+}
+
 // An adjustment to the CVSS metric.
 type Adjustment struct {
 
@@ -248,20 +335,16 @@ type AssociationStateDetails struct {
 	noSmithyDocumentSerde
 }
 
-//	One or more actions to update finding fields if a finding matches the defined
+//	One or more actions that Security Hub takes when a finding matches the defined
 //
-// criteria of the rule.
+// criteria of a rule.
 type AutomationRulesAction struct {
 
 	//  Specifies that the automation rule action is an update to a finding field.
 	FindingFieldsUpdate *AutomationRulesFindingFieldsUpdate
 
-	//  Specifies that the rule action should update the Types finding field. The Types
-	// finding field classifies findings in the format of
-	// namespace/category/classifier. For more information, see [Types taxonomy for ASFF]in the Security Hub
-	// User Guide.
-	//
-	// [Types taxonomy for ASFF]: https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-findings-format-type-taxonomy.html
+	//  Specifies the type of action that Security Hub takes when a finding matches
+	// the defined criteria of a rule.
 	Type AutomationRulesActionType
 
 	noSmithyDocumentSerde
@@ -276,21 +359,10 @@ type AutomationRulesConfig struct {
 
 	//  A timestamp that indicates when the rule was created.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	CreatedAt *time.Time
 
 	//  The principal that created a rule.
@@ -333,21 +405,10 @@ type AutomationRulesConfig struct {
 
 	//  A timestamp that indicates when the rule was most recently updated.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	UpdatedAt *time.Time
 
 	noSmithyDocumentSerde
@@ -443,23 +504,12 @@ type AutomationRulesFindingFilters struct {
 
 	//  A timestamp that indicates when this finding record was created.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
-	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
 	// Array Members: Minimum number of 1 item. Maximum number of 20 items.
+	//
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	CreatedAt []DateFilter
 
 	//  The level of importance that is assigned to the resources that are associated
@@ -481,23 +531,12 @@ type AutomationRulesFindingFilters struct {
 	//  A timestamp that indicates when the potential security issue captured by a
 	// finding was first observed by the security findings product.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
-	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
 	// Array Members: Minimum number of 1 item. Maximum number of 20 items.
+	//
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	FirstObservedAt []DateFilter
 
 	//  The identifier for the solution-specific component that generated a finding.
@@ -510,26 +549,15 @@ type AutomationRulesFindingFilters struct {
 	// Array Members: Minimum number of 1 item. Maximum number of 20 items.
 	Id []StringFilter
 
-	//  A timestamp that indicates when the potential security issue captured by a
-	// finding was most recently observed by the security findings product.
+	//  A timestamp that indicates when the security findings provider most recently
+	// observed a change in the resource that is involved in the finding.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
-	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
 	// Array Members: Minimum number of 1 item. Maximum number of 20 items.
+	//
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	LastObservedAt []DateFilter
 
 	//  The text of a user-defined note that's added to a finding.
@@ -539,23 +567,12 @@ type AutomationRulesFindingFilters struct {
 
 	//  The timestamp of when the note was updated.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
-	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
 	// Array Members: Minimum number of 1 item. Maximum number of 20 items.
+	//
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	NoteUpdatedAt []DateFilter
 
 	//  The principal that created a note.
@@ -609,7 +626,7 @@ type AutomationRulesFindingFilters struct {
 	//  The identifier for the given resource type. For Amazon Web Services resources
 	// that are identified by Amazon Resource Names (ARNs), this is the ARN. For Amazon
 	// Web Services resources that lack ARNs, this is the identifier as defined by the
-	// Amazon Web Servicesservice that created the resource. For non-Amazon Web
+	// Amazon Web Services service that created the resource. For non-Amazon Web
 	// Services resources, this is a unique identifier that is associated with the
 	// resource.
 	//
@@ -667,23 +684,12 @@ type AutomationRulesFindingFilters struct {
 
 	//  A timestamp that indicates when the finding record was most recently updated.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
-	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
 	// Array Members: Minimum number of 1 item. Maximum number of 20 items.
+	//
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	UpdatedAt []DateFilter
 
 	//  A list of user-defined name and value string pairs added to a finding.
@@ -711,21 +717,10 @@ type AutomationRulesMetadata struct {
 
 	//  A timestamp that indicates when the rule was created.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	CreatedAt *time.Time
 
 	//  The principal that created a rule.
@@ -763,21 +758,10 @@ type AutomationRulesMetadata struct {
 
 	//  A timestamp that indicates when the rule was most recently updated.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	UpdatedAt *time.Time
 
 	noSmithyDocumentSerde
@@ -1017,43 +1001,21 @@ type AwsApiCallAction struct {
 
 	// A timestamp that indicates when the API call was first observed.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	FirstSeen *string
 
 	// A timestamp that indicates when the API call was most recently observed.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	LastSeen *string
 
-	// Provided if CallerType is remoteIp . Provides information about the remote IP
+	// Provided if CallerType is remoteip . Provides information about the remote IP
 	// address that the API call originated from.
 	RemoteIpDetails *ActionRemoteIpDetails
 
@@ -1205,21 +1167,10 @@ type AwsApiGatewayRestApiDetails struct {
 
 	// Indicates when the API was created.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	CreatedDate *string
 
 	// A description of the REST API.
@@ -1270,21 +1221,10 @@ type AwsApiGatewayStageDetails struct {
 
 	// Indicates when the stage was created.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	CreatedDate *string
 
 	// The identifier of the deployment that the stage points to.
@@ -1298,21 +1238,10 @@ type AwsApiGatewayStageDetails struct {
 
 	// Indicates when the stage was most recently updated.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	LastUpdatedDate *string
 
 	// Defines the method settings for the stage.
@@ -1366,21 +1295,10 @@ type AwsApiGatewayV2ApiDetails struct {
 
 	// Indicates when the API was created.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	CreatedDate *string
 
 	// A description of the API.
@@ -1457,21 +1375,10 @@ type AwsApiGatewayV2StageDetails struct {
 
 	// Indicates when the stage was created.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	CreatedDate *string
 
 	// Default route settings for the stage.
@@ -1489,21 +1396,10 @@ type AwsApiGatewayV2StageDetails struct {
 
 	// Indicates when the stage was most recently updated.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	LastUpdatedDate *string
 
 	// The route settings for the stage.
@@ -1774,21 +1670,10 @@ type AwsAutoScalingAutoScalingGroupDetails struct {
 
 	// Indicates when the auto scaling group was created.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	CreatedTime *string
 
 	// The amount of time, in seconds, that Amazon EC2 Auto Scaling waits before it
@@ -2026,21 +1911,10 @@ type AwsAutoScalingLaunchConfigurationDetails struct {
 
 	// The creation date and time for the launch configuration.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	CreatedTime *string
 
 	// Whether the launch configuration is optimized for Amazon EBS I/O.
@@ -2208,7 +2082,7 @@ type AwsBackupBackupPlanRuleCopyActionsDetails struct {
 
 	// Defines when a protected resource is transitioned to cold storage and when it
 	// expires. Backup transitions and expires backups automatically according to the
-	// lifecycle that you define. If you do not specify a lifecycle, Backup applies the
+	// lifecycle that you define. If you don't specify a lifecycle, Backup applies the
 	// lifecycle policy of the source backup to the destination backup.
 	//
 	// Backups transitioned to cold storage must be stored in cold storage for a
@@ -2236,7 +2110,7 @@ type AwsBackupBackupPlanRuleDetails struct {
 
 	// Defines when a protected resource is transitioned to cold storage and when it
 	// expires. Backup transitions and expires backups automatically according to the
-	// lifecycle that you define. If you do not specify a lifecycle, Backup applies the
+	// lifecycle that you define. If you don't specify a lifecycle, Backup applies the
 	// lifecycle policy of the source backup to the destination backup.
 	//
 	// Backups transitioned to cold storage must be stored in cold storage for a
@@ -2286,7 +2160,7 @@ type AwsBackupBackupVaultDetails struct {
 
 	// The unique ARN associated with the server-side encryption key. You can specify
 	// a key to encrypt your backups from services that support full Backup management.
-	// If you do not specify a key, Backup creates an KMS key for you by default.
+	// If you don't specify a key, Backup creates an KMS key for you by default.
 	EncryptionKeyArn *string
 
 	// The Amazon SNS event notifications for the specified backup vault.
@@ -2479,21 +2353,10 @@ type AwsCertificateManagerCertificateDetails struct {
 
 	// Indicates when the certificate was requested.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	CreatedAt *string
 
 	// The fully qualified domain name (FQDN), such as www.example.com, that is
@@ -2524,21 +2387,10 @@ type AwsCertificateManagerCertificateDetails struct {
 	// Indicates when the certificate was imported. Provided if the certificate type
 	// is IMPORTED .
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	ImportedAt *string
 
 	// The list of ARNs for the Amazon Web Services resources that use the certificate.
@@ -2547,21 +2399,10 @@ type AwsCertificateManagerCertificateDetails struct {
 	// Indicates when the certificate was issued. Provided if the certificate type is
 	// AMAZON_ISSUED .
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	IssuedAt *string
 
 	// The name of the certificate authority that issued and signed the certificate.
@@ -2578,40 +2419,18 @@ type AwsCertificateManagerCertificateDetails struct {
 
 	// The time after which the certificate becomes invalid.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	NotAfter *string
 
 	// The time before which the certificate is not valid.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	NotBefore *string
 
 	// Provides a value that specifies whether to add the certificate to a
@@ -2755,21 +2574,10 @@ type AwsCertificateManagerCertificateRenewalSummary struct {
 
 	// Indicates when the renewal summary was last updated.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	UpdatedAt *string
 
 	noSmithyDocumentSerde
@@ -2945,21 +2753,10 @@ type AwsCloudFrontDistributionDetails struct {
 
 	// Indicates when that the distribution was last modified.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	LastModifiedTime *string
 
 	// A complex type that controls whether access logs are written for the
@@ -3859,21 +3656,10 @@ type AwsDynamoDbTableBillingModeSummary struct {
 	// If the billing mode is PAY_PER_REQUEST , indicates when the billing mode was set
 	// to that value.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	LastUpdateToPayPerRequestDateTime *string
 
 	noSmithyDocumentSerde
@@ -3890,21 +3676,10 @@ type AwsDynamoDbTableDetails struct {
 
 	// Indicates when the table was created.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	CreationDateTime *string
 
 	//  Indicates whether deletion protection is to be enabled (true) or disabled
@@ -4078,40 +3853,18 @@ type AwsDynamoDbTableProvisionedThroughput struct {
 
 	// Indicates when the provisioned throughput was last decreased.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	LastDecreaseDateTime *string
 
 	// Indicates when the provisioned throughput was last increased.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	LastIncreaseDateTime *string
 
 	// The number of times during the current UTC calendar day that the provisioned
@@ -4190,21 +3943,10 @@ type AwsDynamoDbTableRestoreSummary struct {
 
 	// Indicates the point in time that the table was restored to.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	RestoreDateTime *string
 
 	// Whether a restore is currently in progress.
@@ -4225,21 +3967,10 @@ type AwsDynamoDbTableSseDescription struct {
 	// If the key is inaccessible, the date and time when DynamoDB detected that the
 	// key was inaccessible.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	InaccessibleEncryptionDateTime *string
 
 	// The ARN of the KMS key that is used for the KMS encryption.
@@ -4504,21 +4235,10 @@ type AwsEc2InstanceDetails struct {
 
 	// Indicates when the instance was launched.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	LaunchedAt *string
 
 	// Details about the metadata options for the Amazon EC2 instance.
@@ -5476,21 +5196,10 @@ type AwsEc2NetworkInterfaceAttachment struct {
 
 	// Indicates when the attachment initiated.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	AttachTime *string
 
 	// The identifier of the network interface attachment
@@ -5867,21 +5576,10 @@ type AwsEc2VolumeDetails struct {
 
 	// Indicates when the volume was created.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	CreateTime *string
 
 	// The device name for the volume that is attached to the instance.
@@ -6219,21 +5917,10 @@ type AwsEc2VpnConnectionVgwTelemetryDetails struct {
 
 	// The date and time of the last change in status.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	LastStatusChange *string
 
 	// The Internet-routable IP address of the virtual private gateway's outside
@@ -6266,21 +5953,10 @@ type AwsEcrContainerImageDetails struct {
 
 	// The date and time when the image was pushed to the repository.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	ImagePublishedAt *string
 
 	// The list of tags that are associated with the image.
@@ -6656,7 +6332,7 @@ type AwsEcsServiceDetails struct {
 	// The DAEMON scheduling strategy deploys exactly one task on each active
 	// container instance that meets all of the task placement constraints that are
 	// specified in the cluster. The service scheduler also evaluates the task
-	// placement constraints for running tasks and stops tasks that do not meet the
+	// placement constraints for running tasks and stops tasks that don't meet the
 	// placement constraints.
 	//
 	// Valid values: REPLICA | DAEMON
@@ -8376,21 +8052,10 @@ type AwsElbLoadBalancerDetails struct {
 
 	// Indicates when the load balancer was created.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	CreatedTime *string
 
 	// The DNS name of the load balancer.
@@ -8577,21 +8242,10 @@ type AwsElbv2LoadBalancerDetails struct {
 
 	// Indicates when the load balancer was created.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	CreatedTime *string
 
 	// The public DNS name of the load balancer.
@@ -8968,21 +8622,10 @@ type AwsIamAccessKeyDetails struct {
 
 	// Indicates when the IAM access key was created.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	CreatedAt *string
 
 	// The ID of the principal associated with an access key.
@@ -9028,21 +8671,10 @@ type AwsIamAccessKeySessionContextAttributes struct {
 
 	// Indicates when the session was created.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	CreationDate *string
 
 	// Indicates whether the session used multi-factor authentication (MFA).
@@ -9093,21 +8725,10 @@ type AwsIamGroupDetails struct {
 
 	// Indicates when the IAM group was created.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	CreateDate *string
 
 	// The identifier of the IAM group.
@@ -9142,21 +8763,10 @@ type AwsIamInstanceProfile struct {
 
 	// Indicates when the instance profile was created.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	CreateDate *string
 
 	// The identifier of the instance profile.
@@ -9185,21 +8795,10 @@ type AwsIamInstanceProfileRole struct {
 
 	// Indicates when the role was created.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	CreateDate *string
 
 	// The path to the role.
@@ -9235,21 +8834,10 @@ type AwsIamPolicyDetails struct {
 
 	// When the policy was created.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	CreateDate *string
 
 	// The identifier of the default version of the policy.
@@ -9279,21 +8867,10 @@ type AwsIamPolicyDetails struct {
 
 	// When the policy was most recently updated.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	UpdateDate *string
 
 	noSmithyDocumentSerde
@@ -9304,21 +8881,10 @@ type AwsIamPolicyVersion struct {
 
 	// Indicates when the version was created.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	CreateDate *string
 
 	// Whether the version is the default version.
@@ -9341,21 +8907,10 @@ type AwsIamRoleDetails struct {
 
 	// Indicates when the role was created.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	CreateDate *string
 
 	// The list of instance profiles that contain this role.
@@ -9401,21 +8956,10 @@ type AwsIamUserDetails struct {
 
 	// Indicates when the user was created.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	CreateDate *string
 
 	// A list of IAM groups that the user belongs to.
@@ -9495,21 +9039,10 @@ type AwsKmsKeyDetails struct {
 
 	// Indicates when the KMS key was created.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	CreationDate *float64
 
 	// A description of the KMS key.
@@ -9614,21 +9147,10 @@ type AwsLambdaFunctionDetails struct {
 
 	// Indicates when the function was last updated.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	LastModified *string
 
 	// The function's layers.
@@ -9751,21 +9273,10 @@ type AwsLambdaLayerVersionDetails struct {
 
 	// Indicates when the version was created.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	CreatedDate *string
 
 	// The version number.
@@ -10364,21 +9875,10 @@ type AwsRdsDbClusterDetails struct {
 
 	// Indicates when the DB cluster was created, in Universal Coordinated Time (UTC).
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	ClusterCreateTime *string
 
 	// Whether tags are copied from the DB cluster to snapshots of the DB cluster.
@@ -10575,21 +10075,10 @@ type AwsRdsDbClusterSnapshotDetails struct {
 
 	// Indicates when the DB cluster was created, in Universal Coordinated Time (UTC).
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	ClusterCreateTime *string
 
 	// The DB cluster identifier.
@@ -10628,21 +10117,10 @@ type AwsRdsDbClusterSnapshotDetails struct {
 
 	// Indicates when the snapshot was taken.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	SnapshotCreateTime *string
 
 	// The type of DB cluster snapshot.
@@ -10753,7 +10231,7 @@ type AwsRdsDbInstanceDetails struct {
 	// Oracle
 	//
 	// Contains the Oracle System ID (SID) of the created DB instance. Not shown when
-	// the returned parameters do not apply to an Oracle DB instance.
+	// the returned parameters don't apply to an Oracle DB instance.
 	DBName *string
 
 	// Specifies the port that the DB instance listens on. If the DB instance is part
@@ -10816,21 +10294,10 @@ type AwsRdsDbInstanceDetails struct {
 
 	// Indicates when the DB instance was created.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	InstanceCreateTime *string
 
 	// Specifies the provisioned IOPS (I/O operations per second) for this DB instance.
@@ -10843,21 +10310,10 @@ type AwsRdsDbInstanceDetails struct {
 	// Specifies the latest time to which a database can be restored with
 	// point-in-time restore.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	LatestRestorableTime *string
 
 	// License model information for this DB instance.
@@ -11375,21 +10831,10 @@ type AwsRdsEventSubscriptionDetails struct {
 
 	// The datetime when the event notification subscription was created.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	SubscriptionCreationTime *string
 
 	noSmithyDocumentSerde
@@ -11503,21 +10948,10 @@ type AwsRedshiftClusterDeferredMaintenanceWindow struct {
 
 	// The end of the time window for which maintenance was deferred.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	DeferMaintenanceEndTime *string
 
 	// The identifier of the maintenance window.
@@ -11525,21 +10959,10 @@ type AwsRedshiftClusterDeferredMaintenanceWindow struct {
 
 	// The start of the time window for which maintenance was deferred.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	DeferMaintenanceStartTime *string
 
 	noSmithyDocumentSerde
@@ -11576,21 +10999,10 @@ type AwsRedshiftClusterDetails struct {
 
 	// Indicates when the cluster was created.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	ClusterCreateTime *string
 
 	// The unique identifier of the cluster.
@@ -11661,21 +11073,10 @@ type AwsRedshiftClusterDetails struct {
 	// Indicates when the next snapshot is expected to be taken. The cluster must have
 	// a valid snapshot schedule and have backups enabled.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	ExpectedNextSnapshotScheduleTime *string
 
 	// The status of the next expected snapshot.
@@ -11717,21 +11118,10 @@ type AwsRedshiftClusterDetails struct {
 
 	// Indicates the start of the next maintenance window.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	NextMaintenanceWindowStartTime *string
 
 	// The node type for the nodes in the cluster.
@@ -11858,40 +11248,18 @@ type AwsRedshiftClusterLoggingStatus struct {
 
 	// The last time when logs failed to be delivered.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	LastFailureTime *string
 
 	// The last time that logs were delivered successfully.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	LastSuccessfulDeliveryTime *string
 
 	// Indicates whether logging is enabled.
@@ -12186,21 +11554,10 @@ type AwsS3BucketBucketLifecycleConfigurationRulesDetails struct {
 
 	// The date when objects are moved or deleted.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	ExpirationDate *string
 
 	// The length in days of the lifetime for objects that are subject to the rule.
@@ -12331,21 +11688,10 @@ type AwsS3BucketBucketLifecycleConfigurationRulesTransitionsDetails struct {
 	// A date on which to transition objects to the specified storage class. If you
 	// provide Date , you cannot provide Days .
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	Date *string
 
 	// The number of days after which to transition the object to the specified
@@ -12405,21 +11751,10 @@ type AwsS3BucketDetails struct {
 
 	// Indicates when the S3 bucket was created.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	CreatedAt *string
 
 	//  The name of the bucket.
@@ -12702,21 +12037,10 @@ type AwsS3ObjectDetails struct {
 
 	// Indicates when the object was last modified.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	LastModified *string
 
 	// The identifier of the KMS symmetric customer managed key that was used for the
@@ -12733,7 +12057,7 @@ type AwsS3ObjectDetails struct {
 	noSmithyDocumentSerde
 }
 
-// Provides details about an Amazon SageMaker notebook instance.
+// Provides details about an Amazon SageMaker AI notebook instance.
 type AwsSageMakerNotebookInstanceDetails struct {
 
 	//  A list of Amazon Elastic Inference instance types to associate with the
@@ -12745,27 +12069,27 @@ type AwsSageMakerNotebookInstanceDetails struct {
 	// instance. These can be either the names of Git repositories stored as resources
 	// in your account, or the URL of Git repositories in [CodeCommit]or in any other Git
 	// repository. These repositories are cloned at the same level as the default
-	// repository of your notebook instance. For more information, see [Associating Git repositories with SageMaker notebook instances]in the Amazon
-	// SageMaker Developer Guide.
+	// repository of your notebook instance. For more information, see [Associating Git repositories with SageMaker AI notebook instances]in the Amazon
+	// SageMaker AI Developer Guide.
 	//
-	// [Associating Git repositories with SageMaker notebook instances]: https://docs.aws.amazon.com/sagemaker/latest/dg/nbi-git-repo.html
 	// [CodeCommit]: https://docs.aws.amazon.com/codecommit/latest/userguide/welcome.html
+	// [Associating Git repositories with SageMaker AI notebook instances]: https://docs.aws.amazon.com/sagemaker/latest/dg/nbi-git-repo.html
 	AdditionalCodeRepositories []string
 
 	//  The Git repository associated with the notebook instance as its default code
 	// repository. This can be either the name of a Git repository stored as a resource
 	// in your account, or the URL of a Git repository in [CodeCommit]or in any other Git
 	// repository. When you open a notebook instance, it opens in the directory that
-	// contains this repository. For more information, see [Associating Git repositories with SageMaker notebook instances]in the Amazon SageMaker
+	// contains this repository. For more information, see [Associating Git repositories with SageMaker AI notebook instances]in the Amazon SageMaker AI
 	// Developer Guide.
 	//
-	// [Associating Git repositories with SageMaker notebook instances]: https://docs.aws.amazon.com/sagemaker/latest/dg/nbi-git-repo.html
 	// [CodeCommit]: https://docs.aws.amazon.com/codecommit/latest/userguide/welcome.html
+	// [Associating Git repositories with SageMaker AI notebook instances]: https://docs.aws.amazon.com/sagemaker/latest/dg/nbi-git-repo.html
 	DefaultCodeRepository *string
 
-	//  Sets whether SageMaker provides internet access to the notebook instance. If
-	// you set this to Disabled , this notebook instance is able to access resources
-	// only in your VPC, and is not be able to connect to SageMaker training and
+	//  Sets whether SageMaker AI provides internet access to the notebook instance.
+	// If you set this to Disabled , this notebook instance is able to access resources
+	// only in your VPC, and is not be able to connect to SageMaker AI training and
 	// endpoint services unless you configure a Network Address Translation (NAT)
 	// Gateway in your VPC.
 	DirectInternetAccess *string
@@ -12781,14 +12105,15 @@ type AwsSageMakerNotebookInstanceDetails struct {
 	InstanceType *string
 
 	//  The Amazon Resource Name (ARN) of an Key Management Service (KMS) key that
-	// SageMaker uses to encrypt data on the storage volume attached to your notebook
-	// instance. The KMS key you provide must be enabled. For information, see [Enabling and disabling keys]in the
-	// Key Management Service Developer Guide.
+	// SageMaker AI uses to encrypt data on the storage volume attached to your
+	// notebook instance. The KMS key you provide must be enabled. For information, see
+	// [Enabling and disabling keys]in the Key Management Service Developer Guide.
 	//
 	// [Enabling and disabling keys]: https://docs.aws.amazon.com/kms/latest/developerguide/enabling-keys.html
 	KmsKeyId *string
 
-	//  The network interface ID that SageMaker created when the instance was created.
+	//  The network interface ID that SageMaker AI created when the instance was
+	// created.
 	NetworkInterfaceId *string
 
 	//  The Amazon Resource Name (ARN) of the notebook instance.
@@ -12898,21 +12223,10 @@ type AwsSecurityFinding struct {
 	// Indicates when the security findings provider created the potential security
 	// issue that a finding captured.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	//
 	// This member is required.
 	CreatedAt *string
@@ -12972,21 +12286,10 @@ type AwsSecurityFinding struct {
 
 	// Indicates when the security findings provider last updated the finding record.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	//
 	// This member is required.
 	UpdatedAt *string
@@ -13030,6 +12333,15 @@ type AwsSecurityFinding struct {
 	// score of 100 is reserved for the most critical resources.
 	Criticality *int32
 
+	//  Provides details about an Amazon GuardDuty Extended Threat Detection attack
+	// sequence. GuardDuty generates an attack sequence finding when multiple events
+	// align to a potentially suspicious activity. To receive GuardDuty attack sequence
+	// findings in Security Hub, you must have GuardDuty enabled. For more information,
+	// see [GuardDuty Extended Threat Detection]in the Amazon GuardDuty User Guide.
+	//
+	// [GuardDuty Extended Threat Detection]: https://docs.aws.amazon.com/guardduty/latest/ug/guardduty-extended-threat-detection.html
+	Detection *Detection
+
 	// In a BatchImportFindings request, finding providers use FindingProviderFields
 	// to provide and update their own values for confidence, criticality, related
 	// findings, severity, and types.
@@ -13038,21 +12350,10 @@ type AwsSecurityFinding struct {
 	// Indicates when the security findings provider first observed the potential
 	// security issue that a finding captured.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	FirstObservedAt *string
 
 	// Provides metadata for the Amazon CodeGuru detector associated with a finding.
@@ -13062,24 +12363,13 @@ type AwsSecurityFinding struct {
 	// CodeGuru. Security Hub receives those findings.
 	GeneratorDetails *GeneratorDetails
 
-	// Indicates when the security findings provider most recently observed the
-	// potential security issue that a finding captured.
+	// Indicates when the security findings provider most recently observed a change
+	// in the resource that is involved in the finding.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	LastObservedAt *string
 
 	// A list of malware related to a finding.
@@ -13107,21 +12397,10 @@ type AwsSecurityFinding struct {
 	// A timestamp that indicates when Security Hub received a finding and begins to
 	// process it.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	ProcessedAt *string
 
 	// A data type where security findings providers can include additional
@@ -13243,7 +12522,7 @@ type AwsSecurityFindingFilters struct {
 	ComplianceAssociatedStandardsId []StringFilter
 
 	//  The unique identifier of a control across standards. Values for this field
-	// typically consist of an Amazon Web Servicesservice and a number, such as
+	// typically consist of an Amazon Web Services service and a number, such as
 	// APIGateway.5.
 	ComplianceSecurityControlId []StringFilter
 
@@ -13268,21 +12547,10 @@ type AwsSecurityFindingFilters struct {
 	// A timestamp that indicates when the security findings provider created the
 	// potential security issue that a finding reflects.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	CreatedAt []DateFilter
 
 	// The level of importance assigned to the resources associated with the finding.
@@ -13333,21 +12601,10 @@ type AwsSecurityFindingFilters struct {
 	// A timestamp that indicates when the security findings provider first observed
 	// the potential security issue that a finding captured.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	FirstObservedAt []DateFilter
 
 	// The identifier for the solution-specific component (a discrete unit of logic)
@@ -13364,23 +12621,12 @@ type AwsSecurityFindingFilters struct {
 	Keyword []KeywordFilter
 
 	// A timestamp that indicates when the security findings provider most recently
-	// observed the potential security issue that a finding captured.
+	// observed a change in the resource that is involved in the finding.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	LastObservedAt []DateFilter
 
 	// The name of the malware that was observed.
@@ -13440,21 +12686,10 @@ type AwsSecurityFindingFilters struct {
 
 	// A timestamp that identifies when the process was launched.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	ProcessLaunchedAt []DateFilter
 
 	// The name of the process.
@@ -13472,21 +12707,10 @@ type AwsSecurityFindingFilters struct {
 
 	// A timestamp that identifies when the process was terminated.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	ProcessTerminatedAt []DateFilter
 
 	// The ARN generated by Security Hub that uniquely identifies a third-party
@@ -13582,21 +12806,10 @@ type AwsSecurityFindingFilters struct {
 
 	// A timestamp that identifies when the container was started.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	ResourceContainerLaunchedAt []DateFilter
 
 	// The name of the container related to a finding.
@@ -13651,6 +12864,11 @@ type AwsSecurityFindingFilters struct {
 
 	// A timestamp that identifies the last observation of a threat intelligence
 	// indicator.
+	//
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
+	//
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	ThreatIntelIndicatorLastObservedAt []DateFilter
 
 	// The source of the threat intelligence.
@@ -13675,21 +12893,10 @@ type AwsSecurityFindingFilters struct {
 	// A timestamp that indicates when the security findings provider last updated the
 	// finding record.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	UpdatedAt []DateFilter
 
 	// A list of name/value string pairs associated with the finding. These are
@@ -13740,7 +12947,7 @@ type AwsSecurityFindingFilters struct {
 	//   - Compliance.Status changes from PASSED to FAILED , WARNING , or NOT_AVAILABLE
 	//   .
 	//
-	//   - SUPPRESSED - Indicates that you reviewed the finding and do not believe that
+	//   - SUPPRESSED - Indicates that you reviewed the finding and don't believe that
 	//   any action is needed.
 	//
 	// The workflow status of a SUPPRESSED finding does not change if RecordState
@@ -14781,7 +13988,7 @@ type AwsWafWebAclRule struct {
 	// requests are counted.
 	//
 	// ActivatedRule | OverrideAction applies only when updating or adding a RuleGroup
-	// to a web ACL. In this case you do not use ActivatedRule Action . For all other
+	// to a web ACL. In this case you don't use ActivatedRule Action . For all other
 	// update requests, ActivatedRule Action is used instead of ActivatedRule
 	// OverrideAction .
 	OverrideAction *WafOverrideAction
@@ -14789,7 +13996,7 @@ type AwsWafWebAclRule struct {
 	// Specifies the order in which the rules in a web ACL are evaluated. Rules with a
 	// lower value for Priority are evaluated before rules with a higher value. The
 	// value must be a unique integer. If you add multiple rules to a web ACL, the
-	// values do not need to be consecutive.
+	// values don't need to be consecutive.
 	Priority *int32
 
 	// The identifier for a rule.
@@ -15030,32 +14237,34 @@ type CodeVulnerabilitiesFilePath struct {
 	noSmithyDocumentSerde
 }
 
-// Contains finding details that are specific to control-based findings. Only
-// returned for findings generated from controls.
+// This object typically provides details about a control finding, such as
+// applicable standards and the status of control checks. While finding providers
+// can add custom content in Compliance object fields, they are typically used to
+// review details of Security Hub control findings.
 type Compliance struct {
 
-	// The enabled security standards in which a security control is currently
-	// enabled.
+	// Typically provides an array of enabled security standards in which a security
+	// control is currently enabled.
 	AssociatedStandards []AssociatedStandard
 
-	// For a control, the industry or regulatory framework requirements that are
-	// related to the control. The check for that control is aligned with these
+	// Typically provides the industry or regulatory framework requirements that are
+	// related to a control. The check for that control is aligned with these
 	// requirements.
 	//
 	// Array Members: Maximum number of 32 items.
 	RelatedRequirements []string
 
-	//  The unique identifier of a control across standards. Values for this field
-	// typically consist of an Amazon Web Servicesservice and a number, such as
-	// APIGateway.5.
+	//  Typically provides the unique identifier of a control across standards. For
+	// Security Hub controls, this field consists of an Amazon Web Services service and
+	// a unique number, such as APIGateway.5 .
 	SecurityControlId *string
 
-	//  An object that includes security control parameter names and values.
+	//  Typically an object that includes security control parameter names and values.
 	SecurityControlParameters []SecurityControlParameter
 
-	// The result of a standards check.
+	// Typically summarizes the result of a control check.
 	//
-	// The valid values for Status are as follows.
+	// For Security Hub controls, valid values for Status are as follows.
 	//
 	//   - PASSED - Standards check passed for all evaluated resources.
 	//
@@ -15070,11 +14279,7 @@ type Compliance struct {
 	//   Security Hub automatically archives the finding after 3 days.
 	Status ComplianceStatus
 
-	// For findings generated from controls, a list of reasons behind the value of
-	// Status . For the list of status reason codes and their meanings, see [Standards-related information in the ASFF] in the
-	// Security Hub User Guide.
-	//
-	// [Standards-related information in the ASFF]: https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-standards-results.html#securityhub-standards-results-asff
+	// Typically used to provide a list of reasons for the value of Status .
 	StatusReasons []StatusReason
 
 	noSmithyDocumentSerde
@@ -15268,21 +14473,10 @@ type ContainerDetails struct {
 
 	// Indicates when the container started.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	LaunchedAt *string
 
 	// The name of the container related to a finding.
@@ -15382,40 +14576,18 @@ type DateFilter struct {
 
 	// A timestamp that provides the end date for the date filter.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	End *string
 
 	// A timestamp that provides the start date for the date filter.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	Start *string
 
 	noSmithyDocumentSerde
@@ -15429,6 +14601,23 @@ type DateRange struct {
 
 	// A date range value for the date filter.
 	Value *int32
+
+	noSmithyDocumentSerde
+}
+
+//	A top-level object field that provides details about an Amazon GuardDuty
+//
+// Extended Threat Detection attack sequence. GuardDuty generates an attack
+// sequence finding when multiple events align to a potentially suspicious
+// activity. To receive GuardDuty attack sequence findings in Security Hub, you
+// must have GuardDuty enabled. For more information, see [GuardDuty Extended Threat Detection]in the Amazon GuardDuty
+// User Guide.
+//
+// [GuardDuty Extended Threat Detection]: https://docs.aws.amazon.com/guardduty/latest/ug/guardduty-extended-threat-detection.html
+type Detection struct {
+
+	//  Provides details about an attack sequence.
+	Sequence *Sequence
 
 	noSmithyDocumentSerde
 }
@@ -15526,8 +14715,8 @@ type FilePaths struct {
 	noSmithyDocumentSerde
 }
 
-// A finding aggregator. A finding aggregator contains the configuration for
-// finding aggregation.
+// A finding aggregator is a Security Hub resource that specifies cross-Region
+// aggregation settings, including the home Region and any linked Regions.
 type FindingAggregator struct {
 
 	// The ARN of the finding aggregator. You use the finding aggregator ARN to
@@ -15558,7 +14747,7 @@ type FindingHistoryRecord struct {
 	NextToken *string
 
 	//  Identifies the source of the event that changed the finding. For example, an
-	// integrated Amazon Web Servicesservice or third-party partner integration may
+	// integrated Amazon Web Services service or third-party partner integration may
 	// call [BatchImportFindings]BatchImportFindings , or an Security Hub customer may call [BatchUpdateFindings]
 	// BatchUpdateFindings .
 	//
@@ -15569,21 +14758,10 @@ type FindingHistoryRecord struct {
 	//  A timestamp that indicates when Security Hub processed the updated finding
 	// record.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	UpdateTime *time.Time
 
 	//  An array of objects that provides details about the finding change event,
@@ -15627,7 +14805,7 @@ type FindingHistoryUpdateSource struct {
 	Identity *string
 
 	//  Describes the type of finding change event, such as a call to [BatchImportFindings]
-	// BatchImportFindings (by an integrated Amazon Web Servicesservice or third party
+	// BatchImportFindings (by an integrated Amazon Web Services service or third party
 	// partner integration) or [BatchUpdateFindings]BatchUpdateFindings (by a Security Hub customer).
 	//
 	// [BatchUpdateFindings]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_BatchUpdateFindings.html
@@ -15871,6 +15049,36 @@ type ImportFindingsError struct {
 	//
 	// This member is required.
 	Id *string
+
+	noSmithyDocumentSerde
+}
+
+//	Contains information about the indicators observed in an Amazon GuardDuty
+//
+// Extended Threat Detection attack sequence. Indicators include a set of signals,
+// which can be API activities or findings that GuardDuty uses to detect an attack
+// sequence finding. GuardDuty generates an attack sequence finding when multiple
+// signals align to a potentially suspicious activity. To receive GuardDuty attack
+// sequence findings in Security Hub, you must have GuardDuty and GuardDuty S3
+// Protection enabled. For more information, see [GuardDuty Extended Threat Detection]in the Amazon GuardDuty User
+// Guide.
+//
+// [GuardDuty Extended Threat Detection]: https://docs.aws.amazon.com/guardduty/latest/ug/guardduty-extended-threat-detection.html
+type Indicator struct {
+
+	//  The name of the indicator that’s present in the attack sequence finding.
+	Key *string
+
+	//  The title describing the indicator.
+	Title *string
+
+	//  The type of indicator.
+	Type *string
+
+	// Values associated with each indicator key. For example, if the indicator key is
+	// SUSPICIOUS_NETWORK , then the value will be the name of the network. If the
+	// indicator key is ATTACK_TACTIC , then the value will be one of the MITRE tactics.
+	Values []string
 
 	noSmithyDocumentSerde
 }
@@ -16283,6 +15491,43 @@ type Network struct {
 	noSmithyDocumentSerde
 }
 
+//	Contains information about the Autonomous System (AS) of the network endpoints
+//
+// involved in an Amazon GuardDuty Extended Threat Detection attack sequence.
+// GuardDuty generates an attack sequence finding when multiple events align to a
+// potentially suspicious activity. To receive GuardDuty attack sequence findings
+// in Security Hub, you must have GuardDuty enabled. For more information, see [GuardDuty Extended Threat Detection]in
+// the Amazon GuardDuty User Guide.
+//
+// [GuardDuty Extended Threat Detection]: https://docs.aws.amazon.com/guardduty/latest/ug/guardduty-extended-threat-detection.html
+type NetworkAutonomousSystem struct {
+
+	//  The name associated with the AS.
+	Name *string
+
+	//  The unique number that identifies the AS.
+	Number *int32
+
+	noSmithyDocumentSerde
+}
+
+//	Contains information about the network connection involved in an Amazon
+//
+// GuardDuty Extended Threat Detection attack sequence. GuardDuty generates an
+// attack sequence finding when multiple events align to a potentially suspicious
+// activity. To receive GuardDuty attack sequence findings in Security Hub, you
+// must have GuardDuty enabled. For more information, see [GuardDuty Extended Threat Detection]in the Amazon GuardDuty
+// User Guide.
+//
+// [GuardDuty Extended Threat Detection]: https://docs.aws.amazon.com/guardduty/latest/ug/guardduty-extended-threat-detection.html
+type NetworkConnection struct {
+
+	//  The direction in which the network traffic is flowing.
+	Direction ConnectionDirection
+
+	noSmithyDocumentSerde
+}
+
 // Provided if ActionType is NETWORK_CONNECTION . It provides details about the
 // attempted network connection that was detected.
 type NetworkConnectionAction struct {
@@ -16307,6 +15552,71 @@ type NetworkConnectionAction struct {
 
 	// Information about the port on the remote IP address.
 	RemotePortDetails *ActionRemotePortDetails
+
+	noSmithyDocumentSerde
+}
+
+//	Contains information about network endpoints involved in an Amazon GuardDuty
+//
+// Extended Threat Detection attack sequence. GuardDuty generates an attack
+// sequence finding when multiple events align to a potentially suspicious
+// activity. To receive GuardDuty attack sequence findings in Security Hub, you
+// must have GuardDuty enabled. For more information, see [GuardDuty Extended Threat Detection]in the Amazon GuardDuty
+// User Guide.
+//
+// This field can provide information about the network endpoints associated with
+// the resource in the attack sequence finding, or about a specific network
+// endpoint used for the attack.
+//
+// [GuardDuty Extended Threat Detection]: https://docs.aws.amazon.com/guardduty/latest/ug/guardduty-extended-threat-detection.html
+type NetworkEndpoint struct {
+
+	//  The Autonomous System Number (ASN) of the network endpoint.
+	AutonomousSystem *NetworkAutonomousSystem
+
+	//  Information about the network connection.
+	Connection *NetworkConnection
+
+	//  The domain information for the network endpoint.
+	Domain *string
+
+	//  The identifier of the network endpoint involved in the attack sequence.
+	Id *string
+
+	//  The IP address used in the network endpoint.
+	Ip *string
+
+	//  Information about the location of the network endpoint.
+	Location *NetworkGeoLocation
+
+	//  The port number associated with the network endpoint.
+	Port *int32
+
+	noSmithyDocumentSerde
+}
+
+//	Contains information about the location of a network endpoint involved in an
+//
+// Amazon GuardDuty Extended Threat Detection attack sequence. GuardDuty generates
+// an attack sequence finding when multiple events align to a potentially
+// suspicious activity. To receive GuardDuty attack sequence findings in Security
+// Hub, you must have GuardDuty enabled. For more information, see [GuardDuty Extended Threat Detection]in the Amazon
+// GuardDuty User Guide.
+//
+// [GuardDuty Extended Threat Detection]: https://docs.aws.amazon.com/guardduty/latest/ug/guardduty-extended-threat-detection.html
+type NetworkGeoLocation struct {
+
+	//  The name of the city.
+	City *string
+
+	//  The name of the country.
+	Country *string
+
+	//  The latitude information of the endpoint location.
+	Lat *float64
+
+	//  The longitude information of the endpoint location.
+	Lon *float64
 
 	noSmithyDocumentSerde
 }
@@ -16377,21 +15687,10 @@ type Note struct {
 
 	// A timestamp that indicates when the note was updated.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	//
 	// This member is required.
 	UpdatedAt *string
@@ -16709,40 +16008,18 @@ type PatchSummary struct {
 
 	// Indicates when the operation completed.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	OperationEndTime *string
 
 	// Indicates when the operation started.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	OperationStartTime *string
 
 	// The reboot option specified for the instance.
@@ -16770,7 +16047,7 @@ type Policy interface {
 	isPolicy()
 }
 
-// The Amazon Web Servicesservice that the configuration policy applies to.
+// The Amazon Web Services service that the configuration policy applies to.
 type PolicyMemberSecurityHub struct {
 	Value SecurityHubPolicy
 
@@ -16838,21 +16115,10 @@ type ProcessDetails struct {
 
 	// Indicates when the process was launched.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	LaunchedAt *string
 
 	// The name of the process.
@@ -16874,21 +16140,10 @@ type ProcessDetails struct {
 
 	// Indicates when the process was terminated.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	TerminatedAt *string
 
 	noSmithyDocumentSerde
@@ -17374,7 +16629,7 @@ type ResourceDetails struct {
 	// Details about an S3 object related to a finding.
 	AwsS3Object *AwsS3ObjectDetails
 
-	//  Provides details about an Amazon SageMaker notebook instance.
+	//  Provides details about an Amazon SageMaker AI notebook instance.
 	AwsSageMakerNotebookInstance *AwsSageMakerNotebookInstanceDetails
 
 	// Details about a Secrets Manager secret.
@@ -17472,7 +16727,7 @@ type RouteSetDetails struct {
 	//  The IPv6 CIDR block used for the destination match.
 	DestinationIpv6CidrBlock *string
 
-	//  The prefix of the destination Amazon Web Servicesservice.
+	//  The prefix of the destination Amazon Web Services service.
 	DestinationPrefixListId *string
 
 	//  The ID of the egress-only internet gateway.
@@ -17819,8 +17074,8 @@ type SecurityControl struct {
 	SecurityControlArn *string
 
 	//  The unique identifier of a security control across standards. Values for this
-	// field typically consist of an Amazon Web Servicesservice name and a number, such
-	// as APIGateway.3.
+	// field typically consist of an Amazon Web Services service name and a number,
+	// such as APIGateway.3.
 	//
 	// This member is required.
 	SecurityControlId *string
@@ -17908,7 +17163,7 @@ type SecurityControlDefinition struct {
 	RemediationUrl *string
 
 	//  The unique identifier of a security control across standards. Values for this
-	// field typically consist of an Amazon Web Servicesservice name and a number (for
+	// field typically consist of an Amazon Web Services service name and a number (for
 	// example, APIGateway.3). This parameter differs from SecurityControlArn , which
 	// is a unique Amazon Resource Name (ARN) assigned to a control. The ARN references
 	// the security control ID (for example,
@@ -18038,6 +17293,39 @@ type SensitiveDataResult struct {
 	noSmithyDocumentSerde
 }
 
+//	Contains information about an Amazon GuardDuty Extended Threat Detection
+//
+// attack sequence finding. GuardDuty generates an attack sequence finding when
+// multiple events align to a potentially suspicious activity. To receive GuardDuty
+// attack sequence findings in Security Hub, you must have GuardDuty enabled. For
+// more information, see [GuardDuty Extended Threat Detection]in the Amazon GuardDuty User Guide.
+//
+// [GuardDuty Extended Threat Detection]: https://docs.aws.amazon.com/guardduty/latest/ug/guardduty-extended-threat-detection.html
+type Sequence struct {
+
+	//  Provides information about the actors involved in the attack sequence.
+	Actors []Actor
+
+	//  Contains information about the network endpoints that were used in the attack
+	// sequence.
+	Endpoints []NetworkEndpoint
+
+	//  Contains information about the indicators observed in the attack sequence. The
+	// values for [SignalIndicators]are a subset of the values for SequenceIndicators , but the values
+	// for these fields don't always match 1:1.
+	//
+	// [SignalIndicators]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_Signal.html
+	SequenceIndicators []Indicator
+
+	//  Contains information about the signals involved in the attack sequence.
+	Signals []Signal
+
+	//  Unique identifier of the attack sequence.
+	Uid *string
+
+	noSmithyDocumentSerde
+}
+
 // The severity of the finding.
 //
 // The finding provider can provide the initial severity. The finding provider can
@@ -18061,7 +17349,7 @@ type Severity struct {
 	//
 	//   - CRITICAL - The issue must be remediated immediately to avoid it escalating.
 	//
-	// If you provide Normalized and do not provide Label , then Label is set
+	// If you provide Normalized and don't provide Label , then Label is set
 	// automatically as follows.
 	//
 	//   - 0 - INFORMATIONAL
@@ -18080,7 +17368,7 @@ type Severity struct {
 	//
 	// The value of Normalized can be an integer between 0 and 100 .
 	//
-	// If you provide Label and do not provide Normalized , then Normalized is set
+	// If you provide Label and don't provide Normalized , then Normalized is set
 	// automatically as follows.
 	//
 	//   - INFORMATIONAL - 0
@@ -18128,7 +17416,7 @@ type SeverityUpdate struct {
 	// The normalized severity for the finding. This attribute is to be deprecated in
 	// favor of Label .
 	//
-	// If you provide Normalized and do not provide Label , Label is set automatically
+	// If you provide Normalized and don't provide Label , Label is set automatically
 	// as follows.
 	//
 	//   - 0 - INFORMATIONAL
@@ -18145,6 +17433,97 @@ type SeverityUpdate struct {
 	// The native severity as defined by the Amazon Web Services service or integrated
 	// partner product that generated the finding.
 	Product *float64
+
+	noSmithyDocumentSerde
+}
+
+//	Contains information about the signals involved in an Amazon GuardDuty
+//
+// Extended Threat Detection attack sequence. An attack sequence is a type of
+// threat detected by GuardDuty. GuardDuty generates an attack sequence finding
+// when multiple events, or signals, align to a potentially suspicious activity.
+// When GuardDuty and Security Hub are integrated, GuardDuty sends attack sequence
+// findings to Security Hub.
+//
+// A signal can be an API activity or a finding that GuardDuty uses to detect an
+// attack sequence finding.
+type Signal struct {
+
+	//  The IDs of the threat actors involved in the signal.
+	ActorIds []string
+
+	//  The number of times this signal was observed.
+	Count *int32
+
+	//  The timestamp when the first finding or activity related to this signal was
+	// observed.
+	CreatedAt *int64
+
+	// Information about the endpoint IDs associated with this signal.
+	EndpointIds []string
+
+	//  The timestamp when the first finding or activity related to this signal was
+	// observed.
+	FirstSeenAt *int64
+
+	//  The identifier of the signal.
+	Id *string
+
+	//  The timestamp when the last finding or activity related to this signal was
+	// observed.
+	LastSeenAt *int64
+
+	//  The name of the GuardDuty signal. For example, when signal type is FINDING ,
+	// the signal name is the name of the finding.
+	Name *string
+
+	//  The Amazon Resource Name (ARN) of the product that generated the signal.
+	ProductArn *string
+
+	//  The ARN or ID of the Amazon Web Services resource associated with the signal.
+	ResourceIds []string
+
+	// The severity associated with the signal. For more information about severity,
+	// see [Severity levels for GuardDuty findings]in the Amazon GuardDuty User Guide.
+	//
+	// [Severity levels for GuardDuty findings]: https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_findings-severity.html
+	Severity *float64
+
+	//  Contains information about the indicators associated with the signals in this
+	// attack sequence finding. The values for SignalIndicators are a subset of the
+	// values for [SequenceIndicators], but the values for these fields don't always match 1:1.
+	//
+	// [SequenceIndicators]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_Sequence.html
+	SignalIndicators []Indicator
+
+	//  The description of the GuardDuty finding.
+	Title *string
+
+	//  The type of the signal used to identify an attack sequence.
+	//
+	// Signals can be GuardDuty findings or activities observed in data sources that
+	// GuardDuty monitors. For more information, see [GuardDuty foundational data sources]in the Amazon GuardDuty User
+	// Guide.
+	//
+	// A signal type can be one of the following values. Here are the related
+	// descriptions:
+	//
+	//   - FINDING - Individually generated GuardDuty finding.
+	//
+	//   - CLOUD_TRAIL - Activity observed from CloudTrail logs
+	//
+	//   - S3_DATA_EVENTS - Activity observed from CloudTrail data events for Amazon
+	//   Simple Storage Service (S3). Activities associated with this type will show up
+	//   only when you have enabled GuardDuty S3 Protection feature in your account. For
+	//   more information about S3 Protection and the steps to enable it, see [S3 Protection]in the
+	//   Amazon GuardDuty User Guide.
+	//
+	// [S3 Protection]: https://docs.aws.amazon.com/guardduty/latest/ug/s3-protection.html
+	// [GuardDuty foundational data sources]: https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_data-sources.html
+	Type *string
+
+	//  The timestamp when this signal was last observed.
+	UpdatedAt *int64
 
 	noSmithyDocumentSerde
 }
@@ -18288,8 +17667,8 @@ type StandardsControlAssociationDetail struct {
 	SecurityControlArn *string
 
 	//  The unique identifier of a security control across standards. Values for this
-	// field typically consist of an Amazon Web Servicesservice name and a number, such
-	// as APIGateway.3.
+	// field typically consist of an Amazon Web Services service name and a number,
+	// such as APIGateway.3.
 	//
 	// This member is required.
 	SecurityControlId *string
@@ -18367,7 +17746,7 @@ type StandardsControlAssociationSummary struct {
 	SecurityControlArn *string
 
 	//  A unique standard-agnostic identifier for a control. Values for this field
-	// typically consist of an Amazon Web Servicesservice and a number, such as
+	// typically consist of an Amazon Web Services service and a number, such as
 	// APIGateway.5. This field doesn't reference a specific standard.
 	//
 	// This member is required.
@@ -18492,6 +17871,19 @@ type StandardsSubscription struct {
 	// This member is required.
 	StandardsSubscriptionArn *string
 
+	// Indicates whether the controls associated with this standards subscription can
+	// be viewed and updated.
+	//
+	// The values are as follows:
+	//
+	//   - READY_FOR_UPDATES - Controls associated with this standards subscription can
+	//   be viewed and updated.
+	//
+	//   - NOT_READY_FOR_UPDATES - Controls associated with this standards subscription
+	//   cannot be retrieved or updated yet. Security Hub is still processing a request
+	//   to create the controls.
+	StandardsControlsUpdatable StandardsControlsUpdatable
+
 	// The reason for the current status.
 	StandardsStatusReason *StandardsStatusReason
 
@@ -18545,9 +17937,9 @@ type StatelessCustomPublishMetricActionDimension struct {
 type StatusReason struct {
 
 	// A code that represents a reason for the control status. For the list of status
-	// reason codes and their meanings, see [Standards-related information in the ASFF]in the Security Hub User Guide.
+	// reason codes and their meanings, see [Compliance details for control findings]in the Security Hub User Guide.
 	//
-	// [Standards-related information in the ASFF]: https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-standards-results.html#securityhub-standards-results-asff
+	// [Compliance details for control findings]: https://docs.aws.amazon.com/securityhub/latest/userguide/controls-findings-create-update.html#control-findings-asff-compliance
 	//
 	// This member is required.
 	ReasonCode *string
@@ -18757,21 +18149,10 @@ type ThreatIntelIndicator struct {
 	// Indicates when the most recent instance of a threat intelligence indicator was
 	// observed.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	LastObservedAt *string
 
 	// The source of the threat intelligence indicator.
@@ -18961,6 +18342,26 @@ type UpdateAutomationRulesRequestItem struct {
 	noSmithyDocumentSerde
 }
 
+//	Provides Amazon Web Services account information of the user involved in an
+//
+// Amazon GuardDuty Extended Threat Detection attack sequence. GuardDuty generates
+// an attack sequence finding when multiple events align to a potentially
+// suspicious activity. To receive GuardDuty attack sequence findings in Security
+// Hub, you must have GuardDuty enabled. For more information, see [GuardDuty Extended Threat Detection]in the Amazon
+// GuardDuty User Guide.
+//
+// [GuardDuty Extended Threat Detection]: https://docs.aws.amazon.com/guardduty/latest/ug/guardduty-extended-threat-detection.html
+type UserAccount struct {
+
+	//  The name of the user account involved in the attack sequence.
+	Name *string
+
+	//  The unique identifier of the user account involved in the attack sequence.
+	Uid *string
+
+	noSmithyDocumentSerde
+}
+
 // Describes the mounting of a volume in a container.
 type VolumeMount struct {
 
@@ -19096,21 +18497,10 @@ type VulnerabilityVendor struct {
 
 	// Indicates when the vulnerability advisory was created.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	VendorCreatedAt *string
 
 	// The severity that the vendor assigned to the vulnerability.
@@ -19118,21 +18508,10 @@ type VulnerabilityVendor struct {
 
 	// Indicates when the vulnerability advisory was last updated.
 	//
-	// This field accepts only the specified formats. Timestamps can end with Z or
-	// ("+" / "-") time-hour [":" time-minute] . The time-secfrac after seconds is
-	// limited to a maximum of 9 digits. The offset is bounded by +/-18:00. Here are
-	// valid timestamp formats with examples:
+	// For more information about the validation and formatting of timestamp fields in
+	// Security Hub, see [Timestamps].
 	//
-	//   - YYYY-MM-DDTHH:MM:SSZ (for example, 2019-01-31T23:00:00Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmmZ (for example, 2019-01-31T23:00:00.123456789Z )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS+HH:MM (for example, 2024-01-04T15:25:10+17:59 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS-HHMM (for example, 2024-01-04T15:25:10-1759 )
-	//
-	//   - YYYY-MM-DDTHH:MM:SS.mmmmmmmmm+HH:MM (for example,
-	//   2024-01-04T15:25:10.123456789+17:59 )
+	// [Timestamps]: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps
 	VendorUpdatedAt *string
 
 	noSmithyDocumentSerde
@@ -19204,7 +18583,7 @@ type Workflow struct {
 	//   issue. Used when the initial reviewer is not the resource owner, and needs
 	//   intervention from the resource owner.
 	//
-	//   - SUPPRESSED - Indicates that you reviewed the finding and do not believe that
+	//   - SUPPRESSED - Indicates that you reviewed the finding and don't believe that
 	//   any action is needed. The finding is no longer updated.
 	//
 	//   - RESOLVED - The finding was reviewed and remediated and is now considered
@@ -19241,7 +18620,7 @@ type WorkflowUpdate struct {
 	//   - RESOLVED - The finding was reviewed and remediated and is now considered
 	//   resolved.
 	//
-	//   - SUPPRESSED - Indicates that you reviewed the finding and do not believe that
+	//   - SUPPRESSED - Indicates that you reviewed the finding and don't believe that
 	//   any action is needed. The finding is no longer updated.
 	Status WorkflowStatus
 

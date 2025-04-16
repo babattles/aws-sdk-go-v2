@@ -12,12 +12,12 @@ import (
 	"time"
 )
 
+// Updates the specified restore testing selection.
+//
 // Most elements except the RestoreTestingSelectionName can be updated with this
 // request.
 //
-// RestoreTestingSelection can use either protected resource ARNs or conditions,
-// but not both. That is, if your selection has ProtectedResourceArns , requesting
-// an update with the parameter ProtectedResourceConditions will be unsuccessful.
+// You can use either protected resource ARNs or conditions, but not both.
 func (c *Client) UpdateRestoreTestingSelection(ctx context.Context, params *UpdateRestoreTestingSelectionInput, optFns ...func(*Options)) (*UpdateRestoreTestingSelectionOutput, error) {
 	if params == nil {
 		params = &UpdateRestoreTestingSelectionInput{}
@@ -48,8 +48,8 @@ type UpdateRestoreTestingSelectionInput struct {
 	// This member is required.
 	RestoreTestingSelection *types.RestoreTestingSelectionForUpdate
 
-	// This is the required restore testing selection name of the restore testing
-	// selection you wish to update.
+	// The required restore testing selection name of the restore testing selection
+	// you wish to update.
 	//
 	// This member is required.
 	RestoreTestingSelectionName *string
@@ -59,7 +59,7 @@ type UpdateRestoreTestingSelectionInput struct {
 
 type UpdateRestoreTestingSelectionOutput struct {
 
-	// This is the time the resource testing selection was updated successfully.
+	// The time the resource testing selection was updated successfully.
 	//
 	// This member is required.
 	CreationTime *time.Time
@@ -69,18 +69,18 @@ type UpdateRestoreTestingSelectionOutput struct {
 	// This member is required.
 	RestoreTestingPlanArn *string
 
-	// This is the restore testing plan with which the updated restore testing
-	// selection is associated.
+	// The restore testing plan with which the updated restore testing selection is
+	// associated.
 	//
 	// This member is required.
 	RestoreTestingPlanName *string
 
-	// This is the returned restore testing selection name.
+	// The returned restore testing selection name.
 	//
 	// This member is required.
 	RestoreTestingSelectionName *string
 
-	// This is the time the update completed for the restore testing selection.
+	// The time the update completed for the restore testing selection.
 	//
 	// This member is required.
 	UpdateTime *time.Time
@@ -134,6 +134,9 @@ func (c *Client) addOperationUpdateRestoreTestingSelectionMiddlewares(stack *mid
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -150,6 +153,9 @@ func (c *Client) addOperationUpdateRestoreTestingSelectionMiddlewares(stack *mid
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateRestoreTestingSelectionValidationMiddleware(stack); err != nil {
@@ -171,6 +177,18 @@ func (c *Client) addOperationUpdateRestoreTestingSelectionMiddlewares(stack *mid
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

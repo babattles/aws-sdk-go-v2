@@ -57,6 +57,11 @@ type PutApprovalResultInput struct {
 	// used to validate that the approval request corresponding to this token is still
 	// valid.
 	//
+	// For a pipeline where the execution mode is set to PARALLEL, the token required
+	// to approve/reject an approval request as detailed above is not available.
+	// Instead, use the externalExecutionId in the response output from the ListActionExecutions action as
+	// the token in the approval request.
+	//
 	// This member is required.
 	Token *string
 
@@ -118,6 +123,9 @@ func (c *Client) addOperationPutApprovalResultMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -134,6 +142,9 @@ func (c *Client) addOperationPutApprovalResultMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpPutApprovalResultValidationMiddleware(stack); err != nil {
@@ -155,6 +166,18 @@ func (c *Client) addOperationPutApprovalResultMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

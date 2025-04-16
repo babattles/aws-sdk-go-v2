@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
+	"github.com/aws/aws-sdk-go-v2/service/sesv2/types"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -38,6 +39,13 @@ type PutConfigurationSetTrackingOptionsInput struct {
 
 	// The domain to use to track open and click events.
 	CustomRedirectDomain *string
+
+	// The https policy to use for tracking open and click events. If the value is
+	// OPTIONAL or HttpsPolicy is not specified, the open trackers use HTTP and click
+	// tracker use the original protocol of the link. If the value is REQUIRE, both
+	// open and click tracker uses HTTPS and if the value is REQUIRE_OPEN_ONLY open
+	// tracker uses HTTPS and link tracker is same as original protocol of the link.
+	HttpsPolicy types.HttpsPolicy
 
 	noSmithyDocumentSerde
 }
@@ -94,6 +102,9 @@ func (c *Client) addOperationPutConfigurationSetTrackingOptionsMiddlewares(stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -110,6 +121,9 @@ func (c *Client) addOperationPutConfigurationSetTrackingOptionsMiddlewares(stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpPutConfigurationSetTrackingOptionsValidationMiddleware(stack); err != nil {
@@ -131,6 +145,18 @@ func (c *Client) addOperationPutConfigurationSetTrackingOptionsMiddlewares(stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

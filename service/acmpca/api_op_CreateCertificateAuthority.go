@@ -88,10 +88,9 @@ type CreateCertificateAuthorityInput struct {
 	// [Storage and security compliance of Amazon Web Services Private CA private keys]: https://docs.aws.amazon.com/privateca/latest/userguide/data-protection.html#private-keys
 	KeyStorageSecurityStandard types.KeyStorageSecurityStandard
 
-	// Contains information to enable Online Certificate Status Protocol (OCSP)
-	// support, to enable a certificate revocation list (CRL), to enable both, or to
-	// enable neither. The default is for both certificate validation mechanisms to be
-	// disabled.
+	// Contains information to enable support for Online Certificate Status Protocol
+	// (OCSP), certificate revocation list (CRL), both protocols, or neither. By
+	// default, both certificate validation mechanisms are disabled.
 	//
 	// The following requirements apply to revocation configurations.
 	//
@@ -192,6 +191,9 @@ func (c *Client) addOperationCreateCertificateAuthorityMiddlewares(stack *middle
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -208,6 +210,9 @@ func (c *Client) addOperationCreateCertificateAuthorityMiddlewares(stack *middle
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateCertificateAuthorityValidationMiddleware(stack); err != nil {
@@ -229,6 +234,18 @@ func (c *Client) addOperationCreateCertificateAuthorityMiddlewares(stack *middle
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

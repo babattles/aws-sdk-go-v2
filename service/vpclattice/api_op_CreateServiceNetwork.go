@@ -56,6 +56,9 @@ type CreateServiceNetworkInput struct {
 	// actions. If the parameters aren't identical, the retry fails.
 	ClientToken *string
 
+	// Specify if the service network should be enabled for sharing.
+	SharingConfig *types.SharingConfig
+
 	// The tags for the service network.
 	Tags map[string]string
 
@@ -75,6 +78,9 @@ type CreateServiceNetworkOutput struct {
 
 	// The name of the service network.
 	Name *string
+
+	// Specifies if the service network is enabled for sharing.
+	SharingConfig *types.SharingConfig
 
 	// Metadata pertaining to the operation's result.
 	ResultMetadata middleware.Metadata
@@ -125,6 +131,9 @@ func (c *Client) addOperationCreateServiceNetworkMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -141,6 +150,9 @@ func (c *Client) addOperationCreateServiceNetworkMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateServiceNetworkMiddleware(stack, options); err != nil {
@@ -165,6 +177,18 @@ func (c *Client) addOperationCreateServiceNetworkMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -45,6 +45,8 @@ import (
 //
 //   - DataCompressionType
 //
+//   - FileSystemTypeVersion
+//
 //   - LogConfiguration
 //
 //   - LustreRootSquashConfiguration
@@ -95,6 +97,8 @@ import (
 //
 //   - DiskIopsConfiguration
 //
+//   - ReadCacheConfiguration
+//
 //   - RemoveRouteTableIds
 //
 //   - StorageCapacity
@@ -129,6 +133,11 @@ type UpdateFileSystemInput struct {
 	// updates. This string is automatically filled on your behalf when you use the
 	// Command Line Interface (CLI) or an Amazon Web Services SDK.
 	ClientRequestToken *string
+
+	// The Lustre version you are updating an FSx for Lustre file system to. Valid
+	// values are 2.12 and 2.15 . The value you choose must be newer than the file
+	// system's current Lustre version.
+	FileSystemTypeVersion *string
 
 	// The configuration object for Amazon FSx for Lustre file systems used in the
 	// UpdateFileSystem operation.
@@ -245,6 +254,9 @@ func (c *Client) addOperationUpdateFileSystemMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -261,6 +273,9 @@ func (c *Client) addOperationUpdateFileSystemMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opUpdateFileSystemMiddleware(stack, options); err != nil {
@@ -285,6 +300,18 @@ func (c *Client) addOperationUpdateFileSystemMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

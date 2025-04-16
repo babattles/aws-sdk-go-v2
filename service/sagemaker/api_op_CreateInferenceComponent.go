@@ -11,7 +11,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Creates an inference component, which is a SageMaker hosting object that you
+// Creates an inference component, which is a SageMaker AI hosting object that you
 // can use to deploy a model to an endpoint. In the inference component settings,
 // you specify the model, the endpoint, and how the model utilizes the resources
 // that the endpoint hosts. You can optimize resource utilization by tailoring how
@@ -47,28 +47,24 @@ type CreateInferenceComponentInput struct {
 	// This member is required.
 	InferenceComponentName *string
 
-	// Runtime settings for a model that is deployed with an inference component.
-	//
-	// This member is required.
-	RuntimeConfig *types.InferenceComponentRuntimeConfig
-
 	// Details about the resources to deploy with this inference component, including
 	// the model, container, and compute resources.
 	//
 	// This member is required.
 	Specification *types.InferenceComponentSpecification
 
-	// The name of an existing production variant where you host the inference
-	// component.
-	//
-	// This member is required.
-	VariantName *string
+	// Runtime settings for a model that is deployed with an inference component.
+	RuntimeConfig *types.InferenceComponentRuntimeConfig
 
 	// A list of key-value pairs associated with the model. For more information, see [Tagging Amazon Web Services resources]
 	// in the Amazon Web Services General Reference.
 	//
 	// [Tagging Amazon Web Services resources]: https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html
 	Tags []types.Tag
+
+	// The name of an existing production variant where you host the inference
+	// component.
+	VariantName *string
 
 	noSmithyDocumentSerde
 }
@@ -129,6 +125,9 @@ func (c *Client) addOperationCreateInferenceComponentMiddlewares(stack *middlewa
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -145,6 +144,9 @@ func (c *Client) addOperationCreateInferenceComponentMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateInferenceComponentValidationMiddleware(stack); err != nil {
@@ -166,6 +168,18 @@ func (c *Client) addOperationCreateInferenceComponentMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

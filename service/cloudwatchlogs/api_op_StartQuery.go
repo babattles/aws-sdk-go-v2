@@ -6,18 +6,31 @@ import (
 	"context"
 	"fmt"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
+	"github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs/types"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Schedules a query of a log group using CloudWatch Logs Insights. You specify
-// the log group and time range to query and the query string to use.
+// Starts a query of one or more log groups using CloudWatch Logs Insights. You
+// specify the log groups and time range to query and the query string to use.
 //
 // For more information, see [CloudWatch Logs Insights Query Syntax].
 //
 // After you run a query using StartQuery , the query results are stored by
 // CloudWatch Logs. You can use [GetQueryResults]to retrieve the results of a query, using the
 // queryId that StartQuery returns.
+//
+// To specify the log groups to query, a StartQuery operation must include one of
+// the following:
+//
+//   - Either exactly one of the following parameters: logGroupName , logGroupNames
+//     , or logGroupIdentifiers
+//
+//   - Or the queryString must include a SOURCE command to select log groups for
+//     the query. The SOURCE command can select log groups based on log group name
+//     prefix, account ID, and log class.
+//
+// For more information about the SOURCE command, see [SOURCE].
 //
 // If you have associated a KMS key with the query results in this account, then [StartQuery]
 // uses that key to encrypt the results when it stores them. If no key is
@@ -38,6 +51,7 @@ import (
 //
 // [CloudWatch Logs Insights Query Syntax]: https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_QuerySyntax.html
 // [CloudWatch cross-account observability]: https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Unified-Cross-Account.html
+// [SOURCE]: https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_QuerySyntax-Source.html
 // [GetQueryResults]: https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_GetQueryResults.html
 // [StartQuery]: https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_StartQuery.html
 func (c *Client) StartQuery(ctx context.Context, params *StartQueryInput, optFns ...func(*Options)) (*StartQueryOutput, error) {
@@ -80,7 +94,7 @@ type StartQueryInput struct {
 
 	// The maximum number of log events to return in the query. If the query string
 	// uses the fields command, only the specified fields and their values are
-	// returned. The default is 1000.
+	// returned. The default is 10,000.
 	Limit *int32
 
 	// The list of log groups to query. You can include up to 50 log groups.
@@ -90,23 +104,38 @@ type StartQueryInput struct {
 	// specify the ARN of the log group here. The query definition must also be defined
 	// in the monitoring account.
 	//
-	// If you specify an ARN, the ARN can't end with an asterisk (*).
+	// If you specify an ARN, use the format
+	// arn:aws:logs:region:account-id:log-group:log_group_name Don't include an * at
+	// the end.
 	//
 	// A StartQuery operation must include exactly one of the following parameters:
-	// logGroupName , logGroupNames , or logGroupIdentifiers .
+	// logGroupName , logGroupNames , or logGroupIdentifiers . The exception is queries
+	// using the OpenSearch Service SQL query language, where you specify the log group
+	// names inside the querystring instead of here.
 	LogGroupIdentifiers []string
 
 	// The log group on which to perform the query.
 	//
 	// A StartQuery operation must include exactly one of the following parameters:
-	// logGroupName , logGroupNames , or logGroupIdentifiers .
+	// logGroupName , logGroupNames , or logGroupIdentifiers . The exception is queries
+	// using the OpenSearch Service SQL query language, where you specify the log group
+	// names inside the querystring instead of here.
 	LogGroupName *string
 
 	// The list of log groups to be queried. You can include up to 50 log groups.
 	//
 	// A StartQuery operation must include exactly one of the following parameters:
-	// logGroupName , logGroupNames , or logGroupIdentifiers .
+	// logGroupName , logGroupNames , or logGroupIdentifiers . The exception is queries
+	// using the OpenSearch Service SQL query language, where you specify the log group
+	// names inside the querystring instead of here.
 	LogGroupNames []string
+
+	// Specify the query language to use for this query. The options are Logs Insights
+	// QL, OpenSearch PPL, and OpenSearch SQL. For more information about the query
+	// languages that CloudWatch Logs supports, see [Supported query languages].
+	//
+	// [Supported query languages]: https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_AnalyzeLogData_Languages.html
+	QueryLanguage types.QueryLanguage
 
 	noSmithyDocumentSerde
 }
@@ -165,6 +194,9 @@ func (c *Client) addOperationStartQueryMiddlewares(stack *middleware.Stack, opti
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -181,6 +213,9 @@ func (c *Client) addOperationStartQueryMiddlewares(stack *middleware.Stack, opti
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpStartQueryValidationMiddleware(stack); err != nil {
@@ -202,6 +237,18 @@ func (c *Client) addOperationStartQueryMiddlewares(stack *middleware.Stack, opti
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

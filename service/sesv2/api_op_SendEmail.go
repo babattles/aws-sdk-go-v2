@@ -64,6 +64,9 @@ type SendEmailInput struct {
 	// email that you define, so that you can publish email sending events.
 	EmailTags []types.MessageTag
 
+	// The ID of the multi-region endpoint (global-endpoint).
+	EndpointId *string
+
 	// The address that you want bounce and complaint notifications to be sent to.
 	FeedbackForwardingEmailAddress *string
 
@@ -117,6 +120,12 @@ type SendEmailInput struct {
 	ReplyToAddresses []string
 
 	noSmithyDocumentSerde
+}
+
+func (in *SendEmailInput) bindEndpointParams(p *EndpointParameters) {
+
+	p.EndpointId = in.EndpointId
+
 }
 
 // A unique message ID that you receive when an email is accepted for sending.
@@ -180,6 +189,9 @@ func (c *Client) addOperationSendEmailMiddlewares(stack *middleware.Stack, optio
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -196,6 +208,9 @@ func (c *Client) addOperationSendEmailMiddlewares(stack *middleware.Stack, optio
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpSendEmailValidationMiddleware(stack); err != nil {
@@ -217,6 +232,18 @@ func (c *Client) addOperationSendEmailMiddlewares(stack *middleware.Stack, optio
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

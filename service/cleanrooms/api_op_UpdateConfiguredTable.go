@@ -35,11 +35,24 @@ type UpdateConfiguredTableInput struct {
 	// This member is required.
 	ConfiguredTableIdentifier *string
 
+	//  The analysis method for the configured table.
+	//
+	// DIRECT_QUERY allows SQL queries to be run directly on this table.
+	//
+	// DIRECT_JOB allows PySpark jobs to be run directly on this table.
+	//
+	// MULTIPLE allows both SQL queries and PySpark jobs to be run directly on this
+	// table.
+	AnalysisMethod types.AnalysisMethod
+
 	// A new description for the configured table.
 	Description *string
 
 	// A new name for the configured table.
 	Name *string
+
+	//  The selected analysis methods for the table configuration update.
+	SelectedAnalysisMethods []types.SelectedAnalysisMethod
 
 	noSmithyDocumentSerde
 }
@@ -100,6 +113,9 @@ func (c *Client) addOperationUpdateConfiguredTableMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -116,6 +132,9 @@ func (c *Client) addOperationUpdateConfiguredTableMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateConfiguredTableValidationMiddleware(stack); err != nil {
@@ -137,6 +156,18 @@ func (c *Client) addOperationUpdateConfiguredTableMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

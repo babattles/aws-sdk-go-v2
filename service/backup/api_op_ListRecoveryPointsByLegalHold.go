@@ -30,18 +30,18 @@ func (c *Client) ListRecoveryPointsByLegalHold(ctx context.Context, params *List
 
 type ListRecoveryPointsByLegalHoldInput struct {
 
-	// This is the ID of the legal hold.
+	// The ID of the legal hold.
 	//
 	// This member is required.
 	LegalHoldId *string
 
-	// This is the maximum number of resource list items to be returned.
+	// The maximum number of resource list items to be returned.
 	MaxResults *int32
 
-	// This is the next item following a partial list of returned resources. For
-	// example, if a request is made to return MaxResults number of resources,
-	// NextToken allows you to return more items in your list starting at the location
-	// pointed to by the next token.
+	// The next item following a partial list of returned resources. For example, if a
+	// request is made to return MaxResults number of resources, NextToken allows you
+	// to return more items in your list starting at the location pointed to by the
+	// next token.
 	NextToken *string
 
 	noSmithyDocumentSerde
@@ -49,10 +49,10 @@ type ListRecoveryPointsByLegalHoldInput struct {
 
 type ListRecoveryPointsByLegalHoldOutput struct {
 
-	// This return is the next item following a partial list of returned resources.
+	// The next item following a partial list of returned resources.
 	NextToken *string
 
-	// This is a list of the recovery points returned by ListRecoveryPointsByLegalHold .
+	// The recovery points.
 	RecoveryPoints []types.RecoveryPointMember
 
 	// Metadata pertaining to the operation's result.
@@ -104,6 +104,9 @@ func (c *Client) addOperationListRecoveryPointsByLegalHoldMiddlewares(stack *mid
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -120,6 +123,9 @@ func (c *Client) addOperationListRecoveryPointsByLegalHoldMiddlewares(stack *mid
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListRecoveryPointsByLegalHoldValidationMiddleware(stack); err != nil {
@@ -143,13 +149,25 @@ func (c *Client) addOperationListRecoveryPointsByLegalHoldMiddlewares(stack *mid
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
+		return err
+	}
 	return nil
 }
 
 // ListRecoveryPointsByLegalHoldPaginatorOptions is the paginator options for
 // ListRecoveryPointsByLegalHold
 type ListRecoveryPointsByLegalHoldPaginatorOptions struct {
-	// This is the maximum number of resource list items to be returned.
+	// The maximum number of resource list items to be returned.
 	Limit int32
 
 	// Set to true if pagination should stop if the service returns a pagination token

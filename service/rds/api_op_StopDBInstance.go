@@ -11,10 +11,11 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Stops an Amazon RDS DB instance. When you stop a DB instance, Amazon RDS
-// retains the DB instance's metadata, including its endpoint, DB parameter group,
-// and option group membership. Amazon RDS also retains the transaction logs so you
-// can do a point-in-time restore if necessary.
+// Stops an Amazon RDS DB instance temporarily. When you stop a DB instance,
+// Amazon RDS retains the DB instance's metadata, including its endpoint, DB
+// parameter group, and option group membership. Amazon RDS also retains the
+// transaction logs so you can do a point-in-time restore if necessary. The
+// instance restarts automatically after 7 days.
 //
 // For more information, see [Stopping an Amazon RDS DB Instance Temporarily] in the Amazon RDS User Guide.
 //
@@ -111,6 +112,9 @@ func (c *Client) addOperationStopDBInstanceMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -127,6 +131,9 @@ func (c *Client) addOperationStopDBInstanceMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpStopDBInstanceValidationMiddleware(stack); err != nil {
@@ -148,6 +155,18 @@ func (c *Client) addOperationStopDBInstanceMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

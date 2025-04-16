@@ -55,6 +55,9 @@ type CreateSubscriptionRequestInput struct {
 	// of the request.
 	ClientToken *string
 
+	// The metadata form included in the subscription request.
+	MetadataForms []types.FormInput
+
 	noSmithyDocumentSerde
 }
 
@@ -108,6 +111,12 @@ type CreateSubscriptionRequestOutput struct {
 
 	// The decision comment of the subscription request.
 	DecisionComment *string
+
+	// The ID of the existing subscription.
+	ExistingSubscriptionId *string
+
+	// The metadata form included in the subscription request.
+	MetadataForms []types.FormOutput
 
 	// The ID of the reviewer of the subscription request.
 	ReviewerId *string
@@ -164,6 +173,9 @@ func (c *Client) addOperationCreateSubscriptionRequestMiddlewares(stack *middlew
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -180,6 +192,9 @@ func (c *Client) addOperationCreateSubscriptionRequestMiddlewares(stack *middlew
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateSubscriptionRequestMiddleware(stack, options); err != nil {
@@ -204,6 +219,18 @@ func (c *Client) addOperationCreateSubscriptionRequestMiddlewares(stack *middlew
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -41,6 +41,12 @@ import (
 // results are returned. If you filter result type to only answers, a maximum of
 // three results are returned.
 //
+// If you're using an Amazon Kendra Gen AI Enterprise Edition index, you can only
+// use ATTRIBUTE_FILTER to filter search results by user context. If you're using
+// an Amazon Kendra Gen AI Enterprise Edition index and you try to use USER_TOKEN
+// to configure user context policy, Amazon Kendra returns a ValidationException
+// error.
+//
 // [Retrieve]: https://docs.aws.amazon.com/kendra/latest/APIReference/API_Retrieve.html
 func (c *Client) Query(ctx context.Context, params *QueryInput, optFns ...func(*Options)) (*QueryOutput, error) {
 	if params == nil {
@@ -70,6 +76,10 @@ type QueryInput struct {
 	//
 	// The AttributeFilter parameter means you can create a set of filtering rules
 	// that a document must satisfy to be included in the query results.
+	//
+	// For Amazon Kendra Gen AI Enterprise Edition indices use AttributeFilter to
+	// enable document filtering for end users using _email_id or include public
+	// documents ( _email_id=null ).
 	AttributeFilter *types.AttributeFilter
 
 	// Provides configuration to determine how to group results by document attribute
@@ -243,6 +253,9 @@ func (c *Client) addOperationQueryMiddlewares(stack *middleware.Stack, options O
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -259,6 +272,9 @@ func (c *Client) addOperationQueryMiddlewares(stack *middleware.Stack, options O
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpQueryValidationMiddleware(stack); err != nil {
@@ -280,6 +296,18 @@ func (c *Client) addOperationQueryMiddlewares(stack *middleware.Stack, options O
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

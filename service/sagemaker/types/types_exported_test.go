@@ -106,6 +106,9 @@ func ExampleCustomFileSystem_outputUsage() {
 	case *types.CustomFileSystemMemberEFSFileSystem:
 		_ = v.Value // Value is types.EFSFileSystem
 
+	case *types.CustomFileSystemMemberFSxLustreFileSystem:
+		_ = v.Value // Value is types.FSxLustreFileSystem
+
 	case *types.UnknownUnionMember:
 		fmt.Println("unknown tag:", v.Tag)
 
@@ -115,6 +118,7 @@ func ExampleCustomFileSystem_outputUsage() {
 	}
 }
 
+var _ *types.FSxLustreFileSystem
 var _ *types.EFSFileSystem
 
 func ExampleCustomFileSystemConfig_outputUsage() {
@@ -124,6 +128,9 @@ func ExampleCustomFileSystemConfig_outputUsage() {
 	case *types.CustomFileSystemConfigMemberEFSFileSystemConfig:
 		_ = v.Value // Value is types.EFSFileSystemConfig
 
+	case *types.CustomFileSystemConfigMemberFSxLustreFileSystemConfig:
+		_ = v.Value // Value is types.FSxLustreFileSystemConfig
+
 	case *types.UnknownUnionMember:
 		fmt.Println("unknown tag:", v.Tag)
 
@@ -133,6 +140,7 @@ func ExampleCustomFileSystemConfig_outputUsage() {
 	}
 }
 
+var _ *types.FSxLustreFileSystemConfig
 var _ *types.EFSFileSystemConfig
 
 func ExampleMetricSpecification_outputUsage() {
@@ -167,6 +175,9 @@ func ExampleOptimizationConfig_outputUsage() {
 	case *types.OptimizationConfigMemberModelQuantizationConfig:
 		_ = v.Value // Value is types.ModelQuantizationConfig
 
+	case *types.OptimizationConfigMemberModelShardingConfig:
+		_ = v.Value // Value is types.ModelShardingConfig
+
 	case *types.UnknownUnionMember:
 		fmt.Println("unknown tag:", v.Tag)
 
@@ -178,6 +189,7 @@ func ExampleOptimizationConfig_outputUsage() {
 
 var _ *types.ModelCompilationConfig
 var _ *types.ModelQuantizationConfig
+var _ *types.ModelShardingConfig
 
 func ExampleScalingPolicy_outputUsage() {
 	var union types.ScalingPolicy

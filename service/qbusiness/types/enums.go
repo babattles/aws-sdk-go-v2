@@ -90,8 +90,8 @@ type AttachmentStatus string
 
 // Enum values for AttachmentStatus
 const (
-	AttachmentStatusFailed    AttachmentStatus = "FAILED"
-	AttachmentStatusSucceeded AttachmentStatus = "SUCCEEDED"
+	AttachmentStatusFailed  AttachmentStatus = "FAILED"
+	AttachmentStatusSuccess AttachmentStatus = "SUCCESS"
 )
 
 // Values returns all known values for AttachmentStatus. Note that this can be
@@ -101,7 +101,7 @@ const (
 func (AttachmentStatus) Values() []AttachmentStatus {
 	return []AttachmentStatus{
 		"FAILED",
-		"SUCCEEDED",
+		"SUCCESS",
 	}
 }
 
@@ -145,6 +145,44 @@ func (AttributeValueOperator) Values() []AttributeValueOperator {
 	}
 }
 
+type AudioExtractionStatus string
+
+// Enum values for AudioExtractionStatus
+const (
+	AudioExtractionStatusEnabled  AudioExtractionStatus = "ENABLED"
+	AudioExtractionStatusDisabled AudioExtractionStatus = "DISABLED"
+)
+
+// Values returns all known values for AudioExtractionStatus. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AudioExtractionStatus) Values() []AudioExtractionStatus {
+	return []AudioExtractionStatus{
+		"ENABLED",
+		"DISABLED",
+	}
+}
+
+type AudioExtractionType string
+
+// Enum values for AudioExtractionType
+const (
+	AudioExtractionTypeTranscript AudioExtractionType = "TRANSCRIPT"
+	AudioExtractionTypeSummary    AudioExtractionType = "SUMMARY"
+)
+
+// Values returns all known values for AudioExtractionType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AudioExtractionType) Values() []AudioExtractionType {
+	return []AudioExtractionType{
+		"TRANSCRIPT",
+		"SUMMARY",
+	}
+}
+
 type AutoSubscriptionStatus string
 
 // Enum values for AutoSubscriptionStatus
@@ -161,6 +199,25 @@ func (AutoSubscriptionStatus) Values() []AutoSubscriptionStatus {
 	return []AutoSubscriptionStatus{
 		"ENABLED",
 		"DISABLED",
+	}
+}
+
+type BrowserExtension string
+
+// Enum values for BrowserExtension
+const (
+	BrowserExtensionFirefox BrowserExtension = "FIREFOX"
+	BrowserExtensionChrome  BrowserExtension = "CHROME"
+)
+
+// Values returns all known values for BrowserExtension. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (BrowserExtension) Values() []BrowserExtension {
+	return []BrowserExtension{
+		"FIREFOX",
+		"CHROME",
 	}
 }
 
@@ -463,9 +520,10 @@ type IdentityType string
 
 // Enum values for IdentityType
 const (
-	IdentityTypeAwsIamIdpSaml IdentityType = "AWS_IAM_IDP_SAML"
-	IdentityTypeAwsIamIdpOidc IdentityType = "AWS_IAM_IDP_OIDC"
-	IdentityTypeAwsIamIdc     IdentityType = "AWS_IAM_IDC"
+	IdentityTypeAwsIamIdpSaml    IdentityType = "AWS_IAM_IDP_SAML"
+	IdentityTypeAwsIamIdpOidc    IdentityType = "AWS_IAM_IDP_OIDC"
+	IdentityTypeAwsIamIdc        IdentityType = "AWS_IAM_IDC"
+	IdentityTypeAwsQuicksightIdp IdentityType = "AWS_QUICKSIGHT_IDP"
 )
 
 // Values returns all known values for IdentityType. Note that this can be
@@ -477,6 +535,26 @@ func (IdentityType) Values() []IdentityType {
 		"AWS_IAM_IDP_SAML",
 		"AWS_IAM_IDP_OIDC",
 		"AWS_IAM_IDC",
+		"AWS_QUICKSIGHT_IDP",
+	}
+}
+
+type ImageExtractionStatus string
+
+// Enum values for ImageExtractionStatus
+const (
+	ImageExtractionStatusEnabled  ImageExtractionStatus = "ENABLED"
+	ImageExtractionStatusDisabled ImageExtractionStatus = "DISABLED"
+)
+
+// Values returns all known values for ImageExtractionStatus. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ImageExtractionStatus) Values() []ImageExtractionStatus {
+	return []ImageExtractionStatus{
+		"ENABLED",
+		"DISABLED",
 	}
 }
 
@@ -658,6 +736,25 @@ func (NumberAttributeBoostingType) Values() []NumberAttributeBoostingType {
 	}
 }
 
+type OrchestrationControl string
+
+// Enum values for OrchestrationControl
+const (
+	OrchestrationControlEnabled  OrchestrationControl = "ENABLED"
+	OrchestrationControlDisabled OrchestrationControl = "DISABLED"
+)
+
+// Values returns all known values for OrchestrationControl. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (OrchestrationControl) Values() []OrchestrationControl {
+	return []OrchestrationControl{
+		"ENABLED",
+		"DISABLED",
+	}
+}
+
 type PersonalizationControlMode string
 
 // Enum values for PersonalizationControlMode
@@ -729,11 +826,23 @@ type PluginType string
 
 // Enum values for PluginType
 const (
-	PluginTypeServiceNow PluginType = "SERVICE_NOW"
-	PluginTypeSalesforce PluginType = "SALESFORCE"
-	PluginTypeJira       PluginType = "JIRA"
-	PluginTypeZendesk    PluginType = "ZENDESK"
-	PluginTypeCustom     PluginType = "CUSTOM"
+	PluginTypeServiceNow            PluginType = "SERVICE_NOW"
+	PluginTypeSalesforce            PluginType = "SALESFORCE"
+	PluginTypeJira                  PluginType = "JIRA"
+	PluginTypeZendesk               PluginType = "ZENDESK"
+	PluginTypeCustom                PluginType = "CUSTOM"
+	PluginTypeQuicksight            PluginType = "QUICKSIGHT"
+	PluginTypeServicenowNowPlatform PluginType = "SERVICENOW_NOW_PLATFORM"
+	PluginTypeJiraCloud             PluginType = "JIRA_CLOUD"
+	PluginTypeSalesforceCrm         PluginType = "SALESFORCE_CRM"
+	PluginTypeZendeskSuite          PluginType = "ZENDESK_SUITE"
+	PluginTypeAtlassianConfluence   PluginType = "ATLASSIAN_CONFLUENCE"
+	PluginTypeGoogleCalendar        PluginType = "GOOGLE_CALENDAR"
+	PluginTypeMicrosoftTeams        PluginType = "MICROSOFT_TEAMS"
+	PluginTypeMicrosoftExchange     PluginType = "MICROSOFT_EXCHANGE"
+	PluginTypePagerdutyAdvance      PluginType = "PAGERDUTY_ADVANCE"
+	PluginTypeSmartsheet            PluginType = "SMARTSHEET"
+	PluginTypeAsana                 PluginType = "ASANA"
 )
 
 // Values returns all known values for PluginType. Note that this can be expanded
@@ -747,6 +856,43 @@ func (PluginType) Values() []PluginType {
 		"JIRA",
 		"ZENDESK",
 		"CUSTOM",
+		"QUICKSIGHT",
+		"SERVICENOW_NOW_PLATFORM",
+		"JIRA_CLOUD",
+		"SALESFORCE_CRM",
+		"ZENDESK_SUITE",
+		"ATLASSIAN_CONFLUENCE",
+		"GOOGLE_CALENDAR",
+		"MICROSOFT_TEAMS",
+		"MICROSOFT_EXCHANGE",
+		"PAGERDUTY_ADVANCE",
+		"SMARTSHEET",
+		"ASANA",
+	}
+}
+
+type PluginTypeCategory string
+
+// Enum values for PluginTypeCategory
+const (
+	PluginTypeCategoryCrm                 PluginTypeCategory = "Customer relationship management (CRM)"
+	PluginTypeCategoryProjectManagement   PluginTypeCategory = "Project management"
+	PluginTypeCategoryCommunication       PluginTypeCategory = "Communication"
+	PluginTypeCategoryProductivity        PluginTypeCategory = "Productivity"
+	PluginTypeCategoryTicketingManagement PluginTypeCategory = "Ticketing and incident management"
+)
+
+// Values returns all known values for PluginTypeCategory. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (PluginTypeCategory) Values() []PluginTypeCategory {
+	return []PluginTypeCategory{
+		"Customer relationship management (CRM)",
+		"Project management",
+		"Communication",
+		"Productivity",
+		"Ticketing and incident management",
 	}
 }
 
@@ -866,6 +1012,31 @@ func (RuleType) Values() []RuleType {
 	}
 }
 
+type ScoreConfidence string
+
+// Enum values for ScoreConfidence
+const (
+	ScoreConfidenceVeryHigh     ScoreConfidence = "VERY_HIGH"
+	ScoreConfidenceHigh         ScoreConfidence = "HIGH"
+	ScoreConfidenceMedium       ScoreConfidence = "MEDIUM"
+	ScoreConfidenceLow          ScoreConfidence = "LOW"
+	ScoreConfidenceNotAvailable ScoreConfidence = "NOT_AVAILABLE"
+)
+
+// Values returns all known values for ScoreConfidence. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ScoreConfidence) Values() []ScoreConfidence {
+	return []ScoreConfidence{
+		"VERY_HIGH",
+		"HIGH",
+		"MEDIUM",
+		"LOW",
+		"NOT_AVAILABLE",
+	}
+}
+
 type Status string
 
 // Enum values for Status
@@ -946,6 +1117,44 @@ func (ValidationExceptionReason) Values() []ValidationExceptionReason {
 		"CANNOT_PARSE",
 		"FIELD_VALIDATION_FAILED",
 		"UNKNOWN_OPERATION",
+	}
+}
+
+type VideoExtractionStatus string
+
+// Enum values for VideoExtractionStatus
+const (
+	VideoExtractionStatusEnabled  VideoExtractionStatus = "ENABLED"
+	VideoExtractionStatusDisabled VideoExtractionStatus = "DISABLED"
+)
+
+// Values returns all known values for VideoExtractionStatus. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (VideoExtractionStatus) Values() []VideoExtractionStatus {
+	return []VideoExtractionStatus{
+		"ENABLED",
+		"DISABLED",
+	}
+}
+
+type VideoExtractionType string
+
+// Enum values for VideoExtractionType
+const (
+	VideoExtractionTypeTranscript VideoExtractionType = "TRANSCRIPT"
+	VideoExtractionTypeSummary    VideoExtractionType = "SUMMARY"
+)
+
+// Values returns all known values for VideoExtractionType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (VideoExtractionType) Values() []VideoExtractionType {
+	return []VideoExtractionType{
+		"TRANSCRIPT",
+		"SUMMARY",
 	}
 }
 

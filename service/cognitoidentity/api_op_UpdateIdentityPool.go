@@ -11,9 +11,12 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Updates an identity pool.
+// Updates the configuration of an identity pool.
 //
-// You must use AWS Developer credentials to call this API.
+// If you don't provide a value for a parameter, Amazon Cognito sets it to its
+// default value.
+//
+// You must use Amazon Web Services developer credentials to call this operation.
 func (c *Client) UpdateIdentityPool(ctx context.Context, params *UpdateIdentityPoolInput, optFns ...func(*Options)) (*UpdateIdentityPoolOutput, error) {
 	if params == nil {
 		params = &UpdateIdentityPoolInput{}
@@ -171,6 +174,9 @@ func (c *Client) addOperationUpdateIdentityPoolMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -187,6 +193,9 @@ func (c *Client) addOperationUpdateIdentityPoolMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateIdentityPoolValidationMiddleware(stack); err != nil {
@@ -208,6 +217,18 @@ func (c *Client) addOperationUpdateIdentityPoolMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

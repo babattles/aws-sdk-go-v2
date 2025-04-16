@@ -38,6 +38,8 @@ type GetViolationDetailsInput struct {
 	// The ID of the Firewall Manager policy that you want the details for. You can
 	// get violation details for the following policy types:
 	//
+	//   - WAF
+	//
 	//   - DNS Firewall
 	//
 	//   - Imported Network Firewall
@@ -59,8 +61,8 @@ type GetViolationDetailsInput struct {
 	ResourceId *string
 
 	// The resource type. This is in the format shown in the [Amazon Web Services Resource Types Reference]. Supported resource
-	// types are: AWS::EC2::Instance , AWS::EC2::NetworkInterface ,
-	// AWS::EC2::SecurityGroup , AWS::NetworkFirewall::FirewallPolicy , and
+	// types are: AWS::WAFv2::WebACL , AWS::EC2::Instance , AWS::EC2::NetworkInterface
+	// , AWS::EC2::SecurityGroup , AWS::NetworkFirewall::FirewallPolicy , and
 	// AWS::EC2::Subnet .
 	//
 	// [Amazon Web Services Resource Types Reference]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html
@@ -125,6 +127,9 @@ func (c *Client) addOperationGetViolationDetailsMiddlewares(stack *middleware.St
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -141,6 +146,9 @@ func (c *Client) addOperationGetViolationDetailsMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetViolationDetailsValidationMiddleware(stack); err != nil {
@@ -162,6 +170,18 @@ func (c *Client) addOperationGetViolationDetailsMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -13,7 +13,7 @@ import (
 // Stops a batch inference job. You're only charged for tokens that were already
 // processed. For more information, see [Stop a batch inference job].
 //
-// [Stop a batch inference job]: https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-manage.html#batch-inference-stop
+// [Stop a batch inference job]: https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-stop.html
 func (c *Client) StopModelInvocationJob(ctx context.Context, params *StopModelInvocationJobInput, optFns ...func(*Options)) (*StopModelInvocationJobOutput, error) {
 	if params == nil {
 		params = &StopModelInvocationJobInput{}
@@ -89,6 +89,9 @@ func (c *Client) addOperationStopModelInvocationJobMiddlewares(stack *middleware
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -105,6 +108,9 @@ func (c *Client) addOperationStopModelInvocationJobMiddlewares(stack *middleware
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpStopModelInvocationJobValidationMiddleware(stack); err != nil {
@@ -126,6 +132,18 @@ func (c *Client) addOperationStopModelInvocationJobMiddlewares(stack *middleware
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

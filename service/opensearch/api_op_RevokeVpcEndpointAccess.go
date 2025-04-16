@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
+	"github.com/aws/aws-sdk-go-v2/service/opensearch/types"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -29,15 +30,16 @@ func (c *Client) RevokeVpcEndpointAccess(ctx context.Context, params *RevokeVpcE
 
 type RevokeVpcEndpointAccessInput struct {
 
-	// The account ID to revoke access from.
-	//
-	// This member is required.
-	Account *string
-
 	// The name of the OpenSearch Service domain.
 	//
 	// This member is required.
 	DomainName *string
+
+	// The account ID to revoke access from.
+	Account *string
+
+	// The service SP to revoke access from.
+	Service types.AWSServicePrincipal
 
 	noSmithyDocumentSerde
 }
@@ -92,6 +94,9 @@ func (c *Client) addOperationRevokeVpcEndpointAccessMiddlewares(stack *middlewar
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -108,6 +113,9 @@ func (c *Client) addOperationRevokeVpcEndpointAccessMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpRevokeVpcEndpointAccessValidationMiddleware(stack); err != nil {
@@ -129,6 +137,18 @@ func (c *Client) addOperationRevokeVpcEndpointAccessMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

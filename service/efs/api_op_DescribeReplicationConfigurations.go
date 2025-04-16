@@ -32,7 +32,9 @@ func (c *Client) DescribeReplicationConfigurations(ctx context.Context, params *
 type DescribeReplicationConfigurationsInput struct {
 
 	// You can retrieve the replication configuration for a specific file system by
-	// providing its file system ID.
+	// providing its file system ID. For cross-account,cross-region replication, an
+	// account can only describe the replication configuration for a file system in its
+	// own Region.
 	FileSystemId *string
 
 	// (Optional) To limit the number of objects returned in a response, you can
@@ -104,6 +106,9 @@ func (c *Client) addOperationDescribeReplicationConfigurationsMiddlewares(stack 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -122,6 +127,9 @@ func (c *Client) addOperationDescribeReplicationConfigurationsMiddlewares(stack 
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeReplicationConfigurations(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -138,6 +146,18 @@ func (c *Client) addOperationDescribeReplicationConfigurationsMiddlewares(stack 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

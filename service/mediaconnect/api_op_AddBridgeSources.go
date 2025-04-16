@@ -27,15 +27,14 @@ func (c *Client) AddBridgeSources(ctx context.Context, params *AddBridgeSourcesI
 	return out, nil
 }
 
-// A request to add sources to the specified bridge.
 type AddBridgeSourcesInput struct {
 
-	// The ARN of the bridge that you want to update.
+	//  The Amazon Resource Name (ARN) of the bridge that you want to update.
 	//
 	// This member is required.
 	BridgeArn *string
 
-	// The sources that you want to add to this bridge.
+	//  The sources that you want to add to this bridge.
 	//
 	// This member is required.
 	Sources []types.AddBridgeSourceRequest
@@ -45,10 +44,10 @@ type AddBridgeSourcesInput struct {
 
 type AddBridgeSourcesOutput struct {
 
-	// The Amazon Resource Number (ARN) of the bridge.
+	//  The ARN of the bridge that you added sources to.
 	BridgeArn *string
 
-	// The sources that you added to this bridge.
+	//  The sources that you added to this bridge.
 	Sources []types.BridgeSource
 
 	// Metadata pertaining to the operation's result.
@@ -100,6 +99,9 @@ func (c *Client) addOperationAddBridgeSourcesMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -116,6 +118,9 @@ func (c *Client) addOperationAddBridgeSourcesMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpAddBridgeSourcesValidationMiddleware(stack); err != nil {
@@ -137,6 +142,18 @@ func (c *Client) addOperationAddBridgeSourcesMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

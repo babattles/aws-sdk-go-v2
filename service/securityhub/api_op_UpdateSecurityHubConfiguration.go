@@ -34,6 +34,14 @@ type UpdateSecurityHubConfigurationInput struct {
 	//
 	// By default, this is set to true , and new controls are enabled automatically. To
 	// not automatically enable new controls, set this to false .
+	//
+	// When you automatically enable new controls, you can interact with the controls
+	// in the console and programmatically immediately after release. However,
+	// automatically enabled controls have a temporary default status of DISABLED . It
+	// can take up to several days for Security Hub to process the control release and
+	// designate the control as ENABLED in your account. During the processing period,
+	// you can manually enable or disable a control, and Security Hub will maintain
+	// that designation regardless of whether you have AutoEnableControls set to true .
 	AutoEnableControls *bool
 
 	// Updates whether the calling account has consolidated control findings turned
@@ -102,6 +110,9 @@ func (c *Client) addOperationUpdateSecurityHubConfigurationMiddlewares(stack *mi
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -120,6 +131,9 @@ func (c *Client) addOperationUpdateSecurityHubConfigurationMiddlewares(stack *mi
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opUpdateSecurityHubConfiguration(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -136,6 +150,18 @@ func (c *Client) addOperationUpdateSecurityHubConfigurationMiddlewares(stack *mi
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

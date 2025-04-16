@@ -11,7 +11,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Creates a batch deletion job. A model evaluation job can only be deleted if it
+// Deletes a batch of evaluation jobs. An evaluation job can only be deleted if it
 // has following status FAILED , COMPLETED , and STOPPED . You can request up to 25
 // model evaluation jobs be deleted in a single request.
 func (c *Client) BatchDeleteEvaluationJob(ctx context.Context, params *BatchDeleteEvaluationJobInput, optFns ...func(*Options)) (*BatchDeleteEvaluationJobOutput, error) {
@@ -31,7 +31,8 @@ func (c *Client) BatchDeleteEvaluationJob(ctx context.Context, params *BatchDele
 
 type BatchDeleteEvaluationJobInput struct {
 
-	// An array of model evaluation job ARNs to be deleted.
+	// A list of one or more evaluation job Amazon Resource Names (ARNs) you want to
+	// delete.
 	//
 	// This member is required.
 	JobIdentifiers []string
@@ -41,13 +42,13 @@ type BatchDeleteEvaluationJobInput struct {
 
 type BatchDeleteEvaluationJobOutput struct {
 
-	// A JSON object containing the HTTP status codes and the ARNs of model evaluation
-	// jobs that failed to be deleted.
+	// A JSON object containing the HTTP status codes and the ARNs of evaluation jobs
+	// that failed to be deleted.
 	//
 	// This member is required.
 	Errors []types.BatchDeleteEvaluationJobError
 
-	// The list of model evaluation jobs to be deleted.
+	// The list of evaluation jobs for deletion.
 	//
 	// This member is required.
 	EvaluationJobs []types.BatchDeleteEvaluationJobItem
@@ -101,6 +102,9 @@ func (c *Client) addOperationBatchDeleteEvaluationJobMiddlewares(stack *middlewa
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -117,6 +121,9 @@ func (c *Client) addOperationBatchDeleteEvaluationJobMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpBatchDeleteEvaluationJobValidationMiddleware(stack); err != nil {
@@ -138,6 +145,18 @@ func (c *Client) addOperationBatchDeleteEvaluationJobMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

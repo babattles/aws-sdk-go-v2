@@ -37,7 +37,7 @@ type ListResiliencyPoliciesInput struct {
 	// Null, or the token from a previous call to get the next set of results.
 	NextToken *string
 
-	// The name of the policy
+	// Name of the resiliency policy.
 	PolicyName *string
 
 	noSmithyDocumentSerde
@@ -102,6 +102,9 @@ func (c *Client) addOperationListResiliencyPoliciesMiddlewares(stack *middleware
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -120,6 +123,9 @@ func (c *Client) addOperationListResiliencyPoliciesMiddlewares(stack *middleware
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListResiliencyPolicies(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -136,6 +142,18 @@ func (c *Client) addOperationListResiliencyPoliciesMiddlewares(stack *middleware
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

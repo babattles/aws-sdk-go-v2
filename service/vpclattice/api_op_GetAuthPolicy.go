@@ -31,7 +31,7 @@ func (c *Client) GetAuthPolicy(ctx context.Context, params *GetAuthPolicyInput, 
 
 type GetAuthPolicyInput struct {
 
-	// The ID or Amazon Resource Name (ARN) of the service network or service.
+	// The ID or ARN of the service network or service.
 	//
 	// This member is required.
 	ResourceIdentifier *string
@@ -41,12 +41,10 @@ type GetAuthPolicyInput struct {
 
 type GetAuthPolicyOutput struct {
 
-	// The date and time that the auth policy was created, specified in ISO-8601
-	// format.
+	// The date and time that the auth policy was created, in ISO-8601 format.
 	CreatedAt *time.Time
 
-	// The date and time that the auth policy was last updated, specified in ISO-8601
-	// format.
+	// The date and time that the auth policy was last updated, in ISO-8601 format.
 	LastUpdatedAt *time.Time
 
 	// The auth policy.
@@ -110,6 +108,9 @@ func (c *Client) addOperationGetAuthPolicyMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -126,6 +127,9 @@ func (c *Client) addOperationGetAuthPolicyMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetAuthPolicyValidationMiddleware(stack); err != nil {
@@ -147,6 +151,18 @@ func (c *Client) addOperationGetAuthPolicyMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

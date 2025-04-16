@@ -87,6 +87,11 @@ type GetChannelOutput struct {
 	// The list of ingest endpoints.
 	IngestEndpoints []types.IngestEndpoint
 
+	// The configuration for input switching based on the media quality confidence
+	// score (MQCS) as provided from AWS Elemental MediaLive. This setting is valid
+	// only when InputType is CMAF .
+	InputSwitchConfiguration *types.InputSwitchConfiguration
+
 	// The input type will be an immutable field which will be used to define whether
 	// the channel will allow CMAF ingest or HLS ingest. If unprovided, it will default
 	// to HLS to preserve current behavior.
@@ -99,6 +104,14 @@ type GetChannelOutput struct {
 	//   - CMAF - The DASH-IF CMAF Ingest specification (which defines CMAF segments
 	//   with optional DASH manifests).
 	InputType types.InputType
+
+	// The settings for what common media server data (CMSD) headers AWS Elemental
+	// MediaPackage includes in responses to the CDN. This setting is valid only when
+	// InputType is CMAF .
+	OutputHeaderConfiguration *types.OutputHeaderConfiguration
+
+	// The time that the channel was last reset.
+	ResetAt *time.Time
 
 	// The comma-separated list of tag key:value pairs assigned to the channel.
 	Tags map[string]string
@@ -152,6 +165,9 @@ func (c *Client) addOperationGetChannelMiddlewares(stack *middleware.Stack, opti
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -168,6 +184,9 @@ func (c *Client) addOperationGetChannelMiddlewares(stack *middleware.Stack, opti
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetChannelValidationMiddleware(stack); err != nil {
@@ -189,6 +208,18 @@ func (c *Client) addOperationGetChannelMiddlewares(stack *middleware.Stack, opti
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

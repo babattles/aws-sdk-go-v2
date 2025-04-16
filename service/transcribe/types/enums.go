@@ -235,6 +235,7 @@ const (
 	LanguageCodeUkUa  LanguageCode = "uk-UA"
 	LanguageCodeUzUz  LanguageCode = "uz-UZ"
 	LanguageCodeWoSn  LanguageCode = "wo-SN"
+	LanguageCodeZhHk  LanguageCode = "zh-HK"
 	LanguageCodeZuZa  LanguageCode = "zu-ZA"
 )
 
@@ -346,6 +347,7 @@ func (LanguageCode) Values() []LanguageCode {
 		"uk-UA",
 		"uz-UZ",
 		"wo-SN",
+		"zh-HK",
 		"zu-ZA",
 	}
 }
@@ -436,6 +438,25 @@ const (
 func (MedicalScribeLanguageCode) Values() []MedicalScribeLanguageCode {
 	return []MedicalScribeLanguageCode{
 		"en-US",
+	}
+}
+
+type MedicalScribeNoteTemplate string
+
+// Enum values for MedicalScribeNoteTemplate
+const (
+	MedicalScribeNoteTemplateHistoryAndPhysical MedicalScribeNoteTemplate = "HISTORY_AND_PHYSICAL"
+	MedicalScribeNoteTemplateGirpp              MedicalScribeNoteTemplate = "GIRPP"
+)
+
+// Values returns all known values for MedicalScribeNoteTemplate. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (MedicalScribeNoteTemplate) Values() []MedicalScribeNoteTemplate {
+	return []MedicalScribeNoteTemplate{
+		"HISTORY_AND_PHYSICAL",
+		"GIRPP",
 	}
 }
 

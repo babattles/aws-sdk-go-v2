@@ -31,8 +31,16 @@ import (
 // If you are restoring from a shared manual DB snapshot, the DBSnapshotIdentifier
 // must be the ARN of the shared DB snapshot.
 //
+// To restore from a DB snapshot with an unsupported engine version, you must
+// first upgrade the engine version of the snapshot. For more information about
+// upgrading a RDS for MySQL DB snapshot engine version, see [Upgrading a MySQL DB snapshot engine version]. For more
+// information about upgrading a RDS for PostgreSQL DB snapshot engine version, [Upgrading a PostgreSQL DB snapshot engine version].
+//
 // This command doesn't apply to Aurora MySQL and Aurora PostgreSQL. For Aurora,
 // use RestoreDBClusterFromSnapshot .
+//
+// [Upgrading a PostgreSQL DB snapshot engine version]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBSnapshot.PostgreSQL.html
+// [Upgrading a MySQL DB snapshot engine version]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/mysql-upgrade-snapshot.html
 func (c *Client) RestoreDBInstanceFromDBSnapshot(ctx context.Context, params *RestoreDBInstanceFromDBSnapshotInput, optFns ...func(*Options)) (*RestoreDBInstanceFromDBSnapshotOutput, error) {
 	if params == nil {
 		params = &RestoreDBInstanceFromDBSnapshotInput{}
@@ -68,6 +76,8 @@ type RestoreDBInstanceFromDBSnapshotInput struct {
 
 	// The amount of storage (in gibibytes) to allocate initially for the DB instance.
 	// Follow the allocation rules specified in CreateDBInstance.
+	//
+	// This setting isn't valid for RDS for SQL Server.
 	//
 	// Be sure to allocate enough storage for your new DB instance so that the restore
 	// operation can succeed. You can also allocate additional storage for future
@@ -411,10 +421,10 @@ type RestoreDBInstanceFromDBSnapshotInput struct {
 	// License model information for the restored DB instance.
 	//
 	// License models for RDS for Db2 require additional configuration. The Bring Your
-	// Own License (BYOL) model requires a custom parameter group. The Db2 license
-	// through Amazon Web Services Marketplace model requires an Amazon Web Services
-	// Marketplace subscription. For more information, see [RDS for Db2 licensing options]in the Amazon RDS User
-	// Guide.
+	// Own License (BYOL) model requires a custom parameter group and an Amazon Web
+	// Services License Manager self-managed license. The Db2 license through Amazon
+	// Web Services Marketplace model requires an Amazon Web Services Marketplace
+	// subscription. For more information, see [Amazon RDS for Db2 licensing options]in the Amazon RDS User Guide.
 	//
 	// This setting doesn't apply to Amazon Aurora or RDS Custom DB instances.
 	//
@@ -434,7 +444,7 @@ type RestoreDBInstanceFromDBSnapshotInput struct {
 	//
 	// Default: Same as the source.
 	//
-	// [RDS for Db2 licensing options]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/db2-licensing.html
+	// [Amazon RDS for Db2 licensing options]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/db2-licensing.html
 	LicenseModel *string
 
 	// Specifies whether the DB instance is a Multi-AZ deployment.
@@ -511,7 +521,7 @@ type RestoreDBInstanceFromDBSnapshotInput struct {
 	// If you specify io1 , io2 , or gp3 , you must also include a value for the Iops
 	// parameter.
 	//
-	// Default: io1 if the Iops parameter is specified, otherwise gp2
+	// Default: io1 if the Iops parameter is specified, otherwise gp3
 	StorageType *string
 
 	// A list of tags.
@@ -608,6 +618,9 @@ func (c *Client) addOperationRestoreDBInstanceFromDBSnapshotMiddlewares(stack *m
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -624,6 +637,9 @@ func (c *Client) addOperationRestoreDBInstanceFromDBSnapshotMiddlewares(stack *m
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpRestoreDBInstanceFromDBSnapshotValidationMiddleware(stack); err != nil {
@@ -645,6 +661,18 @@ func (c *Client) addOperationRestoreDBInstanceFromDBSnapshotMiddlewares(stack *m
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

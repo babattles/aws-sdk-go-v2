@@ -54,6 +54,12 @@ type CreateWebhookInput struct {
 	BranchFilter *string
 
 	// Specifies the type of build this webhook will trigger.
+	//
+	// RUNNER_BUILDKITE_BUILD is only available for NO_SOURCE source type projects
+	// configured for Buildkite runner builds. For more information about
+	// CodeBuild-hosted Buildkite runner builds, see [Tutorial: Configure a CodeBuild-hosted Buildkite runner]in the CodeBuild user guide.
+	//
+	// [Tutorial: Configure a CodeBuild-hosted Buildkite runner]: https://docs.aws.amazon.com/codebuild/latest/userguide/sample-runner-buildkite.html
 	BuildType types.WebhookBuildType
 
 	// An array of arrays of WebhookFilter objects used to determine which webhooks
@@ -136,6 +142,9 @@ func (c *Client) addOperationCreateWebhookMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -152,6 +161,9 @@ func (c *Client) addOperationCreateWebhookMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateWebhookValidationMiddleware(stack); err != nil {
@@ -173,6 +185,18 @@ func (c *Client) addOperationCreateWebhookMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

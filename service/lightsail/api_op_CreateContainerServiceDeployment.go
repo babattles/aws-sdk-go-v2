@@ -23,7 +23,7 @@ import (
 // a public registry such as Amazon ECR Public, or from your local machine. For
 // more information, see [Creating container images for your Amazon Lightsail container services]in the Amazon Lightsail Developer Guide.
 //
-// [Creating container images for your Amazon Lightsail container services]: https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-creating-container-images
+// [Creating container images for your Amazon Lightsail container services]: https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-creating-container-images
 func (c *Client) CreateContainerServiceDeployment(ctx context.Context, params *CreateContainerServiceDeploymentInput, optFns ...func(*Options)) (*CreateContainerServiceDeploymentOutput, error) {
 	if params == nil {
 		params = &CreateContainerServiceDeploymentInput{}
@@ -111,6 +111,9 @@ func (c *Client) addOperationCreateContainerServiceDeploymentMiddlewares(stack *
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -127,6 +130,9 @@ func (c *Client) addOperationCreateContainerServiceDeploymentMiddlewares(stack *
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateContainerServiceDeploymentValidationMiddleware(stack); err != nil {
@@ -148,6 +154,18 @@ func (c *Client) addOperationCreateContainerServiceDeploymentMiddlewares(stack *
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

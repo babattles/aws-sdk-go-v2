@@ -79,11 +79,10 @@ type ModifyDBClusterInput struct {
 	//   cluster's current version.
 	AllowMajorVersionUpgrade *bool
 
-	// Specifies whether the modifications in this request and any pending
-	// modifications are asynchronously applied as soon as possible, regardless of the
-	// PreferredMaintenanceWindow setting for the DB cluster. If this parameter is
-	// disabled, changes to the DB cluster are applied during the next maintenance
-	// window.
+	// Specifies whether the modifications in this request are asynchronously applied
+	// as soon as possible, regardless of the PreferredMaintenanceWindow setting for
+	// the DB cluster. If this parameter is disabled, changes to the DB cluster are
+	// applied during the next maintenance window.
 	//
 	// Most modifications can be applied immediately or during the next scheduled
 	// maintenance window. Some modifications, such as turning on deletion protection
@@ -99,7 +98,7 @@ type ModifyDBClusterInput struct {
 	// cluster during the maintenance window. By default, minor engine upgrades are
 	// applied automatically.
 	//
-	// Valid for Cluster Type: Multi-AZ DB clusters only
+	// Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters
 	AutoMinorVersionUpgrade *bool
 
 	// The Amazon Resource Name (ARN) of the recovery point in Amazon Web Services
@@ -147,13 +146,14 @@ type ModifyDBClusterInput struct {
 	//
 	// The following values are valid for each DB engine:
 	//
-	//   - Aurora MySQL - audit | error | general | slowquery
+	//   - Aurora MySQL - audit | error | general | instance | slowquery |
+	//   iam-db-auth-error
 	//
-	//   - Aurora PostgreSQL - postgresql
+	//   - Aurora PostgreSQL - instance | postgresql | iam-db-auth-error
 	//
-	//   - RDS for MySQL - error | general | slowquery
+	//   - RDS for MySQL - error | general | slowquery | iam-db-auth-error
 	//
-	//   - RDS for PostgreSQL - postgresql | upgrade
+	//   - RDS for PostgreSQL - postgresql | upgrade | iam-db-auth-error
 	//
 	// For more information about exporting CloudWatch Logs for Amazon RDS, see [Publishing Database Logs to Amazon CloudWatch Logs] in
 	// the Amazon RDS User Guide.
@@ -206,6 +206,18 @@ type ModifyDBClusterInput struct {
 	//   AllowMajorVersionUpgrade parameter for a major version upgrade only.
 	DBInstanceParameterGroupName *string
 
+	// Specifies the mode of Database Insights to enable for the DB cluster.
+	//
+	// If you change the value from standard to advanced , you must set the
+	// PerformanceInsightsEnabled parameter to true and the
+	// PerformanceInsightsRetentionPeriod parameter to 465.
+	//
+	// If you change the value from advanced to standard , you must set the
+	// PerformanceInsightsEnabled parameter to false .
+	//
+	// Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters
+	DatabaseInsightsMode types.DatabaseInsightsMode
+
 	// Specifies whether the DB cluster has deletion protection enabled. The database
 	// can't be deleted when deletion protection is enabled. By default, deletion
 	// protection isn't enabled.
@@ -255,8 +267,8 @@ type ModifyDBClusterInput struct {
 	// For more information, see [Using RDS Data API] in the Amazon Aurora User Guide.
 	//
 	// This parameter applies only to Aurora Serverless v1 DB clusters. To enable or
-	// disable the HTTP endpoint for an Aurora PostgreSQL Serverless v2 or provisioned
-	// DB cluster, use the EnableHttpEndpoint and DisableHttpEndpoint operations.
+	// disable the HTTP endpoint for an Aurora Serverless v2 or provisioned DB cluster,
+	// use the EnableHttpEndpoint and DisableHttpEndpoint operations.
 	//
 	// Valid for Cluster Type: Aurora DB clusters only
 	//
@@ -267,17 +279,22 @@ type ModifyDBClusterInput struct {
 	// Management (IAM) accounts to database accounts. By default, mapping isn't
 	// enabled.
 	//
-	// For more information, see [IAM Database Authentication] in the Amazon Aurora User Guide.
+	// For more information, see [IAM Database Authentication] in the Amazon Aurora User Guide or [IAM database authentication for MariaDB, MySQL, and PostgreSQL] in the Amazon
+	// RDS User Guide.
 	//
-	// Valid for Cluster Type: Aurora DB clusters only
+	// Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters
 	//
 	// [IAM Database Authentication]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.IAMDBAuth.html
+	// [IAM database authentication for MariaDB, MySQL, and PostgreSQL]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.html
 	EnableIAMDatabaseAuthentication *bool
 
 	// Specifies whether to enable Aurora Limitless Database. You must enable Aurora
 	// Limitless Database to create a DB shard group.
 	//
 	// Valid for: Aurora DB clusters only
+	//
+	// This setting is no longer used. Instead use the ClusterScalabilityType setting
+	// when you create your Aurora Limitless Database DB cluster.
 	EnableLimitlessDatabase *bool
 
 	// Specifies whether read replicas can forward write operations to the writer DB
@@ -291,7 +308,7 @@ type ModifyDBClusterInput struct {
 	//
 	// For more information, see [Using Amazon Performance Insights] in the Amazon RDS User Guide.
 	//
-	// Valid for Cluster Type: Multi-AZ DB clusters only
+	// Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters
 	//
 	// [Using Amazon Performance Insights]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PerfInsights.html
 	EnablePerformanceInsights *bool
@@ -497,12 +514,12 @@ type ModifyDBClusterInput struct {
 	// Services account. Your Amazon Web Services account has a different default KMS
 	// key for each Amazon Web Services Region.
 	//
-	// Valid for Cluster Type: Multi-AZ DB clusters only
+	// Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters
 	PerformanceInsightsKMSKeyId *string
 
 	// The number of days to retain Performance Insights data.
 	//
-	// Valid for Cluster Type: Multi-AZ DB clusters only
+	// Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters
 	//
 	// Valid Values:
 	//
@@ -713,6 +730,9 @@ func (c *Client) addOperationModifyDBClusterMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -729,6 +749,9 @@ func (c *Client) addOperationModifyDBClusterMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpModifyDBClusterValidationMiddleware(stack); err != nil {
@@ -750,6 +773,18 @@ func (c *Client) addOperationModifyDBClusterMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

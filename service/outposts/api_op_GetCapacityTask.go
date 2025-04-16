@@ -45,6 +45,10 @@ type GetCapacityTaskInput struct {
 
 type GetCapacityTaskOutput struct {
 
+	// The ID of the Outpost asset. An Outpost asset can be a single server within an
+	// Outposts rack or an Outposts server configuration.
+	AssetId *string
+
 	// ID of the capacity task.
 	CapacityTaskId *string
 
@@ -57,9 +61,18 @@ type GetCapacityTaskOutput struct {
 	//
 	//   - IN_PROGRESS - The capacity task is running and cannot be cancelled.
 	//
+	//   - FAILED - The capacity task could not be completed.
+	//
+	//   - COMPLETED - The capacity task has completed successfully.
+	//
 	//   - WAITING_FOR_EVACUATION - The capacity task requires capacity to run. You
 	//   must stop the recommended EC2 running instances to free up capacity for the task
 	//   to run.
+	//
+	//   - CANCELLATION_IN_PROGRESS - The capacity task has been cancelled and is in
+	//   the process of cleaning up resources.
+	//
+	//   - CANCELLED - The capacity task is cancelled.
 	CapacityTaskStatus types.CapacityTaskStatus
 
 	// The date the capacity task ran successfully.
@@ -74,6 +87,10 @@ type GetCapacityTaskOutput struct {
 	// Reason why the capacity task failed.
 	Failed *types.CapacityTaskFailure
 
+	// Instances that the user specified they cannot stop in order to free up the
+	// capacity needed to run the capacity task.
+	InstancesToExclude *types.InstancesToExclude
+
 	// The date the capacity task was last modified.
 	LastModifiedDate *time.Time
 
@@ -86,6 +103,15 @@ type GetCapacityTaskOutput struct {
 
 	// List of instance pools requested in the capacity task.
 	RequestedInstancePools []types.InstanceTypeCapacity
+
+	// User-specified option in case an instance is blocking the capacity task from
+	// running. Shows one of the following options:
+	//
+	//   - WAIT_FOR_EVACUATION - Checks every 10 minutes over 48 hours to determine if
+	//   instances have stopped and capacity is available to complete the task.
+	//
+	//   - FAIL_TASK - The capacity task fails.
+	TaskActionOnBlockingInstances types.TaskActionOnBlockingInstances
 
 	// Metadata pertaining to the operation's result.
 	ResultMetadata middleware.Metadata
@@ -136,6 +162,9 @@ func (c *Client) addOperationGetCapacityTaskMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -152,6 +181,9 @@ func (c *Client) addOperationGetCapacityTaskMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetCapacityTaskValidationMiddleware(stack); err != nil {
@@ -173,6 +205,18 @@ func (c *Client) addOperationGetCapacityTaskMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

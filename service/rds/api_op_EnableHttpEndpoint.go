@@ -19,9 +19,9 @@ import (
 //
 // For more information, see [Using RDS Data API] in the Amazon Aurora User Guide.
 //
-// This operation applies only to Aurora PostgreSQL Serverless v2 and provisioned
-// DB clusters. To enable the HTTP endpoint for Aurora Serverless v1 DB clusters,
-// use the EnableHttpEndpoint parameter of the ModifyDBCluster operation.
+// This operation applies only to Aurora Serverless v2 and provisioned DB
+// clusters. To enable the HTTP endpoint for Aurora Serverless v1 DB clusters, use
+// the EnableHttpEndpoint parameter of the ModifyDBCluster operation.
 //
 // [Using RDS Data API]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html
 func (c *Client) EnableHttpEndpoint(ctx context.Context, params *EnableHttpEndpointInput, optFns ...func(*Options)) (*EnableHttpEndpointOutput, error) {
@@ -106,6 +106,9 @@ func (c *Client) addOperationEnableHttpEndpointMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -122,6 +125,9 @@ func (c *Client) addOperationEnableHttpEndpointMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpEnableHttpEndpointValidationMiddleware(stack); err != nil {
@@ -143,6 +149,18 @@ func (c *Client) addOperationEnableHttpEndpointMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

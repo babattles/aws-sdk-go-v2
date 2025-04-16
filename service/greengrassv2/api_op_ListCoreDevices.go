@@ -26,7 +26,13 @@ import (
 //   - When the core device receives a deployment from the Amazon Web Services
 //     Cloud
 //
-//   - When the status of any component on the core device becomes BROKEN
+//   - For Greengrass nucleus 2.12.2 and earlier, the core device sends status
+//     updates when the status of any component on the core device becomes ERRORED or
+//     BROKEN .
+//
+//   - For Greengrass nucleus 2.12.3 and later, the core device sends status
+//     updates when the status of any component on the core device becomes ERRORED ,
+//     BROKEN , RUNNING , or FINISHED .
 //
 //   - At a [regular interval that you can configure], which defaults to 24 hours
 //
@@ -56,6 +62,13 @@ type ListCoreDevicesInput struct {
 
 	// The token to be used for the next set of paginated results.
 	NextToken *string
+
+	// The runtime to be used by the core device. The runtime can be:
+	//
+	//   - aws_nucleus_classic
+	//
+	//   - aws_nucleus_lite
+	Runtime *string
 
 	// The core device status by which to filter. If you specify this parameter, the
 	// list includes only core devices that have this status. Choose one of the
@@ -137,6 +150,9 @@ func (c *Client) addOperationListCoreDevicesMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -155,6 +171,9 @@ func (c *Client) addOperationListCoreDevicesMiddlewares(stack *middleware.Stack,
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListCoreDevices(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -171,6 +190,18 @@ func (c *Client) addOperationListCoreDevicesMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

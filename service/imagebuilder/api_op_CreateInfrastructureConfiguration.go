@@ -68,7 +68,12 @@ type CreateInfrastructureConfigurationInput struct {
 	// The logging configuration of the infrastructure configuration.
 	Logging *types.Logging
 
-	// The tags attached to the resource created by Image Builder.
+	// The instance placement settings that define where the instances that are
+	// launched from your image will run.
+	Placement *types.Placement
+
+	// The metadata tags to assign to the Amazon EC2 instance that Image Builder
+	// launches during the build process. Tags are formatted as key value pairs.
 	ResourceTags map[string]string
 
 	// The security group IDs to associate with the instance used to customize your
@@ -87,7 +92,8 @@ type CreateInfrastructureConfigurationInput struct {
 	// AMI.
 	SubnetId *string
 
-	// The tags of the infrastructure configuration.
+	// The metadata tags to assign to the infrastructure configuration resource that
+	// Image Builder creates as output. Tags are formatted as key value pairs.
 	Tags map[string]string
 
 	// The terminate instance on failure setting of the infrastructure configuration.
@@ -159,6 +165,9 @@ func (c *Client) addOperationCreateInfrastructureConfigurationMiddlewares(stack 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -175,6 +184,9 @@ func (c *Client) addOperationCreateInfrastructureConfigurationMiddlewares(stack 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateInfrastructureConfigurationMiddleware(stack, options); err != nil {
@@ -199,6 +211,18 @@ func (c *Client) addOperationCreateInfrastructureConfigurationMiddlewares(stack 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

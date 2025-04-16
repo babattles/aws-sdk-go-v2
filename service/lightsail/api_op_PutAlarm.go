@@ -26,7 +26,7 @@ import (
 // completely overwrites the previous configuration of the alarm. The alarm is then
 // evaluated with the updated configuration.
 //
-// [Alarms in Amazon Lightsail]: https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-alarms
+// [Alarms in Amazon Lightsail]: https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-alarms
 func (c *Client) PutAlarm(ctx context.Context, params *PutAlarmInput, optFns ...func(*Options)) (*PutAlarmOutput, error) {
 	if params == nil {
 		params = &PutAlarmInput{}
@@ -94,7 +94,7 @@ type PutAlarmInput struct {
 	//
 	// For more information about these metrics, see [Metrics available in Lightsail].
 	//
-	// [Metrics available in Lightsail]: https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-resource-health-metrics#available-metrics
+	// [Metrics available in Lightsail]: https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-resource-health-metrics#available-metrics
 	//
 	// This member is required.
 	MetricName types.MetricName
@@ -239,6 +239,9 @@ func (c *Client) addOperationPutAlarmMiddlewares(stack *middleware.Stack, option
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -255,6 +258,9 @@ func (c *Client) addOperationPutAlarmMiddlewares(stack *middleware.Stack, option
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpPutAlarmValidationMiddleware(stack); err != nil {
@@ -276,6 +282,18 @@ func (c *Client) addOperationPutAlarmMiddlewares(stack *middleware.Stack, option
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

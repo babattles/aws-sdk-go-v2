@@ -93,6 +93,15 @@ type StartAssetBundleExportJobInput struct {
 	// is also exported.
 	IncludeAllDependencies bool
 
+	// A setting that indicates whether you want to include folder assets. You can
+	// also use this setting to recusrsively include all subfolders of an exported
+	// folder.
+	IncludeFolderMembers types.IncludeFolderMembers
+
+	// A Boolean that determines if the exported asset carries over information about
+	// the folders that the asset is a member of.
+	IncludeFolderMemberships bool
+
 	// A Boolean that determines whether all permissions for each resource ARN are
 	// exported with the job. If you set IncludePermissions to TRUE , any permissions
 	// associated with each resource are exported.
@@ -177,6 +186,9 @@ func (c *Client) addOperationStartAssetBundleExportJobMiddlewares(stack *middlew
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -193,6 +205,9 @@ func (c *Client) addOperationStartAssetBundleExportJobMiddlewares(stack *middlew
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpStartAssetBundleExportJobValidationMiddleware(stack); err != nil {
@@ -214,6 +229,18 @@ func (c *Client) addOperationStartAssetBundleExportJobMiddlewares(stack *middlew
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

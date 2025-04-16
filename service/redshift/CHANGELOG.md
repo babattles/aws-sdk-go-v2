@@ -1,3 +1,151 @@
+# v1.54.2 (2025-04-03)
+
+* No change notes available for this release.
+
+# v1.54.1 (2025-03-04.2)
+
+* **Bug Fix**: Add assurance test for operation order.
+
+# v1.54.0 (2025-02-27)
+
+* **Feature**: Track credential providers via User-Agent Feature ids
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.53.13 (2025-02-18)
+
+* **Bug Fix**: Bump go version to 1.22
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.53.12 (2025-02-05)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.53.11 (2025-02-04)
+
+* No change notes available for this release.
+
+# v1.53.10 (2025-01-31)
+
+* **Dependency Update**: Switch to code-generated waiter matchers, removing the dependency on go-jmespath.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.53.9 (2025-01-30)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.53.8 (2025-01-24)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+* **Dependency Update**: Upgrade to smithy-go v1.22.2.
+
+# v1.53.7 (2025-01-17)
+
+* **Bug Fix**: Fix bug where credentials weren't refreshed during retry loop.
+
+# v1.53.6 (2025-01-15)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.53.5 (2025-01-14)
+
+* **Bug Fix**: Fix issue where waiters were not failing on unmatched errors as they should. This may have breaking behavioral changes for users in fringe cases. See [this announcement](https://github.com/aws/aws-sdk-go-v2/discussions/2954) for more information.
+
+# v1.53.4 (2025-01-10)
+
+* **Documentation**: Additions to the PubliclyAccessible and Encrypted parameters clarifying what the defaults are.
+
+# v1.53.3 (2025-01-09)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.53.2 (2025-01-08)
+
+* No change notes available for this release.
+
+# v1.53.1 (2024-12-19)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.53.0 (2024-12-03.2)
+
+* **Feature**: Adds support for Amazon Redshift RegisterNamespace and DeregisterNamespace APIs to share data to AWS Glue Data Catalog.
+
+# v1.52.2 (2024-12-02)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.52.1 (2024-11-18)
+
+* **Dependency Update**: Update to smithy-go v1.22.1.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.52.0 (2024-11-14)
+
+* **Feature**: Adds support for Amazon Redshift S3AccessGrants
+
+# v1.51.1 (2024-11-06)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.51.0 (2024-10-30)
+
+* **Feature**: This release launches S3 event integrations to create and manage integrations from an Amazon S3 source into an Amazon Redshift database.
+
+# v1.50.1 (2024-10-28)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.50.0 (2024-10-15)
+
+* **Feature**: This release launches the CreateIntegration, DeleteIntegration, DescribeIntegrations and ModifyIntegration APIs to create and manage Amazon Redshift Zero-ETL Integrations.
+
+# v1.49.1 (2024-10-08)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.49.0 (2024-10-07)
+
+* **Feature**: Add validation pattern to S3KeyPrefix on the EnableLogging API
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.48.0 (2024-10-04)
+
+* **Feature**: Add support for HTTP client metrics.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.47.4 (2024-10-03)
+
+* No change notes available for this release.
+
+# v1.47.3 (2024-09-27)
+
+* No change notes available for this release.
+
+# v1.47.2 (2024-09-25)
+
+* No change notes available for this release.
+
+# v1.47.1 (2024-09-23)
+
+* No change notes available for this release.
+
+# v1.47.0 (2024-09-20)
+
+* **Feature**: Add tracing and metrics support to service clients.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.46.9 (2024-09-17)
+
+* **Bug Fix**: **BREAKFIX**: Only generate AccountIDEndpointMode config for services that use it. This is a compiler break, but removes no actual functionality, as no services currently use the account ID in endpoint resolution.
+
+# v1.46.8 (2024-09-04)
+
+* No change notes available for this release.
+
+# v1.46.7 (2024-09-03)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
 # v1.46.6 (2024-08-22)
 
 * No change notes available for this release.

@@ -64,6 +64,14 @@ type DescribePipeOutput struct {
 	// The parameters required to set up enrichment on your pipe.
 	EnrichmentParameters *types.PipeEnrichmentParameters
 
+	// The identifier of the KMS customer managed key for EventBridge to use to
+	// encrypt pipe data, if one has been specified.
+	//
+	// For more information, see [Data encryption in EventBridge] in the Amazon EventBridge User Guide.
+	//
+	// [Data encryption in EventBridge]: https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-encryption.html
+	KmsKeyIdentifier *string
+
 	// When the pipe was last updated, in [ISO-8601 format] (YYYY-MM-DDThh:mm:ss.sTZD).
 	//
 	// [ISO-8601 format]: https://www.w3.org/TR/NOTE-datetime
@@ -150,6 +158,9 @@ func (c *Client) addOperationDescribePipeMiddlewares(stack *middleware.Stack, op
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -166,6 +177,9 @@ func (c *Client) addOperationDescribePipeMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribePipeValidationMiddleware(stack); err != nil {
@@ -187,6 +201,18 @@ func (c *Client) addOperationDescribePipeMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

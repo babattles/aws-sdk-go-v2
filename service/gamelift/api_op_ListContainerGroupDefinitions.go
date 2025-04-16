@@ -11,23 +11,29 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-//	This operation is used with the Amazon GameLift containers feature, which is
+// Retrieves container group definitions for the Amazon Web Services account and
+// Amazon Web Services Region. Use the pagination parameters to retrieve results in
+// a set of sequential pages.
 //
-// currently in public preview.
+// This operation returns only the latest version of each definition. To retrieve
+// all versions of a container group definition, use [ListContainerGroupDefinitionVersions].
 //
-// Retrieves all container group definitions for the Amazon Web Services account
-// and Amazon Web Services Region that are currently in use. You can filter the
-// result set by the container groups' scheduling strategy. Use the pagination
-// parameters to retrieve results in a set of sequential pages.
+// Request options:
+//
+//   - Retrieve the most recent versions of all container group definitions.
+//
+//   - Retrieve the most recent versions of all container group definitions,
+//     filtered by type. Specify the container group type to filter on.
+//
+// Results:
+//
+// If successful, this operation returns the complete properties of a set of
+// container group definition versions that match the request.
 //
 // This operation returns the list of container group definitions in no particular
 // order.
 //
-// # Learn more
-//
-// [Manage a container group definition]
-//
-// [Manage a container group definition]: https://docs.aws.amazon.com/gamelift/latest/developerguide/containers-create-groups.html
+// [ListContainerGroupDefinitionVersions]: https://docs.aws.amazon.com/gamelift/latest/apireference/API_ListContainerGroupDefinitionVersions.html
 func (c *Client) ListContainerGroupDefinitions(ctx context.Context, params *ListContainerGroupDefinitionsInput, optFns ...func(*Options)) (*ListContainerGroupDefinitionsOutput, error) {
 	if params == nil {
 		params = &ListContainerGroupDefinitionsInput{}
@@ -45,6 +51,10 @@ func (c *Client) ListContainerGroupDefinitions(ctx context.Context, params *List
 
 type ListContainerGroupDefinitionsInput struct {
 
+	// The type of container group to retrieve. Container group type determines how
+	// Amazon GameLift deploys the container group on each fleet instance.
+	ContainerGroupType types.ContainerGroupType
+
 	// The maximum number of results to return. Use this parameter with NextToken to
 	// get results as a set of sequential pages.
 	Limit *int32
@@ -53,16 +63,6 @@ type ListContainerGroupDefinitionsInput struct {
 	// the token that is returned with a previous call to this operation. To start at
 	// the beginning of the result set, do not specify a value.
 	NextToken *string
-
-	// The type of container group definitions to retrieve.
-	//
-	//   - DAEMON -- Daemon container groups run background processes and are deployed
-	//   once per fleet instance.
-	//
-	//   - REPLICA -- Replica container groups run your game server application and
-	//   supporting software. Replica groups might be deployed multiple times per fleet
-	//   instance.
-	SchedulingStrategy types.ContainerSchedulingStrategy
 
 	noSmithyDocumentSerde
 }
@@ -126,6 +126,9 @@ func (c *Client) addOperationListContainerGroupDefinitionsMiddlewares(stack *mid
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -144,6 +147,9 @@ func (c *Client) addOperationListContainerGroupDefinitionsMiddlewares(stack *mid
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListContainerGroupDefinitions(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -160,6 +166,18 @@ func (c *Client) addOperationListContainerGroupDefinitionsMiddlewares(stack *mid
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

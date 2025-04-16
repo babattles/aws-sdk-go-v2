@@ -34,11 +34,12 @@ type UntagResourceInput struct {
 	ResourceArn *string
 
 	// Array of tags to be removed. Array of maps, each of the form string:string
-	// (key:value) . See [Tagging AWS Resources] for details, including restrictions that apply to tags and
-	// "Tag naming limits and requirements"; Amazon IVS Chat has no constraints beyond
-	// what is documented there.
+	// (key:value) . See [Best practices and strategies] in Tagging Amazon Web Services Resources and Tag Editor for
+	// details, including restrictions that apply to tags and "Tag naming limits and
+	// requirements"; Amazon IVS Chat has no constraints beyond what is documented
+	// there.
 	//
-	// [Tagging AWS Resources]: https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html
+	// [Best practices and strategies]: https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html
 	//
 	// This member is required.
 	TagKeys []string
@@ -96,6 +97,9 @@ func (c *Client) addOperationUntagResourceMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -112,6 +116,9 @@ func (c *Client) addOperationUntagResourceMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUntagResourceValidationMiddleware(stack); err != nil {
@@ -133,6 +140,18 @@ func (c *Client) addOperationUntagResourceMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

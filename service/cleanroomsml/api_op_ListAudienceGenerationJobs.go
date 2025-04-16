@@ -54,8 +54,7 @@ type ListAudienceGenerationJobsOutput struct {
 	// This member is required.
 	AudienceGenerationJobs []types.AudienceGenerationJobSummary
 
-	// The token value retrieved from a previous call to access the next page of
-	// results.
+	// The token value used to access the next page of results.
 	NextToken *string
 
 	// Metadata pertaining to the operation's result.
@@ -107,6 +106,9 @@ func (c *Client) addOperationListAudienceGenerationJobsMiddlewares(stack *middle
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -125,6 +127,9 @@ func (c *Client) addOperationListAudienceGenerationJobsMiddlewares(stack *middle
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListAudienceGenerationJobs(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -141,6 +146,18 @@ func (c *Client) addOperationListAudienceGenerationJobsMiddlewares(stack *middle
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

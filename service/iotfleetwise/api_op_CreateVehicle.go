@@ -64,9 +64,14 @@ type CreateVehicleInput struct {
 	// Static information about a vehicle in a key-value pair. For example:
 	// "engineType" : "1.3 L R2"
 	//
-	// A campaign must include the keys (attribute names) in dataExtraDimensions for
-	// them to display in Amazon Timestream.
+	// To use attributes with Campaigns or State Templates, you must include them
+	// using the request parameters dataExtraDimensions and/or metadataExtraDimensions
+	// (for state templates only) when creating your campaign/state template.
 	Attributes map[string]string
+
+	// Associate state templates with the vehicle. You can monitor the last known
+	// state of the vehicle in near real time.
+	StateTemplates []types.StateTemplateAssociation
 
 	// Metadata that can be used to manage the vehicle.
 	Tags []types.Tag
@@ -134,6 +139,9 @@ func (c *Client) addOperationCreateVehicleMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -150,6 +158,9 @@ func (c *Client) addOperationCreateVehicleMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateVehicleValidationMiddleware(stack); err != nil {
@@ -171,6 +182,18 @@ func (c *Client) addOperationCreateVehicleMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

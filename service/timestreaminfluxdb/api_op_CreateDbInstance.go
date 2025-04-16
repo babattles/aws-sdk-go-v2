@@ -50,7 +50,7 @@ type CreateDbInstanceInput struct {
 	// The password of the initial admin user created in InfluxDB. This password will
 	// allow you to access the InfluxDB UI to perform various administrative tasks and
 	// also use the InfluxDB CLI to create an operator token. These attributes will be
-	// stored in a Secret created in AWS SecretManager in your account.
+	// stored in a Secret created in Secrets Manager in your account.
 	//
 	// This member is required.
 	Password *string
@@ -97,9 +97,23 @@ type CreateDbInstanceInput struct {
 	// Configuration for sending InfluxDB engine logs to a specified S3 bucket.
 	LogDeliveryConfiguration *types.LogDeliveryConfiguration
 
+	// Specifies whether the networkType of the Timestream for InfluxDB instance is
+	// IPV4, which can communicate over IPv4 protocol only, or DUAL, which can
+	// communicate over both IPv4 and IPv6 protocols.
+	NetworkType types.NetworkType
+
 	// The name of the initial organization for the initial admin user in InfluxDB. An
 	// InfluxDB organization is a workspace for a group of users.
 	Organization *string
+
+	// The port number on which InfluxDB accepts connections.
+	//
+	// Valid Values: 1024-65535
+	//
+	// Default: 8086
+	//
+	// Constraints: The value can't be 2375-2376, 7788-7799, 8090, or 51678-51680
+	Port *int32
 
 	// Configures the DB instance with a public IP to facilitate access.
 	PubliclyAccessible *bool
@@ -147,6 +161,9 @@ type CreateDbInstanceOutput struct {
 	// The Availability Zone in which the DB instance resides.
 	AvailabilityZone *string
 
+	// Specifies the DbCluster to which this DbInstance belongs to.
+	DbClusterId *string
+
 	// The Timestream for InfluxDB instance type that InfluxDB runs on.
 	DbInstanceType types.DbInstanceType
 
@@ -163,14 +180,26 @@ type CreateDbInstanceOutput struct {
 	// The endpoint used to connect to InfluxDB. The default InfluxDB port is 8086.
 	Endpoint *string
 
-	// The Amazon Resource Name (ARN) of the AWS Secrets Manager secret containing the
+	// The Amazon Resource Name (ARN) of the Secrets Manager secret containing the
 	// initial InfluxDB authorization parameters. The secret value is a JSON formatted
 	// key-value pair holding InfluxDB authorization values: organization, bucket,
 	// username, and password.
 	InfluxAuthParametersSecretArn *string
 
+	// Specifies the DbInstance's role in the cluster.
+	InstanceMode types.InstanceMode
+
 	// Configuration for sending InfluxDB engine logs to send to specified S3 bucket.
 	LogDeliveryConfiguration *types.LogDeliveryConfiguration
+
+	// Specifies whether the networkType of the Timestream for InfluxDB instance is
+	// IPV4, which can communicate over IPv4 protocol only, or DUAL, which can
+	// communicate over both IPv4 and IPv6 protocols.
+	NetworkType types.NetworkType
+
+	// The port number on which InfluxDB accepts connections. The default value is
+	// 8086.
+	Port *int32
 
 	// Indicates if the DB instance has a public IP to facilitate access.
 	PubliclyAccessible *bool
@@ -234,6 +263,9 @@ func (c *Client) addOperationCreateDbInstanceMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -250,6 +282,9 @@ func (c *Client) addOperationCreateDbInstanceMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateDbInstanceValidationMiddleware(stack); err != nil {
@@ -271,6 +306,18 @@ func (c *Client) addOperationCreateDbInstanceMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

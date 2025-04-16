@@ -19,7 +19,7 @@ import (
 // For more information about buckets, see [Buckets in Amazon Lightsail] in the Amazon Lightsail Developer
 // Guide.
 //
-// [Buckets in Amazon Lightsail]: https://lightsail.aws.amazon.com/ls/docs/en_us/articles/buckets-in-amazon-lightsail
+// [Buckets in Amazon Lightsail]: https://docs.aws.amazon.com/lightsail/latest/userguide/buckets-in-amazon-lightsail
 func (c *Client) GetBuckets(ctx context.Context, params *GetBucketsInput, optFns ...func(*Options)) (*GetBucketsOutput, error) {
 	if params == nil {
 		params = &GetBucketsInput{}
@@ -67,7 +67,7 @@ type GetBucketsOutput struct {
 	// For more information about this feature and how it affects Lightsail buckets,
 	// see [Block public access for buckets in Amazon Lightsail].
 	//
-	// [Block public access for buckets in Amazon Lightsail]: https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-block-public-access-for-buckets
+	// [Block public access for buckets in Amazon Lightsail]: https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-block-public-access-for-buckets
 	AccountLevelBpaSync *types.AccountLevelBpaSync
 
 	// An array of objects that describe buckets.
@@ -130,6 +130,9 @@ func (c *Client) addOperationGetBucketsMiddlewares(stack *middleware.Stack, opti
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -148,6 +151,9 @@ func (c *Client) addOperationGetBucketsMiddlewares(stack *middleware.Stack, opti
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opGetBuckets(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -164,6 +170,18 @@ func (c *Client) addOperationGetBucketsMiddlewares(stack *middleware.Stack, opti
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

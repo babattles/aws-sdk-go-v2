@@ -14,6 +14,10 @@ import (
 //	For a batch of security controls and standards, identifies whether each
 //
 // control is currently enabled or disabled in a standard.
+//
+// Calls to this operation return a RESOURCE_NOT_FOUND_EXCEPTION error when the
+// standard subscription for the association has a NOT_READY_FOR_UPDATES value for
+// StandardsControlsUpdatable .
 func (c *Client) BatchGetStandardsControlAssociations(ctx context.Context, params *BatchGetStandardsControlAssociationsInput, optFns ...func(*Options)) (*BatchGetStandardsControlAssociationsOutput, error) {
 	if params == nil {
 		params = &BatchGetStandardsControlAssociationsInput{}
@@ -105,6 +109,9 @@ func (c *Client) addOperationBatchGetStandardsControlAssociationsMiddlewares(sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -121,6 +128,9 @@ func (c *Client) addOperationBatchGetStandardsControlAssociationsMiddlewares(sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpBatchGetStandardsControlAssociationsValidationMiddleware(stack); err != nil {
@@ -142,6 +152,18 @@ func (c *Client) addOperationBatchGetStandardsControlAssociationsMiddlewares(sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

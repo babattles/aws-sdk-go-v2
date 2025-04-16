@@ -50,9 +50,6 @@ type GetDevicePoolCompatibilityInput struct {
 	//
 	//   - BUILTIN_FUZZ.
 	//
-	//   - BUILTIN_EXPLORER. For Android, an app explorer that traverses an Android
-	//   app, interacting with it and capturing screenshots at the same time.
-	//
 	//   - APPIUM_JAVA_JUNIT.
 	//
 	//   - APPIUM_JAVA_TESTNG.
@@ -73,13 +70,7 @@ type GetDevicePoolCompatibilityInput struct {
 	//
 	//   - APPIUM_WEB_RUBY.
 	//
-	//   - CALABASH.
-	//
 	//   - INSTRUMENTATION.
-	//
-	//   - UIAUTOMATION.
-	//
-	//   - UIAUTOMATOR.
 	//
 	//   - XCTEST.
 	//
@@ -147,6 +138,9 @@ func (c *Client) addOperationGetDevicePoolCompatibilityMiddlewares(stack *middle
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -163,6 +157,9 @@ func (c *Client) addOperationGetDevicePoolCompatibilityMiddlewares(stack *middle
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetDevicePoolCompatibilityValidationMiddleware(stack); err != nil {
@@ -184,6 +181,18 @@ func (c *Client) addOperationGetDevicePoolCompatibilityMiddlewares(stack *middle
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

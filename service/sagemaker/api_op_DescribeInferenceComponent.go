@@ -77,6 +77,10 @@ type DescribeInferenceComponentOutput struct {
 	// The status of the inference component.
 	InferenceComponentStatus types.InferenceComponentStatus
 
+	// The deployment and rollback settings that you assigned to the inference
+	// component.
+	LastDeploymentConfig *types.InferenceComponentDeploymentConfig
+
 	// Details about the runtime settings for the model that is deployed with the
 	// inference component.
 	RuntimeConfig *types.InferenceComponentRuntimeConfigSummary
@@ -136,6 +140,9 @@ func (c *Client) addOperationDescribeInferenceComponentMiddlewares(stack *middle
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -152,6 +159,9 @@ func (c *Client) addOperationDescribeInferenceComponentMiddlewares(stack *middle
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeInferenceComponentValidationMiddleware(stack); err != nil {
@@ -173,6 +183,18 @@ func (c *Client) addOperationDescribeInferenceComponentMiddlewares(stack *middle
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

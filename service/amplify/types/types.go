@@ -21,7 +21,7 @@ type App struct {
 	// This member is required.
 	AppId *string
 
-	// Creates a date and time for the Amplify app.
+	// A timestamp of when Amplify created the application.
 	//
 	// This member is required.
 	CreateTime *time.Time
@@ -66,6 +66,9 @@ type App struct {
 	// WEB_COMPUTE . For an app requiring Amplify Hosting's original SSR support only,
 	// set the platform type to WEB_DYNAMIC .
 	//
+	// If you are deploying an SSG only app with Next.js 14 or later, you must use the
+	// platform type WEB_COMPUTE .
+	//
 	// This member is required.
 	Platform Platform
 
@@ -74,7 +77,7 @@ type App struct {
 	// This member is required.
 	Repository *string
 
-	// Updates the date and time for the Amplify app.
+	// A timestamp of when Amplify updated the application.
 	//
 	// This member is required.
 	UpdateTime *time.Time
@@ -98,6 +101,14 @@ type App struct {
 	// configuration type , Amplify uses the default AMPLIFY_MANAGED setting.
 	CacheConfig *CacheConfig
 
+	// The Amazon Resource Name (ARN) of the IAM role for an SSR app. The Compute role
+	// allows the Amplify Hosting compute service to securely access specific Amazon
+	// Web Services resources based on the role's permissions. For more information
+	// about the SSR Compute role, see [Adding an SSR Compute role]in the Amplify User Guide.
+	//
+	// [Adding an SSR Compute role]: https://docs.aws.amazon.com/amplify/latest/userguide/amplify-SSR-compute-role.html
+	ComputeRoleArn *string
+
 	// Describes the custom HTTP headers for the Amplify app.
 	CustomHeaders *string
 
@@ -111,8 +122,7 @@ type App struct {
 	// branch from your Git repository.
 	EnableBranchAutoDeletion *bool
 
-	// The AWS Identity and Access Management (IAM) service role for the Amazon
-	// Resource Name (ARN) of the Amplify app.
+	// The Amazon Resource Name (ARN) of the IAM service role for the Amplify app.
 	IamServiceRoleArn *string
 
 	// Describes the information about a production branch of the Amplify app.
@@ -128,6 +138,14 @@ type App struct {
 
 	// The tag for the Amplify app.
 	Tags map[string]string
+
+	// Describes the Firewall configuration for the Amplify app. Firewall support
+	// enables you to protect your hosted applications with a direct integration with
+	// WAF.
+	WafConfiguration *WafConfiguration
+
+	// A timestamp of when Amplify created the webhook in your Git repository.
+	WebhookCreateTime *time.Time
 
 	noSmithyDocumentSerde
 }
@@ -258,7 +276,7 @@ type Branch struct {
 	// This member is required.
 	BranchName *string
 
-	//  The creation date and time for a branch that is part of an Amplify app.
+	// A timestamp of when Amplify created the branch.
 	//
 	// This member is required.
 	CreateTime *time.Time
@@ -323,7 +341,7 @@ type Branch struct {
 	// This member is required.
 	Ttl *string
 
-	//  The last updated date and time for a branch that is part of an Amplify app.
+	// A timestamp for the last updated time for a branch.
 	//
 	// This member is required.
 	UpdateTime *time.Time
@@ -354,6 +372,14 @@ type Branch struct {
 	//  The build specification (build spec) content for the branch of an Amplify app.
 	BuildSpec *string
 
+	// The Amazon Resource Name (ARN) of the IAM role for a branch of an SSR app. The
+	// Compute role allows the Amplify Hosting compute service to securely access
+	// specific Amazon Web Services resources based on the role's permissions. For more
+	// information about the SSR Compute role, see [Adding an SSR Compute role]in the Amplify User Guide.
+	//
+	// [Adding an SSR Compute role]: https://docs.aws.amazon.com/amplify/latest/userguide/amplify-SSR-compute-role.html
+	ComputeRoleArn *string
+
 	//  The destination branch if the branch is a pull request branch.
 	DestinationBranch *string
 
@@ -363,6 +389,18 @@ type Branch struct {
 	// cached at the edge for a longer interval. When performance mode is enabled,
 	// hosting configuration or code changes can take up to 10 minutes to roll out.
 	EnablePerformanceMode *bool
+
+	// Specifies whether the skew protection feature is enabled for the branch.
+	//
+	// Deployment skew protection is available to Amplify applications to eliminate
+	// version skew issues between client and servers in web applications. When you
+	// apply skew protection to a branch, you can ensure that your clients always
+	// interact with the correct version of server-side assets, regardless of when a
+	// deployment occurs. For more information about skew protection, see [Skew protection for Amplify deployments]in the
+	// Amplify User Guide.
+	//
+	// [Skew protection for Amplify deployments]: https://docs.aws.amazon.com/amplify/latest/userguide/skew-protection.html
+	EnableSkewProtection *bool
 
 	//  The Amplify environment name for the pull request.
 	PullRequestEnvironmentName *string
@@ -611,7 +649,7 @@ type JobSummary struct {
 	// This member is required.
 	CommitMessage *string
 
-	//  The commit date and time for the job.
+	// The commit date and time for the job.
 	//
 	// This member is required.
 	CommitTime *time.Time
@@ -627,9 +665,13 @@ type JobSummary struct {
 	JobId *string
 
 	//  The type for the job. If the value is RELEASE , the job was manually released
-	// from its source by using the StartJob API. If the value is RETRY , the job was
-	// manually retried using the StartJob API. If the value is WEB_HOOK , the job was
-	// automatically triggered by webhooks.
+	// from its source by using the StartJob API. This value is available only for
+	// apps that are connected to a repository.
+	//
+	// If the value is RETRY , the job was manually retried using the StartJob API. If
+	// the value is WEB_HOOK , the job was automatically triggered by webhooks. If the
+	// value is MANUAL , the job is for a manually deployed app. Manually deployed apps
+	// are not connected to a Git repository.
 	//
 	// This member is required.
 	JobType JobType
@@ -646,6 +688,16 @@ type JobSummary struct {
 
 	//  The end date and time for the job.
 	EndTime *time.Time
+
+	// The source URL for the files to deploy. The source URL can be either an HTTP
+	// GET URL that is publicly accessible and downloads a single .zip file, or an
+	// Amazon S3 bucket and prefix.
+	SourceUrl *string
+
+	// The type of source specified by the sourceURL . If the value is ZIP , the source
+	// is a .zip file. If the value is BUCKET_PREFIX , the source is an Amazon S3
+	// bucket and prefix. If no value is specified, the default is ZIP .
+	SourceUrlType SourceUrlType
 
 	noSmithyDocumentSerde
 }
@@ -691,7 +743,7 @@ type Step struct {
 	// This member is required.
 	StepName *string
 
-	//  The URL to the artifact for the execution step.
+	//  The URL to the build artifact for the execution step.
 	ArtifactsUrl *string
 
 	//  The context for the current step. Includes a build image if the step is build.
@@ -752,6 +804,27 @@ type SubDomainSetting struct {
 	noSmithyDocumentSerde
 }
 
+// Describes the Firewall configuration for a hosted Amplify application. Firewall
+// support enables you to protect your web applications with a direct integration
+// with WAF. For more information about using WAF protections for an Amplify
+// application, see [Firewall support for hosted sites]in the Amplify User Guide.
+//
+// [Firewall support for hosted sites]: https://docs.aws.amazon.com/amplify/latest/userguide/WAF-integration.html
+type WafConfiguration struct {
+
+	// The reason for the current status of the Firewall configuration.
+	StatusReason *string
+
+	// The status of the process to associate or disassociate a web ACL to an Amplify
+	// app.
+	WafStatus WafStatus
+
+	// The Amazon Resource Name (ARN) for the web ACL associated with an Amplify app.
+	WebAclArn *string
+
+	noSmithyDocumentSerde
+}
+
 // Describes a webhook that connects repository events to an Amplify app.
 type Webhook struct {
 
@@ -760,7 +833,7 @@ type Webhook struct {
 	// This member is required.
 	BranchName *string
 
-	// The create date and time for a webhook.
+	// A timestamp of when Amplify created the webhook in your Git repository.
 	//
 	// This member is required.
 	CreateTime *time.Time
@@ -770,7 +843,7 @@ type Webhook struct {
 	// This member is required.
 	Description *string
 
-	// Updates the date and time for a webhook.
+	// A timestamp of when Amplify updated the webhook in your Git repository.
 	//
 	// This member is required.
 	UpdateTime *time.Time
@@ -789,6 +862,9 @@ type Webhook struct {
 	//
 	// This member is required.
 	WebhookUrl *string
+
+	// The unique ID of an Amplify app.
+	AppId *string
 
 	noSmithyDocumentSerde
 }

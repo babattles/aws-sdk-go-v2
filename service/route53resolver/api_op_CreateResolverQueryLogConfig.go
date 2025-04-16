@@ -56,11 +56,11 @@ type CreateResolverQueryLogConfigInput struct {
 	//
 	//   - S3 bucket:
 	//
-	// arn:aws:s3:::examplebucket
+	// arn:aws:s3:::amzn-s3-demo-bucket
 	//
 	// You can optionally append a file prefix to the end of the ARN.
 	//
-	// arn:aws:s3:::examplebucket/development/
+	// arn:aws:s3:::amzn-s3-demo-bucket/development/
 	//
 	//   - CloudWatch Logs log group:
 	//
@@ -140,6 +140,9 @@ func (c *Client) addOperationCreateResolverQueryLogConfigMiddlewares(stack *midd
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -156,6 +159,9 @@ func (c *Client) addOperationCreateResolverQueryLogConfigMiddlewares(stack *midd
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateResolverQueryLogConfigMiddleware(stack, options); err != nil {
@@ -180,6 +186,18 @@ func (c *Client) addOperationCreateResolverQueryLogConfigMiddlewares(stack *midd
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

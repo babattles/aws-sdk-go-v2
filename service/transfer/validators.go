@@ -130,6 +130,26 @@ func (m *validateOpCreateUser) HandleInitialize(ctx context.Context, in middlewa
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpCreateWebApp struct {
+}
+
+func (*validateOpCreateWebApp) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpCreateWebApp) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*CreateWebAppInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpCreateWebAppInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpCreateWorkflow struct {
 }
 
@@ -325,6 +345,46 @@ func (m *validateOpDeleteUser) HandleInitialize(ctx context.Context, in middlewa
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpDeleteUserInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpDeleteWebAppCustomization struct {
+}
+
+func (*validateOpDeleteWebAppCustomization) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDeleteWebAppCustomization) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DeleteWebAppCustomizationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDeleteWebAppCustomizationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpDeleteWebApp struct {
+}
+
+func (*validateOpDeleteWebApp) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDeleteWebApp) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DeleteWebAppInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDeleteWebAppInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -550,6 +610,46 @@ func (m *validateOpDescribeUser) HandleInitialize(ctx context.Context, in middle
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpDescribeWebAppCustomization struct {
+}
+
+func (*validateOpDescribeWebAppCustomization) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDescribeWebAppCustomization) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DescribeWebAppCustomizationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDescribeWebAppCustomizationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpDescribeWebApp struct {
+}
+
+func (*validateOpDescribeWebApp) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDescribeWebApp) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DescribeWebAppInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDescribeWebAppInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpDescribeWorkflow struct {
 }
 
@@ -685,6 +785,26 @@ func (m *validateOpListExecutions) HandleInitialize(ctx context.Context, in midd
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpListExecutionsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpListFileTransferResults struct {
+}
+
+func (*validateOpListFileTransferResults) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListFileTransferResults) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListFileTransferResultsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListFileTransferResultsInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -1090,6 +1210,46 @@ func (m *validateOpUpdateUser) HandleInitialize(ctx context.Context, in middlewa
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpUpdateWebAppCustomization struct {
+}
+
+func (*validateOpUpdateWebAppCustomization) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpUpdateWebAppCustomization) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*UpdateWebAppCustomizationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpUpdateWebAppCustomizationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpUpdateWebApp struct {
+}
+
+func (*validateOpUpdateWebApp) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpUpdateWebApp) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*UpdateWebAppInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpUpdateWebAppInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 func addOpCreateAccessValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpCreateAccess{}, middleware.After)
 }
@@ -1112,6 +1272,10 @@ func addOpCreateServerValidationMiddleware(stack *middleware.Stack) error {
 
 func addOpCreateUserValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpCreateUser{}, middleware.After)
+}
+
+func addOpCreateWebAppValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpCreateWebApp{}, middleware.After)
 }
 
 func addOpCreateWorkflowValidationMiddleware(stack *middleware.Stack) error {
@@ -1152,6 +1316,14 @@ func addOpDeleteSshPublicKeyValidationMiddleware(stack *middleware.Stack) error 
 
 func addOpDeleteUserValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDeleteUser{}, middleware.After)
+}
+
+func addOpDeleteWebAppCustomizationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDeleteWebAppCustomization{}, middleware.After)
+}
+
+func addOpDeleteWebAppValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDeleteWebApp{}, middleware.After)
 }
 
 func addOpDeleteWorkflowValidationMiddleware(stack *middleware.Stack) error {
@@ -1198,6 +1370,14 @@ func addOpDescribeUserValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDescribeUser{}, middleware.After)
 }
 
+func addOpDescribeWebAppCustomizationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDescribeWebAppCustomization{}, middleware.After)
+}
+
+func addOpDescribeWebAppValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDescribeWebApp{}, middleware.After)
+}
+
 func addOpDescribeWorkflowValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDescribeWorkflow{}, middleware.After)
 }
@@ -1224,6 +1404,10 @@ func addOpListAgreementsValidationMiddleware(stack *middleware.Stack) error {
 
 func addOpListExecutionsValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpListExecutions{}, middleware.After)
+}
+
+func addOpListFileTransferResultsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListFileTransferResults{}, middleware.After)
 }
 
 func addOpListHostKeysValidationMiddleware(stack *middleware.Stack) error {
@@ -1304,6 +1488,41 @@ func addOpUpdateServerValidationMiddleware(stack *middleware.Stack) error {
 
 func addOpUpdateUserValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpUpdateUser{}, middleware.After)
+}
+
+func addOpUpdateWebAppCustomizationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpUpdateWebAppCustomization{}, middleware.After)
+}
+
+func addOpUpdateWebAppValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpUpdateWebApp{}, middleware.After)
+}
+
+func validateCustomDirectoriesType(v *types.CustomDirectoriesType) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CustomDirectoriesType"}
+	if v.FailedFilesDirectory == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("FailedFilesDirectory"))
+	}
+	if v.MdnFilesDirectory == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MdnFilesDirectory"))
+	}
+	if v.PayloadFilesDirectory == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PayloadFilesDirectory"))
+	}
+	if v.StatusFilesDirectory == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("StatusFilesDirectory"))
+	}
+	if v.TemporaryFilesDirectory == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("TemporaryFilesDirectory"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
 }
 
 func validateDecryptStepDetails(v *types.DecryptStepDetails) error {
@@ -1622,15 +1841,17 @@ func validateOpCreateAgreementInput(v *CreateAgreementInput) error {
 	if v.PartnerProfileId == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("PartnerProfileId"))
 	}
-	if v.BaseDirectory == nil {
-		invalidParams.Add(smithy.NewErrParamRequired("BaseDirectory"))
-	}
 	if v.AccessRole == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("AccessRole"))
 	}
 	if v.Tags != nil {
 		if err := validateTags(v.Tags); err != nil {
 			invalidParams.AddNested("Tags", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.CustomDirectories != nil {
+		if err := validateCustomDirectoriesType(v.CustomDirectories); err != nil {
+			invalidParams.AddNested("CustomDirectories", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {
@@ -1736,6 +1957,26 @@ func validateOpCreateUserInput(v *CreateUserInput) error {
 	}
 	if v.UserName == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("UserName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpCreateWebAppInput(v *CreateWebAppInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CreateWebAppInput"}
+	if v.IdentityProviderDetails == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("IdentityProviderDetails"))
+	}
+	if v.Tags != nil {
+		if err := validateTags(v.Tags); err != nil {
+			invalidParams.AddNested("Tags", err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1926,6 +2167,36 @@ func validateOpDeleteUserInput(v *DeleteUserInput) error {
 	}
 }
 
+func validateOpDeleteWebAppCustomizationInput(v *DeleteWebAppCustomizationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DeleteWebAppCustomizationInput"}
+	if v.WebAppId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("WebAppId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpDeleteWebAppInput(v *DeleteWebAppInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DeleteWebAppInput"}
+	if v.WebAppId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("WebAppId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpDeleteWorkflowInput(v *DeleteWorkflowInput) error {
 	if v == nil {
 		return nil
@@ -2106,6 +2377,36 @@ func validateOpDescribeUserInput(v *DescribeUserInput) error {
 	}
 }
 
+func validateOpDescribeWebAppCustomizationInput(v *DescribeWebAppCustomizationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DescribeWebAppCustomizationInput"}
+	if v.WebAppId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("WebAppId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpDescribeWebAppInput(v *DescribeWebAppInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DescribeWebAppInput"}
+	if v.WebAppId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("WebAppId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpDescribeWorkflowInput(v *DescribeWorkflowInput) error {
 	if v == nil {
 		return nil
@@ -2225,6 +2526,24 @@ func validateOpListExecutionsInput(v *ListExecutionsInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "ListExecutionsInput"}
 	if v.WorkflowId == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("WorkflowId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpListFileTransferResultsInput(v *ListFileTransferResultsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListFileTransferResultsInput"}
+	if v.ConnectorId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ConnectorId"))
+	}
+	if v.TransferId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("TransferId"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -2480,6 +2799,11 @@ func validateOpUpdateAgreementInput(v *UpdateAgreementInput) error {
 	if v.ServerId == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("ServerId"))
 	}
+	if v.CustomDirectories != nil {
+		if err := validateCustomDirectoriesType(v.CustomDirectories); err != nil {
+			invalidParams.AddNested("CustomDirectories", err.(smithy.InvalidParamsError))
+		}
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -2593,6 +2917,36 @@ func validateOpUpdateUserInput(v *UpdateUserInput) error {
 	}
 	if v.UserName == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("UserName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpUpdateWebAppCustomizationInput(v *UpdateWebAppCustomizationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdateWebAppCustomizationInput"}
+	if v.WebAppId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("WebAppId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpUpdateWebAppInput(v *UpdateWebAppInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdateWebAppInput"}
+	if v.WebAppId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("WebAppId"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams

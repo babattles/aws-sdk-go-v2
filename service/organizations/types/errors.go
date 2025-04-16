@@ -386,6 +386,12 @@ func (e *ConflictException) ErrorFault() smithy.ErrorFault { return smithy.Fault
 //	organization, wait one hour and try again. After an hour, if the command
 //	continues to fail with this error, contact [Amazon Web Services Support].
 //
+//	- ALL_FEATURES_MIGRATION_ORGANIZATION_SIZE_LIMIT_EXCEEDED: Your organization
+//	has more than 5000 accounts, and you can only use the standard migration process
+//	for organizations with less than 5000 accounts. Use the assisted migration
+//	process to enable all features mode, or create a support case for assistance if
+//	you are unable to use assisted migration.
+//
 //	- CANNOT_REGISTER_SUSPENDED_ACCOUNT_AS_DELEGATED_ADMINISTRATOR: You cannot
 //	register a suspended account as a delegated administrator.
 //
@@ -497,9 +503,9 @@ func (e *ConflictException) ErrorFault() smithy.ErrorFault { return smithy.Fault
 //	- TAG_POLICY_VIOLATION: You attempted to create or update a resource with
 //	tags that are not compliant with the tag policy requirements for this account.
 //
-//	- WAIT_PERIOD_ACTIVE: After you create an Amazon Web Services account, there
-//	is a waiting period before you can remove it from the organization. If you get
-//	an error that indicates that a wait period is required, try again in a few days.
+//	- WAIT_PERIOD_ACTIVE: After you create an Amazon Web Services account, you
+//	must wait until at least seven days after the account was created. Invited
+//	accounts aren't subject to this waiting period.
 //
 // [Amazon Web Services Support]: https://console.aws.amazon.com/support/home#/
 // [Removing a member account from your organization]: https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_remove.html#orgs_manage_accounts_remove-from-master
@@ -988,6 +994,8 @@ func (e *InvalidHandshakeTransitionException) ErrorFault() smithy.ErrorFault {
 //   - INVALID_PATTERN_TARGET_ID: You specified a policy target ID that doesn't
 //     match the required pattern.
 //
+//   - INVALID_PRINCIPAL: You specified an invalid principal element in the policy.
+//
 //   - INVALID_ROLE_NAME: You provided a role name that isn't valid. A role name
 //     can't begin with the reserved prefix AWSServiceRoleFor .
 //
@@ -1018,6 +1026,9 @@ func (e *InvalidHandshakeTransitionException) ErrorFault() smithy.ErrorFault {
 //
 //   - MOVING_ACCOUNT_BETWEEN_DIFFERENT_ROOTS: You can move an account only
 //     between entities in the same root.
+//
+//   - NON_DETACHABLE_POLICY: You can't detach this Amazon Web Services Managed
+//     Policy.
 //
 //   - TARGET_NOT_SUPPORTED: You can't perform the specified operation on that
 //     target entity.

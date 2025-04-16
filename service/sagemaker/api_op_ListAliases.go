@@ -55,7 +55,7 @@ type ListAliasesOutput struct {
 	// A token for getting the next set of aliases, if more aliases exist.
 	NextToken *string
 
-	// A list of SageMaker image version aliases.
+	// A list of SageMaker AI image version aliases.
 	SageMakerImageVersionAliases []string
 
 	// Metadata pertaining to the operation's result.
@@ -107,6 +107,9 @@ func (c *Client) addOperationListAliasesMiddlewares(stack *middleware.Stack, opt
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -123,6 +126,9 @@ func (c *Client) addOperationListAliasesMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListAliasesValidationMiddleware(stack); err != nil {
@@ -144,6 +150,18 @@ func (c *Client) addOperationListAliasesMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

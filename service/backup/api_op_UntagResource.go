@@ -12,6 +12,9 @@ import (
 
 // Removes a set of key-value pairs from a recovery point, backup plan, or backup
 // vault identified by an Amazon Resource Name (ARN)
+//
+// This API is not supported for recovery points for resource types including
+// Aurora, Amazon DocumentDB. Amazon EBS, Amazon FSx, Neptune, and Amazon RDS.
 func (c *Client) UntagResource(ctx context.Context, params *UntagResourceInput, optFns ...func(*Options)) (*UntagResourceOutput, error) {
 	if params == nil {
 		params = &UntagResourceInput{}
@@ -32,10 +35,15 @@ type UntagResourceInput struct {
 	// An ARN that uniquely identifies a resource. The format of the ARN depends on
 	// the type of the tagged resource.
 	//
+	// ARNs that do not include backup are incompatible with tagging. TagResource and
+	// UntagResource with invalid ARNs will result in an error. Acceptable ARN content
+	// can include arn:aws:backup:us-east . Invalid ARN content may look like
+	// arn:aws:ec2:us-east .
+	//
 	// This member is required.
 	ResourceArn *string
 
-	// A list of keys to identify which key-value tags to remove from a resource.
+	// The keys to identify which key-value tags to remove from a resource.
 	//
 	// This member is required.
 	TagKeyList []string
@@ -93,6 +101,9 @@ func (c *Client) addOperationUntagResourceMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -109,6 +120,9 @@ func (c *Client) addOperationUntagResourceMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUntagResourceValidationMiddleware(stack); err != nil {
@@ -130,6 +144,18 @@ func (c *Client) addOperationUntagResourceMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

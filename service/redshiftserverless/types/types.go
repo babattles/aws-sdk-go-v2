@@ -128,6 +128,28 @@ type EndpointAccess struct {
 	noSmithyDocumentSerde
 }
 
+// A collection of Amazon Redshift compute resources managed by AWS Glue.
+type ManagedWorkgroupListItem struct {
+
+	// The creation date of the managed workgroup.
+	CreationDate *time.Time
+
+	// The unique identifier of the managed workgroup.
+	ManagedWorkgroupId *string
+
+	// The name of the managed workgroup.
+	ManagedWorkgroupName *string
+
+	// The Amazon Resource Name (ARN) for the managed workgroup in the AWS Glue Data
+	// Catalog.
+	SourceArn *string
+
+	// The status of the managed workgroup.
+	Status ManagedWorkgroupStatus
+
+	noSmithyDocumentSerde
+}
+
 // A collection of database objects and users.
 type Namespace struct {
 
@@ -201,6 +223,21 @@ type NetworkInterface struct {
 
 	// The unique identifier of the subnet.
 	SubnetId *string
+
+	noSmithyDocumentSerde
+}
+
+// An object that represents the price performance target settings for the
+// workgroup.
+type PerformanceTarget struct {
+
+	// The target price performance level for the workgroup. Valid values include 1,
+	// 25, 50, 75, and 100. These correspond to the price performance levels LOW_COST,
+	// ECONOMICAL, BALANCED, RESOURCEFUL, and HIGH_PERFORMANCE.
+	Level *int32
+
+	// Whether the price performance target is enabled for the workgroup.
+	Status PerformanceTargetStatus
 
 	noSmithyDocumentSerde
 }
@@ -353,6 +390,24 @@ type ScheduledActionResponse struct {
 	//     "{"CreateSnapshot": {"NamespaceName": "sampleNamespace","SnapshotName":
 	//     "sampleSnapshot", "retentionPeriod": "1"}}"
 	TargetAction TargetAction
+
+	noSmithyDocumentSerde
+}
+
+// Defines a track that determines which Amazon Redshift version to apply after a
+// new version is released. If the value for ServerlessTrack is current , the
+// workgroup is updated to the most recently certified release. If the value is
+// trailing , the workgroup is updated to the previously certified release.
+type ServerlessTrack struct {
+
+	// The name of the track. Valid values are current and trailing .
+	TrackName *string
+
+	// An array of UpdateTarget objects to update with the track.
+	UpdateTargets []UpdateTarget
+
+	// The workgroup version number for the workgroup release.
+	WorkgroupVersion *string
 
 	noSmithyDocumentSerde
 }
@@ -560,6 +615,18 @@ type TargetActionMemberCreateSnapshot struct {
 
 func (*TargetActionMemberCreateSnapshot) isTargetAction() {}
 
+// A track that you can switch the current track to.
+type UpdateTarget struct {
+
+	// The name of the new track.
+	TrackName *string
+
+	// The workgroup version for the new track.
+	WorkgroupVersion *string
+
+	noSmithyDocumentSerde
+}
+
 // The usage limit object.
 type UsageLimit struct {
 
@@ -679,9 +746,18 @@ type Workgroup struct {
 	// [Cluster versions for Amazon Redshift]: https://docs.aws.amazon.com/redshift/latest/mgmt/cluster-versions.html
 	PatchVersion *string
 
+	// The name for the track that you want to assign to the workgroup. When the track
+	// changes, the workgroup is switched to the latest workgroup release available for
+	// the track. At this point, the track name is applied.
+	PendingTrackName *string
+
 	// The custom port to use when connecting to a workgroup. Valid port ranges are
 	// 5431-5455 and 8191-8215. The default is 5439.
 	Port *int32
+
+	// An object that represents the price performance target settings for the
+	// workgroup.
+	PricePerformanceTarget *PerformanceTarget
 
 	// A value that specifies whether the workgroup can be accessible from a public
 	// network.
@@ -695,6 +771,9 @@ type Workgroup struct {
 
 	// An array of subnet IDs the workgroup is associated with.
 	SubnetIds []string
+
+	// The name of the track for the workgroup.
+	TrackName *string
 
 	// The Amazon Resource Name (ARN) that links to the workgroup.
 	WorkgroupArn *string

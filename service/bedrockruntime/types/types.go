@@ -5,11 +5,88 @@ package types
 import (
 	"github.com/aws/aws-sdk-go-v2/service/bedrockruntime/document"
 	smithydocument "github.com/aws/smithy-go/document"
+	"time"
 )
 
 // The model must request at least one tool (no text is generated). For example,
 // {"any" : {}} .
 type AnyToolChoice struct {
+	noSmithyDocumentSerde
+}
+
+// Asynchronous invocation output data settings.
+//
+// The following types satisfy this interface:
+//
+//	AsyncInvokeOutputDataConfigMemberS3OutputDataConfig
+type AsyncInvokeOutputDataConfig interface {
+	isAsyncInvokeOutputDataConfig()
+}
+
+// A storage location for the output data in an S3 bucket
+type AsyncInvokeOutputDataConfigMemberS3OutputDataConfig struct {
+	Value AsyncInvokeS3OutputDataConfig
+
+	noSmithyDocumentSerde
+}
+
+func (*AsyncInvokeOutputDataConfigMemberS3OutputDataConfig) isAsyncInvokeOutputDataConfig() {}
+
+// Asynchronous invocation output data settings.
+type AsyncInvokeS3OutputDataConfig struct {
+
+	// An object URI starting with s3:// .
+	//
+	// This member is required.
+	S3Uri *string
+
+	// If the bucket belongs to another AWS account, specify that account's ID.
+	BucketOwner *string
+
+	// A KMS encryption key ID.
+	KmsKeyId *string
+
+	noSmithyDocumentSerde
+}
+
+// A summary of an asynchronous invocation.
+type AsyncInvokeSummary struct {
+
+	// The invocation's ARN.
+	//
+	// This member is required.
+	InvocationArn *string
+
+	// The invoked model's ARN.
+	//
+	// This member is required.
+	ModelArn *string
+
+	// The invocation's output data settings.
+	//
+	// This member is required.
+	OutputDataConfig AsyncInvokeOutputDataConfig
+
+	// When the invocation was submitted.
+	//
+	// This member is required.
+	SubmitTime *time.Time
+
+	// The invocation's idempotency token.
+	ClientRequestToken *string
+
+	// When the invocation ended.
+	EndTime *time.Time
+
+	// An error message.
+	FailureMessage *string
+
+	// When the invocation was last modified.
+	LastModifiedTime *time.Time
+
+	// The invocation's status.
+	Status AsyncInvokeStatus
+
 	noSmithyDocumentSerde
 }
 
@@ -19,23 +96,46 @@ type AutoToolChoice struct {
 	noSmithyDocumentSerde
 }
 
+// Defines a section of content to be cached for reuse in subsequent API calls.
+type CachePointBlock struct {
+
+	// Specifies the type of cache point within the CachePointBlock.
+	//
+	// This member is required.
+	Type CachePointType
+
+	noSmithyDocumentSerde
+}
+
 // A block of content for a message that you pass to, or receive from, a model
 // with the [Converse]or [ConverseStream] API operations.
 //
 // The following types satisfy this interface:
 //
+//	ContentBlockMemberCachePoint
 //	ContentBlockMemberDocument
 //	ContentBlockMemberGuardContent
 //	ContentBlockMemberImage
+//	ContentBlockMemberReasoningContent
 //	ContentBlockMemberText
 //	ContentBlockMemberToolResult
 //	ContentBlockMemberToolUse
+//	ContentBlockMemberVideo
 //
 // [Converse]: https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html
 // [ConverseStream]: https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html
 type ContentBlock interface {
 	isContentBlock()
 }
+
+// CachePoint to include in the message.
+type ContentBlockMemberCachePoint struct {
+	Value CachePointBlock
+
+	noSmithyDocumentSerde
+}
+
+func (*ContentBlockMemberCachePoint) isContentBlock() {}
 
 // A document to include in the message.
 type ContentBlockMemberDocument struct {
@@ -71,6 +171,17 @@ type ContentBlockMemberImage struct {
 
 func (*ContentBlockMemberImage) isContentBlock() {}
 
+// Contains content regarding the reasoning that is carried out by the model.
+// Reasoning refers to a Chain of Thought (CoT) that the model generates to enhance
+// the accuracy of its final response.
+type ContentBlockMemberReasoningContent struct {
+	Value ReasoningContentBlock
+
+	noSmithyDocumentSerde
+}
+
+func (*ContentBlockMemberReasoningContent) isContentBlock() {}
+
 // Text to include in the message.
 type ContentBlockMemberText struct {
 	Value string
@@ -98,15 +209,36 @@ type ContentBlockMemberToolUse struct {
 
 func (*ContentBlockMemberToolUse) isContentBlock() {}
 
-// A bock of content in a streaming response.
+// Video to include in the message.
+type ContentBlockMemberVideo struct {
+	Value VideoBlock
+
+	noSmithyDocumentSerde
+}
+
+func (*ContentBlockMemberVideo) isContentBlock() {}
+
+// A block of content in a streaming response.
 //
 // The following types satisfy this interface:
 //
+//	ContentBlockDeltaMemberReasoningContent
 //	ContentBlockDeltaMemberText
 //	ContentBlockDeltaMemberToolUse
 type ContentBlockDelta interface {
 	isContentBlockDelta()
 }
+
+// Contains content regarding the reasoning that is carried out by the model.
+// Reasoning refers to a Chain of Thought (CoT) that the model generates to enhance
+// the accuracy of its final response.
+type ContentBlockDeltaMemberReasoningContent struct {
+	Value ReasoningContentBlockDelta
+
+	noSmithyDocumentSerde
+}
+
+func (*ContentBlockDeltaMemberReasoningContent) isContentBlockDelta() {}
 
 // The content text.
 type ContentBlockDeltaMemberText struct {
@@ -233,6 +365,9 @@ type ConverseStreamMetadataEvent struct {
 	// This member is required.
 	Usage *TokenUsage
 
+	// Model performance configuration metadata for the conversation stream event.
+	PerformanceConfig *PerformanceConfiguration
+
 	// The trace object in the response from [ConverseStream] that contains information about the
 	// guardrail behavior.
 	//
@@ -329,6 +464,9 @@ type ConverseStreamTrace struct {
 	// The guardrail trace object.
 	Guardrail *GuardrailTraceAssessment
 
+	// The request's prompt router.
+	PromptRouter *PromptRouterTrace
+
 	noSmithyDocumentSerde
 }
 
@@ -339,6 +477,9 @@ type ConverseTrace struct {
 
 	// The guardrail trace object.
 	Guardrail *GuardrailTraceAssessment
+
+	// The request's prompt router.
+	PromptRouter *PromptRouterTrace
 
 	noSmithyDocumentSerde
 }
@@ -407,6 +548,9 @@ type GuardrailAssessment struct {
 	// The contextual grounding policy used for the guardrail assessment.
 	ContextualGroundingPolicy *GuardrailContextualGroundingPolicyAssessment
 
+	// The invocation metrics for the guardrail assessment.
+	InvocationMetrics *GuardrailInvocationMetrics
+
 	// The sensitive information policy.
 	SensitiveInformationPolicy *GuardrailSensitiveInformationPolicyAssessment
 
@@ -444,10 +588,20 @@ type GuardrailConfiguration struct {
 //
 // The following types satisfy this interface:
 //
+//	GuardrailContentBlockMemberImage
 //	GuardrailContentBlockMemberText
 type GuardrailContentBlock interface {
 	isGuardrailContentBlock()
 }
+
+// Image within guardrail content block to be evaluated by the guardrail.
+type GuardrailContentBlockMemberImage struct {
+	Value GuardrailImageBlock
+
+	noSmithyDocumentSerde
+}
+
+func (*GuardrailContentBlockMemberImage) isGuardrailContentBlock() {}
 
 // Text within content block to be evaluated by the guardrail.
 type GuardrailContentBlockMemberText struct {
@@ -475,6 +629,9 @@ type GuardrailContentFilter struct {
 	//
 	// This member is required.
 	Type GuardrailContentFilterType
+
+	// The filter strength setting for the guardrail content filter.
+	FilterStrength GuardrailContentFilterStrength
 
 	noSmithyDocumentSerde
 }
@@ -530,6 +687,7 @@ type GuardrailContextualGroundingPolicyAssessment struct {
 //
 // The following types satisfy this interface:
 //
+//	GuardrailConverseContentBlockMemberImage
 //	GuardrailConverseContentBlockMemberText
 //
 // [Converse]: https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html
@@ -537,6 +695,15 @@ type GuardrailContextualGroundingPolicyAssessment struct {
 type GuardrailConverseContentBlock interface {
 	isGuardrailConverseContentBlock()
 }
+
+// Image within converse content block to be evaluated by the guardrail.
+type GuardrailConverseContentBlockMemberImage struct {
+	Value GuardrailConverseImageBlock
+
+	noSmithyDocumentSerde
+}
+
+func (*GuardrailConverseContentBlockMemberImage) isGuardrailConverseContentBlock() {}
 
 // The text to guard.
 type GuardrailConverseContentBlockMemberText struct {
@@ -546,6 +713,40 @@ type GuardrailConverseContentBlockMemberText struct {
 }
 
 func (*GuardrailConverseContentBlockMemberText) isGuardrailConverseContentBlock() {}
+
+// An image block that contains images that you want to assess with a guardrail.
+type GuardrailConverseImageBlock struct {
+
+	// The format details for the image type of the guardrail converse image block.
+	//
+	// This member is required.
+	Format GuardrailConverseImageFormat
+
+	// The image source (image bytes) of the guardrail converse image block.
+	//
+	// This member is required.
+	Source GuardrailConverseImageSource
+
+	noSmithyDocumentSerde
+}
+
+// The image source (image bytes) of the guardrail converse image source.
+//
+// The following types satisfy this interface:
+//
+//	GuardrailConverseImageSourceMemberBytes
+type GuardrailConverseImageSource interface {
+	isGuardrailConverseImageSource()
+}
+
+// The raw image bytes for the image.
+type GuardrailConverseImageSourceMemberBytes struct {
+	Value []byte
+
+	noSmithyDocumentSerde
+}
+
+func (*GuardrailConverseImageSourceMemberBytes) isGuardrailConverseImageSource() {}
 
 // A text block that contains text that you want to assess with a guardrail. For
 // more information, see GuardrailConverseContentBlock.
@@ -562,6 +763,19 @@ type GuardrailConverseTextBlock struct {
 	noSmithyDocumentSerde
 }
 
+// The action of the guardrail coverage details.
+type GuardrailCoverage struct {
+
+	// The guardrail coverage for images (the number of images that guardrails
+	// guarded).
+	Images *GuardrailImageCoverage
+
+	// The text characters of the guardrail coverage details.
+	TextCharacters *GuardrailTextCharactersCoverage
+
+	noSmithyDocumentSerde
+}
+
 // A custom word configured in a guardrail.
 type GuardrailCustomWord struct {
 
@@ -574,6 +788,70 @@ type GuardrailCustomWord struct {
 	//
 	// This member is required.
 	Match *string
+
+	noSmithyDocumentSerde
+}
+
+// Contain an image which user wants guarded. This block is accepted by the
+// guardrails independent API.
+type GuardrailImageBlock struct {
+
+	// The format details for the file type of the image blocked by the guardrail.
+	//
+	// This member is required.
+	Format GuardrailImageFormat
+
+	// The image source (image bytes) details of the image blocked by the guardrail.
+	//
+	// This member is required.
+	Source GuardrailImageSource
+
+	noSmithyDocumentSerde
+}
+
+// The details of the guardrail image coverage.
+type GuardrailImageCoverage struct {
+
+	// The count (integer) of images guardrails guarded.
+	Guarded *int32
+
+	// Represents the total number of images (integer) that were in the request
+	// (guarded and unguarded).
+	Total *int32
+
+	noSmithyDocumentSerde
+}
+
+// The image source (image bytes) of the guardrail image source. Object used in
+// independent api.
+//
+// The following types satisfy this interface:
+//
+//	GuardrailImageSourceMemberBytes
+type GuardrailImageSource interface {
+	isGuardrailImageSource()
+}
+
+// The bytes details of the guardrail image source. Object used in independent api.
+type GuardrailImageSourceMemberBytes struct {
+	Value []byte
+
+	noSmithyDocumentSerde
+}
+
+func (*GuardrailImageSourceMemberBytes) isGuardrailImageSource() {}
+
+// The invocation metrics for the guardrail.
+type GuardrailInvocationMetrics struct {
+
+	// The coverage details for the guardrail invocation metrics.
+	GuardrailCoverage *GuardrailCoverage
+
+	// The processing latency details for the guardrail invocation metrics.
+	GuardrailProcessingLatency *int64
+
+	// The usage details for the guardrail invocation metrics.
+	Usage *GuardrailUsage
 
 	noSmithyDocumentSerde
 }
@@ -704,6 +982,18 @@ type GuardrailTextBlock struct {
 	noSmithyDocumentSerde
 }
 
+// The guardrail coverage for the text characters.
+type GuardrailTextCharactersCoverage struct {
+
+	// The text characters that were guarded by the guardrail coverage.
+	Guarded *int32
+
+	// The total text characters by the guardrail coverage.
+	Total *int32
+
+	noSmithyDocumentSerde
+}
+
 // Information about a topic guardrail.
 type GuardrailTopic struct {
 
@@ -784,6 +1074,9 @@ type GuardrailUsage struct {
 	//
 	// This member is required.
 	WordPolicyUnits *int32
+
+	// The content policy image units processed by the guardrail.
+	ContentPolicyImageUnits *int32
 
 	noSmithyDocumentSerde
 }
@@ -952,6 +1245,138 @@ type PayloadPart struct {
 	noSmithyDocumentSerde
 }
 
+// Performance settings for a model.
+type PerformanceConfiguration struct {
+
+	// To use a latency-optimized version of the model, set to optimized .
+	Latency PerformanceConfigLatency
+
+	noSmithyDocumentSerde
+}
+
+// A prompt router trace.
+type PromptRouterTrace struct {
+
+	// The ID of the invoked model.
+	InvokedModelId *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains a map of variables in a prompt from Prompt management to an object
+// containing the values to fill in for them when running model invocation. For
+// more information, see [How Prompt management works].
+//
+// The following types satisfy this interface:
+//
+//	PromptVariableValuesMemberText
+//
+// [How Prompt management works]: https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-how.html
+type PromptVariableValues interface {
+	isPromptVariableValues()
+}
+
+// The text value that the variable maps to.
+type PromptVariableValuesMemberText struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*PromptVariableValuesMemberText) isPromptVariableValues() {}
+
+// Contains content regarding the reasoning that is carried out by the model with
+// respect to the content in the content block. Reasoning refers to a Chain of
+// Thought (CoT) that the model generates to enhance the accuracy of its final
+// response.
+//
+// The following types satisfy this interface:
+//
+//	ReasoningContentBlockMemberReasoningText
+//	ReasoningContentBlockMemberRedactedContent
+type ReasoningContentBlock interface {
+	isReasoningContentBlock()
+}
+
+// The reasoning that the model used to return the output.
+type ReasoningContentBlockMemberReasoningText struct {
+	Value ReasoningTextBlock
+
+	noSmithyDocumentSerde
+}
+
+func (*ReasoningContentBlockMemberReasoningText) isReasoningContentBlock() {}
+
+// The content in the reasoning that was encrypted by the model provider for
+// safety reasons. The encryption doesn't affect the quality of responses.
+type ReasoningContentBlockMemberRedactedContent struct {
+	Value []byte
+
+	noSmithyDocumentSerde
+}
+
+func (*ReasoningContentBlockMemberRedactedContent) isReasoningContentBlock() {}
+
+// Contains content regarding the reasoning that is carried out by the model with
+// respect to the content in the content block. Reasoning refers to a Chain of
+// Thought (CoT) that the model generates to enhance the accuracy of its final
+// response.
+//
+// The following types satisfy this interface:
+//
+//	ReasoningContentBlockDeltaMemberRedactedContent
+//	ReasoningContentBlockDeltaMemberSignature
+//	ReasoningContentBlockDeltaMemberText
+type ReasoningContentBlockDelta interface {
+	isReasoningContentBlockDelta()
+}
+
+// The content in the reasoning that was encrypted by the model provider for
+// safety reasons. The encryption doesn't affect the quality of responses.
+type ReasoningContentBlockDeltaMemberRedactedContent struct {
+	Value []byte
+
+	noSmithyDocumentSerde
+}
+
+func (*ReasoningContentBlockDeltaMemberRedactedContent) isReasoningContentBlockDelta() {}
+
+// A token that verifies that the reasoning text was generated by the model. If
+// you pass a reasoning block back to the API in a multi-turn conversation, include
+// the text and its signature unmodified.
+type ReasoningContentBlockDeltaMemberSignature struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*ReasoningContentBlockDeltaMemberSignature) isReasoningContentBlockDelta() {}
+
+// The reasoning that the model used to return the output.
+type ReasoningContentBlockDeltaMemberText struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*ReasoningContentBlockDeltaMemberText) isReasoningContentBlockDelta() {}
+
+// Contains the reasoning that the model used to return the output.
+type ReasoningTextBlock struct {
+
+	// The reasoning that the model used to return the output.
+	//
+	// This member is required.
+	Text *string
+
+	// A token that verifies that the reasoning text was generated by the model. If
+	// you pass a reasoning block back to the API in a multi-turn conversation, include
+	// the text and its signature unmodified.
+	Signature *string
+
+	noSmithyDocumentSerde
+}
+
 // Definition of content in the response stream.
 //
 // The following types satisfy this interface:
@@ -969,6 +1394,20 @@ type ResponseStreamMemberChunk struct {
 }
 
 func (*ResponseStreamMemberChunk) isResponseStream() {}
+
+// A storage location in an S3 bucket.
+type S3Location struct {
+
+	// An object URI starting with s3:// .
+	//
+	// This member is required.
+	Uri *string
+
+	// If the bucket belongs to another AWS account, specify that account's ID.
+	BucketOwner *string
+
+	noSmithyDocumentSerde
+}
 
 // The model must request a specific tool. For example, {"tool" : {"name" : "Your
 // tool name"}} .
@@ -988,11 +1427,21 @@ type SpecificToolChoice struct {
 //
 // The following types satisfy this interface:
 //
+//	SystemContentBlockMemberCachePoint
 //	SystemContentBlockMemberGuardContent
 //	SystemContentBlockMemberText
 type SystemContentBlock interface {
 	isSystemContentBlock()
 }
+
+// CachePoint to include in the system prompt.
+type SystemContentBlockMemberCachePoint struct {
+	Value CachePointBlock
+
+	noSmithyDocumentSerde
+}
+
+func (*SystemContentBlockMemberCachePoint) isSystemContentBlock() {}
 
 // A content block to assess with the guardrail. Use with the [Converse] or [ConverseStream] API operations.
 //
@@ -1018,6 +1467,22 @@ type SystemContentBlockMemberText struct {
 
 func (*SystemContentBlockMemberText) isSystemContentBlock() {}
 
+// A tag.
+type Tag struct {
+
+	// The tag's key.
+	//
+	// This member is required.
+	Key *string
+
+	// The tag's value.
+	//
+	// This member is required.
+	Value *string
+
+	noSmithyDocumentSerde
+}
+
 // The tokens used in a message API inference call.
 type TokenUsage struct {
 
@@ -1036,6 +1501,12 @@ type TokenUsage struct {
 	// This member is required.
 	TotalTokens *int32
 
+	// The number of input tokens read from the cache for the request.
+	CacheReadInputTokens *int32
+
+	// The number of input tokens written to the cache for the request.
+	CacheWriteInputTokens *int32
+
 	noSmithyDocumentSerde
 }
 
@@ -1044,12 +1515,22 @@ type TokenUsage struct {
 //
 // The following types satisfy this interface:
 //
+//	ToolMemberCachePoint
 //	ToolMemberToolSpec
 //
 // [Tool use (function calling)]: https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html
 type Tool interface {
 	isTool()
 }
+
+// CachePoint to include in the tool configuration.
+type ToolMemberCachePoint struct {
+	Value CachePointBlock
+
+	noSmithyDocumentSerde
+}
+
+func (*ToolMemberCachePoint) isTool() {}
 
 // The specfication for the tool.
 type ToolMemberToolSpec struct {
@@ -1104,9 +1585,6 @@ func (*ToolChoiceMemberTool) isToolChoice() {}
 
 // Configuration information for the tools that you pass to a model. For more
 // information, see [Tool use (function calling)]in the Amazon Bedrock User Guide.
-//
-// This field is only supported by Anthropic Claude 3, Cohere Command R, Cohere
-// Command R+, and Mistral Large models.
 //
 // [Tool use (function calling)]: https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html
 type ToolConfiguration struct {
@@ -1172,6 +1650,7 @@ type ToolResultBlock struct {
 //	ToolResultContentBlockMemberImage
 //	ToolResultContentBlockMemberJson
 //	ToolResultContentBlockMemberText
+//	ToolResultContentBlockMemberVideo
 type ToolResultContentBlock interface {
 	isToolResultContentBlock()
 }
@@ -1213,6 +1692,15 @@ type ToolResultContentBlockMemberText struct {
 }
 
 func (*ToolResultContentBlockMemberText) isToolResultContentBlock() {}
+
+// A tool result that is video.
+type ToolResultContentBlockMemberVideo struct {
+	Value VideoBlock
+
+	noSmithyDocumentSerde
+}
+
+func (*ToolResultContentBlockMemberVideo) isToolResultContentBlock() {}
 
 // The specification for the tool.
 type ToolSpecification struct {
@@ -1283,6 +1771,52 @@ type ToolUseBlockStart struct {
 	noSmithyDocumentSerde
 }
 
+// A video block.
+type VideoBlock struct {
+
+	// The block's format.
+	//
+	// This member is required.
+	Format VideoFormat
+
+	// The block's source.
+	//
+	// This member is required.
+	Source VideoSource
+
+	noSmithyDocumentSerde
+}
+
+// A video source. You can upload a smaller video as a base64-encoded string as
+// long as the encoded file is less than 25MB. You can also transfer videos up to
+// 1GB in size from an S3 bucket.
+//
+// The following types satisfy this interface:
+//
+//	VideoSourceMemberBytes
+//	VideoSourceMemberS3Location
+type VideoSource interface {
+	isVideoSource()
+}
+
+// Video content encoded in base64.
+type VideoSourceMemberBytes struct {
+	Value []byte
+
+	noSmithyDocumentSerde
+}
+
+func (*VideoSourceMemberBytes) isVideoSource() {}
+
+// The location of a video object in an S3 bucket.
+type VideoSourceMemberS3Location struct {
+	Value S3Location
+
+	noSmithyDocumentSerde
+}
+
+func (*VideoSourceMemberS3Location) isVideoSource() {}
+
 type noSmithyDocumentSerde = smithydocument.NoSerde
 
 // UnknownUnionMember is returned when a union member is returned over the wire,
@@ -1294,6 +1828,7 @@ type UnknownUnionMember struct {
 	noSmithyDocumentSerde
 }
 
+func (*UnknownUnionMember) isAsyncInvokeOutputDataConfig()   {}
 func (*UnknownUnionMember) isContentBlock()                  {}
 func (*UnknownUnionMember) isContentBlockDelta()             {}
 func (*UnknownUnionMember) isContentBlockStart()             {}
@@ -1302,10 +1837,16 @@ func (*UnknownUnionMember) isConverseStreamOutput()          {}
 func (*UnknownUnionMember) isDocumentSource()                {}
 func (*UnknownUnionMember) isGuardrailContentBlock()         {}
 func (*UnknownUnionMember) isGuardrailConverseContentBlock() {}
+func (*UnknownUnionMember) isGuardrailConverseImageSource()  {}
+func (*UnknownUnionMember) isGuardrailImageSource()          {}
 func (*UnknownUnionMember) isImageSource()                   {}
+func (*UnknownUnionMember) isPromptVariableValues()          {}
+func (*UnknownUnionMember) isReasoningContentBlock()         {}
+func (*UnknownUnionMember) isReasoningContentBlockDelta()    {}
 func (*UnknownUnionMember) isResponseStream()                {}
 func (*UnknownUnionMember) isSystemContentBlock()            {}
 func (*UnknownUnionMember) isTool()                          {}
 func (*UnknownUnionMember) isToolChoice()                    {}
 func (*UnknownUnionMember) isToolInputSchema()               {}
 func (*UnknownUnionMember) isToolResultContentBlock()        {}
+func (*UnknownUnionMember) isVideoSource()                   {}

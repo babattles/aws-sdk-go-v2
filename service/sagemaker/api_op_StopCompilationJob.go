@@ -12,11 +12,11 @@ import (
 
 // Stops a model compilation job.
 //
-// To stop a job, Amazon SageMaker sends the algorithm the SIGTERM signal. This
+// To stop a job, Amazon SageMaker AI sends the algorithm the SIGTERM signal. This
 // gracefully shuts the job down. If the job hasn't stopped, it sends the SIGKILL
 // signal.
 //
-// When it receives a StopCompilationJob request, Amazon SageMaker changes the
+// When it receives a StopCompilationJob request, Amazon SageMaker AI changes the
 // CompilationJobStatus of the job to Stopping . After Amazon SageMaker stops the
 // job, it sets the CompilationJobStatus to Stopped .
 func (c *Client) StopCompilationJob(ctx context.Context, params *StopCompilationJobInput, optFns ...func(*Options)) (*StopCompilationJobOutput, error) {
@@ -94,6 +94,9 @@ func (c *Client) addOperationStopCompilationJobMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -110,6 +113,9 @@ func (c *Client) addOperationStopCompilationJobMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpStopCompilationJobValidationMiddleware(stack); err != nil {
@@ -131,6 +137,18 @@ func (c *Client) addOperationStopCompilationJobMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

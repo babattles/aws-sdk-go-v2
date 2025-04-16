@@ -11,7 +11,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Returns details of the service updates
+// Returns details of the service updates.
 func (c *Client) DescribeServiceUpdates(ctx context.Context, params *DescribeServiceUpdatesInput, optFns ...func(*Options)) (*DescribeServiceUpdatesOutput, error) {
 	if params == nil {
 		params = &DescribeServiceUpdatesInput{}
@@ -29,7 +29,7 @@ func (c *Client) DescribeServiceUpdates(ctx context.Context, params *DescribeSer
 
 type DescribeServiceUpdatesInput struct {
 
-	// The list of cluster names to identify service updates to apply
+	// The list of cluster names to identify service updates to apply.
 	ClusterNames []string
 
 	// The maximum number of records to include in the response. If more records exist
@@ -47,7 +47,7 @@ type DescribeServiceUpdatesInput struct {
 	// The unique ID of the service update to describe.
 	ServiceUpdateName *string
 
-	// The status(es) of the service updates to filter on
+	// The status(es) of the service updates to filter on.
 	Status []types.ServiceUpdateStatus
 
 	noSmithyDocumentSerde
@@ -114,6 +114,9 @@ func (c *Client) addOperationDescribeServiceUpdatesMiddlewares(stack *middleware
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -132,6 +135,9 @@ func (c *Client) addOperationDescribeServiceUpdatesMiddlewares(stack *middleware
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeServiceUpdates(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -148,6 +154,18 @@ func (c *Client) addOperationDescribeServiceUpdatesMiddlewares(stack *middleware
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

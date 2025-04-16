@@ -10,11 +10,12 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Enables the integration of an Amazon Web Services service (the service that is
-// specified by ServicePrincipal ) with Organizations. When you enable integration,
-// you allow the specified service to create a [service-linked role]in all the accounts in your
-// organization. This allows the service to perform operations on your behalf in
-// your organization and its accounts.
+// Provides an Amazon Web Services service (the service that is specified by
+// ServicePrincipal ) with permissions to view the structure of an organization,
+// create a [service-linked role]in all the accounts in the organization, and allow the service to
+// perform operations on behalf of the organization and its accounts. Establishing
+// these permissions can be a first step in enabling the integration of an Amazon
+// Web Services service with Organizations.
 //
 // We recommend that you enable integration between Organizations and the
 // specified Amazon Web Services service by using the console or commands that are
@@ -110,6 +111,9 @@ func (c *Client) addOperationEnableAWSServiceAccessMiddlewares(stack *middleware
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -126,6 +130,9 @@ func (c *Client) addOperationEnableAWSServiceAccessMiddlewares(stack *middleware
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpEnableAWSServiceAccessValidationMiddleware(stack); err != nil {
@@ -147,6 +154,18 @@ func (c *Client) addOperationEnableAWSServiceAccessMiddlewares(stack *middleware
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

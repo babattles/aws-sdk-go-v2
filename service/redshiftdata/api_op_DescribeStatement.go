@@ -96,6 +96,9 @@ type DescribeStatementOutput struct {
 	// also available in the query column of the STL_QUERY system view.
 	RedshiftQueryId int64
 
+	// The data format of the result of the SQL statement.
+	ResultFormat types.ResultFormatString
+
 	// Either the number of rows returned from the SQL statement or the number of rows
 	// affected. If result size is greater than zero, the result rows can be the number
 	// of rows affected by SQL statements such as INSERT, UPDATE, DELETE, COPY, and
@@ -108,6 +111,9 @@ type DescribeStatementOutput struct {
 	// The name or Amazon Resource Name (ARN) of the secret that enables access to the
 	// database.
 	SecretArn *string
+
+	// The session identifier of the query.
+	SessionId *string
 
 	// The status of the SQL statement being described. Status values are defined as
 	// follows:
@@ -187,6 +193,9 @@ func (c *Client) addOperationDescribeStatementMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -203,6 +212,9 @@ func (c *Client) addOperationDescribeStatementMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeStatementValidationMiddleware(stack); err != nil {
@@ -224,6 +236,18 @@ func (c *Client) addOperationDescribeStatementMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

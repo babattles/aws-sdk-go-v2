@@ -29,7 +29,7 @@ func (c *Client) DeregisterTargets(ctx context.Context, params *DeregisterTarget
 
 type DeregisterTargetsInput struct {
 
-	// The ID or Amazon Resource Name (ARN) of the target group.
+	// The ID or ARN of the target group.
 	//
 	// This member is required.
 	TargetGroupIdentifier *string
@@ -99,6 +99,9 @@ func (c *Client) addOperationDeregisterTargetsMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -115,6 +118,9 @@ func (c *Client) addOperationDeregisterTargetsMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeregisterTargetsValidationMiddleware(stack); err != nil {
@@ -136,6 +142,18 @@ func (c *Client) addOperationDeregisterTargetsMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

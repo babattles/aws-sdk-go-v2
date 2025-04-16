@@ -11,7 +11,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Creates a new Amazon SageMaker Studio Lifecycle Configuration.
+// Creates a new Amazon SageMaker AI Studio Lifecycle Configuration.
 func (c *Client) CreateStudioLifecycleConfig(ctx context.Context, params *CreateStudioLifecycleConfigInput, optFns ...func(*Options)) (*CreateStudioLifecycleConfigOutput, error) {
 	if params == nil {
 		params = &CreateStudioLifecycleConfigInput{}
@@ -34,13 +34,13 @@ type CreateStudioLifecycleConfigInput struct {
 	// This member is required.
 	StudioLifecycleConfigAppType types.StudioLifecycleConfigAppType
 
-	// The content of your Amazon SageMaker Studio Lifecycle Configuration script.
+	// The content of your Amazon SageMaker AI Studio Lifecycle Configuration script.
 	// This content must be base64 encoded.
 	//
 	// This member is required.
 	StudioLifecycleConfigContent *string
 
-	// The name of the Amazon SageMaker Studio Lifecycle Configuration to create.
+	// The name of the Amazon SageMaker AI Studio Lifecycle Configuration to create.
 	//
 	// This member is required.
 	StudioLifecycleConfigName *string
@@ -107,6 +107,9 @@ func (c *Client) addOperationCreateStudioLifecycleConfigMiddlewares(stack *middl
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -123,6 +126,9 @@ func (c *Client) addOperationCreateStudioLifecycleConfigMiddlewares(stack *middl
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateStudioLifecycleConfigValidationMiddleware(stack); err != nil {
@@ -144,6 +150,18 @@ func (c *Client) addOperationCreateStudioLifecycleConfigMiddlewares(stack *middl
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

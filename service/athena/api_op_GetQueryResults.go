@@ -70,7 +70,8 @@ type GetQueryResultsOutput struct {
 	// The results of the query execution.
 	ResultSet *types.ResultSet
 
-	// The number of rows inserted with a CREATE TABLE AS SELECT statement.
+	// The number of rows inserted with a CREATE TABLE AS SELECT , INSERT INTO , or
+	// UPDATE statement.
 	UpdateCount *int64
 
 	// Metadata pertaining to the operation's result.
@@ -122,6 +123,9 @@ func (c *Client) addOperationGetQueryResultsMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -138,6 +142,9 @@ func (c *Client) addOperationGetQueryResultsMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetQueryResultsValidationMiddleware(stack); err != nil {
@@ -159,6 +166,18 @@ func (c *Client) addOperationGetQueryResultsMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

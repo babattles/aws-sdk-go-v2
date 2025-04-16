@@ -64,6 +64,13 @@ type GetCostForecastInput struct {
 	// This member is required.
 	TimePeriod *types.DateInterval
 
+	// The Amazon Resource Name (ARN) that uniquely identifies a specific billing
+	// view. The ARN is used to specify which particular billing view you want to
+	// interact with or retrieve information from when making API calls related to
+	// Amazon Web Services Billing and Cost Management features. The BillingViewArn can
+	// be retrieved by calling the ListBillingViews API.
+	BillingViewArn *string
+
 	// The filters that you want to use to filter your forecast. The GetCostForecast
 	// API supports filtering by the following dimensions:
 	//
@@ -182,6 +189,9 @@ func (c *Client) addOperationGetCostForecastMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -198,6 +208,9 @@ func (c *Client) addOperationGetCostForecastMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetCostForecastValidationMiddleware(stack); err != nil {
@@ -219,6 +232,18 @@ func (c *Client) addOperationGetCostForecastMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

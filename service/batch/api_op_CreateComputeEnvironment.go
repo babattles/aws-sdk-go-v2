@@ -206,8 +206,8 @@ type CreateComputeEnvironmentInput struct {
 	Tags map[string]string
 
 	// The maximum number of vCPUs for an unmanaged compute environment. This
-	// parameter is only used for fair share scheduling to reserve vCPU capacity for
-	// new share identifiers. If this parameter isn't provided for a fair share job
+	// parameter is only used for fair-share scheduling to reserve vCPU capacity for
+	// new share identifiers. If this parameter isn't provided for a fair-share job
 	// queue, no vCPU capacity is reserved.
 	//
 	// This parameter is only supported when the type parameter is set to UNMANAGED .
@@ -275,6 +275,9 @@ func (c *Client) addOperationCreateComputeEnvironmentMiddlewares(stack *middlewa
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -291,6 +294,9 @@ func (c *Client) addOperationCreateComputeEnvironmentMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateComputeEnvironmentValidationMiddleware(stack); err != nil {
@@ -312,6 +318,18 @@ func (c *Client) addOperationCreateComputeEnvironmentMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

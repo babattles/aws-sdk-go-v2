@@ -57,6 +57,8 @@ type CreateDBInstanceReadReplicaInput struct {
 	// The amount of storage (in gibibytes) to allocate initially for the read
 	// replica. Follow the allocation rules specified in CreateDBInstance .
 	//
+	// This setting isn't valid for RDS for SQL Server.
+	//
 	// Be sure to allocate enough storage for your read replica so that the create
 	// operation can succeed. You can also allocate additional storage for future
 	// growth.
@@ -122,17 +124,23 @@ type CreateDBInstanceReadReplicaInput struct {
 	// [DB Instance Class]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html
 	DBInstanceClass *string
 
-	// The name of the DB parameter group to associate with this DB instance.
+	// The name of the DB parameter group to associate with this read replica DB
+	// instance.
 	//
-	// If you don't specify a value for DBParameterGroupName , then Amazon RDS uses the
+	// For Single-AZ or Multi-AZ DB instance read replica instances, if you don't
+	// specify a value for DBParameterGroupName , then Amazon RDS uses the
 	// DBParameterGroup of the source DB instance for a same Region read replica, or
 	// the default DBParameterGroup for the specified DB engine for a cross-Region
 	// read replica.
 	//
+	// For Multi-AZ DB cluster same Region read replica instances, if you don't
+	// specify a value for DBParameterGroupName , then Amazon RDS uses the default
+	// DBParameterGroup .
+	//
 	// Specifying a parameter group for this operation is only supported for MySQL DB
-	// instances for cross-Region read replicas and for Oracle DB instances. It isn't
-	// supported for MySQL DB instances for same Region read replicas or for RDS
-	// Custom.
+	// instances for cross-Region read replicas, for Multi-AZ DB cluster read replica
+	// instances, and for Oracle DB instances. It isn't supported for MySQL DB
+	// instances for same Region read replicas or for RDS Custom.
 	//
 	// Constraints:
 	//
@@ -165,6 +173,11 @@ type CreateDBInstanceReadReplicaInput struct {
 	//
 	// Example: mydbsubnetgroup
 	DBSubnetGroupName *string
+
+	// The mode of Database Insights to enable for the read replica.
+	//
+	// This setting isn't supported.
+	DatabaseInsightsMode types.DatabaseInsightsMode
 
 	// Indicates whether the DB instance has a dedicated log volume (DLV) enabled.
 	DedicatedLogVolume *bool
@@ -474,9 +487,6 @@ type CreateDBInstanceReadReplicaInput struct {
 	// manually. Specifying SourceRegion autogenerates a presigned URL that is a valid
 	// request for the operation that can run in the source Amazon Web Services Region.
 	//
-	// SourceRegion isn't supported for SQL Server, because Amazon RDS for SQL Server
-	// doesn't support cross-Region read replicas.
-	//
 	// This setting doesn't apply to RDS Custom DB instances.
 	//
 	// [Authenticating Requests: Using Query Parameters (Amazon Web Services Signature Version 4)]: https://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-query-string-auth.html
@@ -591,7 +601,7 @@ type CreateDBInstanceReadReplicaInput struct {
 	//
 	// Valid Values: gp2 | gp3 | io1 | io2 | standard
 	//
-	// Default: io1 if the Iops parameter is specified. Otherwise, gp2 .
+	// Default: io1 if the Iops parameter is specified. Otherwise, gp3 .
 	StorageType *string
 
 	// A list of tags.
@@ -688,6 +698,9 @@ func (c *Client) addOperationCreateDBInstanceReadReplicaMiddlewares(stack *middl
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -709,6 +722,9 @@ func (c *Client) addOperationCreateDBInstanceReadReplicaMiddlewares(stack *middl
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = addOpCreateDBInstanceReadReplicaValidationMiddleware(stack); err != nil {
 		return err
 	}
@@ -728,6 +744,18 @@ func (c *Client) addOperationCreateDBInstanceReadReplicaMiddlewares(stack *middl
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

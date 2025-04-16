@@ -50,6 +50,25 @@ func (ConfigurationSyncState) Values() []ConfigurationSyncState {
 	}
 }
 
+type EnabledAnalysisType string
+
+// Enum values for EnabledAnalysisType
+const (
+	EnabledAnalysisTypeTlsSni   EnabledAnalysisType = "TLS_SNI"
+	EnabledAnalysisTypeHttpHost EnabledAnalysisType = "HTTP_HOST"
+)
+
+// Values returns all known values for EnabledAnalysisType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (EnabledAnalysisType) Values() []EnabledAnalysisType {
+	return []EnabledAnalysisType{
+		"TLS_SNI",
+		"HTTP_HOST",
+	}
+}
+
 type EncryptionType string
 
 // Enum values for EncryptionType
@@ -87,6 +106,48 @@ func (FirewallStatusValue) Values() []FirewallStatusValue {
 		"PROVISIONING",
 		"DELETING",
 		"READY",
+	}
+}
+
+type FlowOperationStatus string
+
+// Enum values for FlowOperationStatus
+const (
+	FlowOperationStatusCompleted           FlowOperationStatus = "COMPLETED"
+	FlowOperationStatusInProgress          FlowOperationStatus = "IN_PROGRESS"
+	FlowOperationStatusFailed              FlowOperationStatus = "FAILED"
+	FlowOperationStatusCompletedWithErrors FlowOperationStatus = "COMPLETED_WITH_ERRORS"
+)
+
+// Values returns all known values for FlowOperationStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (FlowOperationStatus) Values() []FlowOperationStatus {
+	return []FlowOperationStatus{
+		"COMPLETED",
+		"IN_PROGRESS",
+		"FAILED",
+		"COMPLETED_WITH_ERRORS",
+	}
+}
+
+type FlowOperationType string
+
+// Enum values for FlowOperationType
+const (
+	FlowOperationTypeFlowFlush   FlowOperationType = "FLOW_FLUSH"
+	FlowOperationTypeFlowCapture FlowOperationType = "FLOW_CAPTURE"
+)
+
+// Values returns all known values for FlowOperationType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (FlowOperationType) Values() []FlowOperationType {
+	return []FlowOperationType{
+		"FLOW_FLUSH",
+		"FLOW_CAPTURE",
 	}
 }
 

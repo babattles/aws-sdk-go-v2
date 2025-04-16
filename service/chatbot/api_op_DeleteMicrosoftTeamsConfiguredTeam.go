@@ -30,11 +30,14 @@ func (c *Client) DeleteMicrosoftTeamsConfiguredTeam(ctx context.Context, params 
 
 type DeleteMicrosoftTeamsConfiguredTeamInput struct {
 
-	// The ID of the Microsoft Team authorized with AWS Chatbot. To get the team ID,
-	// you must perform the initial authorization flow with Microsoft Teams in the AWS
-	// Chatbot console. Then you can copy and paste the team ID from the console. For
-	// more details, see steps 1-4 in Get started with Microsoft Teams in the AWS
-	// Chatbot Administrator Guide.
+	// The ID of the Microsoft Teams team authorized with AWS Chatbot.
+	//
+	// To get the team ID, you must perform the initial authorization flow with
+	// Microsoft Teams in the AWS Chatbot console. Then you can copy and paste the team
+	// ID from the console. For more information, see [Step 1: Configure a Microsoft Teams client]in the AWS Chatbot Administrator
+	// Guide.
+	//
+	// [Step 1: Configure a Microsoft Teams client]: https://docs.aws.amazon.com/chatbot/latest/adminguide/teams-setup.html#teams-client-setup
 	//
 	// This member is required.
 	TeamId *string
@@ -92,6 +95,9 @@ func (c *Client) addOperationDeleteMicrosoftTeamsConfiguredTeamMiddlewares(stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -108,6 +114,9 @@ func (c *Client) addOperationDeleteMicrosoftTeamsConfiguredTeamMiddlewares(stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteMicrosoftTeamsConfiguredTeamValidationMiddleware(stack); err != nil {
@@ -129,6 +138,18 @@ func (c *Client) addOperationDeleteMicrosoftTeamsConfiguredTeamMiddlewares(stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

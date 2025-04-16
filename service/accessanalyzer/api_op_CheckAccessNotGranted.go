@@ -31,11 +31,11 @@ type CheckAccessNotGrantedInput struct {
 
 	// An access object containing the permissions that shouldn't be granted by the
 	// specified policy. If only actions are specified, IAM Access Analyzer checks for
-	// access of the actions on all resources in the policy. If only resources are
-	// specified, then IAM Access Analyzer checks which actions have access to the
-	// specified resources. If both actions and resources are specified, then IAM
-	// Access Analyzer checks which of the specified actions have access to the
-	// specified resources.
+	// access to peform at least one of the actions on any resource in the policy. If
+	// only resources are specified, then IAM Access Analyzer checks for access to
+	// perform any action on at least one of the resources. If both actions and
+	// resources are specified, IAM Access Analyzer checks for access to perform at
+	// least one of the specified actions on at least one of the specified resources.
 	//
 	// This member is required.
 	Access []types.Access
@@ -51,8 +51,7 @@ type CheckAccessNotGrantedInput struct {
 	//
 	// Resource policies grant permissions on Amazon Web Services resources. Resource
 	// policies include trust policies for IAM roles and bucket policies for Amazon S3
-	// buckets. You can provide a generic input such as identity policy or resource
-	// policy or a specific input such as managed policy or Amazon S3 bucket policy.
+	// buckets.
 	//
 	// This member is required.
 	PolicyType types.AccessCheckPolicyType
@@ -123,6 +122,9 @@ func (c *Client) addOperationCheckAccessNotGrantedMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -139,6 +141,9 @@ func (c *Client) addOperationCheckAccessNotGrantedMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCheckAccessNotGrantedValidationMiddleware(stack); err != nil {
@@ -160,6 +165,18 @@ func (c *Client) addOperationCheckAccessNotGrantedMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

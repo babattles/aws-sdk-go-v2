@@ -204,14 +204,14 @@
                 "PoolId": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#PoolIdOrArn",
                     "traits": {
-                        "smithy.api#documentation": "<p>The pool to update with the new Identity. This value can be either the PoolId or\n            PoolArn, and you can find these values using <a>DescribePools</a>.</p>",
+                        "smithy.api#documentation": "<p>The pool to update with the new Identity. This value can be either the PoolId or\n            PoolArn, and you can find these values using <a>DescribePools</a>.</p>\n         <important>\n            <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p>\n         </important>",
                         "smithy.api#required": {}
                     }
                 },
                 "OriginationIdentity": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#PhoneOrSenderIdOrArn",
                     "traits": {
-                        "smithy.api#documentation": "<p>The origination identity to use, such as PhoneNumberId, PhoneNumberArn, SenderId, or\n            SenderIdArn. You can use <a>DescribePhoneNumbers</a> to find the values for\n            PhoneNumberId and PhoneNumberArn, while <a>DescribeSenderIds</a> can be used\n            to get the values for SenderId and SenderIdArn.</p>",
+                        "smithy.api#documentation": "<p>The origination identity to use, such as PhoneNumberId, PhoneNumberArn, SenderId, or\n            SenderIdArn. You can use <a>DescribePhoneNumbers</a> to find the values for\n            PhoneNumberId and PhoneNumberArn, while <a>DescribeSenderIds</a> can be used\n            to get the values for SenderId and SenderIdArn.</p>\n         <important>\n            <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p>\n         </important>",
                         "smithy.api#required": {}
                     }
                 },
@@ -501,6 +501,10 @@
                         "name": "DEFAULT_SENDER_ID"
                     },
                     {
+                        "value": "default-message-feedback-enabled",
+                        "name": "DEFAULT_MESSAGE_FEEDBACK_ENABLED"
+                    },
+                    {
                         "value": "protect-configuration-id",
                         "name": "PROTECT_CONFIGURATION_ID"
                     }
@@ -541,6 +545,12 @@
                     "target": "com.amazonaws.pinpointsmsvoicev2#SenderId",
                     "traits": {
                         "smithy.api#documentation": "<p>The default sender ID used by the ConfigurationSet.</p>"
+                    }
+                },
+                "DefaultMessageFeedbackEnabled": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>True if message feedback is enabled.</p>"
                     }
                 },
                 "CreatedTimestamp": {
@@ -771,6 +781,10 @@
                     {
                         "value": "DESTINATION_COUNTRY_BLOCKED_BY_PROTECT_CONFIGURATION",
                         "name": "DESTINATION_COUNTRY_BLOCKED_BY_PROTECT_CONFIGURATION"
+                    },
+                    {
+                        "value": "DESTINATION_PHONE_NUMBER_BLOCKED_BY_PROTECT_NUMBER_OVERRIDE",
+                        "name": "DESTINATION_PHONE_NUMBER_BLOCKED_BY_PROTECT_NUMBER_OVERRIDE"
                     }
                 ]
             }
@@ -1149,7 +1163,7 @@
                 "OriginationIdentity": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#PhoneOrSenderIdOrArn",
                     "traits": {
-                        "smithy.api#documentation": "<p>The origination identity to use such as a PhoneNumberId, PhoneNumberArn, SenderId or\n            SenderIdArn. You can use <a>DescribePhoneNumbers</a> to find the values for\n            PhoneNumberId and PhoneNumberArn while <a>DescribeSenderIds</a> can be used\n            to get the values for SenderId and SenderIdArn.</p>\n         <p>After the pool is created you can add more origination identities to the pool by using <a href=\"https://docs.aws.amazon.com/pinpoint/latest/apireference_smsvoicev2/API_AssociateOriginationIdentity.html\">AssociateOriginationIdentity</a>.</p>",
+                        "smithy.api#documentation": "<p>The origination identity to use such as a PhoneNumberId, PhoneNumberArn, SenderId or\n            SenderIdArn. You can use <a>DescribePhoneNumbers</a> to find the values for\n            PhoneNumberId and PhoneNumberArn while <a>DescribeSenderIds</a> can be used\n            to get the values for SenderId and SenderIdArn.</p>\n         <p>After the pool is created you can add more origination identities to the pool by using <a href=\"https://docs.aws.amazon.com/pinpoint/latest/apireference_smsvoicev2/API_AssociateOriginationIdentity.html\">AssociateOriginationIdentity</a>.</p>\n         <important>\n            <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p>\n         </important>",
                         "smithy.api#required": {}
                     }
                 },
@@ -1568,7 +1582,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Create a new registration attachment to use for uploading a file or a URL to a file. The maximum file size is 1MiB and valid file extensions are PDF, JPEG and PNG. For example, many sender ID registrations require a signed “letter of authorization” (LOA) to be submitted.</p>"
+                "smithy.api#documentation": "<p>Create a new registration attachment to use for uploading a file or a URL to a file.\n            The maximum file size is 500KB and valid file extensions are PDF, JPEG and PNG. For\n            example, many sender ID registrations require a signed “letter of authorization” (LOA)\n            to be submitted.</p>\n         <p>Use either <code>AttachmentUrl</code> or <code>AttachmentBody</code> to upload your attachment. If both are specified then an exception is returned.</p>"
             }
         },
         "com.amazonaws.pinpointsmsvoicev2#CreateRegistrationAttachmentRequest": {
@@ -1577,13 +1591,13 @@
                 "AttachmentBody": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#AttachmentBody",
                     "traits": {
-                        "smithy.api#documentation": "<p>The registration file to upload. The maximum file size is 1MiB and valid file extensions are PDF, JPEG and PNG.</p>"
+                        "smithy.api#documentation": "<p>The registration file to upload. The maximum file size is 500KB and valid file extensions are PDF, JPEG and PNG.</p>"
                     }
                 },
                 "AttachmentUrl": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#AttachmentUrl",
                     "traits": {
-                        "smithy.api#documentation": "<p>A URL to the required registration file.  For example, you can provide the S3 object URL.</p>"
+                        "smithy.api#documentation": "<p>Registration files have to be stored in an Amazon S3 bucket. The URI to use when sending is in the format <code>s3://BucketName/FileName</code>.</p>"
                     }
                 },
                 "Tags": {
@@ -1701,7 +1715,7 @@
                 "RegistrationStatus": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#RegistrationStatus",
                     "traits": {
-                        "smithy.api#documentation": "<p>The status of the registration.</p>\n         <ul>\n            <li>\n               <p>\n                  <code>CREATED</code>: Your registration is created but not submitted.</p>\n            </li>\n            <li>\n               <p>\n                  <code>SUBMITTED</code>: Your registration has been submitted and is awaiting review.</p>\n            </li>\n            <li>\n               <p>\n                  <code>REVIEWING</code>: Your registration has been accepted and is being reviewed.</p>\n            </li>\n            <li>\n               <p>\n                  <code>PROVISIONING</code>: Your registration has been approved and your origination identity is being created.</p>\n            </li>\n            <li>\n               <p>\n                  <code>COMPLETE</code>: Your registration has been approved and and your origination identity has been created.</p>\n            </li>\n            <li>\n               <p>\n                  <code>REQUIRES_UPDATES</code>: You must fix your registration and resubmit it.</p>\n            </li>\n            <li>\n               <p>\n                  <code>CLOSED</code>: The phone number or sender ID has been deleted and you must also delete the registration for the number.</p>\n            </li>\n            <li>\n               <p>\n                  <code>DELETED</code>: The registration has been deleted.</p>\n            </li>\n         </ul>",
+                        "smithy.api#documentation": "<p>The status of the registration.</p>\n         <ul>\n            <li>\n               <p>\n                  <code>CLOSED</code>: The phone number or sender ID has been deleted and you must also delete the registration for the number.</p>\n            </li>\n            <li>\n               <p>\n                  <code>CREATED</code>: Your registration is created but not submitted.</p>\n            </li>\n            <li>\n               <p>\n                  <code>COMPLETE</code>: Your registration has been approved and your origination identity has been created.</p>\n            </li>\n            <li>\n               <p>\n                  <code>DELETED</code>: The registration has been deleted.</p>\n            </li>\n            <li>\n               <p>\n                  <code>PROVISIONING</code>: Your registration has been approved and your origination identity is being created.</p>\n            </li>\n            <li>\n               <p>\n                  <code>REQUIRES_AUTHENTICATION</code>: You need to complete email authentication.</p>\n            </li>\n            <li>\n               <p>\n                  <code>REQUIRES_UPDATES</code>: You must fix your registration and resubmit it.</p>\n            </li>\n            <li>\n               <p>\n                  <code>REVIEWING</code>: Your registration has been accepted and is being reviewed.</p>\n            </li>\n            <li>\n               <p>\n                  <code>SUBMITTED</code>: Your registration has been submitted and is awaiting review.</p>\n            </li>\n         </ul>",
                         "smithy.api#required": {}
                     }
                 },
@@ -1813,7 +1827,7 @@
                 "RegistrationVersionStatus": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#RegistrationVersionStatus",
                     "traits": {
-                        "smithy.api#documentation": "<p>The status of the registration.</p>\n         <ul>\n            <li>\n               <p>\n                  <code>DRAFT</code>: The initial status of a registration version after it’s created.</p>\n            </li>\n            <li>\n               <p>\n                  <code>SUBMITTED</code>: Your registration has been submitted.</p>\n            </li>\n            <li>\n               <p>\n                  <code>REVIEWING</code>: Your registration has been accepted and is being reviewed.</p>\n            </li>\n            <li>\n               <p>\n                  <code>APPROVED</code>: Your registration has been approved.</p>\n            </li>\n            <li>\n               <p>\n                  <code>DISCARDED</code>: You've abandon this version of their registration to start over with a new version. </p>\n            </li>\n            <li>\n               <p>\n                  <code>DENIED</code>: You must fix your registration and resubmit it.</p>\n            </li>\n            <li>\n               <p>\n                  <code>REVOKED</code>: Your previously approved registration has been revoked.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ARCHIVED</code>: Your previously approved registration version moves into this status when a more recently submitted version is approved.</p>\n            </li>\n         </ul>",
+                        "smithy.api#documentation": "<p>The status of the registration.</p>\n         <ul>\n            <li>\n               <p>\n                  <code>APPROVED</code>: Your registration has been approved.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ARCHIVED</code>: Your previously approved registration version moves into this status when a more recently submitted version is approved.</p>\n            </li>\n            <li>\n               <p>\n                  <code>DENIED</code>: You must fix your registration and resubmit it.</p>\n            </li>\n            <li>\n               <p>\n                  <code>DISCARDED</code>: You've abandon this version of their registration to start over with a new version. </p>\n            </li>\n            <li>\n               <p>\n                  <code>DRAFT</code>: The initial status of a registration version after it’s created.</p>\n            </li>\n            <li>\n               <p>\n                  <code>REQUIRES_AUTHENTICATION</code>: You need to complete email authentication.</p>\n            </li>\n            <li>\n               <p>\n                  <code>REVIEWING</code>: Your registration has been accepted and is being reviewed.</p>\n            </li>\n            <li>\n               <p>\n                  <code>REVOKED</code>: Your previously approved registration has been revoked.</p>\n            </li>\n            <li>\n               <p>\n                  <code>SUBMITTED</code>: Your registration has been submitted.</p>\n            </li>\n         </ul>",
                         "smithy.api#required": {}
                     }
                 },
@@ -2071,6 +2085,12 @@
                     "target": "com.amazonaws.pinpointsmsvoicev2#SenderId",
                     "traits": {
                         "smithy.api#documentation": "<p>The default Sender ID of the configuration set that was deleted.</p>"
+                    }
+                },
+                "DefaultMessageFeedbackEnabled": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>True if the configuration set has message feedback enabled. By default this is set to false. </p>"
                     }
                 },
                 "CreatedTimestamp": {
@@ -2339,7 +2359,7 @@
                 "OriginationIdentity": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#PhoneOrPoolIdOrArn",
                     "traits": {
-                        "smithy.api#documentation": "<p>The origination identity to use such as a PhoneNumberId, PhoneNumberArn, PoolId or\n            PoolArn. You can use <a>DescribePhoneNumbers</a> to find the values for\n            PhoneNumberId and PhoneNumberArn and <a>DescribePools</a> to find the values\n            of PoolId and PoolArn.</p>",
+                        "smithy.api#documentation": "<p>The origination identity to use such as a PhoneNumberId, PhoneNumberArn, PoolId or\n            PoolArn. You can use <a>DescribePhoneNumbers</a> to find the values for\n            PhoneNumberId and PhoneNumberArn and <a>DescribePools</a> to find the values\n            of PoolId and PoolArn.</p>\n         <important>\n            <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p>\n         </important>",
                         "smithy.api#required": {}
                     }
                 },
@@ -2478,7 +2498,7 @@
                 "OptOutListName": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#OptOutListNameOrArn",
                     "traits": {
-                        "smithy.api#documentation": "<p>The OptOutListName or OptOutListArn of the OptOutList to delete. You can use <a>DescribeOptOutLists</a> to find the values for OptOutListName and\n            OptOutListArn.</p>",
+                        "smithy.api#documentation": "<p>The OptOutListName or OptOutListArn of the OptOutList to delete. You can use <a>DescribeOptOutLists</a> to find the values for OptOutListName and\n            OptOutListArn.</p>\n         <important>\n            <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p>\n         </important>",
                         "smithy.api#required": {}
                     }
                 }
@@ -2551,7 +2571,7 @@
                 "OptOutListName": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#OptOutListNameOrArn",
                     "traits": {
-                        "smithy.api#documentation": "<p>The OptOutListName or OptOutListArn to remove the phone number from.</p>",
+                        "smithy.api#documentation": "<p>The OptOutListName or OptOutListArn to remove the phone number from.</p>\n         <important>\n            <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p>\n         </important>",
                         "smithy.api#required": {}
                     }
                 },
@@ -2644,7 +2664,7 @@
                 "PoolId": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#PoolIdOrArn",
                     "traits": {
-                        "smithy.api#documentation": "<p>The PoolId or PoolArn of the pool to delete. You can use <a>DescribePools</a> to find the values for PoolId and PoolArn .</p>",
+                        "smithy.api#documentation": "<p>The PoolId or PoolArn of the pool to delete. You can use <a>DescribePools</a> to find the values for PoolId and PoolArn .</p>\n         <important>\n            <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p>\n         </important>",
                         "smithy.api#required": {}
                     }
                 }
@@ -2815,6 +2835,112 @@
                         "smithy.api#default": false,
                         "smithy.api#documentation": "<p>The status of deletion protection for the protect configuration. When set to true deletion protection is enabled. By default this is set to false.\n       </p>",
                         "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.pinpointsmsvoicev2#DeleteProtectConfigurationRuleSetNumberOverride": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.pinpointsmsvoicev2#DeleteProtectConfigurationRuleSetNumberOverrideRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.pinpointsmsvoicev2#DeleteProtectConfigurationRuleSetNumberOverrideResult"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Permanently delete the protect configuration rule set number override.</p>"
+            }
+        },
+        "com.amazonaws.pinpointsmsvoicev2#DeleteProtectConfigurationRuleSetNumberOverrideRequest": {
+            "type": "structure",
+            "members": {
+                "ProtectConfigurationId": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ProtectConfigurationIdOrArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier for the protect configuration.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "DestinationPhoneNumber": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#PhoneNumber",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The destination phone number in E.164 format.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.pinpointsmsvoicev2#DeleteProtectConfigurationRuleSetNumberOverrideResult": {
+            "type": "structure",
+            "members": {
+                "ProtectConfigurationArn": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ProtectConfigurationArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the protect configuration.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "ProtectConfigurationId": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ProtectConfigurationId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier for the protect configuration.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "DestinationPhoneNumber": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#PhoneNumber",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The destination phone number in E.164 format.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "CreatedTimestamp": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The time when the rule was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "Action": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ProtectConfigurationRuleOverrideAction",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The action associated with the rule.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "IsoCountryCode": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#IsoCountryCode",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The two-character code, in ISO 3166-1 alpha-2 format, for the country or region.</p>"
+                    }
+                },
+                "ExpirationTimestamp": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The time when the resource-based policy was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
                     }
                 }
             },
@@ -3093,7 +3219,7 @@
                 "RegistrationStatus": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#RegistrationStatus",
                     "traits": {
-                        "smithy.api#documentation": "<p>The status of the registration.</p>\n         <ul>\n            <li>\n               <p>\n                  <code>CREATED</code>: Your registration is created but not submitted.</p>\n            </li>\n            <li>\n               <p>\n                  <code>SUBMITTED</code>: Your registration has been submitted and is awaiting review.</p>\n            </li>\n            <li>\n               <p>\n                  <code>REVIEWING</code>: Your registration has been accepted and is being reviewed.</p>\n            </li>\n            <li>\n               <p>\n                  <code>PROVISIONING</code>: Your registration has been approved and your origination identity is being created.</p>\n            </li>\n            <li>\n               <p>\n                  <code>COMPLETE</code>: Your registration has been approved and and your origination identity has been created.</p>\n            </li>\n            <li>\n               <p>\n                  <code>REQUIRES_UPDATES</code>: You must fix your registration and resubmit it.</p>\n            </li>\n            <li>\n               <p>\n                  <code>CLOSED</code>: The phone number or sender ID has been deleted and you must also delete the registration for the number.</p>\n            </li>\n            <li>\n               <p>\n                  <code>DELETED</code>: The registration has been deleted.</p>\n            </li>\n         </ul>",
+                        "smithy.api#documentation": "<p>The status of the registration.</p>\n         <ul>\n            <li>\n               <p>\n                  <code>CLOSED</code>: The phone number or sender ID has been deleted and you must also delete the registration for the number.</p>\n            </li>\n            <li>\n               <p>\n                  <code>CREATED</code>: Your registration is created but not submitted.</p>\n            </li>\n            <li>\n               <p>\n                  <code>COMPLETE</code>: Your registration has been approved and your origination identity has been created.</p>\n            </li>\n            <li>\n               <p>\n                  <code>DELETED</code>: The registration has been deleted.</p>\n            </li>\n            <li>\n               <p>\n                  <code>PROVISIONING</code>: Your registration has been approved and your origination identity is being created.</p>\n            </li>\n            <li>\n               <p>\n                  <code>REQUIRES_AUTHENTICATION</code>: You need to complete email authentication.</p>\n            </li>\n            <li>\n               <p>\n                  <code>REQUIRES_UPDATES</code>: You must fix your registration and resubmit it.</p>\n            </li>\n            <li>\n               <p>\n                  <code>REVIEWING</code>: Your registration has been accepted and is being reviewed.</p>\n            </li>\n            <li>\n               <p>\n                  <code>SUBMITTED</code>: Your registration has been submitted and is awaiting review.</p>\n            </li>\n         </ul>",
                         "smithy.api#required": {}
                     }
                 },
@@ -3127,6 +3253,76 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The time when the registration was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>",
                         "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.pinpointsmsvoicev2#DeleteResourcePolicy": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.pinpointsmsvoicev2#DeleteResourcePolicyRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.pinpointsmsvoicev2#DeleteResourcePolicyResult"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Deletes the resource-based policy document attached to the AWS End User Messaging SMS and Voice resource. A shared resource can be a Pool, Opt-out list, Sender Id, or Phone number.</p>"
+            }
+        },
+        "com.amazonaws.pinpointsmsvoicev2#DeleteResourcePolicyRequest": {
+            "type": "structure",
+            "members": {
+                "ResourceArn": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#AmazonResourceName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the AWS End User Messaging SMS and Voice resource you're deleting the resource-based policy from.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.pinpointsmsvoicev2#DeleteResourcePolicyResult": {
+            "type": "structure",
+            "members": {
+                "ResourceArn": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#AmazonResourceName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the AWS End User Messaging SMS and Voice resource that the resource-based policy was deleted from.</p>"
+                    }
+                },
+                "Policy": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ResourcePolicy",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The JSON formatted resource-based policy that was deleted.</p>"
+                    }
+                },
+                "CreatedTimestamp": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The time when the resource-based policy was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
                     }
                 }
             },
@@ -3581,7 +3777,7 @@
                 "OriginationIdentity": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#PhoneOrPoolIdOrArn",
                     "traits": {
-                        "smithy.api#documentation": "<p>The origination identity to use such as a PhoneNumberId, PhoneNumberArn, SenderId or\n            SenderIdArn. You can use <a>DescribePhoneNumbers</a> to find the values for\n            PhoneNumberId and PhoneNumberArn while <a>DescribeSenderIds</a> can be used\n            to get the values for SenderId and SenderIdArn.</p>",
+                        "smithy.api#documentation": "<p>The origination identity to use such as a PhoneNumberId, PhoneNumberArn, SenderId or\n            SenderIdArn. You can use <a>DescribePhoneNumbers</a> to find the values for\n            PhoneNumberId and PhoneNumberArn while <a>DescribeSenderIds</a> can be used\n            to get the values for SenderId and SenderIdArn.</p>\n         <important>\n            <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p>\n         </important>",
                         "smithy.api#required": {}
                     }
                 },
@@ -3684,7 +3880,7 @@
                 "OptOutListNames": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#OptOutListNameList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The OptOutLists to show the details of. This is an array of strings that can be either\n            the OptOutListName or OptOutListArn.</p>"
+                        "smithy.api#documentation": "<p>The OptOutLists to show the details of. This is an array of strings that can be either\n            the OptOutListName or OptOutListArn.</p>\n         <important>\n            <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p>\n         </important>"
                     }
                 },
                 "NextToken": {
@@ -3697,6 +3893,12 @@
                     "target": "com.amazonaws.pinpointsmsvoicev2#MaxResults",
                     "traits": {
                         "smithy.api#documentation": "<p>The maximum number of results to return per each request.</p>"
+                    }
+                },
+                "Owner": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#Owner",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Use <code>SELF</code> to filter the list of Opt-Out List to ones your account owns or use <code>SHARED</code> to filter on Opt-Out List shared with your account. The <code>Owner</code> and <code>OptOutListNames</code> parameters can't be used at the same time.</p>"
                     }
                 }
             },
@@ -3750,7 +3952,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Describes the specified opted out destination numbers or all opted out destination\n            numbers in an opt-out list.</p>\n         <p>If you specify opted out numbers, the output includes information for only the\n            specified opted out numbers. If you specify filters, the output includes information for\n            only those opted out numbers that meet the filter criteria. If you don't specify opted\n            out numbers or filters, the output includes information for all opted out destination\n            numbers in your opt-out list.</p>\n         <p>If you specify an opted out number that isn't valid, an error is returned.</p>",
+                "smithy.api#documentation": "<p>Describes the specified opted out destination numbers or all opted out destination\n            numbers in an opt-out list.</p>\n         <p>If you specify opted out numbers, the output includes information for only the\n            specified opted out numbers. If you specify filters, the output includes information for\n            only those opted out numbers that meet the filter criteria. If you don't specify opted\n            out numbers or filters, the output includes information for all opted out destination\n            numbers in your opt-out list.</p>\n         <p>If you specify an opted out number that isn't valid, an exception is returned.</p>",
                 "smithy.api#paginated": {
                     "items": "OptedOutNumbers"
                 }
@@ -3762,14 +3964,14 @@
                 "OptOutListName": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#OptOutListNameOrArn",
                     "traits": {
-                        "smithy.api#documentation": "<p>The OptOutListName or OptOutListArn of the OptOutList. You can use <a>DescribeOptOutLists</a> to find the values for OptOutListName and\n            OptOutListArn.</p>",
+                        "smithy.api#documentation": "<p>The OptOutListName or OptOutListArn of the OptOutList. You can use <a>DescribeOptOutLists</a> to find the values for OptOutListName and\n            OptOutListArn.</p>\n         <important>\n            <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p>\n         </important>",
                         "smithy.api#required": {}
                     }
                 },
                 "OptedOutNumbers": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#OptedOutNumberList",
                     "traits": {
-                        "smithy.api#documentation": "<p>An array of phone numbers to search for in the OptOutList.</p>"
+                        "smithy.api#documentation": "<p>An array of phone numbers to search for in the OptOutList.</p>\n         <p>If you specify an opted out number that isn't valid, an exception is returned.</p>"
                     }
                 },
                 "Filters": {
@@ -3865,7 +4067,7 @@
                 "PhoneNumberIds": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#PhoneNumberIdList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The unique identifier of phone numbers to find information about. This is an array of\n            strings that can be either the PhoneNumberId or PhoneNumberArn.</p>"
+                        "smithy.api#documentation": "<p>The unique identifier of phone numbers to find information about. This is an array of\n            strings that can be either the PhoneNumberId or PhoneNumberArn.</p>\n         <important>\n            <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p>\n         </important>"
                     }
                 },
                 "Filters": {
@@ -3884,6 +4086,12 @@
                     "target": "com.amazonaws.pinpointsmsvoicev2#MaxResults",
                     "traits": {
                         "smithy.api#documentation": "<p>The maximum number of results to return per each request.</p>"
+                    }
+                },
+                "Owner": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#Owner",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Use <code>SELF</code> to filter the list of phone numbers to ones your account owns or use <code>SHARED</code> to filter on phone numbers shared with your account. The <code>Owner</code> and <code>PhoneNumberIds</code> parameters can't be used at the same time.</p>"
                     }
                 }
             },
@@ -3949,7 +4157,7 @@
                 "PoolIds": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#PoolIdList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The unique identifier of pools to find. This is an array of strings that can be either\n            the PoolId or PoolArn.</p>"
+                        "smithy.api#documentation": "<p>The unique identifier of pools to find. This is an array of strings that can be either\n            the PoolId or PoolArn.</p>\n         <important>\n            <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p>\n         </important>"
                     }
                 },
                 "Filters": {
@@ -3968,6 +4176,12 @@
                     "target": "com.amazonaws.pinpointsmsvoicev2#MaxResults",
                     "traits": {
                         "smithy.api#documentation": "<p>The maximum number of results to return per each request.</p>"
+                    }
+                },
+                "Owner": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#Owner",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Use <code>SELF</code> to filter the list of Pools to ones your account owns or use <code>SHARED</code> to filter on Pools shared with your account. The <code>Owner</code> and <code>PoolIds</code> parameters can't be used at the same time.</p>"
                     }
                 }
             },
@@ -4780,7 +4994,7 @@
                 "SenderIds": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#SenderIdList",
                     "traits": {
-                        "smithy.api#documentation": "<p>An array of SenderIdAndCountry objects to search for.</p>"
+                        "smithy.api#documentation": "<p>An array of SenderIdAndCountry objects to search for.</p>\n         <important>\n            <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p>\n         </important>"
                     }
                 },
                 "Filters": {
@@ -4799,6 +5013,12 @@
                     "target": "com.amazonaws.pinpointsmsvoicev2#MaxResults",
                     "traits": {
                         "smithy.api#documentation": "<p>The maximum number of results to return per each request.</p>"
+                    }
+                },
+                "Owner": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#Owner",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Use <code>SELF</code> to filter the list of Sender Ids to ones your account owns or use <code>SHARED</code> to filter on Sender Ids shared with your account. The <code>Owner</code> and <code>SenderIds</code> parameters can't be used at the same time. </p>"
                     }
                 }
             },
@@ -4921,7 +5141,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Retrieves the specified verified destiona numbers.</p>",
+                "smithy.api#documentation": "<p>Retrieves the specified verified destination numbers.</p>",
                 "smithy.api#paginated": {
                     "items": "VerifiedDestinationNumbers"
                 }
@@ -4933,7 +5153,7 @@
                 "VerifiedDestinationNumberIds": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#VerifiedDestinationNumberIdList",
                     "traits": {
-                        "smithy.api#documentation": "<p>An array of VerifiedDestinationNumberid to retreive.</p>"
+                        "smithy.api#documentation": "<p>An array of VerifiedDestinationNumberid to retrieve.</p>"
                     }
                 },
                 "DestinationPhoneNumbers": {
@@ -5074,14 +5294,14 @@
                 "PoolId": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#PoolIdOrArn",
                     "traits": {
-                        "smithy.api#documentation": "<p>The unique identifier for the pool to disassociate with the origination identity. This\n            value can be either the PoolId or PoolArn.</p>",
+                        "smithy.api#documentation": "<p>The unique identifier for the pool to disassociate with the origination identity. This\n            value can be either the PoolId or PoolArn.</p>\n         <important>\n            <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p>\n         </important>",
                         "smithy.api#required": {}
                     }
                 },
                 "OriginationIdentity": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#PhoneOrSenderIdOrArn",
                     "traits": {
-                        "smithy.api#documentation": "<p>The origination identity to use such as a PhoneNumberId, PhoneNumberArn, SenderId or\n            SenderIdArn. You can use <a>DescribePhoneNumbers</a> find the values for\n            PhoneNumberId and PhoneNumberArn, or use <a>DescribeSenderIds</a> to get the\n            values for SenderId and SenderIdArn.</p>",
+                        "smithy.api#documentation": "<p>The origination identity to use such as a PhoneNumberId, PhoneNumberArn, SenderId or\n            SenderIdArn. You can use <a>DescribePhoneNumbers</a> find the values for\n            PhoneNumberId and PhoneNumberArn, or use <a>DescribeSenderIds</a> to get the\n            values for SenderId and SenderIdArn.</p>\n         <important>\n            <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p>\n         </important>",
                         "smithy.api#required": {}
                     }
                 },
@@ -5306,7 +5526,7 @@
                 "RegistrationVersionStatus": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#RegistrationVersionStatus",
                     "traits": {
-                        "smithy.api#documentation": "<p>The status of the registration version.</p>\n         <ul>\n            <li>\n               <p>\n                  <code>DRAFT</code>: The initial status of a registration version after it’s created.</p>\n            </li>\n            <li>\n               <p>\n                  <code>SUBMITTED</code>: Your registration has been submitted.</p>\n            </li>\n            <li>\n               <p>\n                  <code>REVIEWING</code>: Your registration has been accepted and is being reviewed.</p>\n            </li>\n            <li>\n               <p>\n                  <code>APPROVED</code>: Your registration has been approved.</p>\n            </li>\n            <li>\n               <p>\n                  <code>DISCARDED</code>: You've abandon this version of their registration to start over with a new version. </p>\n            </li>\n            <li>\n               <p>\n                  <code>DENIED</code>: You must fix your registration and resubmit it.</p>\n            </li>\n            <li>\n               <p>\n                  <code>REVOKED</code>: Your previously approved registration has been revoked.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ARCHIVED</code>: Your previously approved registration version moves into this status when a more recently submitted version is approved.</p>\n            </li>\n         </ul>",
+                        "smithy.api#documentation": "<p>The status of the registration version.</p>\n         <ul>\n            <li>\n               <p>\n                  <code>APPROVED</code>: Your registration has been approved.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ARCHIVED</code>: Your previously approved registration version moves into this status when a more recently submitted version is approved.</p>\n            </li>\n            <li>\n               <p>\n                  <code>DENIED</code>: You must fix your registration and resubmit it.</p>\n            </li>\n            <li>\n               <p>\n                  <code>DISCARDED</code>: You've abandon this version of their registration to start over with a new version. </p>\n            </li>\n            <li>\n               <p>\n                  <code>DRAFT</code>: The initial status of a registration version after it’s created.</p>\n            </li>\n            <li>\n               <p>\n                  <code>REQUIRES_AUTHENTICATION</code>: You need to complete email authentication.</p>\n            </li>\n            <li>\n               <p>\n                  <code>REVIEWING</code>: Your registration has been accepted and is being reviewed.</p>\n            </li>\n            <li>\n               <p>\n                  <code>REVOKED</code>: Your previously approved registration has been revoked.</p>\n            </li>\n            <li>\n               <p>\n                  <code>SUBMITTED</code>: Your registration has been submitted.</p>\n            </li>\n         </ul>",
                         "smithy.api#required": {}
                     }
                 },
@@ -5452,6 +5672,10 @@
                     {
                         "value": "TEXT_TTL_EXPIRED",
                         "name": "TEXT_TTL_EXPIRED"
+                    },
+                    {
+                        "value": "TEXT_PROTECT_BLOCKED",
+                        "name": "TEXT_PROTECT_BLOCKED"
                     },
                     {
                         "value": "VOICE_ALL",
@@ -5638,7 +5862,7 @@
                     "min": 1,
                     "max": 128
                 },
-                "smithy.api#pattern": "^[/\\.:A-Za-z0-9_-]+$"
+                "smithy.api#pattern": "^[/\\.:A-Za-z0-9+_-]+$"
             }
         },
         "com.amazonaws.pinpointsmsvoicev2#FilterValueList": {
@@ -5733,6 +5957,76 @@
                     "traits": {
                         "smithy.api#documentation": "<p>A map of ProtectConfigurationCountryRuleSetInformation objects that contain the\n            details for the requested NumberCapability. The Key is the two-letter ISO country code. For a list of supported ISO country codes, see <a href=\"https://docs.aws.amazon.com/sms-voice/latest/userguide/phone-numbers-sms-by-country.html\">Supported countries and regions (SMS channel)</a> in the AWS End User Messaging SMS User Guide.</p>",
                         "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.pinpointsmsvoicev2#GetResourcePolicy": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.pinpointsmsvoicev2#GetResourcePolicyRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.pinpointsmsvoicev2#GetResourcePolicyResult"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Retrieves the JSON text of the resource-based policy document attached to the AWS End User Messaging SMS and Voice resource. A shared resource can be a Pool, Opt-out list, Sender Id, or Phone number.</p>"
+            }
+        },
+        "com.amazonaws.pinpointsmsvoicev2#GetResourcePolicyRequest": {
+            "type": "structure",
+            "members": {
+                "ResourceArn": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#AmazonResourceName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the AWS End User Messaging SMS and Voice resource attached to the resource-based policy.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.pinpointsmsvoicev2#GetResourcePolicyResult": {
+            "type": "structure",
+            "members": {
+                "ResourceArn": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#AmazonResourceName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the AWS End User Messaging SMS and Voice resource attached to the resource-based policy.</p>"
+                    }
+                },
+                "Policy": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ResourcePolicy",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The JSON formatted string that contains the resource-based policy attached to the AWS End User Messaging SMS and Voice resource. </p>"
+                    }
+                },
+                "CreatedTimestamp": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The time when the resource-based policy was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
                     }
                 }
             },
@@ -6027,7 +6321,7 @@
                 "PoolId": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#PoolIdOrArn",
                     "traits": {
-                        "smithy.api#documentation": "<p>The unique identifier for the pool. This value can be either the PoolId or\n            PoolArn.</p>",
+                        "smithy.api#documentation": "<p>The unique identifier for the pool. This value can be either the PoolId or\n            PoolArn.</p>\n         <important>\n            <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p>\n         </important>",
                         "smithy.api#required": {}
                     }
                 },
@@ -6086,6 +6380,117 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.pinpointsmsvoicev2#ListProtectConfigurationRuleSetNumberOverrideFilter": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.pinpointsmsvoicev2#ProtectConfigurationRuleSetNumberOverrideFilterItem"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 100
+                }
+            }
+        },
+        "com.amazonaws.pinpointsmsvoicev2#ListProtectConfigurationRuleSetNumberOverrides": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.pinpointsmsvoicev2#ListProtectConfigurationRuleSetNumberOverridesRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.pinpointsmsvoicev2#ListProtectConfigurationRuleSetNumberOverridesResult"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Retrieve all of the protect configuration rule set number overrides that match the filters.</p>",
+                "smithy.api#paginated": {
+                    "items": "RuleSetNumberOverrides"
+                }
+            }
+        },
+        "com.amazonaws.pinpointsmsvoicev2#ListProtectConfigurationRuleSetNumberOverridesRequest": {
+            "type": "structure",
+            "members": {
+                "ProtectConfigurationId": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ProtectConfigurationIdOrArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier for the protect configuration.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "Filters": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ListProtectConfigurationRuleSetNumberOverrideFilter",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An array of ProtectConfigurationRuleSetNumberOverrideFilterItem objects to filter the results.</p>"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#NextToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The token to be used for the next set of paginated results. You don't need to supply a\n            value for this field in the initial request.</p>"
+                    }
+                },
+                "MaxResults": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#MaxResults",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum number of results to return per each request.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.pinpointsmsvoicev2#ListProtectConfigurationRuleSetNumberOverridesResult": {
+            "type": "structure",
+            "members": {
+                "ProtectConfigurationArn": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ProtectConfigurationArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the protect configuration.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "ProtectConfigurationId": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ProtectConfigurationId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier for the protect configuration.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "RuleSetNumberOverrides": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ProtectConfigurationRuleSetNumberOverrideList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An array of RuleSetNumberOverrides objects.</p>"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#NextToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The token to be used for the next set of paginated results. You don't need to supply a\n            value for this field in the initial request.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.pinpointsmsvoicev2#ListRegistrationAssociations": {
             "type": "operation",
             "input": {
@@ -6112,7 +6517,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Retreive all of the origination identies that are associated with a registration.</p>",
+                "smithy.api#documentation": "<p>Retrieve all of the origination identities that are associated with a registration.</p>",
                 "smithy.api#paginated": {
                     "items": "RegistrationAssociations"
                 }
@@ -6316,6 +6721,31 @@
                     "max": 2048
                 },
                 "smithy.api#pattern": "^s3://([a-z0-9\\.-]{3,63})/(.+)$"
+            }
+        },
+        "com.amazonaws.pinpointsmsvoicev2#MessageFeedbackStatus": {
+            "type": "string",
+            "traits": {
+                "smithy.api#enum": [
+                    {
+                        "value": "RECEIVED",
+                        "name": "RECEIVED"
+                    },
+                    {
+                        "value": "FAILED",
+                        "name": "FAILED"
+                    }
+                ]
+            }
+        },
+        "com.amazonaws.pinpointsmsvoicev2#MessageId": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 64
+                },
+                "smithy.api#pattern": "^[A-Za-z0-9_:/-]+$"
             }
         },
         "com.amazonaws.pinpointsmsvoicev2#MessageType": {
@@ -6665,6 +7095,21 @@
                 "target": "com.amazonaws.pinpointsmsvoicev2#OriginationIdentityMetadata"
             }
         },
+        "com.amazonaws.pinpointsmsvoicev2#Owner": {
+            "type": "string",
+            "traits": {
+                "smithy.api#enum": [
+                    {
+                        "value": "SELF",
+                        "name": "SELF"
+                    },
+                    {
+                        "value": "SHARED",
+                        "name": "SHARED"
+                    }
+                ]
+            }
+        },
         "com.amazonaws.pinpointsmsvoicev2#PhoneNumber": {
             "type": "string",
             "traits": {
@@ -7008,6 +7453,9 @@
                     "target": "com.amazonaws.pinpointsmsvoicev2#DeleteProtectConfiguration"
                 },
                 {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#DeleteProtectConfigurationRuleSetNumberOverride"
+                },
+                {
                     "target": "com.amazonaws.pinpointsmsvoicev2#DeleteRegistration"
                 },
                 {
@@ -7015,6 +7463,9 @@
                 },
                 {
                     "target": "com.amazonaws.pinpointsmsvoicev2#DeleteRegistrationFieldValue"
+                },
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#DeleteResourcePolicy"
                 },
                 {
                     "target": "com.amazonaws.pinpointsmsvoicev2#DeleteTextMessageSpendLimitOverride"
@@ -7095,7 +7546,13 @@
                     "target": "com.amazonaws.pinpointsmsvoicev2#GetProtectConfigurationCountryRuleSet"
                 },
                 {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#GetResourcePolicy"
+                },
+                {
                     "target": "com.amazonaws.pinpointsmsvoicev2#ListPoolOriginationIdentities"
+                },
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ListProtectConfigurationRuleSetNumberOverrides"
                 },
                 {
                     "target": "com.amazonaws.pinpointsmsvoicev2#ListRegistrationAssociations"
@@ -7107,10 +7564,19 @@
                     "target": "com.amazonaws.pinpointsmsvoicev2#PutKeyword"
                 },
                 {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#PutMessageFeedback"
+                },
+                {
                     "target": "com.amazonaws.pinpointsmsvoicev2#PutOptedOutNumber"
                 },
                 {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#PutProtectConfigurationRuleSetNumberOverride"
+                },
+                {
                     "target": "com.amazonaws.pinpointsmsvoicev2#PutRegistrationFieldValue"
+                },
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#PutResourcePolicy"
                 },
                 {
                     "target": "com.amazonaws.pinpointsmsvoicev2#ReleasePhoneNumber"
@@ -7138,6 +7604,9 @@
                 },
                 {
                     "target": "com.amazonaws.pinpointsmsvoicev2#SetAccountDefaultProtectConfiguration"
+                },
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#SetDefaultMessageFeedbackEnabled"
                 },
                 {
                     "target": "com.amazonaws.pinpointsmsvoicev2#SetDefaultMessageType"
@@ -8398,6 +8867,131 @@
                 }
             }
         },
+        "com.amazonaws.pinpointsmsvoicev2#ProtectConfigurationRuleOverrideAction": {
+            "type": "string",
+            "traits": {
+                "smithy.api#enum": [
+                    {
+                        "value": "ALLOW",
+                        "name": "ALLOW"
+                    },
+                    {
+                        "value": "BLOCK",
+                        "name": "BLOCK"
+                    }
+                ]
+            }
+        },
+        "com.amazonaws.pinpointsmsvoicev2#ProtectConfigurationRuleSetNumberOverride": {
+            "type": "structure",
+            "members": {
+                "DestinationPhoneNumber": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#PhoneNumber",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The destination phone number in E.164 format.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "CreatedTimestamp": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The time when the rule was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "Action": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ProtectConfigurationRuleOverrideAction",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The action for the rule to perform of either blocking or allowing messages to the destination phone number.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "IsoCountryCode": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#IsoCountryCode",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The two-character code, in ISO 3166-1 alpha-2 format, for the country or region.</p>"
+                    }
+                },
+                "ExpirationTimestamp": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The time the rule will expire at. If <code>ExpirationTimestamp</code> is not set then the rule will not expire.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Provides details on a RuleSetNumberOverride.</p>"
+            }
+        },
+        "com.amazonaws.pinpointsmsvoicev2#ProtectConfigurationRuleSetNumberOverrideFilterItem": {
+            "type": "structure",
+            "members": {
+                "Name": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ProtectConfigurationRuleSetNumberOverrideFilterName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the attribute to filter on.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "Values": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#FilterValueList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An array values to filter for.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The information for a protect configuration rule set number override that meets a specified criteria.</p>"
+            }
+        },
+        "com.amazonaws.pinpointsmsvoicev2#ProtectConfigurationRuleSetNumberOverrideFilterName": {
+            "type": "string",
+            "traits": {
+                "smithy.api#enum": [
+                    {
+                        "value": "iso-country-code",
+                        "name": "ISO_COUNTRY_CODE"
+                    },
+                    {
+                        "value": "destination-phone-number-begins-with",
+                        "name": "DESTINATION_PHONE_NUMBER_BEGINS_WITH"
+                    },
+                    {
+                        "value": "action",
+                        "name": "ACTION"
+                    },
+                    {
+                        "value": "expires-before",
+                        "name": "EXPIRES_BEFORE"
+                    },
+                    {
+                        "value": "expires-after",
+                        "name": "EXPIRES_AFTER"
+                    },
+                    {
+                        "value": "created-before",
+                        "name": "CREATED_BEFORE"
+                    },
+                    {
+                        "value": "created-after",
+                        "name": "CREATED_AFTER"
+                    }
+                ]
+            }
+        },
+        "com.amazonaws.pinpointsmsvoicev2#ProtectConfigurationRuleSetNumberOverrideList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.pinpointsmsvoicev2#ProtectConfigurationRuleSetNumberOverride"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 100
+                }
+            }
+        },
         "com.amazonaws.pinpointsmsvoicev2#ProtectStatus": {
             "type": "string",
             "traits": {
@@ -8454,7 +9048,7 @@
                 "OriginationIdentity": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#PhoneOrPoolIdOrArn",
                     "traits": {
-                        "smithy.api#documentation": "<p>The origination identity to use such as a PhoneNumberId, PhoneNumberArn, SenderId or\n            SenderIdArn. You can use <a>DescribePhoneNumbers</a> get the values for\n            PhoneNumberId and PhoneNumberArn while <a>DescribeSenderIds</a> can be used\n            to get the values for SenderId and SenderIdArn.</p>",
+                        "smithy.api#documentation": "<p>The origination identity to use such as a PhoneNumberId, PhoneNumberArn, SenderId or\n            SenderIdArn. You can use <a>DescribePhoneNumbers</a> get the values for\n            PhoneNumberId and PhoneNumberArn while <a>DescribeSenderIds</a> can be used\n            to get the values for SenderId and SenderIdArn.</p>\n         <important>\n            <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p>\n         </important>",
                         "smithy.api#required": {}
                     }
                 },
@@ -8521,6 +9115,79 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.pinpointsmsvoicev2#PutMessageFeedback": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.pinpointsmsvoicev2#PutMessageFeedbackRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.pinpointsmsvoicev2#PutMessageFeedbackResult"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Set the MessageFeedbackStatus as <code>RECEIVED</code> or <code>FAILED</code> for the\n            passed in MessageId.  </p>\n         <p>If you use message feedback then you must update message feedback record. When you receive a signal that a user has received the message you must use\n            <code>PutMessageFeedback</code> to set the message feedback record as\n            <code>RECEIVED</code>; Otherwise, an hour after the message feedback record is set\n            to <code>FAILED</code>.</p>"
+            }
+        },
+        "com.amazonaws.pinpointsmsvoicev2#PutMessageFeedbackRequest": {
+            "type": "structure",
+            "members": {
+                "MessageId": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#MessageId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier for the message.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "MessageFeedbackStatus": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#MessageFeedbackStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Set the message feedback to be either <code>RECEIVED</code> or <code>FAILED</code>.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.pinpointsmsvoicev2#PutMessageFeedbackResult": {
+            "type": "structure",
+            "members": {
+                "MessageId": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#MessageId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier for the message.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "MessageFeedbackStatus": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#MessageFeedbackStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The current status of the message.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.pinpointsmsvoicev2#PutOptedOutNumber": {
             "type": "operation",
             "input": {
@@ -8556,7 +9223,7 @@
                 "OptOutListName": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#OptOutListNameOrArn",
                     "traits": {
-                        "smithy.api#documentation": "<p>The OptOutListName or OptOutListArn to add the phone number to.</p>",
+                        "smithy.api#documentation": "<p>The OptOutListName or OptOutListArn to add the phone number to.</p>\n         <important>\n            <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p>\n         </important>",
                         "smithy.api#required": {}
                     }
                 },
@@ -8604,6 +9271,135 @@
                     "traits": {
                         "smithy.api#default": false,
                         "smithy.api#documentation": "<p>This is true if it was the end user who requested their phone number be removed.\n        </p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.pinpointsmsvoicev2#PutProtectConfigurationRuleSetNumberOverride": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.pinpointsmsvoicev2#PutProtectConfigurationRuleSetNumberOverrideRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.pinpointsmsvoicev2#PutProtectConfigurationRuleSetNumberOverrideResult"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ConflictException"
+                },
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ServiceQuotaExceededException"
+                },
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Create or update a RuleSetNumberOverride and associate it with a protect configuration.</p>"
+            }
+        },
+        "com.amazonaws.pinpointsmsvoicev2#PutProtectConfigurationRuleSetNumberOverrideRequest": {
+            "type": "structure",
+            "members": {
+                "ClientToken": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ClientToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the\n            request. If you don't specify a client token, a randomly generated token is used for the\n            request to ensure idempotency.</p>",
+                        "smithy.api#idempotencyToken": {}
+                    }
+                },
+                "ProtectConfigurationId": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ProtectConfigurationIdOrArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier for the protect configuration.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "DestinationPhoneNumber": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#PhoneNumber",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The destination phone number in E.164 format.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "Action": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ProtectConfigurationRuleOverrideAction",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The action for the rule to either block or allow messages to the destination phone number.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "ExpirationTimestamp": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The time the rule will expire at. If <code>ExpirationTimestamp</code> is not set then the rule does not expire.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.pinpointsmsvoicev2#PutProtectConfigurationRuleSetNumberOverrideResult": {
+            "type": "structure",
+            "members": {
+                "ProtectConfigurationArn": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ProtectConfigurationArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the protect configuration.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "ProtectConfigurationId": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ProtectConfigurationId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier for the protect configuration.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "DestinationPhoneNumber": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#PhoneNumber",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The destination phone number in E.164 format.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "CreatedTimestamp": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The time when the rule was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "Action": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ProtectConfigurationRuleOverrideAction",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The action for the rule to take.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "IsoCountryCode": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#IsoCountryCode",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The two-character code, in ISO 3166-1 alpha-2 format, for the country or region.</p>"
+                    }
+                },
+                "ExpirationTimestamp": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The time the rule will expire at.</p>"
                     }
                 }
             },
@@ -8730,6 +9526,83 @@
                     "target": "smithy.api#String",
                     "traits": {
                         "smithy.api#documentation": "<p>The unique identifier for the registration attachment.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.pinpointsmsvoicev2#PutResourcePolicy": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.pinpointsmsvoicev2#PutResourcePolicyRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.pinpointsmsvoicev2#PutResourcePolicyResult"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Attaches a resource-based policy to a AWS End User Messaging SMS and Voice resource(phone number, sender Id, phone poll, or opt-out list) that is used for\n            sharing the resource. A shared resource can be a Pool, Opt-out list, Sender Id, or Phone number. For more information about\n            resource-based policies, see <a href=\"https://docs.aws.amazon.com/sms-voice/latest/userguide/shared-resources.html\">Working with shared resources</a> in the <i>AWS End User Messaging SMS User Guide</i>. </p>"
+            }
+        },
+        "com.amazonaws.pinpointsmsvoicev2#PutResourcePolicyRequest": {
+            "type": "structure",
+            "members": {
+                "ResourceArn": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#AmazonResourceName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the AWS End User Messaging SMS and Voice resource to attach the resource-based policy to.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "Policy": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ResourcePolicy",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The JSON formatted resource-based policy to attach.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.pinpointsmsvoicev2#PutResourcePolicyResult": {
+            "type": "structure",
+            "members": {
+                "ResourceArn": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#AmazonResourceName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the AWS End User Messaging SMS and Voice resource attached to the resource-based policy.</p>"
+                    }
+                },
+                "Policy": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ResourcePolicy",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The JSON formatted Resource Policy.</p>"
+                    }
+                },
+                "CreatedTimestamp": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The time when the resource-based policy was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
                     }
                 }
             },
@@ -9289,7 +10162,7 @@
                 "RegistrationStatus": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#RegistrationStatus",
                     "traits": {
-                        "smithy.api#documentation": "<p>The status of the registration.</p>\n         <ul>\n            <li>\n               <p>\n                  <code>CREATED</code>: Your registration is created but not submitted.</p>\n            </li>\n            <li>\n               <p>\n                  <code>SUBMITTED</code>: Your registration has been submitted and is awaiting review.</p>\n            </li>\n            <li>\n               <p>\n                  <code>REVIEWING</code>: Your registration has been accepted and is being reviewed.</p>\n            </li>\n            <li>\n               <p>\n                  <code>PROVISIONING</code>: Your registration has been approved and your origination identity is being created.</p>\n            </li>\n            <li>\n               <p>\n                  <code>COMPLETE</code>: Your registration has been approved and and your origination identity has been created.</p>\n            </li>\n            <li>\n               <p>\n                  <code>REQUIRES_UPDATES</code>: You must fix your registration and resubmit it.</p>\n            </li>\n            <li>\n               <p>\n                  <code>CLOSED</code>: The phone number or sender ID has been deleted and you must also delete the registration for the number.</p>\n            </li>\n            <li>\n               <p>\n                  <code>DELETED</code>: The registration has been deleted.</p>\n            </li>\n         </ul>",
+                        "smithy.api#documentation": "<p>The status of the registration.</p>\n         <ul>\n            <li>\n               <p>\n                  <code>CLOSED</code>: The phone number or sender ID has been deleted and you must also delete the registration for the number.</p>\n            </li>\n            <li>\n               <p>\n                  <code>CREATED</code>: Your registration is created but not submitted.</p>\n            </li>\n            <li>\n               <p>\n                  <code>COMPLETE</code>: Your registration has been approved and your origination identity has been created.</p>\n            </li>\n            <li>\n               <p>\n                  <code>DELETED</code>: The registration has been deleted.</p>\n            </li>\n            <li>\n               <p>\n                  <code>PROVISIONING</code>: Your registration has been approved and your origination identity is being created.</p>\n            </li>\n            <li>\n               <p>\n                  <code>REQUIRES_AUTHENTICATION</code>: You need to complete email authentication.</p>\n            </li>\n            <li>\n               <p>\n                  <code>REQUIRES_UPDATES</code>: You must fix your registration and resubmit it.</p>\n            </li>\n            <li>\n               <p>\n                  <code>REVIEWING</code>: Your registration has been accepted and is being reviewed.</p>\n            </li>\n            <li>\n               <p>\n                  <code>SUBMITTED</code>: Your registration has been submitted and is awaiting review.</p>\n            </li>\n         </ul>",
                         "smithy.api#required": {}
                     }
                 },
@@ -9419,6 +10292,10 @@
                     {
                         "value": "REVIEWING",
                         "name": "REVIEWING"
+                    },
+                    {
+                        "value": "REQUIRES_AUTHENTICATION",
+                        "name": "REQUIRES_AUTHENTICATION"
                     },
                     {
                         "value": "PROVISIONING",
@@ -9642,7 +10519,7 @@
                 "RegistrationVersionStatus": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#RegistrationVersionStatus",
                     "traits": {
-                        "smithy.api#documentation": "<p>The status of the registration.</p>\n         <ul>\n            <li>\n               <p>\n                  <code>DRAFT</code>: The initial status of a registration version after it’s created.</p>\n            </li>\n            <li>\n               <p>\n                  <code>SUBMITTED</code>: Your registration has been submitted.</p>\n            </li>\n            <li>\n               <p>\n                  <code>REVIEWING</code>: Your registration has been accepted and is being reviewed.</p>\n            </li>\n            <li>\n               <p>\n                  <code>APPROVED</code>: Your registration has been approved.</p>\n            </li>\n            <li>\n               <p>\n                  <code>DISCARDED</code>: You've abandon this version of their registration to start over with a new version. </p>\n            </li>\n            <li>\n               <p>\n                  <code>DENIED</code>: You must fix your registration and resubmit it.</p>\n            </li>\n            <li>\n               <p>\n                  <code>REVOKED</code>: Your previously approved registration has been revoked.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ARCHIVED</code>: Your previously approved registration version moves into this status when a more recently submitted version is approved.</p>\n            </li>\n         </ul>",
+                        "smithy.api#documentation": "<p>The status of the registration.</p>\n         <ul>\n            <li>\n               <p>\n                  <code>APPROVED</code>: Your registration has been approved.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ARCHIVED</code>: Your previously approved registration version moves into this status when a more recently submitted version is approved.</p>\n            </li>\n            <li>\n               <p>\n                  <code>DENIED</code>: You must fix your registration and resubmit it.</p>\n            </li>\n            <li>\n               <p>\n                  <code>DISCARDED</code>: You've abandon this version of their registration to start over with a new version. </p>\n            </li>\n            <li>\n               <p>\n                  <code>DRAFT</code>: The initial status of a registration version after it’s created.</p>\n            </li>\n            <li>\n               <p>\n                  <code>REQUIRES_AUTHENTICATION</code>: You need to complete email authentication.</p>\n            </li>\n            <li>\n               <p>\n                  <code>REVIEWING</code>: Your registration has been accepted and is being reviewed.</p>\n            </li>\n            <li>\n               <p>\n                  <code>REVOKED</code>: Your previously approved registration has been revoked.</p>\n            </li>\n            <li>\n               <p>\n                  <code>SUBMITTED</code>: Your registration has been submitted.</p>\n            </li>\n         </ul>",
                         "smithy.api#required": {}
                     }
                 },
@@ -9707,6 +10584,10 @@
                         "name": "REVIEWING"
                     },
                     {
+                        "value": "REQUIRES_AUTHENTICATION",
+                        "name": "REQUIRES_AUTHENTICATION"
+                    },
+                    {
                         "value": "APPROVED",
                         "name": "APPROVED"
                     },
@@ -9749,6 +10630,12 @@
                     "target": "smithy.api#Timestamp",
                     "traits": {
                         "smithy.api#documentation": "<p>The time when the registration was in the reviewing state, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+                    }
+                },
+                "RequiresAuthenticationTimestamp": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The time when the registration was in the requires authentication state, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
                     }
                 },
                 "ApprovedTimestamp": {
@@ -9824,7 +10711,7 @@
                 "PhoneNumberId": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#PhoneNumberIdOrArn",
                     "traits": {
-                        "smithy.api#documentation": "<p>The PhoneNumberId or PhoneNumberArn of the phone number to release. You can use <a>DescribePhoneNumbers</a> to get the values for PhoneNumberId and\n            PhoneNumberArn.</p>",
+                        "smithy.api#documentation": "<p>The PhoneNumberId or PhoneNumberArn of the phone number to release. You can use <a>DescribePhoneNumbers</a> to get the values for PhoneNumberId and\n            PhoneNumberArn.</p>\n         <important>\n            <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p>\n         </important>",
                         "smithy.api#required": {}
                     }
                 }
@@ -10119,13 +11006,13 @@
                 "OptOutListName": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#OptOutListNameOrArn",
                     "traits": {
-                        "smithy.api#documentation": "<p>The name of the OptOutList to associate with the phone number. You can use the\n            OptOutListName or OptOutListArn.</p>"
+                        "smithy.api#documentation": "<p>The name of the OptOutList to associate with the phone number. You can use the\n            OptOutListName or OptOutListArn.</p>\n         <important>\n            <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p>\n         </important>"
                     }
                 },
                 "PoolId": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#PoolIdOrArn",
                     "traits": {
-                        "smithy.api#documentation": "<p>The pool to associated with the phone number. You can use the PoolId or PoolArn. </p>"
+                        "smithy.api#documentation": "<p>The pool to associated with the phone number. You can use the PoolId or PoolArn. </p>\n         <important>\n            <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p>\n         </important>"
                     }
                 },
                 "RegistrationId": {
@@ -10484,6 +11371,15 @@
                 "smithy.api#error": "client"
             }
         },
+        "com.amazonaws.pinpointsmsvoicev2#ResourcePolicy": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 10000
+                }
+            }
+        },
         "com.amazonaws.pinpointsmsvoicev2#ResourceType": {
             "type": "string",
             "traits": {
@@ -10539,6 +11435,14 @@
                     {
                         "value": "protect-configuration",
                         "name": "PROTECT_CONFIGURATION"
+                    },
+                    {
+                        "value": "policy",
+                        "name": "POLICY"
+                    },
+                    {
+                        "value": "message",
+                        "name": "MESSAGE"
                     }
                 ]
             }
@@ -10707,7 +11611,7 @@
                 "OriginationIdentity": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#VerificationMessageOriginationIdentity",
                     "traits": {
-                        "smithy.api#documentation": "<p>The origination identity of the message. This can be either the PhoneNumber,\n            PhoneNumberId, PhoneNumberArn, SenderId, SenderIdArn, PoolId, or PoolArn.</p>"
+                        "smithy.api#documentation": "<p>The origination identity of the message. This can be either the PhoneNumber,\n            PhoneNumberId, PhoneNumberArn, SenderId, SenderIdArn, PoolId, or PoolArn.</p>\n         <important>\n            <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p>\n         </important>"
                     }
                 },
                 "ConfigurationSetName": {
@@ -10796,7 +11700,7 @@
                 "OriginationIdentity": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#MediaMessageOriginationIdentity",
                     "traits": {
-                        "smithy.api#documentation": "<p>The origination identity of the message. This can be either the PhoneNumber,\n           PhoneNumberId, PhoneNumberArn, SenderId, SenderIdArn, PoolId, or PoolArn.</p>",
+                        "smithy.api#documentation": "<p>The origination identity of the message. This can be either the PhoneNumber,\n           PhoneNumberId, PhoneNumberArn, SenderId, SenderIdArn, PoolId, or PoolArn.</p>\n         <important>\n            <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p>\n         </important>",
                         "smithy.api#required": {}
                     }
                 },
@@ -10827,7 +11731,7 @@
                 "TimeToLive": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#TimeToLive",
                     "traits": {
-                        "smithy.api#documentation": "<p>How long the text message is valid for. By default this is 72 hours.</p>"
+                        "smithy.api#documentation": "<p>How long the media message is valid for. By default this is 72 hours.</p>"
                     }
                 },
                 "Context": {
@@ -10847,6 +11751,12 @@
                     "target": "com.amazonaws.pinpointsmsvoicev2#ProtectConfigurationIdOrArn",
                     "traits": {
                         "smithy.api#documentation": "<p>The unique identifier of the protect configuration to use.</p>"
+                    }
+                },
+                "MessageFeedbackEnabled": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Set to true to enable message feedback for the message. When a user receives the message you need to update the message status using <a>PutMessageFeedback</a>.</p>"
                     }
                 }
             },
@@ -10916,7 +11826,7 @@
                 "OriginationIdentity": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#TextMessageOriginationIdentity",
                     "traits": {
-                        "smithy.api#documentation": "<p>The origination identity of the message. This can be either the PhoneNumber,\n            PhoneNumberId, PhoneNumberArn, SenderId, SenderIdArn, PoolId, or PoolArn.</p>"
+                        "smithy.api#documentation": "<p>The origination identity of the message. This can be either the PhoneNumber,\n            PhoneNumberId, PhoneNumberArn, SenderId, SenderIdArn, PoolId, or PoolArn.</p>\n         <important>\n            <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p>\n         </important>"
                     }
                 },
                 "MessageBody": {
@@ -10978,6 +11888,12 @@
                     "target": "com.amazonaws.pinpointsmsvoicev2#ProtectConfigurationIdOrArn",
                     "traits": {
                         "smithy.api#documentation": "<p>The unique identifier for the protect configuration.</p>"
+                    }
+                },
+                "MessageFeedbackEnabled": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Set to true to enable message feedback for the message. When a user receives the message you need to update the message status using <a>PutMessageFeedback</a>.</p>"
                     }
                 }
             },
@@ -11047,7 +11963,7 @@
                 "OriginationIdentity": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#VoiceMessageOriginationIdentity",
                     "traits": {
-                        "smithy.api#documentation": "<p>The origination identity to use for the voice call. This can be the PhoneNumber,\n            PhoneNumberId, PhoneNumberArn, PoolId, or PoolArn.</p>",
+                        "smithy.api#documentation": "<p>The origination identity to use for the voice call. This can be the PhoneNumber,\n            PhoneNumberId, PhoneNumberArn, PoolId, or PoolArn.</p>\n         <important>\n            <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p>\n         </important>",
                         "smithy.api#required": {}
                     }
                 },
@@ -11104,6 +12020,12 @@
                     "target": "com.amazonaws.pinpointsmsvoicev2#ProtectConfigurationIdOrArn",
                     "traits": {
                         "smithy.api#documentation": "<p>The unique identifier for the protect configuration.</p>"
+                    }
+                },
+                "MessageFeedbackEnabled": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Set to true to enable message feedback for the message. When a user receives the message you need to update the message status using <a>PutMessageFeedback</a>.</p>"
                     }
                 }
             },
@@ -11485,6 +12407,83 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The unique identifier of the account default protect configuration.</p>",
                         "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.pinpointsmsvoicev2#SetDefaultMessageFeedbackEnabled": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.pinpointsmsvoicev2#SetDefaultMessageFeedbackEnabledRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.pinpointsmsvoicev2#SetDefaultMessageFeedbackEnabledResult"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Sets a configuration set's default for message feedback. </p>"
+            }
+        },
+        "com.amazonaws.pinpointsmsvoicev2#SetDefaultMessageFeedbackEnabledRequest": {
+            "type": "structure",
+            "members": {
+                "ConfigurationSetName": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ConfigurationSetNameOrArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the configuration set to use. This can be either the ConfigurationSetName\n            or ConfigurationSetArn.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "MessageFeedbackEnabled": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Set to true to enable message feedback.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.pinpointsmsvoicev2#SetDefaultMessageFeedbackEnabledResult": {
+            "type": "structure",
+            "members": {
+                "ConfigurationSetArn": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The arn of the configuration set.</p>"
+                    }
+                },
+                "ConfigurationSetName": {
+                    "target": "com.amazonaws.pinpointsmsvoicev2#ConfigurationSetName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the configuration.</p>"
+                    }
+                },
+                "MessageFeedbackEnabled": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>True if message feedback is enabled.</p>"
                     }
                 }
             },
@@ -11989,7 +12988,7 @@
                 "RegistrationVersionStatus": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#RegistrationVersionStatus",
                     "traits": {
-                        "smithy.api#documentation": "<p>The status of the registration version.</p>\n         <ul>\n            <li>\n               <p>\n                  <code>DRAFT</code>: The initial status of a registration version after it’s created.</p>\n            </li>\n            <li>\n               <p>\n                  <code>SUBMITTED</code>: Your registration has been submitted.</p>\n            </li>\n            <li>\n               <p>\n                  <code>REVIEWING</code>: Your registration has been accepted and is being reviewed.</p>\n            </li>\n            <li>\n               <p>\n                  <code>APPROVED</code>: Your registration has been approved.</p>\n            </li>\n            <li>\n               <p>\n                  <code>DISCARDED</code>: You've abandon this version of their registration to start over with a new version. </p>\n            </li>\n            <li>\n               <p>\n                  <code>DENIED</code>: You must fix your registration and resubmit it.</p>\n            </li>\n            <li>\n               <p>\n                  <code>REVOKED</code>: Your previously approved registration has been revoked.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ARCHIVED</code>: Your previously approved registration version moves into this status when a more recently submitted version is approved.</p>\n            </li>\n         </ul>",
+                        "smithy.api#documentation": "<p>The status of the registration version.</p>\n         <ul>\n            <li>\n               <p>\n                  <code>APPROVED</code>: Your registration has been approved.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ARCHIVED</code>: Your previously approved registration version moves into this status when a more recently submitted version is approved.</p>\n            </li>\n            <li>\n               <p>\n                  <code>DENIED</code>: You must fix your registration and resubmit it.</p>\n            </li>\n            <li>\n               <p>\n                  <code>DISCARDED</code>: You've abandon this version of their registration to start over with a new version. </p>\n            </li>\n            <li>\n               <p>\n                  <code>DRAFT</code>: The initial status of a registration version after it’s created.</p>\n            </li>\n            <li>\n               <p>\n                  <code>REQUIRES_AUTHENTICATION</code>: You need to complete email authentication.</p>\n            </li>\n            <li>\n               <p>\n                  <code>REVIEWING</code>: Your registration has been accepted and is being reviewed.</p>\n            </li>\n            <li>\n               <p>\n                  <code>REVOKED</code>: Your previously approved registration has been revoked.</p>\n            </li>\n            <li>\n               <p>\n                  <code>SUBMITTED</code>: Your registration has been submitted.</p>\n            </li>\n         </ul>",
                         "smithy.api#required": {}
                     }
                 },
@@ -12469,7 +13468,7 @@
                 "PhoneNumberId": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#PhoneNumberIdOrArn",
                     "traits": {
-                        "smithy.api#documentation": "<p>The unique identifier of the phone number. Valid values for this field can be either\n            the PhoneNumberId or PhoneNumberArn.</p>",
+                        "smithy.api#documentation": "<p>The unique identifier of the phone number. Valid values for this field can be either\n            the PhoneNumberId or PhoneNumberArn.</p>\n         <important>\n            <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p>\n         </important>",
                         "smithy.api#required": {}
                     }
                 },
@@ -12665,7 +13664,7 @@
                 "PoolId": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#PoolIdOrArn",
                     "traits": {
-                        "smithy.api#documentation": "<p>The unique identifier of the pool to update. Valid values are either the PoolId or\n            PoolArn.</p>",
+                        "smithy.api#documentation": "<p>The unique identifier of the pool to update. Valid values are either the PoolId or\n            PoolArn.</p>\n         <important>\n            <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p>\n         </important>",
                         "smithy.api#required": {}
                     }
                 },
@@ -12696,7 +13695,7 @@
                 "OptOutListName": {
                     "target": "com.amazonaws.pinpointsmsvoicev2#OptOutListNameOrArn",
                     "traits": {
-                        "smithy.api#documentation": "<p>The OptOutList to associate with the pool. Valid values are either OptOutListName or\n            OptOutListArn.</p>"
+                        "smithy.api#documentation": "<p>The OptOutList to associate with the pool. Valid values are either OptOutListName or\n            OptOutListArn.</p>\n         <important>\n            <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p>\n         </important>"
                     }
                 },
                 "SharedRoutesEnabled": {
@@ -13318,6 +14317,10 @@
                     {
                         "value": "VOICE_CAPABILITY_NOT_AVAILABLE",
                         "name": "VOICE_CAPABILITY_NOT_AVAILABLE"
+                    },
+                    {
+                        "value": "UNSPECIFIED_PARAMETER_NOT_SUPPORTED",
+                        "name": "UNSPECIFIED_PARAMETER_NOT_SUPPORTED"
                     },
                     {
                         "value": "OTHER",

@@ -350,11 +350,35 @@ func TestCheckSnapshot_CreateBlueprint(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_CreateCatalog(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateCatalog(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "CreateCatalog")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_CreateClassifier(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.CreateClassifier(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "CreateClassifier")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_CreateColumnStatisticsTaskSettings(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateColumnStatisticsTaskSettings(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "CreateColumnStatisticsTaskSettings")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -427,6 +451,42 @@ func TestCheckSnapshot_CreateDevEndpoint(t *testing.T) {
 	_, err := svc.CreateDevEndpoint(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "CreateDevEndpoint")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_CreateIntegration(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateIntegration(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "CreateIntegration")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_CreateIntegrationResourceProperty(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateIntegrationResourceProperty(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "CreateIntegrationResourceProperty")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_CreateIntegrationTableProperties(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateIntegrationTableProperties(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "CreateIntegrationTableProperties")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -626,6 +686,18 @@ func TestCheckSnapshot_DeleteBlueprint(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_DeleteCatalog(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteCatalog(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DeleteCatalog")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_DeleteClassifier(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.DeleteClassifier(context.Background(), nil, func(o *Options) {
@@ -655,6 +727,18 @@ func TestCheckSnapshot_DeleteColumnStatisticsForTable(t *testing.T) {
 	_, err := svc.DeleteColumnStatisticsForTable(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "DeleteColumnStatisticsForTable")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_DeleteColumnStatisticsTaskSettings(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteColumnStatisticsTaskSettings(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DeleteColumnStatisticsTaskSettings")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -727,6 +811,30 @@ func TestCheckSnapshot_DeleteDevEndpoint(t *testing.T) {
 	_, err := svc.DeleteDevEndpoint(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "DeleteDevEndpoint")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_DeleteIntegration(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteIntegration(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DeleteIntegration")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_DeleteIntegrationTableProperties(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteIntegrationTableProperties(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DeleteIntegrationTableProperties")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -938,6 +1046,54 @@ func TestCheckSnapshot_DeleteWorkflow(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_DescribeConnectionType(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DescribeConnectionType(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DescribeConnectionType")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_DescribeEntity(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DescribeEntity(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DescribeEntity")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_DescribeInboundIntegrations(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DescribeInboundIntegrations(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DescribeInboundIntegrations")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_DescribeIntegrations(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DescribeIntegrations(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DescribeIntegrations")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_GetBlueprint(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.GetBlueprint(context.Background(), nil, func(o *Options) {
@@ -974,11 +1130,35 @@ func TestCheckSnapshot_GetBlueprintRuns(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_GetCatalog(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetCatalog(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GetCatalog")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_GetCatalogImportStatus(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.GetCatalogImportStatus(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "GetCatalogImportStatus")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_GetCatalogs(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetCatalogs(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GetCatalogs")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -1051,6 +1231,18 @@ func TestCheckSnapshot_GetColumnStatisticsTaskRuns(t *testing.T) {
 	_, err := svc.GetColumnStatisticsTaskRuns(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "GetColumnStatisticsTaskRuns")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_GetColumnStatisticsTaskSettings(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetColumnStatisticsTaskSettings(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GetColumnStatisticsTaskSettings")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -1267,6 +1459,42 @@ func TestCheckSnapshot_GetDevEndpoints(t *testing.T) {
 	_, err := svc.GetDevEndpoints(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "GetDevEndpoints")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_GetEntityRecords(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetEntityRecords(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GetEntityRecords")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_GetIntegrationResourceProperty(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetIntegrationResourceProperty(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GetIntegrationResourceProperty")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_GetIntegrationTableProperties(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetIntegrationTableProperties(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GetIntegrationTableProperties")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -1826,6 +2054,18 @@ func TestCheckSnapshot_ListColumnStatisticsTaskRuns(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_ListConnectionTypes(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListConnectionTypes(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListConnectionTypes")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_ListCrawlers(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ListCrawlers(context.Background(), nil, func(o *Options) {
@@ -1939,6 +2179,18 @@ func TestCheckSnapshot_ListDevEndpoints(t *testing.T) {
 	_, err := svc.ListDevEndpoints(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "ListDevEndpoints")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_ListEntities(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListEntities(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListEntities")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -2071,6 +2323,18 @@ func TestCheckSnapshot_ListWorkflows(t *testing.T) {
 	_, err := svc.ListWorkflows(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "ListWorkflows")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_ModifyIntegration(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ModifyIntegration(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ModifyIntegration")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -2246,6 +2510,18 @@ func TestCheckSnapshot_StartColumnStatisticsTaskRun(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_StartColumnStatisticsTaskRunSchedule(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.StartColumnStatisticsTaskRunSchedule(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "StartColumnStatisticsTaskRunSchedule")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_StartCrawler(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.StartCrawler(context.Background(), nil, func(o *Options) {
@@ -2390,6 +2666,18 @@ func TestCheckSnapshot_StopColumnStatisticsTaskRun(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_StopColumnStatisticsTaskRunSchedule(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.StopColumnStatisticsTaskRunSchedule(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "StopColumnStatisticsTaskRunSchedule")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_StopCrawler(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.StopCrawler(context.Background(), nil, func(o *Options) {
@@ -2462,6 +2750,18 @@ func TestCheckSnapshot_TagResource(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_TestConnection(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.TestConnection(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "TestConnection")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_UntagResource(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.UntagResource(context.Background(), nil, func(o *Options) {
@@ -2479,6 +2779,18 @@ func TestCheckSnapshot_UpdateBlueprint(t *testing.T) {
 	_, err := svc.UpdateBlueprint(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "UpdateBlueprint")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_UpdateCatalog(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateCatalog(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "UpdateCatalog")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -2515,6 +2827,18 @@ func TestCheckSnapshot_UpdateColumnStatisticsForTable(t *testing.T) {
 	_, err := svc.UpdateColumnStatisticsForTable(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "UpdateColumnStatisticsForTable")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_UpdateColumnStatisticsTaskSettings(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateColumnStatisticsTaskSettings(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "UpdateColumnStatisticsTaskSettings")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -2587,6 +2911,30 @@ func TestCheckSnapshot_UpdateDevEndpoint(t *testing.T) {
 	_, err := svc.UpdateDevEndpoint(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "UpdateDevEndpoint")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_UpdateIntegrationResourceProperty(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateIntegrationResourceProperty(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "UpdateIntegrationResourceProperty")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_UpdateIntegrationTableProperties(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateIntegrationTableProperties(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "UpdateIntegrationTableProperties")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -3037,11 +3385,35 @@ func TestUpdateSnapshot_CreateBlueprint(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_CreateCatalog(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateCatalog(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "CreateCatalog")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_CreateClassifier(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.CreateClassifier(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "CreateClassifier")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_CreateColumnStatisticsTaskSettings(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateColumnStatisticsTaskSettings(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "CreateColumnStatisticsTaskSettings")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -3114,6 +3486,42 @@ func TestUpdateSnapshot_CreateDevEndpoint(t *testing.T) {
 	_, err := svc.CreateDevEndpoint(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "CreateDevEndpoint")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_CreateIntegration(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateIntegration(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "CreateIntegration")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_CreateIntegrationResourceProperty(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateIntegrationResourceProperty(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "CreateIntegrationResourceProperty")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_CreateIntegrationTableProperties(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateIntegrationTableProperties(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "CreateIntegrationTableProperties")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -3313,6 +3721,18 @@ func TestUpdateSnapshot_DeleteBlueprint(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_DeleteCatalog(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteCatalog(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DeleteCatalog")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_DeleteClassifier(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.DeleteClassifier(context.Background(), nil, func(o *Options) {
@@ -3342,6 +3762,18 @@ func TestUpdateSnapshot_DeleteColumnStatisticsForTable(t *testing.T) {
 	_, err := svc.DeleteColumnStatisticsForTable(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "DeleteColumnStatisticsForTable")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_DeleteColumnStatisticsTaskSettings(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteColumnStatisticsTaskSettings(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DeleteColumnStatisticsTaskSettings")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -3414,6 +3846,30 @@ func TestUpdateSnapshot_DeleteDevEndpoint(t *testing.T) {
 	_, err := svc.DeleteDevEndpoint(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "DeleteDevEndpoint")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_DeleteIntegration(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteIntegration(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DeleteIntegration")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_DeleteIntegrationTableProperties(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteIntegrationTableProperties(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DeleteIntegrationTableProperties")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -3625,6 +4081,54 @@ func TestUpdateSnapshot_DeleteWorkflow(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_DescribeConnectionType(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DescribeConnectionType(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DescribeConnectionType")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_DescribeEntity(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DescribeEntity(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DescribeEntity")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_DescribeInboundIntegrations(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DescribeInboundIntegrations(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DescribeInboundIntegrations")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_DescribeIntegrations(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DescribeIntegrations(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DescribeIntegrations")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_GetBlueprint(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.GetBlueprint(context.Background(), nil, func(o *Options) {
@@ -3661,11 +4165,35 @@ func TestUpdateSnapshot_GetBlueprintRuns(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_GetCatalog(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetCatalog(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GetCatalog")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_GetCatalogImportStatus(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.GetCatalogImportStatus(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "GetCatalogImportStatus")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_GetCatalogs(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetCatalogs(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GetCatalogs")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -3738,6 +4266,18 @@ func TestUpdateSnapshot_GetColumnStatisticsTaskRuns(t *testing.T) {
 	_, err := svc.GetColumnStatisticsTaskRuns(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "GetColumnStatisticsTaskRuns")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_GetColumnStatisticsTaskSettings(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetColumnStatisticsTaskSettings(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GetColumnStatisticsTaskSettings")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -3954,6 +4494,42 @@ func TestUpdateSnapshot_GetDevEndpoints(t *testing.T) {
 	_, err := svc.GetDevEndpoints(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "GetDevEndpoints")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_GetEntityRecords(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetEntityRecords(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GetEntityRecords")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_GetIntegrationResourceProperty(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetIntegrationResourceProperty(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GetIntegrationResourceProperty")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_GetIntegrationTableProperties(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetIntegrationTableProperties(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GetIntegrationTableProperties")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -4513,6 +5089,18 @@ func TestUpdateSnapshot_ListColumnStatisticsTaskRuns(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_ListConnectionTypes(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListConnectionTypes(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListConnectionTypes")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_ListCrawlers(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ListCrawlers(context.Background(), nil, func(o *Options) {
@@ -4626,6 +5214,18 @@ func TestUpdateSnapshot_ListDevEndpoints(t *testing.T) {
 	_, err := svc.ListDevEndpoints(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "ListDevEndpoints")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_ListEntities(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListEntities(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListEntities")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -4758,6 +5358,18 @@ func TestUpdateSnapshot_ListWorkflows(t *testing.T) {
 	_, err := svc.ListWorkflows(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "ListWorkflows")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_ModifyIntegration(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ModifyIntegration(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ModifyIntegration")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -4933,6 +5545,18 @@ func TestUpdateSnapshot_StartColumnStatisticsTaskRun(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_StartColumnStatisticsTaskRunSchedule(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.StartColumnStatisticsTaskRunSchedule(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "StartColumnStatisticsTaskRunSchedule")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_StartCrawler(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.StartCrawler(context.Background(), nil, func(o *Options) {
@@ -5077,6 +5701,18 @@ func TestUpdateSnapshot_StopColumnStatisticsTaskRun(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_StopColumnStatisticsTaskRunSchedule(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.StopColumnStatisticsTaskRunSchedule(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "StopColumnStatisticsTaskRunSchedule")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_StopCrawler(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.StopCrawler(context.Background(), nil, func(o *Options) {
@@ -5149,6 +5785,18 @@ func TestUpdateSnapshot_TagResource(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_TestConnection(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.TestConnection(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "TestConnection")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_UntagResource(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.UntagResource(context.Background(), nil, func(o *Options) {
@@ -5166,6 +5814,18 @@ func TestUpdateSnapshot_UpdateBlueprint(t *testing.T) {
 	_, err := svc.UpdateBlueprint(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "UpdateBlueprint")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_UpdateCatalog(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateCatalog(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "UpdateCatalog")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -5202,6 +5862,18 @@ func TestUpdateSnapshot_UpdateColumnStatisticsForTable(t *testing.T) {
 	_, err := svc.UpdateColumnStatisticsForTable(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "UpdateColumnStatisticsForTable")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_UpdateColumnStatisticsTaskSettings(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateColumnStatisticsTaskSettings(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "UpdateColumnStatisticsTaskSettings")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -5274,6 +5946,30 @@ func TestUpdateSnapshot_UpdateDevEndpoint(t *testing.T) {
 	_, err := svc.UpdateDevEndpoint(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "UpdateDevEndpoint")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_UpdateIntegrationResourceProperty(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateIntegrationResourceProperty(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "UpdateIntegrationResourceProperty")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_UpdateIntegrationTableProperties(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateIntegrationTableProperties(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "UpdateIntegrationTableProperties")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {

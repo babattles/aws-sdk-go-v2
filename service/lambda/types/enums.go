@@ -84,6 +84,23 @@ func (EndPointType) Values() []EndPointType {
 	}
 }
 
+type EventSourceMappingMetric string
+
+// Enum values for EventSourceMappingMetric
+const (
+	EventSourceMappingMetricEventCount EventSourceMappingMetric = "EventCount"
+)
+
+// Values returns all known values for EventSourceMappingMetric. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (EventSourceMappingMetric) Values() []EventSourceMappingMetric {
+	return []EventSourceMappingMetric{
+		"EventCount",
+	}
+}
+
 type EventSourcePosition string
 
 // Enum values for EventSourcePosition
@@ -450,11 +467,14 @@ const (
 	RuntimeJava17         Runtime = "java17"
 	RuntimeRuby32         Runtime = "ruby3.2"
 	RuntimeRuby33         Runtime = "ruby3.3"
+	RuntimeRuby34         Runtime = "ruby3.4"
 	RuntimePython311      Runtime = "python3.11"
 	RuntimeNodejs20x      Runtime = "nodejs20.x"
 	RuntimeProvidedal2023 Runtime = "provided.al2023"
 	RuntimePython312      Runtime = "python3.12"
 	RuntimeJava21         Runtime = "java21"
+	RuntimePython313      Runtime = "python3.13"
+	RuntimeNodejs22x      Runtime = "nodejs22.x"
 )
 
 // Values returns all known values for Runtime. Note that this can be expanded in
@@ -496,11 +516,14 @@ func (Runtime) Values() []Runtime {
 		"java17",
 		"ruby3.2",
 		"ruby3.3",
+		"ruby3.4",
 		"python3.11",
 		"nodejs20.x",
 		"provided.al2023",
 		"python3.12",
 		"java21",
+		"python3.13",
+		"nodejs22.x",
 	}
 }
 

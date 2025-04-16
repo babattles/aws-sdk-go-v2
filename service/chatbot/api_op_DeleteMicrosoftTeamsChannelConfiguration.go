@@ -10,7 +10,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Deletes MS Teams Channel Configuration
+// Deletes a Microsoft Teams channel configuration for AWS Chatbot
 func (c *Client) DeleteMicrosoftTeamsChannelConfiguration(ctx context.Context, params *DeleteMicrosoftTeamsChannelConfigurationInput, optFns ...func(*Options)) (*DeleteMicrosoftTeamsChannelConfigurationOutput, error) {
 	if params == nil {
 		params = &DeleteMicrosoftTeamsChannelConfigurationInput{}
@@ -28,7 +28,8 @@ func (c *Client) DeleteMicrosoftTeamsChannelConfiguration(ctx context.Context, p
 
 type DeleteMicrosoftTeamsChannelConfigurationInput struct {
 
-	// The ARN of the MicrosoftTeamsChannelConfiguration to delete.
+	// The Amazon Resource Name (ARN) of the MicrosoftTeamsChannelConfiguration
+	// associated with the user identity to delete.
 	//
 	// This member is required.
 	ChatConfigurationArn *string
@@ -86,6 +87,9 @@ func (c *Client) addOperationDeleteMicrosoftTeamsChannelConfigurationMiddlewares
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -102,6 +106,9 @@ func (c *Client) addOperationDeleteMicrosoftTeamsChannelConfigurationMiddlewares
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteMicrosoftTeamsChannelConfigurationValidationMiddleware(stack); err != nil {
@@ -123,6 +130,18 @@ func (c *Client) addOperationDeleteMicrosoftTeamsChannelConfigurationMiddlewares
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

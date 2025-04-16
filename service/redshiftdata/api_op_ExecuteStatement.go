@@ -65,12 +65,6 @@ func (c *Client) ExecuteStatement(ctx context.Context, params *ExecuteStatementI
 
 type ExecuteStatementInput struct {
 
-	// The name of the database. This parameter is required when authenticating using
-	// either Secrets Manager or temporary credentials.
-	//
-	// This member is required.
-	Database *string
-
 	// The SQL statement text to run.
 	//
 	// This member is required.
@@ -84,6 +78,10 @@ type ExecuteStatementInput struct {
 	// and authenticating using either Secrets Manager or temporary credentials.
 	ClusterIdentifier *string
 
+	// The name of the database. This parameter is required when authenticating using
+	// either Secrets Manager or temporary credentials.
+	Database *string
+
 	// The database user name. This parameter is required when connecting to a cluster
 	// as a database user and authenticating using temporary credentials.
 	DbUser *string
@@ -91,9 +89,21 @@ type ExecuteStatementInput struct {
 	// The parameters for the SQL statement.
 	Parameters []types.SqlParameter
 
+	// The data format of the result of the SQL statement. If no format is specified,
+	// the default is JSON.
+	ResultFormat types.ResultFormatString
+
 	// The name or ARN of the secret that enables access to the database. This
 	// parameter is required when authenticating using Secrets Manager.
 	SecretArn *string
+
+	// The session identifier of the query.
+	SessionId *string
+
+	// The number of seconds to keep the session alive after the query finishes. The
+	// maximum time a session can keep alive is 24 hours. After 24 hours, the session
+	// is forced closed and the query is terminated.
+	SessionKeepAliveSeconds *int32
 
 	// The name of the SQL statement. You can name the SQL statement when you create
 	// it to identify the query.
@@ -123,6 +133,9 @@ type ExecuteStatementOutput struct {
 	// The name of the database.
 	Database *string
 
+	// A list of colon (:) separated names of database groups.
+	DbGroups []string
+
 	// The database user name.
 	DbUser *string
 
@@ -132,6 +145,9 @@ type ExecuteStatementOutput struct {
 
 	// The name or ARN of the secret that enables access to the database.
 	SecretArn *string
+
+	// The session identifier of the query.
+	SessionId *string
 
 	// The serverless workgroup name or Amazon Resource Name (ARN). This element is
 	// not returned when connecting to a provisioned cluster.
@@ -186,6 +202,9 @@ func (c *Client) addOperationExecuteStatementMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -202,6 +221,9 @@ func (c *Client) addOperationExecuteStatementMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opExecuteStatementMiddleware(stack, options); err != nil {
@@ -226,6 +248,18 @@ func (c *Client) addOperationExecuteStatementMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -1544,6 +1544,10 @@ type BotImportSpecification struct {
 	// TagResource operation.
 	BotTags map[string]string
 
+	// Allows you to configure destinations where error logs will be published during
+	// the bot import process.
+	ErrorLogSettings *ErrorLogSettings
+
 	// The time, in seconds, that Amazon Lex should keep information about a user's
 	// conversation with the bot.
 	//
@@ -1667,6 +1671,16 @@ type BotLocaleImportSpecification struct {
 	NluIntentConfidenceThreshold *float64
 
 	// Defines settings for using an Amazon Polly voice to communicate with a user.
+	//
+	// Valid values include:
+	//
+	//   - standard
+	//
+	//   - neural
+	//
+	//   - long-form
+	//
+	//   - generative
 	VoiceSettings *VoiceSettings
 
 	noSmithyDocumentSerde
@@ -2658,6 +2672,17 @@ type EncryptionSetting struct {
 	// The KMS key ARN used to encrypt the metadata associated with the bot
 	// recommendation.
 	KmsKeyArn *string
+
+	noSmithyDocumentSerde
+}
+
+// Settings parameters for the error logs, whether it is enabled or disabled.
+type ErrorLogSettings struct {
+
+	// Settings parameters for the error logs, when it is enabled.
+	//
+	// This member is required.
+	Enabled *bool
 
 	noSmithyDocumentSerde
 }
@@ -3866,6 +3891,26 @@ type PromptSpecification struct {
 
 	// Specifies the advanced settings on each attempt of the prompt.
 	PromptAttemptsSpecification map[string]PromptAttemptSpecification
+
+	noSmithyDocumentSerde
+}
+
+// The configuration details of the Qinconnect assistant.
+type QInConnectAssistantConfiguration struct {
+
+	// The assistant Arn details of the Qinconnect assistant configuration.
+	//
+	// This member is required.
+	AssistantArn *string
+
+	noSmithyDocumentSerde
+}
+
+// The configuration details of the Qinconnect intent.
+type QInConnectIntentConfiguration struct {
+
+	// The Qinconnect assistant configuration details of the Qinconnect intent.
+	QInConnectAssistantConfiguration *QInConnectAssistantConfiguration
 
 	noSmithyDocumentSerde
 }
@@ -5627,6 +5672,16 @@ type UtteranceSpecification struct {
 }
 
 // Defines settings for using an Amazon Polly voice to communicate with a user.
+//
+// Valid values include:
+//
+//   - standard
+//
+//   - neural
+//
+//   - long-form
+//
+//   - generative
 type VoiceSettings struct {
 
 	// The identifier of the Amazon Polly voice to use.

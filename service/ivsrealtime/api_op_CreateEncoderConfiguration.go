@@ -33,11 +33,12 @@ type CreateEncoderConfigurationInput struct {
 	Name *string
 
 	// Tags attached to the resource. Array of maps, each of the form string:string
-	// (key:value) . See [Tagging AWS Resources] for details, including restrictions that apply to tags and
-	// "Tag naming limits and requirements"; Amazon IVS has no constraints on tags
-	// beyond what is documented there.
+	// (key:value) . See [Best practices and strategies] in Tagging AWS Resources and Tag Editor for details,
+	// including restrictions that apply to tags and "Tag naming limits and
+	// requirements"; Amazon IVS has no constraints on tags beyond what is documented
+	// there.
 	//
-	// [Tagging AWS Resources]: https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html
+	// [Best practices and strategies]: https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html
 	Tags map[string]string
 
 	// Video configuration. Default: video resolution 1280x720, bitrate 2500 kbps, 30
@@ -101,6 +102,9 @@ func (c *Client) addOperationCreateEncoderConfigurationMiddlewares(stack *middle
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -119,6 +123,9 @@ func (c *Client) addOperationCreateEncoderConfigurationMiddlewares(stack *middle
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateEncoderConfiguration(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -135,6 +142,18 @@ func (c *Client) addOperationCreateEncoderConfigurationMiddlewares(stack *middle
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

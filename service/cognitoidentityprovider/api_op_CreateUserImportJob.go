@@ -11,7 +11,9 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Creates a user import job.
+// Creates a user import job. You can import users into user pools from a
+// comma-separated values (CSV) file without adding Amazon Cognito MAU costs to
+// your Amazon Web Services bill.
 //
 // Amazon Cognito evaluates Identity and Access Management (IAM) policies in
 // requests for this API operation. For this operation, you must use IAM
@@ -44,18 +46,18 @@ func (c *Client) CreateUserImportJob(ctx context.Context, params *CreateUserImpo
 // Represents the request to create the user import job.
 type CreateUserImportJobInput struct {
 
-	// The role ARN for the Amazon CloudWatch Logs Logging role for the user import
-	// job.
+	// You must specify an IAM role that has permission to log import-job results to
+	// Amazon CloudWatch Logs. This parameter is the ARN of that role.
 	//
 	// This member is required.
 	CloudWatchLogsRoleArn *string
 
-	// The job name for the user import job.
+	// A friendly name for the user import job.
 	//
 	// This member is required.
 	JobName *string
 
-	// The user pool ID for the user pool that the users are being imported into.
+	// The ID of the user pool that you want to import users into.
 	//
 	// This member is required.
 	UserPoolId *string
@@ -67,7 +69,8 @@ type CreateUserImportJobInput struct {
 // import job.
 type CreateUserImportJobOutput struct {
 
-	// The job object that represents the user import job.
+	// The details of the user import job. Includes logging destination, status, and
+	// the Amazon S3 pre-signed URL for CSV upload.
 	UserImportJob *types.UserImportJobType
 
 	// Metadata pertaining to the operation's result.
@@ -119,6 +122,9 @@ func (c *Client) addOperationCreateUserImportJobMiddlewares(stack *middleware.St
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -135,6 +141,9 @@ func (c *Client) addOperationCreateUserImportJobMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateUserImportJobValidationMiddleware(stack); err != nil {
@@ -156,6 +165,18 @@ func (c *Client) addOperationCreateUserImportJobMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

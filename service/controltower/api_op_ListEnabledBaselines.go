@@ -38,6 +38,10 @@ type ListEnabledBaselinesInput struct {
 	// either, or both.
 	Filter *types.EnabledBaselineFilter
 
+	// A value that can be set to include the child enabled baselines in responses.
+	// The default value is false.
+	IncludeChildren bool
+
 	// The maximum number of results to be shown.
 	MaxResults *int32
 
@@ -106,6 +110,9 @@ func (c *Client) addOperationListEnabledBaselinesMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -124,6 +131,9 @@ func (c *Client) addOperationListEnabledBaselinesMiddlewares(stack *middleware.S
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListEnabledBaselines(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -140,6 +150,18 @@ func (c *Client) addOperationListEnabledBaselinesMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

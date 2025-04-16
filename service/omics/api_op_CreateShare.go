@@ -17,9 +17,9 @@ import (
 //
 // The following resources support cross-account sharing:
 //
-//   - Healthomics variant stores
+//   - HealthOmics variant stores
 //
-//   - Healthomics annotation stores
+//   - HealthOmics annotation stores
 //
 //   - Private workflows
 func (c *Client) CreateShare(ctx context.Context, params *CreateShareInput, optFns ...func(*Options)) (*CreateShareOutput, error) {
@@ -116,6 +116,9 @@ func (c *Client) addOperationCreateShareMiddlewares(stack *middleware.Stack, opt
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -132,6 +135,9 @@ func (c *Client) addOperationCreateShareMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addEndpointPrefix_opCreateShareMiddleware(stack); err != nil {
@@ -156,6 +162,18 @@ func (c *Client) addOperationCreateShareMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

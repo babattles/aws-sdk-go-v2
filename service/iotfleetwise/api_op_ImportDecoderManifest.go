@@ -14,6 +14,9 @@ import (
 //	Creates a decoder manifest using your existing CAN DBC file from your local
 //
 // device.
+//
+// The CAN signal name must be unique and not repeated across CAN message
+// definitions in a .dbc file.
 func (c *Client) ImportDecoderManifest(ctx context.Context, params *ImportDecoderManifestInput, optFns ...func(*Options)) (*ImportDecoderManifestOutput, error) {
 	if params == nil {
 		params = &ImportDecoderManifestInput{}
@@ -105,6 +108,9 @@ func (c *Client) addOperationImportDecoderManifestMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -121,6 +127,9 @@ func (c *Client) addOperationImportDecoderManifestMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpImportDecoderManifestValidationMiddleware(stack); err != nil {
@@ -142,6 +151,18 @@ func (c *Client) addOperationImportDecoderManifestMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

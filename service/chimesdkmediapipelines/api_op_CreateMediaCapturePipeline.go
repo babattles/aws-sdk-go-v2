@@ -59,6 +59,23 @@ type CreateMediaCapturePipelineInput struct {
 	// idempotent. Use a unique token for each media pipeline request.
 	ClientRequestToken *string
 
+	// The Amazon Resource Name (ARN) of the sink role to be used with AwsKmsKeyId in
+	// SseAwsKeyManagementParams . Can only interact with S3Bucket sink type. The role
+	// must belong to the caller’s account and be able to act on behalf of the caller
+	// during the API call. All minimum policy permissions requirements for the caller
+	// to perform sink-related actions are the same for SinkIamRoleArn .
+	//
+	// Additionally, the role must have permission to kms:GenerateDataKey using KMS
+	// key supplied as AwsKmsKeyId in SseAwsKeyManagementParams . If media
+	// concatenation will be required later, the role must also have permission to
+	// kms:Decrypt for the same KMS key.
+	SinkIamRoleArn *string
+
+	// An object that contains server side encryption parameters to be used by media
+	// capture pipeline. The parameters can also be used by media concatenation
+	// pipeline taking media capture pipeline as a media source.
+	SseAwsKeyManagementParams *types.SseAwsKeyManagementParams
+
 	// The tag key-value pairs.
 	Tags []types.Tag
 
@@ -120,6 +137,9 @@ func (c *Client) addOperationCreateMediaCapturePipelineMiddlewares(stack *middle
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -136,6 +156,9 @@ func (c *Client) addOperationCreateMediaCapturePipelineMiddlewares(stack *middle
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateMediaCapturePipelineMiddleware(stack, options); err != nil {
@@ -160,6 +183,18 @@ func (c *Client) addOperationCreateMediaCapturePipelineMiddlewares(stack *middle
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

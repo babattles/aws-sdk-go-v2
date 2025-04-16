@@ -11,7 +11,8 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Deregisters the identity provider from providing user-based subscriptions.
+// Deregisters the Active Directory identity provider from License Manager
+// user-based subscriptions.
 func (c *Client) DeregisterIdentityProvider(ctx context.Context, params *DeregisterIdentityProviderInput, optFns ...func(*Options)) (*DeregisterIdentityProviderOutput, error) {
 	if params == nil {
 		params = &DeregisterIdentityProviderInput{}
@@ -29,14 +30,17 @@ func (c *Client) DeregisterIdentityProvider(ctx context.Context, params *Deregis
 
 type DeregisterIdentityProviderInput struct {
 
-	// An object that specifies details for the identity provider.
-	//
-	// This member is required.
+	// An object that specifies details for the Active Directory identity provider.
 	IdentityProvider types.IdentityProvider
+
+	// The Amazon Resource Name (ARN) that identifies the identity provider to
+	// deregister.
+	IdentityProviderArn *string
 
 	// The name of the user-based subscription product.
 	//
-	// This member is required.
+	// Valid values: VISUAL_STUDIO_ENTERPRISE | VISUAL_STUDIO_PROFESSIONAL |
+	// OFFICE_PROFESSIONAL_PLUS | REMOTE_DESKTOP_SERVICES
 	Product *string
 
 	noSmithyDocumentSerde
@@ -98,6 +102,9 @@ func (c *Client) addOperationDeregisterIdentityProviderMiddlewares(stack *middle
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -114,6 +121,9 @@ func (c *Client) addOperationDeregisterIdentityProviderMiddlewares(stack *middle
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeregisterIdentityProviderValidationMiddleware(stack); err != nil {
@@ -135,6 +145,18 @@ func (c *Client) addOperationDeregisterIdentityProviderMiddlewares(stack *middle
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

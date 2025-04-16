@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
+	"github.com/aws/aws-sdk-go-v2/service/b2bi/types"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	"time"
@@ -38,6 +39,10 @@ type UpdatePartnershipInput struct {
 
 	// List of the capabilities associated with this partnership.
 	Capabilities []string
+
+	// To update, specify the structure that contains the details for the associated
+	// capabilities.
+	CapabilityOptions *types.CapabilityOptions
 
 	// The name of the partnership, used to identify it.
 	Name *string
@@ -72,6 +77,9 @@ type UpdatePartnershipOutput struct {
 
 	// Returns one or more capabilities associated with this partnership.
 	Capabilities []string
+
+	// Returns the structure that contains the details for the associated capabilities.
+	CapabilityOptions *types.CapabilityOptions
 
 	// Returns the email address associated with this trading partner.
 	Email *string
@@ -138,6 +146,9 @@ func (c *Client) addOperationUpdatePartnershipMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -154,6 +165,9 @@ func (c *Client) addOperationUpdatePartnershipMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdatePartnershipValidationMiddleware(stack); err != nil {
@@ -175,6 +189,18 @@ func (c *Client) addOperationUpdatePartnershipMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

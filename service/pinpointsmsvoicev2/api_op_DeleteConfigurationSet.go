@@ -57,6 +57,10 @@ type DeleteConfigurationSetOutput struct {
 	// [UNIX epoch time]: https://www.epochconverter.com/
 	CreatedTimestamp *time.Time
 
+	// True if the configuration set has message feedback enabled. By default this is
+	// set to false.
+	DefaultMessageFeedbackEnabled *bool
+
 	// The default message type of the configuration set that was deleted.
 	DefaultMessageType types.MessageType
 
@@ -116,6 +120,9 @@ func (c *Client) addOperationDeleteConfigurationSetMiddlewares(stack *middleware
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -132,6 +139,9 @@ func (c *Client) addOperationDeleteConfigurationSetMiddlewares(stack *middleware
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteConfigurationSetValidationMiddleware(stack); err != nil {
@@ -153,6 +163,18 @@ func (c *Client) addOperationDeleteConfigurationSetMiddlewares(stack *middleware
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

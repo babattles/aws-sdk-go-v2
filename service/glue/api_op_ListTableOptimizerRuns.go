@@ -44,7 +44,7 @@ type ListTableOptimizerRunsInput struct {
 	// This member is required.
 	TableName *string
 
-	// The type of table optimizer. Currently, the only valid value is compaction .
+	// The type of table optimizer.
 	//
 	// This member is required.
 	Type types.TableOptimizerType
@@ -125,6 +125,9 @@ func (c *Client) addOperationListTableOptimizerRunsMiddlewares(stack *middleware
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -141,6 +144,9 @@ func (c *Client) addOperationListTableOptimizerRunsMiddlewares(stack *middleware
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListTableOptimizerRunsValidationMiddleware(stack); err != nil {
@@ -162,6 +168,18 @@ func (c *Client) addOperationListTableOptimizerRunsMiddlewares(stack *middleware
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

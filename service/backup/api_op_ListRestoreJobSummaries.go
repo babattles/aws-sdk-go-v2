@@ -46,15 +46,13 @@ type ListRestoreJobSummariesInput struct {
 	// organization, then returns the sum.
 	AccountId *string
 
-	// This is the period that sets the boundaries for returned results.
+	// The period for the returned results.
 	//
-	// Acceptable values include
+	//   - ONE_DAY - The daily job count for the prior 14 days.
 	//
-	//   - ONE_DAY for daily job count for the prior 14 days.
+	//   - SEVEN_DAYS - The aggregated job count for the prior 7 days.
 	//
-	//   - SEVEN_DAYS for the aggregated job count for the prior 7 days.
-	//
-	//   - FOURTEEN_DAYS for aggregated job count for prior 14 days.
+	//   - FOURTEEN_DAYS - The aggregated job count for prior 14 days.
 	AggregationPeriod types.AggregationPeriod
 
 	// This parameter sets the maximum number of items to be returned.
@@ -92,13 +90,13 @@ type ListRestoreJobSummariesInput struct {
 
 type ListRestoreJobSummariesOutput struct {
 
-	// This is the period that sets the boundaries for returned results.
+	// The period for the returned results.
 	//
-	//   - ONE_DAY for daily job count for the prior 14 days.
+	//   - ONE_DAY - The daily job count for the prior 14 days.
 	//
-	//   - SEVEN_DAYS for the aggregated job count for the prior 7 days.
+	//   - SEVEN_DAYS - The aggregated job count for the prior 7 days.
 	//
-	//   - FOURTEEN_DAYS for aggregated job count for prior 14 days.
+	//   - FOURTEEN_DAYS - The aggregated job count for prior 14 days.
 	AggregationPeriod *string
 
 	// The next item following a partial list of returned resources. For example, if a
@@ -160,6 +158,9 @@ func (c *Client) addOperationListRestoreJobSummariesMiddlewares(stack *middlewar
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -178,6 +179,9 @@ func (c *Client) addOperationListRestoreJobSummariesMiddlewares(stack *middlewar
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListRestoreJobSummaries(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -194,6 +198,18 @@ func (c *Client) addOperationListRestoreJobSummariesMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

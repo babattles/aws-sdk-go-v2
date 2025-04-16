@@ -154,6 +154,9 @@ type AllocatePrivateVirtualInterfaceOutput struct {
 	//
 	//   - down : A virtual interface that is BGP down.
 	//
+	//   - testing : A virtual interface is in this state immediately after calling StartBgpFailoverTest
+	//   and remains in this state during the duration of the test.
+	//
 	//   - deleting : A virtual interface is in this state immediately after calling DeleteVirtualInterface
 	//   until it can no longer forward traffic.
 	//
@@ -222,6 +225,9 @@ func (c *Client) addOperationAllocatePrivateVirtualInterfaceMiddlewares(stack *m
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -238,6 +244,9 @@ func (c *Client) addOperationAllocatePrivateVirtualInterfaceMiddlewares(stack *m
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpAllocatePrivateVirtualInterfaceValidationMiddleware(stack); err != nil {
@@ -259,6 +268,18 @@ func (c *Client) addOperationAllocatePrivateVirtualInterfaceMiddlewares(stack *m
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

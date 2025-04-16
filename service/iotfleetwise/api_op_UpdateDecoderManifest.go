@@ -37,6 +37,16 @@ type UpdateDecoderManifestInput struct {
 	// This member is required.
 	Name *string
 
+	// Use default decoders for all unmapped signals in the model. You don't need to
+	// provide any detailed decoding information.
+	//
+	// Access to certain Amazon Web Services IoT FleetWise features is currently
+	// gated. For more information, see [Amazon Web Services Region and feature availability]in the Amazon Web Services IoT FleetWise
+	// Developer Guide.
+	//
+	// [Amazon Web Services Region and feature availability]: https://docs.aws.amazon.com/iot-fleetwise/latest/developerguide/fleetwise-regions.html
+	DefaultForUnmappedSignals types.DefaultForUnmappedSignalsType
+
 	//  A brief description of the decoder manifest to update.
 	Description *string
 
@@ -131,6 +141,9 @@ func (c *Client) addOperationUpdateDecoderManifestMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -147,6 +160,9 @@ func (c *Client) addOperationUpdateDecoderManifestMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateDecoderManifestValidationMiddleware(stack); err != nil {
@@ -168,6 +184,18 @@ func (c *Client) addOperationUpdateDecoderManifestMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -87,9 +87,7 @@ type GetResourceMetricsInput struct {
 	// This member is required.
 	StartTime *time.Time
 
-	// The maximum number of items to return in the response. If more items exist than
-	// the specified MaxRecords value, a pagination token is included in the response
-	// so that the remaining results can be retrieved.
+	// The maximum number of items to return in the response.
 	MaxResults *int32
 
 	// An optional pagination token provided by a previous request. If this parameter
@@ -199,6 +197,9 @@ func (c *Client) addOperationGetResourceMetricsMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -215,6 +216,9 @@ func (c *Client) addOperationGetResourceMetricsMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetResourceMetricsValidationMiddleware(stack); err != nil {
@@ -238,15 +242,25 @@ func (c *Client) addOperationGetResourceMetricsMiddlewares(stack *middleware.Sta
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
+		return err
+	}
 	return nil
 }
 
 // GetResourceMetricsPaginatorOptions is the paginator options for
 // GetResourceMetrics
 type GetResourceMetricsPaginatorOptions struct {
-	// The maximum number of items to return in the response. If more items exist than
-	// the specified MaxRecords value, a pagination token is included in the response
-	// so that the remaining results can be retrieved.
+	// The maximum number of items to return in the response.
 	Limit int32
 
 	// Set to true if pagination should stop if the service returns a pagination token

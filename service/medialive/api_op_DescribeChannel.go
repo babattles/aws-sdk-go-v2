@@ -12,7 +12,6 @@ import (
 	smithytime "github.com/aws/smithy-go/time"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	smithywaiter "github.com/aws/smithy-go/waiter"
-	jmespath "github.com/jmespath/go-jmespath"
 	"time"
 )
 
@@ -46,6 +45,9 @@ type DescribeChannelInput struct {
 // Placeholder documentation for DescribeChannelResponse
 type DescribeChannelOutput struct {
 
+	// Anywhere settings for this channel.
+	AnywhereSettings *types.DescribeAnywhereSettings
+
 	// The unique arn of the channel.
 	Arn *string
 
@@ -55,6 +57,9 @@ type DescribeChannelOutput struct {
 	// The class for this channel. STANDARD for a channel with two pipelines or
 	// SINGLE_PIPELINE for a channel with one pipeline.
 	ChannelClass types.ChannelClass
+
+	// Requested engine version for this channel.
+	ChannelEngineVersion *types.ChannelEngineVersionResponse
 
 	// A list of destinations of the channel. For UDP outputs, there is one
 	// destination per output. For other types (HLS, for example), there is one
@@ -152,6 +157,9 @@ func (c *Client) addOperationDescribeChannelMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -168,6 +176,9 @@ func (c *Client) addOperationDescribeChannelMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeChannelValidationMiddleware(stack); err != nil {
@@ -189,6 +200,18 @@ func (c *Client) addOperationDescribeChannelMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -354,35 +377,21 @@ func (w *ChannelCreatedWaiter) WaitForOutput(ctx context.Context, params *Descri
 func channelCreatedStateRetryable(ctx context.Context, input *DescribeChannelInput, output *DescribeChannelOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("State", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.State
 		expectedValue := "IDLE"
-		value, ok := pathValue.(types.ChannelState)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.ChannelState value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, nil
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("State", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.State
 		expectedValue := "CREATING"
-		value, ok := pathValue.(types.ChannelState)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.ChannelState value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return true, nil
 		}
 	}
@@ -395,22 +404,18 @@ func channelCreatedStateRetryable(ctx context.Context, input *DescribeChannelInp
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("State", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.State
 		expectedValue := "CREATE_FAILED"
-		value, ok := pathValue.(types.ChannelState)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.ChannelState value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 
@@ -574,35 +579,21 @@ func (w *ChannelDeletedWaiter) WaitForOutput(ctx context.Context, params *Descri
 func channelDeletedStateRetryable(ctx context.Context, input *DescribeChannelInput, output *DescribeChannelOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("State", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.State
 		expectedValue := "DELETED"
-		value, ok := pathValue.(types.ChannelState)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.ChannelState value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, nil
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("State", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.State
 		expectedValue := "DELETING"
-		value, ok := pathValue.(types.ChannelState)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.ChannelState value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return true, nil
 		}
 	}
@@ -614,6 +605,9 @@ func channelDeletedStateRetryable(ctx context.Context, input *DescribeChannelInp
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 
@@ -777,35 +771,21 @@ func (w *ChannelRunningWaiter) WaitForOutput(ctx context.Context, params *Descri
 func channelRunningStateRetryable(ctx context.Context, input *DescribeChannelInput, output *DescribeChannelOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("State", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.State
 		expectedValue := "RUNNING"
-		value, ok := pathValue.(types.ChannelState)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.ChannelState value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, nil
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("State", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.State
 		expectedValue := "STARTING"
-		value, ok := pathValue.(types.ChannelState)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.ChannelState value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return true, nil
 		}
 	}
@@ -817,6 +797,9 @@ func channelRunningStateRetryable(ctx context.Context, input *DescribeChannelInp
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 
@@ -980,35 +963,21 @@ func (w *ChannelStoppedWaiter) WaitForOutput(ctx context.Context, params *Descri
 func channelStoppedStateRetryable(ctx context.Context, input *DescribeChannelInput, output *DescribeChannelOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("State", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.State
 		expectedValue := "IDLE"
-		value, ok := pathValue.(types.ChannelState)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.ChannelState value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, nil
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("State", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.State
 		expectedValue := "STOPPING"
-		value, ok := pathValue.(types.ChannelState)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.ChannelState value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return true, nil
 		}
 	}
@@ -1020,6 +989,9 @@ func channelStoppedStateRetryable(ctx context.Context, input *DescribeChannelInp
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 

@@ -10,9 +10,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// This IAM-authenticated API operation confirms user sign-up as an administrator.
-// Unlike [ConfirmSignUp], your IAM credentials authorize user account confirmation. No
-// confirmation code is required.
+// Confirms user sign-up as an administrator.
 //
 // This request sets a user account active in a user pool that [requires confirmation of new user accounts] before they can
 // sign in. You can configure your user pool to not send confirmation codes to new
@@ -29,8 +27,11 @@ import (
 //
 // [Using the Amazon Cognito user pools API and user pool endpoints]
 //
+// To configure your user pool to require administrative confirmation of users,
+// set AllowAdminCreateUserOnly to true in a CreateUserPool or UpdateUserPool
+// request.
+//
 // [Using the Amazon Cognito user pools API and user pool endpoints]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html
-// [ConfirmSignUp]: https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_ConfirmSignUp.html
 // [requires confirmation of new user accounts]: https://docs.aws.amazon.com/cognito/latest/developerguide/signing-up-users-in-your-app.html#signing-up-users-in-your-app-and-confirming-them-as-admin
 // [Signing Amazon Web Services API Requests]: https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html
 func (c *Client) AdminConfirmSignUp(ctx context.Context, params *AdminConfirmSignUpInput, optFns ...func(*Options)) (*AdminConfirmSignUpOutput, error) {
@@ -51,12 +52,12 @@ func (c *Client) AdminConfirmSignUp(ctx context.Context, params *AdminConfirmSig
 // Confirm a user's registration as a user pool administrator.
 type AdminConfirmSignUpInput struct {
 
-	// The user pool ID for which you want to confirm user registration.
+	// The ID of the user pool where you want to confirm a user's sign-up request.
 	//
 	// This member is required.
 	UserPoolId *string
 
-	// The username of the user that you want to query or modify. The value of this
+	// The name of the user that you want to query or modify. The value of this
 	// parameter is typically your user's username, but it can be any of their alias
 	// attributes. If username isn't an alias attribute in your user pool, this value
 	// must be the sub of a local user or the username of a user from a third-party
@@ -77,10 +78,10 @@ type AdminConfirmSignUpInput struct {
 	// process the ClientMetadata value to enhance your workflow for your specific
 	// needs.
 	//
-	// For more information, see [Customizing user pool Workflows with Lambda Triggers] in the Amazon Cognito Developer Guide.
+	// For more information, see [Using Lambda triggers] in the Amazon Cognito Developer Guide.
 	//
-	// When you use the ClientMetadata parameter, remember that Amazon Cognito won't
-	// do the following:
+	// When you use the ClientMetadata parameter, note that Amazon Cognito won't do
+	// the following:
 	//
 	//   - Store the ClientMetadata value. This data is available only to Lambda
 	//   triggers that are assigned to a user pool to support custom workflows. If your
@@ -89,10 +90,10 @@ type AdminConfirmSignUpInput struct {
 	//
 	//   - Validate the ClientMetadata value.
 	//
-	//   - Encrypt the ClientMetadata value. Don't use Amazon Cognito to provide
-	//   sensitive information.
+	//   - Encrypt the ClientMetadata value. Don't send sensitive information in this
+	//   parameter.
 	//
-	// [Customizing user pool Workflows with Lambda Triggers]: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html
+	// [Using Lambda triggers]: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html
 	ClientMetadata map[string]string
 
 	noSmithyDocumentSerde
@@ -149,6 +150,9 @@ func (c *Client) addOperationAdminConfirmSignUpMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -165,6 +169,9 @@ func (c *Client) addOperationAdminConfirmSignUpMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpAdminConfirmSignUpValidationMiddleware(stack); err != nil {
@@ -186,6 +193,18 @@ func (c *Client) addOperationAdminConfirmSignUpMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

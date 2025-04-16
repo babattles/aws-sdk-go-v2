@@ -12,7 +12,6 @@ import (
 	smithytime "github.com/aws/smithy-go/time"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	smithywaiter "github.com/aws/smithy-go/waiter"
-	jmespath "github.com/jmespath/go-jmespath"
 	"time"
 )
 
@@ -71,6 +70,10 @@ type DescribeInputOutput struct {
 	// Settings for the input devices.
 	InputDevices []types.InputDeviceSettings
 
+	// The location of this input. AWS, for an input existing in the AWS Cloud,
+	// On-Prem for an input in a customer network.
+	InputNetworkLocation types.InputNetworkLocation
+
 	// A list of IDs for all Inputs which are partners of this one.
 	InputPartnerIds []string
 
@@ -82,6 +85,9 @@ type DescribeInputOutput struct {
 	// A list of MediaConnect Flows for this input.
 	MediaConnectFlows []types.MediaConnectFlow
 
+	// Multicast Input settings.
+	MulticastSettings *types.MulticastSettings
+
 	// The user-assigned name (This is a mutable value).
 	Name *string
 
@@ -91,6 +97,10 @@ type DescribeInputOutput struct {
 
 	// A list of IDs for all the Input Security Groups attached to the input.
 	SecurityGroups []string
+
+	// Include this parameter if the input is a SMPTE 2110 input, to identify the
+	// stream sources for this input.
+	Smpte2110ReceiverGroupSettings *types.Smpte2110ReceiverGroupSettings
 
 	// A list of the sources of the input (PULL-type).
 	Sources []types.InputSource
@@ -156,6 +166,9 @@ func (c *Client) addOperationDescribeInputMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -172,6 +185,9 @@ func (c *Client) addOperationDescribeInputMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeInputValidationMiddleware(stack); err != nil {
@@ -193,6 +209,18 @@ func (c *Client) addOperationDescribeInputMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -358,35 +386,21 @@ func (w *InputAttachedWaiter) WaitForOutput(ctx context.Context, params *Describ
 func inputAttachedStateRetryable(ctx context.Context, input *DescribeInputInput, output *DescribeInputOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("State", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.State
 		expectedValue := "ATTACHED"
-		value, ok := pathValue.(types.InputState)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.InputState value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, nil
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("State", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.State
 		expectedValue := "DETACHED"
-		value, ok := pathValue.(types.InputState)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.InputState value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return true, nil
 		}
 	}
@@ -398,6 +412,9 @@ func inputAttachedStateRetryable(ctx context.Context, input *DescribeInputInput,
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 
@@ -560,35 +577,21 @@ func (w *InputDeletedWaiter) WaitForOutput(ctx context.Context, params *Describe
 func inputDeletedStateRetryable(ctx context.Context, input *DescribeInputInput, output *DescribeInputOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("State", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.State
 		expectedValue := "DELETED"
-		value, ok := pathValue.(types.InputState)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.InputState value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, nil
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("State", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.State
 		expectedValue := "DELETING"
-		value, ok := pathValue.(types.InputState)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.InputState value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return true, nil
 		}
 	}
@@ -600,6 +603,9 @@ func inputDeletedStateRetryable(ctx context.Context, input *DescribeInputInput, 
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 
@@ -763,52 +769,31 @@ func (w *InputDetachedWaiter) WaitForOutput(ctx context.Context, params *Describ
 func inputDetachedStateRetryable(ctx context.Context, input *DescribeInputInput, output *DescribeInputOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("State", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.State
 		expectedValue := "DETACHED"
-		value, ok := pathValue.(types.InputState)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.InputState value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, nil
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("State", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.State
 		expectedValue := "CREATING"
-		value, ok := pathValue.(types.InputState)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.InputState value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return true, nil
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("State", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.State
 		expectedValue := "ATTACHED"
-		value, ok := pathValue.(types.InputState)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.InputState value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return true, nil
 		}
 	}
@@ -820,6 +805,9 @@ func inputDetachedStateRetryable(ctx context.Context, input *DescribeInputInput,
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 

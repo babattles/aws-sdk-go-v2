@@ -67,9 +67,9 @@ type StartFileTransferInput struct {
 
 	// One or more source paths for the Amazon S3 storage. Each string represents a
 	// source file path for one outbound file transfer. For example,
-	// DOC-EXAMPLE-BUCKET/myfile.txt .
+	// amzn-s3-demo-bucket/myfile.txt .
 	//
-	// Replace  DOC-EXAMPLE-BUCKET  with one of your actual buckets.
+	// Replace  amzn-s3-demo-bucket  with one of your actual buckets.
 	SendFilePaths []string
 
 	noSmithyDocumentSerde
@@ -131,6 +131,9 @@ func (c *Client) addOperationStartFileTransferMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -147,6 +150,9 @@ func (c *Client) addOperationStartFileTransferMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpStartFileTransferValidationMiddleware(stack); err != nil {
@@ -168,6 +174,18 @@ func (c *Client) addOperationStartFileTransferMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

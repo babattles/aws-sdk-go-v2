@@ -31,8 +31,8 @@ import (
 //     replication groups in the API and CLI), the calls can be made concurrently.
 //
 //   - If calling this operation multiple times on different shards in the same
-//     Redis OSS (cluster mode enabled) replication group, the first node replacement
-//     must complete before a subsequent call can be made.
+//     Valkey or Redis OSS (cluster mode enabled) replication group, the first node
+//     replacement must complete before a subsequent call can be made.
 //
 //   - To determine whether the node replacement is complete you can check Events
 //     using the Amazon ElastiCache console, the Amazon CLI, or the ElastiCache API.
@@ -61,8 +61,8 @@ import (
 // Also see, [Testing Multi-AZ] in the ElastiCache User Guide.
 //
 // [DescribeEvents]: https://docs.aws.amazon.com/AmazonElastiCache/latest/APIReference/API_DescribeEvents.html
-// [Testing Multi-AZ]: https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/AutoFailover.html#auto-failover-test
-// [Viewing ElastiCache Events]: https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/ECEvents.Viewing.html
+// [Testing Multi-AZ]: https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/AutoFailover.html#auto-failover-test
+// [Viewing ElastiCache Events]: https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/ECEvents.Viewing.html
 func (c *Client) TestFailover(ctx context.Context, params *TestFailoverInput, optFns ...func(*Options)) (*TestFailoverOutput, error) {
 	if params == nil {
 		params = &TestFailoverInput{}
@@ -98,7 +98,8 @@ type TestFailoverInput struct {
 
 type TestFailoverOutput struct {
 
-	// Contains all of the attributes of a specific Redis OSS replication group.
+	// Contains all of the attributes of a specific Valkey or Redis OSS replication
+	// group.
 	ReplicationGroup *types.ReplicationGroup
 
 	// Metadata pertaining to the operation's result.
@@ -150,6 +151,9 @@ func (c *Client) addOperationTestFailoverMiddlewares(stack *middleware.Stack, op
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -166,6 +170,9 @@ func (c *Client) addOperationTestFailoverMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpTestFailoverValidationMiddleware(stack); err != nil {
@@ -187,6 +194,18 @@ func (c *Client) addOperationTestFailoverMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

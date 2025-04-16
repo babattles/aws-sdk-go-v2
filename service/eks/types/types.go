@@ -144,7 +144,7 @@ type Addon struct {
 	// An array of Pod Identity Assocations owned by the Addon. Each EKS Pod Identity
 	// association maps a role to a service account in a namespace in the cluster.
 	//
-	// For more information, see [Attach an IAM Role to an Amazon EKS add-on using Pod Identity] in the EKS User Guide.
+	// For more information, see [Attach an IAM Role to an Amazon EKS add-on using Pod Identity] in the Amazon EKS User Guide.
 	//
 	// [Attach an IAM Role to an Amazon EKS add-on using Pod Identity]: https://docs.aws.amazon.com/eks/latest/userguide/add-ons-iam.html
 	PodIdentityAssociations []string
@@ -163,6 +163,20 @@ type Addon struct {
 	// of a key and an optional value. You define both. Tags don't propagate to any
 	// other cluster or Amazon Web Services resources.
 	Tags map[string]string
+
+	noSmithyDocumentSerde
+}
+
+// The summary information about the Amazon EKS add-on compatibility for the next
+// Kubernetes version for an insight check in the UPGRADE_READINESS category.
+type AddonCompatibilityDetail struct {
+
+	// The list of compatible Amazon EKS add-on versions for the next Kubernetes
+	// version.
+	CompatibleVersions []string
+
+	// The name of the Amazon EKS add-on.
+	Name *string
 
 	noSmithyDocumentSerde
 }
@@ -221,7 +235,7 @@ type AddonIssue struct {
 // Each EKS Pod Identity Association maps a role to a service account in a
 // namespace in the cluster.
 //
-// For more information, see [Attach an IAM Role to an Amazon EKS add-on using Pod Identity] in the EKS User Guide.
+// For more information, see [Attach an IAM Role to an Amazon EKS add-on using Pod Identity] in the Amazon EKS User Guide.
 //
 // [Attach an IAM Role to an Amazon EKS add-on using Pod Identity]: https://docs.aws.amazon.com/eks/latest/userguide/add-ons-iam.html
 type AddonPodIdentityAssociations struct {
@@ -263,6 +277,9 @@ type AddonVersionInfo struct {
 	// An object representing the compatibilities of a version.
 	Compatibilities []Compatibility
 
+	// Indicates the compute type of the addon version.
+	ComputeTypes []string
+
 	// Whether the add-on requires configuration.
 	RequiresConfiguration bool
 
@@ -297,6 +314,21 @@ type AutoScalingGroup struct {
 	// The name of the Auto Scaling group associated with an Amazon EKS managed node
 	// group.
 	Name *string
+
+	noSmithyDocumentSerde
+}
+
+// Indicates the current configuration of the block storage capability on your EKS
+// Auto Mode cluster. For example, if the capability is enabled or disabled. If the
+// block storage capability is enabled, EKS Auto Mode will create and delete EBS
+// volumes in your Amazon Web Services account. For more information, see EKS Auto
+// Mode block storage capability in the Amazon EKS User Guide.
+type BlockStorage struct {
+
+	// Indicates if the block storage capability is enabled on your EKS Auto Mode
+	// cluster. If the block storage capability is enabled, EKS Auto Mode will create
+	// and delete EBS volumes in your Amazon Web Services account.
+	Enabled *bool
 
 	noSmithyDocumentSerde
 }
@@ -342,6 +374,13 @@ type Cluster struct {
 	// A unique, case-sensitive identifier that you provide to ensure the idempotency
 	// of the request.
 	ClientRequestToken *string
+
+	// Indicates the current configuration of the compute capability on your EKS Auto
+	// Mode cluster. For example, if the capability is enabled or disabled. If the
+	// compute capability is enabled, EKS Auto Mode will create and delete EC2 Managed
+	// Instances in your Amazon Web Services account. For more information, see EKS
+	// Auto Mode compute capability in the Amazon EKS User Guide.
+	ComputeConfig *ComputeConfigResponse
 
 	// The configuration used to connect to a cluster for registration.
 	ConnectorConfig *ConnectorConfigResponse
@@ -389,6 +428,10 @@ type Cluster struct {
 	// [Amazon EKS local cluster platform versions]: https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-platform-versions.html
 	PlatformVersion *string
 
+	// The configuration in the cluster for EKS Hybrid Nodes. You can add, change, or
+	// remove this configuration after the cluster is created.
+	RemoteNetworkConfig *RemoteNetworkConfigResponse
+
 	// The VPC configuration used by the cluster control plane. Amazon EKS VPC
 	// resources have specific requirements to work properly with Kubernetes. For more
 	// information, see [Cluster VPC considerations]and [Cluster security group considerations] in the Amazon EKS User Guide.
@@ -405,6 +448,13 @@ type Cluster struct {
 	// The current status of the cluster.
 	Status ClusterStatus
 
+	// Indicates the current configuration of the block storage capability on your EKS
+	// Auto Mode cluster. For example, if the capability is enabled or disabled. If the
+	// block storage capability is enabled, EKS Auto Mode will create and delete EBS
+	// volumes in your Amazon Web Services account. For more information, see EKS Auto
+	// Mode block storage capability in the Amazon EKS User Guide.
+	StorageConfig *StorageConfigResponse
+
 	// Metadata that assists with categorization and organization. Each tag consists
 	// of a key and an optional value. You define both. Tags don't propagate to any
 	// other cluster or Amazon Web Services resources.
@@ -412,13 +462,16 @@ type Cluster struct {
 
 	// This value indicates if extended support is enabled or disabled for the cluster.
 	//
-	// [Learn more about EKS Extended Support in the EKS User Guide.]
+	// [Learn more about EKS Extended Support in the Amazon EKS User Guide.]
 	//
-	// [Learn more about EKS Extended Support in the EKS User Guide.]: https://docs.aws.amazon.com/eks/latest/userguide/extended-support-control.html
+	// [Learn more about EKS Extended Support in the Amazon EKS User Guide.]: https://docs.aws.amazon.com/eks/latest/userguide/extended-support-control.html
 	UpgradePolicy *UpgradePolicyResponse
 
 	// The Kubernetes server version for the cluster.
 	Version *string
+
+	// The configuration for zonal shift for the cluster.
+	ZonalShiftConfig *ZonalShiftConfigResponse
 
 	noSmithyDocumentSerde
 }
@@ -447,6 +500,45 @@ type ClusterIssue struct {
 	noSmithyDocumentSerde
 }
 
+// Contains details about a specific EKS cluster version.
+type ClusterVersionInformation struct {
+
+	// The type of cluster this version is for.
+	ClusterType *string
+
+	// The Kubernetes version for the cluster.
+	ClusterVersion *string
+
+	// Default platform version for this Kubernetes version.
+	DefaultPlatformVersion *string
+
+	// Indicates if this is a default version.
+	DefaultVersion bool
+
+	// Date when extended support ends for this version.
+	EndOfExtendedSupportDate *time.Time
+
+	// Date when standard support ends for this version.
+	EndOfStandardSupportDate *time.Time
+
+	// The patch version of Kubernetes for this cluster version.
+	KubernetesPatchVersion *string
+
+	// The release date of this cluster version.
+	ReleaseDate *time.Time
+
+	// This field is deprecated. Use versionStatus instead, as that field matches for
+	// input and output of this action.
+	//
+	// Current status of this cluster version.
+	Status ClusterVersionStatus
+
+	// Current status of this cluster version.
+	VersionStatus VersionStatus
+
+	noSmithyDocumentSerde
+}
+
 // Compatibility information.
 type Compatibility struct {
 
@@ -458,6 +550,51 @@ type Compatibility struct {
 
 	// The supported compute platform.
 	PlatformVersions []string
+
+	noSmithyDocumentSerde
+}
+
+// Request to update the configuration of the compute capability of your EKS Auto
+// Mode cluster. For example, enable the capability. For more information, see EKS
+// Auto Mode compute capability in the Amazon EKS User Guide.
+type ComputeConfigRequest struct {
+
+	// Request to enable or disable the compute capability on your EKS Auto Mode
+	// cluster. If the compute capability is enabled, EKS Auto Mode will create and
+	// delete EC2 Managed Instances in your Amazon Web Services account.
+	Enabled *bool
+
+	// Configuration for node pools that defines the compute resources for your EKS
+	// Auto Mode cluster. For more information, see EKS Auto Mode Node Pools in the
+	// Amazon EKS User Guide.
+	NodePools []string
+
+	// The ARN of the IAM Role EKS will assign to EC2 Managed Instances in your EKS
+	// Auto Mode cluster. This value cannot be changed after the compute capability of
+	// EKS Auto Mode is enabled. For more information, see the IAM Reference in the
+	// Amazon EKS User Guide.
+	NodeRoleArn *string
+
+	noSmithyDocumentSerde
+}
+
+// Indicates the status of the request to update the compute capability of your
+// EKS Auto Mode cluster.
+type ComputeConfigResponse struct {
+
+	// Indicates if the compute capability is enabled on your EKS Auto Mode cluster.
+	// If the compute capability is enabled, EKS Auto Mode will create and delete EC2
+	// Managed Instances in your Amazon Web Services account.
+	Enabled *bool
+
+	// Indicates the current configuration of node pools in your EKS Auto Mode
+	// cluster. For more information, see EKS Auto Mode Node Pools in the Amazon EKS
+	// User Guide.
+	NodePools []string
+
+	// The ARN of the IAM Role EKS will assign to EC2 Managed Instances in your EKS
+	// Auto Mode cluster.
+	NodeRoleArn *string
 
 	noSmithyDocumentSerde
 }
@@ -605,6 +742,10 @@ type EksAnywhereSubscription struct {
 	// cluster.
 	LicenseType EksAnywhereSubscriptionLicenseType
 
+	// Includes all of the claims in the license token necessary to validate the
+	// license for extended support.
+	Licenses []License
+
 	// The status of a subscription.
 	Status *string
 
@@ -631,6 +772,20 @@ type EksAnywhereSubscriptionTerm struct {
 
 	// The term unit of the subscription. Valid value is MONTHS .
 	Unit EksAnywhereSubscriptionTermUnit
+
+	noSmithyDocumentSerde
+}
+
+// Indicates the current configuration of the load balancing capability on your
+// EKS Auto Mode cluster. For example, if the capability is enabled or disabled.
+// For more information, see EKS Auto Mode load balancing capability in the Amazon
+// EKS User Guide.
+type ElasticLoadBalancing struct {
+
+	// Indicates if the load balancing capability is enabled on your EKS Auto Mode
+	// cluster. If the load balancing capability is enabled, EKS Auto Mode will create
+	// and delete load balancers in your Amazon Web Services account.
+	Enabled *bool
 
 	noSmithyDocumentSerde
 }
@@ -849,6 +1004,9 @@ type Insight struct {
 // returned with certain insights having category UPGRADE_READINESS .
 type InsightCategorySpecificSummary struct {
 
+	// A list of AddonCompatibilityDetail objects for Amazon EKS add-ons.
+	AddonCompatibilityDetails []AddonCompatibilityDetail
+
 	// The summary information about deprecated resource usage for an insight check in
 	// the UPGRADE_READINESS category.
 	DeprecationDetails []DeprecationDetail
@@ -950,6 +1108,10 @@ type Issue struct {
 	//   happen if there are network disruptions or if API servers are timing out
 	//   processing requests.
 	//
+	//   - Ec2InstanceTypeDoesNotExist: One or more of the supplied Amazon EC2
+	//   instance types do not exist. Amazon EKS checked for the instance types that you
+	//   provided in this Amazon Web Services Region, and one or more aren't available.
+	//
 	//   - Ec2LaunchTemplateNotFound: We couldn't find the Amazon EC2 launch template
 	//   for your managed node group. You may be able to recreate a launch template with
 	//   the same settings to recover.
@@ -1009,6 +1171,11 @@ type Issue struct {
 // The Kubernetes network configuration for the cluster.
 type KubernetesNetworkConfigRequest struct {
 
+	// Request to enable or disable the load balancing capability on your EKS Auto
+	// Mode cluster. For more information, see EKS Auto Mode load balancing capability
+	// in the Amazon EKS User Guide.
+	ElasticLoadBalancing *ElasticLoadBalancing
+
 	// Specify which IP family is used to assign Kubernetes pod and service IP
 	// addresses. If you don't specify a value, ipv4 is used by default. You can only
 	// specify an IP family when you create a cluster and can't change this value once
@@ -1051,6 +1218,10 @@ type KubernetesNetworkConfigRequest struct {
 // The Kubernetes network configuration for the cluster. The response contains a
 // value for serviceIpv6Cidr or serviceIpv4Cidr, but not both.
 type KubernetesNetworkConfigResponse struct {
+
+	// Indicates the current configuration of the load balancing capability on your
+	// EKS Auto Mode cluster. For example, if the capability is enabled or disabled.
+	ElasticLoadBalancing *ElasticLoadBalancing
 
 	// The IP family used to assign Kubernetes Pod and Service objects IP addresses.
 	// The IP family is always ipv4 , unless you have a 1.21 or later cluster running
@@ -1099,18 +1270,33 @@ type LaunchTemplateSpecification struct {
 	// The ID of the launch template.
 	//
 	// You must specify either the launch template ID or the launch template name in
-	// the request, but not both.
+	// the request, but not both. After node group creation, you cannot use a different
+	// ID.
 	Id *string
 
 	// The name of the launch template.
 	//
 	// You must specify either the launch template name or the launch template ID in
-	// the request, but not both.
+	// the request, but not both. After node group creation, you cannot use a different
+	// name.
 	Name *string
 
 	// The version number of the launch template to use. If no version is specified,
-	// then the template's default version is used.
+	// then the template's default version is used. You can use a different version for
+	// node group updates.
 	Version *string
+
+	noSmithyDocumentSerde
+}
+
+// An EKS Anywhere license associated with a subscription.
+type License struct {
+
+	// An id associated with an EKS Anywhere subscription license.
+	Id *string
+
+	// An optional license token that can be used for extended support verification.
+	Token *string
 
 	noSmithyDocumentSerde
 }
@@ -1129,7 +1315,7 @@ type Logging struct {
 type LogSetup struct {
 
 	// If a log type is enabled, that log type exports its control plane logs to
-	// CloudWatch Logs. If a log type isn't enabled, that log type doesn't export its
+	// CloudWatch Logs . If a log type isn't enabled, that log type doesn't export its
 	// control plane logs. Each individual log type can be enabled or disabled
 	// independently.
 	Enabled *bool
@@ -1195,6 +1381,9 @@ type Nodegroup struct {
 
 	// The Unix epoch timestamp for the last modification to the object.
 	ModifiedAt *time.Time
+
+	// The node auto repair configuration for the node group.
+	NodeRepairConfig *NodeRepairConfig
 
 	// The IAM role associated with your node group. The Amazon EKS node kubelet
 	// daemon makes calls to Amazon Web Services APIs on your behalf. Nodes receive
@@ -1323,7 +1512,9 @@ type NodegroupScalingConfig struct {
 	noSmithyDocumentSerde
 }
 
-// The node group update configuration.
+// The node group update configuration. An Amazon EKS managed node group updates
+// by replacing nodes with new nodes of newer AMI versions in parallel. You choose
+// the maximum unavailable and the update strategy.
 type NodegroupUpdateConfig struct {
 
 	// The maximum number of nodes unavailable at once during a version update. Nodes
@@ -1335,6 +1526,33 @@ type NodegroupUpdateConfig struct {
 	// percentage of nodes are updated in parallel, up to 100 nodes at once. This value
 	// or maxUnavailable is required to have a value.
 	MaxUnavailablePercentage *int32
+
+	// The configuration for the behavior to follow during a node group version update
+	// of this managed node group. You choose between two possible strategies for
+	// replacing nodes during an [UpdateNodegroupVersion]UpdateNodegroupVersion action.
+	//
+	// An Amazon EKS managed node group updates by replacing nodes with new nodes of
+	// newer AMI versions in parallel. The update strategy changes the managed node
+	// update behavior of the managed node group for each quantity. The default
+	// strategy has guardrails to protect you from misconfiguration and launches the
+	// new instances first, before terminating the old instances. The minimal strategy
+	// removes the guardrails and terminates the old instances before launching the new
+	// instances. This minimal strategy is useful in scenarios where you are
+	// constrained to resources or costs (for example, with hardware accelerators such
+	// as GPUs).
+	//
+	// [UpdateNodegroupVersion]: https://docs.aws.amazon.com/eks/latest/APIReference/API_UpdateNodegroupVersion.html
+	UpdateStrategy NodegroupUpdateStrategies
+
+	noSmithyDocumentSerde
+}
+
+// The node auto repair configuration for the node group.
+type NodeRepairConfig struct {
+
+	// Specifies whether to enable node auto repair for the node group. Node auto
+	// repair is disabled by default.
+	Enabled *bool
 
 	noSmithyDocumentSerde
 }
@@ -1598,7 +1816,8 @@ type PodIdentityAssociation struct {
 
 // The summarized description of the association.
 //
-// Each summary is simplified by removing these fields compared to the full PodIdentityAssociation:
+// Each summary is simplified by removing these fields compared to the full [PodIdentityAssociation]
+// PodIdentityAssociation :
 //
 //   - The IAM role: roleArn
 //
@@ -1607,6 +1826,8 @@ type PodIdentityAssociation struct {
 //   - The most recent timestamp that the association was modified at:. modifiedAt
 //
 //   - The tags on the association: tags
+//
+// [PodIdentityAssociation]: https://docs.aws.amazon.com/eks/latest/APIReference/API_PodIdentityAssociation.html
 type PodIdentityAssociationSummary struct {
 
 	// The Amazon Resource Name (ARN) of the association.
@@ -1670,6 +1891,214 @@ type RemoteAccessConfig struct {
 	//
 	// [Security Groups for Your VPC]: https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html
 	SourceSecurityGroups []string
+
+	noSmithyDocumentSerde
+}
+
+// The configuration in the cluster for EKS Hybrid Nodes. You can add, change, or
+// remove this configuration after the cluster is created.
+type RemoteNetworkConfigRequest struct {
+
+	// The list of network CIDRs that can contain hybrid nodes.
+	//
+	// These CIDR blocks define the expected IP address range of the hybrid nodes that
+	// join the cluster. These blocks are typically determined by your network
+	// administrator.
+	//
+	// Enter one or more IPv4 CIDR blocks in decimal dotted-quad notation (for
+	// example, 10.2.0.0/16 ).
+	//
+	// It must satisfy the following requirements:
+	//
+	//   - Each block must be within an IPv4 RFC-1918 network range. Minimum allowed
+	//   size is /24, maximum allowed size is /8. Publicly-routable addresses aren't
+	//   supported.
+	//
+	//   - Each block cannot overlap with the range of the VPC CIDR blocks for your
+	//   EKS resources, or the block of the Kubernetes service IP range.
+	//
+	//   - Each block must have a route to the VPC that uses the VPC CIDR blocks, not
+	//   public IPs or Elastic IPs. There are many options including Transit Gateway,
+	//   Site-to-Site VPN, or Direct Connect.
+	//
+	//   - Each host must allow outbound connection to the EKS cluster control plane
+	//   on TCP ports 443 and 10250 .
+	//
+	//   - Each host must allow inbound connection from the EKS cluster control plane
+	//   on TCP port 10250 for logs, exec and port-forward operations.
+	//
+	//   - Each host must allow TCP and UDP network connectivity to and from other
+	//   hosts that are running CoreDNS on UDP port 53 for service and pod DNS names.
+	RemoteNodeNetworks []RemoteNodeNetwork
+
+	// The list of network CIDRs that can contain pods that run Kubernetes webhooks on
+	// hybrid nodes.
+	//
+	// These CIDR blocks are determined by configuring your Container Network
+	// Interface (CNI) plugin. We recommend the Calico CNI or Cilium CNI. Note that the
+	// Amazon VPC CNI plugin for Kubernetes isn't available for on-premises and edge
+	// locations.
+	//
+	// Enter one or more IPv4 CIDR blocks in decimal dotted-quad notation (for
+	// example, 10.2.0.0/16 ).
+	//
+	// It must satisfy the following requirements:
+	//
+	//   - Each block must be within an IPv4 RFC-1918 network range. Minimum allowed
+	//   size is /24, maximum allowed size is /8. Publicly-routable addresses aren't
+	//   supported.
+	//
+	//   - Each block cannot overlap with the range of the VPC CIDR blocks for your
+	//   EKS resources, or the block of the Kubernetes service IP range.
+	RemotePodNetworks []RemotePodNetwork
+
+	noSmithyDocumentSerde
+}
+
+// The configuration in the cluster for EKS Hybrid Nodes. You can add, change, or
+// remove this configuration after the cluster is created.
+type RemoteNetworkConfigResponse struct {
+
+	// The list of network CIDRs that can contain hybrid nodes.
+	RemoteNodeNetworks []RemoteNodeNetwork
+
+	// The list of network CIDRs that can contain pods that run Kubernetes webhooks on
+	// hybrid nodes.
+	RemotePodNetworks []RemotePodNetwork
+
+	noSmithyDocumentSerde
+}
+
+// A network CIDR that can contain hybrid nodes.
+//
+// These CIDR blocks define the expected IP address range of the hybrid nodes that
+// join the cluster. These blocks are typically determined by your network
+// administrator.
+//
+// Enter one or more IPv4 CIDR blocks in decimal dotted-quad notation (for
+// example, 10.2.0.0/16 ).
+//
+// It must satisfy the following requirements:
+//
+//   - Each block must be within an IPv4 RFC-1918 network range. Minimum allowed
+//     size is /24, maximum allowed size is /8. Publicly-routable addresses aren't
+//     supported.
+//
+//   - Each block cannot overlap with the range of the VPC CIDR blocks for your
+//     EKS resources, or the block of the Kubernetes service IP range.
+//
+//   - Each block must have a route to the VPC that uses the VPC CIDR blocks, not
+//     public IPs or Elastic IPs. There are many options including Transit Gateway,
+//     Site-to-Site VPN, or Direct Connect.
+//
+//   - Each host must allow outbound connection to the EKS cluster control plane
+//     on TCP ports 443 and 10250 .
+//
+//   - Each host must allow inbound connection from the EKS cluster control plane
+//     on TCP port 10250 for logs, exec and port-forward operations.
+//
+//   - Each host must allow TCP and UDP network connectivity to and from other
+//     hosts that are running CoreDNS on UDP port 53 for service and pod DNS names.
+type RemoteNodeNetwork struct {
+
+	// A network CIDR that can contain hybrid nodes.
+	//
+	// These CIDR blocks define the expected IP address range of the hybrid nodes that
+	// join the cluster. These blocks are typically determined by your network
+	// administrator.
+	//
+	// Enter one or more IPv4 CIDR blocks in decimal dotted-quad notation (for
+	// example, 10.2.0.0/16 ).
+	//
+	// It must satisfy the following requirements:
+	//
+	//   - Each block must be within an IPv4 RFC-1918 network range. Minimum allowed
+	//   size is /24, maximum allowed size is /8. Publicly-routable addresses aren't
+	//   supported.
+	//
+	//   - Each block cannot overlap with the range of the VPC CIDR blocks for your
+	//   EKS resources, or the block of the Kubernetes service IP range.
+	//
+	//   - Each block must have a route to the VPC that uses the VPC CIDR blocks, not
+	//   public IPs or Elastic IPs. There are many options including Transit Gateway,
+	//   Site-to-Site VPN, or Direct Connect.
+	//
+	//   - Each host must allow outbound connection to the EKS cluster control plane
+	//   on TCP ports 443 and 10250 .
+	//
+	//   - Each host must allow inbound connection from the EKS cluster control plane
+	//   on TCP port 10250 for logs, exec and port-forward operations.
+	//
+	//   - Each host must allow TCP and UDP network connectivity to and from other
+	//   hosts that are running CoreDNS on UDP port 53 for service and pod DNS names.
+	Cidrs []string
+
+	noSmithyDocumentSerde
+}
+
+// A network CIDR that can contain pods that run Kubernetes webhooks on hybrid
+// nodes.
+//
+// These CIDR blocks are determined by configuring your Container Network
+// Interface (CNI) plugin. We recommend the Calico CNI or Cilium CNI. Note that the
+// Amazon VPC CNI plugin for Kubernetes isn't available for on-premises and edge
+// locations.
+//
+// Enter one or more IPv4 CIDR blocks in decimal dotted-quad notation (for
+// example, 10.2.0.0/16 ).
+//
+// It must satisfy the following requirements:
+//
+//   - Each block must be within an IPv4 RFC-1918 network range. Minimum allowed
+//     size is /24, maximum allowed size is /8. Publicly-routable addresses aren't
+//     supported.
+//
+//   - Each block cannot overlap with the range of the VPC CIDR blocks for your
+//     EKS resources, or the block of the Kubernetes service IP range.
+type RemotePodNetwork struct {
+
+	// A network CIDR that can contain pods that run Kubernetes webhooks on hybrid
+	// nodes.
+	//
+	// These CIDR blocks are determined by configuring your Container Network
+	// Interface (CNI) plugin. We recommend the Calico CNI or Cilium CNI. Note that the
+	// Amazon VPC CNI plugin for Kubernetes isn't available for on-premises and edge
+	// locations.
+	//
+	// Enter one or more IPv4 CIDR blocks in decimal dotted-quad notation (for
+	// example, 10.2.0.0/16 ).
+	//
+	// It must satisfy the following requirements:
+	//
+	//   - Each block must be within an IPv4 RFC-1918 network range. Minimum allowed
+	//   size is /24, maximum allowed size is /8. Publicly-routable addresses aren't
+	//   supported.
+	//
+	//   - Each block cannot overlap with the range of the VPC CIDR blocks for your
+	//   EKS resources, or the block of the Kubernetes service IP range.
+	Cidrs []string
+
+	noSmithyDocumentSerde
+}
+
+// Request to update the configuration of the storage capability of your EKS Auto
+// Mode cluster. For example, enable the capability. For more information, see EKS
+// Auto Mode block storage capability in the Amazon EKS User Guide.
+type StorageConfigRequest struct {
+
+	// Request to configure EBS Block Storage settings for your EKS Auto Mode cluster.
+	BlockStorage *BlockStorage
+
+	noSmithyDocumentSerde
+}
+
+// Indicates the status of the request to update the block storage capability of
+// your EKS Auto Mode cluster.
+type StorageConfigResponse struct {
+
+	// Indicates the current configuration of the block storage capability on your EKS
+	// Auto Mode cluster. For example, if the capability is enabled or disabled.
+	BlockStorage *BlockStorage
 
 	noSmithyDocumentSerde
 }
@@ -1769,18 +2198,18 @@ type UpdateTaintsPayload struct {
 // have higher costs. The default value is EXTENDED . Use STANDARD to disable
 // extended support.
 //
-// [Learn more about EKS Extended Support in the EKS User Guide.]
+// [Learn more about EKS Extended Support in the Amazon EKS User Guide.]
 //
-// [Learn more about EKS Extended Support in the EKS User Guide.]: https://docs.aws.amazon.com/eks/latest/userguide/extended-support-control.html
+// [Learn more about EKS Extended Support in the Amazon EKS User Guide.]: https://docs.aws.amazon.com/eks/latest/userguide/extended-support-control.html
 type UpgradePolicyRequest struct {
 
 	// If the cluster is set to EXTENDED , it will enter extended support at the end of
 	// standard support. If the cluster is set to STANDARD , it will be automatically
 	// upgraded at the end of standard support.
 	//
-	// [Learn more about EKS Extended Support in the EKS User Guide.]
+	// [Learn more about EKS Extended Support in the Amazon EKS User Guide.]
 	//
-	// [Learn more about EKS Extended Support in the EKS User Guide.]: https://docs.aws.amazon.com/eks/latest/userguide/extended-support-control.html
+	// [Learn more about EKS Extended Support in the Amazon EKS User Guide.]: https://docs.aws.amazon.com/eks/latest/userguide/extended-support-control.html
 	SupportType SupportType
 
 	noSmithyDocumentSerde
@@ -1788,18 +2217,18 @@ type UpgradePolicyRequest struct {
 
 // This value indicates if extended support is enabled or disabled for the cluster.
 //
-// [Learn more about EKS Extended Support in the EKS User Guide.]
+// [Learn more about EKS Extended Support in the Amazon EKS User Guide.]
 //
-// [Learn more about EKS Extended Support in the EKS User Guide.]: https://docs.aws.amazon.com/eks/latest/userguide/extended-support-control.html
+// [Learn more about EKS Extended Support in the Amazon EKS User Guide.]: https://docs.aws.amazon.com/eks/latest/userguide/extended-support-control.html
 type UpgradePolicyResponse struct {
 
 	// If the cluster is set to EXTENDED , it will enter extended support at the end of
 	// standard support. If the cluster is set to STANDARD , it will be automatically
 	// upgraded at the end of standard support.
 	//
-	// [Learn more about EKS Extended Support in the EKS User Guide.]
+	// [Learn more about EKS Extended Support in the Amazon EKS User Guide.]
 	//
-	// [Learn more about EKS Extended Support in the EKS User Guide.]: https://docs.aws.amazon.com/eks/latest/userguide/extended-support-control.html
+	// [Learn more about EKS Extended Support in the Amazon EKS User Guide.]: https://docs.aws.amazon.com/eks/latest/userguide/extended-support-control.html
 	SupportType SupportType
 
 	noSmithyDocumentSerde
@@ -1893,6 +2322,25 @@ type VpcConfigResponse struct {
 
 	// The VPC associated with your cluster.
 	VpcId *string
+
+	noSmithyDocumentSerde
+}
+
+// The configuration for zonal shift for the cluster.
+type ZonalShiftConfigRequest struct {
+
+	// If zonal shift is enabled, Amazon Web Services configures zonal autoshift for
+	// the cluster.
+	Enabled *bool
+
+	noSmithyDocumentSerde
+}
+
+// The status of zonal shift configuration for the cluster
+type ZonalShiftConfigResponse struct {
+
+	// Whether the zonal shift is enabled.
+	Enabled *bool
 
 	noSmithyDocumentSerde
 }

@@ -43,6 +43,9 @@ type ModifyUserInput struct {
 	// Specifies how to authenticate the user.
 	AuthenticationMode *types.AuthenticationMode
 
+	// Modifies the engine listed for a user. The options are valkey or redis.
+	Engine *string
+
 	// Indicates no password is required for the user.
 	NoPasswordRequired *bool
 
@@ -63,7 +66,7 @@ type ModifyUserOutput struct {
 	// Denotes whether the user requires a password to authenticate.
 	Authentication *types.Authentication
 
-	// The current supported value is Redis.
+	// The options are valkey or redis.
 	Engine *string
 
 	// The minimum engine version required, which is Redis OSS 6.0
@@ -130,6 +133,9 @@ func (c *Client) addOperationModifyUserMiddlewares(stack *middleware.Stack, opti
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -146,6 +152,9 @@ func (c *Client) addOperationModifyUserMiddlewares(stack *middleware.Stack, opti
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpModifyUserValidationMiddleware(stack); err != nil {
@@ -167,6 +176,18 @@ func (c *Client) addOperationModifyUserMiddlewares(stack *middleware.Stack, opti
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

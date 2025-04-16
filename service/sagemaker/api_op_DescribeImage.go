@@ -13,11 +13,10 @@ import (
 	smithytime "github.com/aws/smithy-go/time"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	smithywaiter "github.com/aws/smithy-go/waiter"
-	jmespath "github.com/jmespath/go-jmespath"
 	"time"
 )
 
-// Describes a SageMaker image.
+// Describes a SageMaker AI image.
 func (c *Client) DescribeImage(ctx context.Context, params *DescribeImageInput, optFns ...func(*Options)) (*DescribeImageOutput, error) {
 	if params == nil {
 		params = &DescribeImageInput{}
@@ -69,8 +68,8 @@ type DescribeImageOutput struct {
 	// When the image was last modified.
 	LastModifiedTime *time.Time
 
-	// The ARN of the IAM role that enables Amazon SageMaker to perform tasks on your
-	// behalf.
+	// The ARN of the IAM role that enables Amazon SageMaker AI to perform tasks on
+	// your behalf.
 	RoleArn *string
 
 	// Metadata pertaining to the operation's result.
@@ -122,6 +121,9 @@ func (c *Client) addOperationDescribeImageMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -138,6 +140,9 @@ func (c *Client) addOperationDescribeImageMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeImageValidationMiddleware(stack); err != nil {
@@ -159,6 +164,18 @@ func (c *Client) addOperationDescribeImageMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -323,35 +340,21 @@ func (w *ImageCreatedWaiter) WaitForOutput(ctx context.Context, params *Describe
 func imageCreatedStateRetryable(ctx context.Context, input *DescribeImageInput, output *DescribeImageOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("ImageStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.ImageStatus
 		expectedValue := "CREATED"
-		value, ok := pathValue.(types.ImageStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.ImageStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, nil
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("ImageStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.ImageStatus
 		expectedValue := "CREATE_FAILED"
-		value, ok := pathValue.(types.ImageStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.ImageStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
@@ -368,6 +371,9 @@ func imageCreatedStateRetryable(ctx context.Context, input *DescribeImageInput, 
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 
@@ -542,18 +548,11 @@ func imageDeletedStateRetryable(ctx context.Context, input *DescribeImageInput, 
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("ImageStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.ImageStatus
 		expectedValue := "DELETE_FAILED"
-		value, ok := pathValue.(types.ImageStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.ImageStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
@@ -570,6 +569,9 @@ func imageDeletedStateRetryable(ctx context.Context, input *DescribeImageInput, 
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 
@@ -732,35 +734,21 @@ func (w *ImageUpdatedWaiter) WaitForOutput(ctx context.Context, params *Describe
 func imageUpdatedStateRetryable(ctx context.Context, input *DescribeImageInput, output *DescribeImageOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("ImageStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.ImageStatus
 		expectedValue := "CREATED"
-		value, ok := pathValue.(types.ImageStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.ImageStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, nil
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("ImageStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.ImageStatus
 		expectedValue := "UPDATE_FAILED"
-		value, ok := pathValue.(types.ImageStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.ImageStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
@@ -777,6 +765,9 @@ func imageUpdatedStateRetryable(ctx context.Context, input *DescribeImageInput, 
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 

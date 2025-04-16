@@ -91,6 +91,9 @@ type GetEnvironmentOutput struct {
 	// The blueprint with which the environment is created.
 	EnvironmentBlueprintId *string
 
+	// The configuration ID that is used to create the environment.
+	EnvironmentConfigurationId *string
+
 	// The ID of the environment profile with which the environment is created.
 	EnvironmentProfileId *string
 
@@ -167,6 +170,9 @@ func (c *Client) addOperationGetEnvironmentMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -183,6 +189,9 @@ func (c *Client) addOperationGetEnvironmentMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetEnvironmentValidationMiddleware(stack); err != nil {
@@ -204,6 +213,18 @@ func (c *Client) addOperationGetEnvironmentMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

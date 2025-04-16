@@ -108,6 +108,9 @@ func ExampleIngressBooleanToEvaluate_outputUsage() {
 	case *types.IngressBooleanToEvaluateMemberAnalysis:
 		_ = v.Value // Value is types.IngressAnalysis
 
+	case *types.IngressBooleanToEvaluateMemberIsInAddressList:
+		_ = v.Value // Value is types.IngressIsInAddressList
+
 	case *types.UnknownUnionMember:
 		fmt.Println("unknown tag:", v.Tag)
 
@@ -118,6 +121,7 @@ func ExampleIngressBooleanToEvaluate_outputUsage() {
 }
 
 var _ *types.IngressAnalysis
+var _ *types.IngressIsInAddressList
 
 func ExampleIngressIpToEvaluate_outputUsage() {
 	var union types.IngressIpToEvaluate
@@ -136,6 +140,24 @@ func ExampleIngressIpToEvaluate_outputUsage() {
 }
 
 var _ types.IngressIpv4Attribute
+
+func ExampleIngressIpv6ToEvaluate_outputUsage() {
+	var union types.IngressIpv6ToEvaluate
+	// type switches can be used to check the union value
+	switch v := union.(type) {
+	case *types.IngressIpv6ToEvaluateMemberAttribute:
+		_ = v.Value // Value is types.IngressIpv6Attribute
+
+	case *types.UnknownUnionMember:
+		fmt.Println("unknown tag:", v.Tag)
+
+	default:
+		fmt.Println("union is nil or unknown type")
+
+	}
+}
+
+var _ types.IngressIpv6Attribute
 
 func ExampleIngressPointConfiguration_outputUsage() {
 	var union types.IngressPointConfiguration
@@ -163,6 +185,9 @@ func ExampleIngressStringToEvaluate_outputUsage() {
 	var union types.IngressStringToEvaluate
 	// type switches can be used to check the union value
 	switch v := union.(type) {
+	case *types.IngressStringToEvaluateMemberAnalysis:
+		_ = v.Value // Value is types.IngressAnalysis
+
 	case *types.IngressStringToEvaluateMemberAttribute:
 		_ = v.Value // Value is types.IngressStringEmailAttribute
 
@@ -176,6 +201,7 @@ func ExampleIngressStringToEvaluate_outputUsage() {
 }
 
 var _ types.IngressStringEmailAttribute
+var _ *types.IngressAnalysis
 
 func ExampleIngressTlsProtocolToEvaluate_outputUsage() {
 	var union types.IngressTlsProtocolToEvaluate
@@ -195,6 +221,28 @@ func ExampleIngressTlsProtocolToEvaluate_outputUsage() {
 
 var _ types.IngressTlsAttribute
 
+func ExampleNetworkConfiguration_outputUsage() {
+	var union types.NetworkConfiguration
+	// type switches can be used to check the union value
+	switch v := union.(type) {
+	case *types.NetworkConfigurationMemberPrivateNetworkConfiguration:
+		_ = v.Value // Value is types.PrivateNetworkConfiguration
+
+	case *types.NetworkConfigurationMemberPublicNetworkConfiguration:
+		_ = v.Value // Value is types.PublicNetworkConfiguration
+
+	case *types.UnknownUnionMember:
+		fmt.Println("unknown tag:", v.Tag)
+
+	default:
+		fmt.Println("union is nil or unknown type")
+
+	}
+}
+
+var _ *types.PublicNetworkConfiguration
+var _ *types.PrivateNetworkConfiguration
+
 func ExamplePolicyCondition_outputUsage() {
 	var union types.PolicyCondition
 	// type switches can be used to check the union value
@@ -204,6 +252,9 @@ func ExamplePolicyCondition_outputUsage() {
 
 	case *types.PolicyConditionMemberIpExpression:
 		_ = v.Value // Value is types.IngressIpv4Expression
+
+	case *types.PolicyConditionMemberIpv6Expression:
+		_ = v.Value // Value is types.IngressIpv6Expression
 
 	case *types.PolicyConditionMemberStringExpression:
 		_ = v.Value // Value is types.IngressStringExpression
@@ -221,6 +272,7 @@ func ExamplePolicyCondition_outputUsage() {
 }
 
 var _ *types.IngressStringExpression
+var _ *types.IngressIpv6Expression
 var _ *types.IngressBooleanExpression
 var _ *types.IngressTlsProtocolExpression
 var _ *types.IngressIpv4Expression
@@ -260,6 +312,9 @@ func ExampleRuleAction_outputUsage() {
 	case *types.RuleActionMemberDeliverToMailbox:
 		_ = v.Value // Value is types.DeliverToMailboxAction
 
+	case *types.RuleActionMemberDeliverToQBusiness:
+		_ = v.Value // Value is types.DeliverToQBusinessAction
+
 	case *types.RuleActionMemberDrop:
 		_ = v.Value // Value is types.DropAction
 
@@ -290,6 +345,7 @@ var _ *types.ArchiveAction
 var _ *types.DeliverToMailboxAction
 var _ *types.DropAction
 var _ *types.RelayAction
+var _ *types.DeliverToQBusinessAction
 var _ *types.ReplaceRecipientAction
 var _ *types.S3Action
 
@@ -297,8 +353,14 @@ func ExampleRuleBooleanToEvaluate_outputUsage() {
 	var union types.RuleBooleanToEvaluate
 	// type switches can be used to check the union value
 	switch v := union.(type) {
+	case *types.RuleBooleanToEvaluateMemberAnalysis:
+		_ = v.Value // Value is types.Analysis
+
 	case *types.RuleBooleanToEvaluateMemberAttribute:
 		_ = v.Value // Value is types.RuleBooleanEmailAttribute
+
+	case *types.RuleBooleanToEvaluateMemberIsInAddressList:
+		_ = v.Value // Value is types.RuleIsInAddressList
 
 	case *types.UnknownUnionMember:
 		fmt.Println("unknown tag:", v.Tag)
@@ -309,7 +371,9 @@ func ExampleRuleBooleanToEvaluate_outputUsage() {
 	}
 }
 
+var _ *types.Analysis
 var _ types.RuleBooleanEmailAttribute
+var _ *types.RuleIsInAddressList
 
 func ExampleRuleCondition_outputUsage() {
 	var union types.RuleCondition
@@ -389,8 +453,14 @@ func ExampleRuleStringToEvaluate_outputUsage() {
 	var union types.RuleStringToEvaluate
 	// type switches can be used to check the union value
 	switch v := union.(type) {
+	case *types.RuleStringToEvaluateMemberAnalysis:
+		_ = v.Value // Value is types.Analysis
+
 	case *types.RuleStringToEvaluateMemberAttribute:
 		_ = v.Value // Value is types.RuleStringEmailAttribute
+
+	case *types.RuleStringToEvaluateMemberMimeHeaderAttribute:
+		_ = v.Value // Value is string
 
 	case *types.UnknownUnionMember:
 		fmt.Println("unknown tag:", v.Tag)
@@ -402,6 +472,8 @@ func ExampleRuleStringToEvaluate_outputUsage() {
 }
 
 var _ types.RuleStringEmailAttribute
+var _ *string
+var _ *types.Analysis
 
 func ExampleRuleVerdictToEvaluate_outputUsage() {
 	var union types.RuleVerdictToEvaluate

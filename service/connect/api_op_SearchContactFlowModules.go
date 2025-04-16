@@ -43,7 +43,7 @@ type SearchContactFlowModulesInput struct {
 	// response in the next request to retrieve the next set of results.
 	NextToken *string
 
-	// The search criteria to be used to return contact flow modules.
+	// The search criteria to be used to return flow modules.
 	//
 	// The name and description fields support "contains" queries with a minimum of 2
 	// characters and a maximum of 25 characters. Any queries with character lengths
@@ -58,10 +58,10 @@ type SearchContactFlowModulesInput struct {
 
 type SearchContactFlowModulesOutput struct {
 
-	// The total number of contact flows which matched your search query.
+	// The total number of flows which matched your search query.
 	ApproximateTotalCount *int64
 
-	// The search criteria to be used to return contact flow modules.
+	// The search criteria to be used to return flow modules.
 	ContactFlowModules []types.ContactFlowModule
 
 	// If there are additional results, this is the token for the next set of results.
@@ -116,6 +116,9 @@ func (c *Client) addOperationSearchContactFlowModulesMiddlewares(stack *middlewa
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -132,6 +135,9 @@ func (c *Client) addOperationSearchContactFlowModulesMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpSearchContactFlowModulesValidationMiddleware(stack); err != nil {
@@ -153,6 +159,18 @@ func (c *Client) addOperationSearchContactFlowModulesMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

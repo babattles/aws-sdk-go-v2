@@ -96,6 +96,8 @@ type UpdateSiteRackPhysicalPropertiesInput struct {
 	//   - AH530P7W (red) – 3P+N+E, 7hr; 30A; three phase
 	//
 	//   - AH532P6W (red) – 3P+N+E, 6hr; 32A; three phase
+	//
+	//   - CS8365C – (common in US); 3P+E, 50A; three phase
 	PowerConnector types.PowerConnector
 
 	// The power draw, in kVA, available at the hardware placement position for the
@@ -185,6 +187,9 @@ func (c *Client) addOperationUpdateSiteRackPhysicalPropertiesMiddlewares(stack *
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -201,6 +206,9 @@ func (c *Client) addOperationUpdateSiteRackPhysicalPropertiesMiddlewares(stack *
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateSiteRackPhysicalPropertiesValidationMiddleware(stack); err != nil {
@@ -222,6 +230,18 @@ func (c *Client) addOperationUpdateSiteRackPhysicalPropertiesMiddlewares(stack *
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

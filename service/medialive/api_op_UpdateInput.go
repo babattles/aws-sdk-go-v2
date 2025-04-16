@@ -51,12 +51,19 @@ type UpdateInputInput struct {
 	// issues.
 	MediaConnectFlows []types.MediaConnectFlowRequest
 
+	// Multicast Input settings.
+	MulticastSettings *types.MulticastSettingsUpdateRequest
+
 	// Name of the input.
 	Name *string
 
 	// The Amazon Resource Name (ARN) of the role this input assumes during and after
 	// creation.
 	RoleArn *string
+
+	// Include this parameter if the input is a SMPTE 2110 input, to identify the
+	// stream sources for this input.
+	Smpte2110ReceiverGroupSettings *types.Smpte2110ReceiverGroupSettings
 
 	// The source URLs for a PULL-type input. Every PULL type input needs exactly two
 	// source URLs for redundancy. Only specify sources for PULL type Inputs. Leave
@@ -124,6 +131,9 @@ func (c *Client) addOperationUpdateInputMiddlewares(stack *middleware.Stack, opt
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -140,6 +150,9 @@ func (c *Client) addOperationUpdateInputMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateInputValidationMiddleware(stack); err != nil {
@@ -161,6 +174,18 @@ func (c *Client) addOperationUpdateInputMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

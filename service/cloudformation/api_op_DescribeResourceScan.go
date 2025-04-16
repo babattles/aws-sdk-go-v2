@@ -68,18 +68,29 @@ type DescribeResourceScanOutput struct {
 	// a Status set to COMPLETE , EXPIRED , or FAILED .
 	ResourcesScanned *int32
 
+	// The scan filters that were used.
+	ScanFilters []types.ScanFilter
+
 	// The time that the resource scan was started.
 	StartTime *time.Time
 
 	// Status of the resource scan.
 	//
-	// INPROGRESS The resource scan is still in progress.
+	// IN_PROGRESS
 	//
-	// COMPLETE The resource scan is complete.
+	// The resource scan is still in progress.
 	//
-	// EXPIRED The resource scan has expired.
+	// COMPLETE
 	//
-	// FAILED The resource scan has failed.
+	// The resource scan is complete.
+	//
+	// EXPIRED
+	//
+	// The resource scan has expired.
+	//
+	// FAILED
+	//
+	// The resource scan has failed.
 	Status types.ResourceScanStatus
 
 	// The reason for the resource scan status, providing more information if a
@@ -135,6 +146,9 @@ func (c *Client) addOperationDescribeResourceScanMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -151,6 +165,9 @@ func (c *Client) addOperationDescribeResourceScanMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeResourceScanValidationMiddleware(stack); err != nil {
@@ -172,6 +189,18 @@ func (c *Client) addOperationDescribeResourceScanMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

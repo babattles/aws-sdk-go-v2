@@ -75,10 +75,15 @@ type GetSessionActionOutput struct {
 	// This member is required.
 	Status types.SessionActionStatus
 
+	// The limits and their amounts acquired during a session action. If no limits
+	// were acquired during the session, this field isn't returned.
+	AcquiredLimits []types.AcquiredLimit
+
 	// The date and time the resource ended running.
 	EndedAt *time.Time
 
-	// The exit code to exit the session.
+	// The process exit code. The default Deadline Cloud worker agent converts
+	// unsigned 32-bit exit codes to signed 32-bit exit codes.
 	ProcessExitCode *int32
 
 	// The message that communicates the progress of the session action.
@@ -142,6 +147,9 @@ func (c *Client) addOperationGetSessionActionMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -158,6 +166,9 @@ func (c *Client) addOperationGetSessionActionMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addEndpointPrefix_opGetSessionActionMiddleware(stack); err != nil {
@@ -182,6 +193,18 @@ func (c *Client) addOperationGetSessionActionMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

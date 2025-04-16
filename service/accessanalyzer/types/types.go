@@ -16,7 +16,9 @@ type Access struct {
 	Actions []string
 
 	// A list of resources for the access permissions. Any strings that can be used as
-	// a resource in an IAM policy can be used in the list of resources to check.
+	// an Amazon Resource Name (ARN) in an IAM policy can be used in the list of
+	// resources to check. You can only use a wildcard in the portion of the ARN that
+	// specifies the resource ID.
 	Resources []string
 
 	noSmithyDocumentSerde
@@ -147,6 +149,10 @@ type AccessPreviewFinding struct {
 	// associated with the access preview.
 	Resource *string
 
+	// The type of restriction applied to the finding by the resource owner with an
+	// Organizations resource control policy (RCP).
+	ResourceControlPolicyRestriction ResourceControlPolicyRestriction
+
 	// The sources of the finding. This indicates how the access that generated the
 	// finding is granted. It is populated for Amazon S3 bucket findings.
 	Sources []FindingSource
@@ -238,6 +244,43 @@ type AclGranteeMemberUri struct {
 
 func (*AclGranteeMemberUri) isAclGrantee() {}
 
+// Contains information about analysis rules for the analyzer. Analysis rules
+// determine which entities will generate findings based on the criteria you define
+// when you create the rule.
+type AnalysisRule struct {
+
+	// A list of rules for the analyzer containing criteria to exclude from analysis.
+	// Entities that meet the rule criteria will not generate findings.
+	Exclusions []AnalysisRuleCriteria
+
+	noSmithyDocumentSerde
+}
+
+// The criteria for an analysis rule for an analyzer. The criteria determine which
+// entities will generate findings.
+type AnalysisRuleCriteria struct {
+
+	// A list of Amazon Web Services account IDs to apply to the analysis rule
+	// criteria. The accounts cannot include the organization analyzer owner account.
+	// Account IDs can only be applied to the analysis rule criteria for
+	// organization-level analyzers. The list cannot include more than 2,000 account
+	// IDs.
+	AccountIds []string
+
+	// An array of key-value pairs to match for your resources. You can use the set of
+	// Unicode letters, digits, whitespace, _ , . , / , = , + , and - .
+	//
+	// For the tag key, you can specify a value that is 1 to 128 characters in length
+	// and cannot be prefixed with aws: .
+	//
+	// For the tag value, you can specify a value that is 0 to 256 characters in
+	// length. If the specified tag value is 0 characters, the rule is applied to all
+	// principals with the specified tag key.
+	ResourceTags []map[string]string
+
+	noSmithyDocumentSerde
+}
+
 // Contains details about the analyzed resource.
 type AnalyzedResource struct {
 
@@ -315,8 +358,8 @@ type AnalyzedResourceSummary struct {
 	noSmithyDocumentSerde
 }
 
-// Contains information about the configuration of an unused access analyzer for
-// an Amazon Web Services organization or account.
+// Contains information about the configuration of an analyzer for an Amazon Web
+// Services organization or account.
 //
 // The following types satisfy this interface:
 //
@@ -326,8 +369,7 @@ type AnalyzerConfiguration interface {
 }
 
 // Specifies the configuration of an unused access analyzer for an Amazon Web
-// Services organization or account. External access analyzers do not support any
-// configuration.
+// Services organization or account.
 type AnalyzerConfigurationMemberUnusedAccess struct {
 	Value UnusedAccessConfiguration
 
@@ -392,7 +434,8 @@ type AnalyzerSummary struct {
 	noSmithyDocumentSerde
 }
 
-// Contains information about an archive rule.
+// Contains information about an archive rule. Archive rules automatically archive
+// new findings that meet the criteria you define when you create the rule.
 type ArchiveRuleSummary struct {
 
 	// The time at which the archive rule was created.
@@ -820,9 +863,33 @@ type ExternalAccessDetails struct {
 	// The external principal that has access to a resource within the zone of trust.
 	Principal map[string]string
 
+	// The type of restriction applied to the finding by the resource owner with an
+	// Organizations resource control policy (RCP).
+	ResourceControlPolicyRestriction ResourceControlPolicyRestriction
+
 	// The sources of the external access finding. This indicates how the access that
 	// generated the finding is granted. It is populated for Amazon S3 bucket findings.
 	Sources []FindingSource
+
+	noSmithyDocumentSerde
+}
+
+// Provides aggregate statistics about the findings for the specified external
+// access analyzer.
+type ExternalAccessFindingsStatistics struct {
+
+	// The total number of active cross-account and public findings for each resource
+	// type of the specified external access analyzer.
+	ResourceTypeStatistics map[string]ResourceTypeDetails
+
+	// The number of active findings for the specified external access analyzer.
+	TotalActiveFindings *int32
+
+	// The number of archived findings for the specified external access analyzer.
+	TotalArchivedFindings *int32
+
+	// The number of resolved findings for the specified external access analyzer.
+	TotalResolvedFindings *int32
 
 	noSmithyDocumentSerde
 }
@@ -887,9 +954,32 @@ type Finding struct {
 	// The resource that an external principal has access to.
 	Resource *string
 
+	// The type of restriction applied to the finding by the resource owner with an
+	// Organizations resource control policy (RCP).
+	ResourceControlPolicyRestriction ResourceControlPolicyRestriction
+
 	// The sources of the finding. This indicates how the access that generated the
 	// finding is granted. It is populated for Amazon S3 bucket findings.
 	Sources []FindingSource
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about the findings for an Amazon Web Services account in
+// an organization unused access analyzer.
+type FindingAggregationAccountDetails struct {
+
+	// The ID of the Amazon Web Services account for which unused access finding
+	// details are provided.
+	Account *string
+
+	// Provides the number of active findings for each type of unused access for the
+	// specified Amazon Web Services account.
+	Details map[string]int32
+
+	// The number of active unused access findings for the specified Amazon Web
+	// Services account.
+	NumberOfActiveFindings *int32
 
 	noSmithyDocumentSerde
 }
@@ -987,6 +1077,35 @@ type FindingSourceDetail struct {
 	noSmithyDocumentSerde
 }
 
+// Contains information about the aggregate statistics for an external or unused
+// access analyzer. Only one parameter can be used in a FindingsStatistics object.
+//
+// The following types satisfy this interface:
+//
+//	FindingsStatisticsMemberExternalAccessFindingsStatistics
+//	FindingsStatisticsMemberUnusedAccessFindingsStatistics
+type FindingsStatistics interface {
+	isFindingsStatistics()
+}
+
+// The aggregate statistics for an external access analyzer.
+type FindingsStatisticsMemberExternalAccessFindingsStatistics struct {
+	Value ExternalAccessFindingsStatistics
+
+	noSmithyDocumentSerde
+}
+
+func (*FindingsStatisticsMemberExternalAccessFindingsStatistics) isFindingsStatistics() {}
+
+// The aggregate statistics for an unused access analyzer.
+type FindingsStatisticsMemberUnusedAccessFindingsStatistics struct {
+	Value UnusedAccessFindingsStatistics
+
+	noSmithyDocumentSerde
+}
+
+func (*FindingsStatisticsMemberUnusedAccessFindingsStatistics) isFindingsStatistics() {}
+
 // Contains information about a finding.
 type FindingSummary struct {
 
@@ -1047,6 +1166,10 @@ type FindingSummary struct {
 
 	// The resource that the external principal has access to.
 	Resource *string
+
+	// The type of restriction applied to the finding by the resource owner with an
+	// Organizations resource control policy (RCP).
+	ResourceControlPolicyRestriction ResourceControlPolicyRestriction
 
 	// The sources of the finding. This indicates how the access that generated the
 	// finding is granted. It is populated for Amazon S3 bucket findings.
@@ -1680,6 +1803,19 @@ type RecommendedStepMemberUnusedPermissionsRecommendedStep struct {
 
 func (*RecommendedStepMemberUnusedPermissionsRecommendedStep) isRecommendedStep() {}
 
+// Contains information about the total number of active cross-account and public
+// findings for a resource type of an external access analyzer.
+type ResourceTypeDetails struct {
+
+	// The total number of active cross-account findings for the resource type.
+	TotalActiveCrossAccount *int32
+
+	// The total number of active public findings for the resource type.
+	TotalActivePublic *int32
+
+	noSmithyDocumentSerde
+}
+
 // The configuration for an Amazon S3 access point or multi-region access point
 // for the bucket. You can propose up to 10 access points or multi-region access
 // points per bucket. If the proposed Amazon S3 access point configuration is for
@@ -1981,12 +2117,54 @@ type TrailProperties struct {
 // Contains information about an unused access analyzer.
 type UnusedAccessConfiguration struct {
 
+	// Contains information about analysis rules for the analyzer. Analysis rules
+	// determine which entities will generate findings based on the criteria you define
+	// when you create the rule.
+	AnalysisRule *AnalysisRule
+
 	// The specified access age in days for which to generate findings for unused
 	// access. For example, if you specify 90 days, the analyzer will generate findings
 	// for IAM entities within the accounts of the selected organization for any access
 	// that hasn't been used in 90 or more days since the analyzer's last scan. You can
-	// choose a value between 1 and 180 days.
+	// choose a value between 1 and 365 days.
 	UnusedAccessAge *int32
+
+	noSmithyDocumentSerde
+}
+
+// Provides aggregate statistics about the findings for the specified unused
+// access analyzer.
+type UnusedAccessFindingsStatistics struct {
+
+	// A list of one to ten Amazon Web Services accounts that have the most active
+	// findings for the unused access analyzer.
+	TopAccounts []FindingAggregationAccountDetails
+
+	// The total number of active findings for the unused access analyzer.
+	TotalActiveFindings *int32
+
+	// The total number of archived findings for the unused access analyzer.
+	TotalArchivedFindings *int32
+
+	// The total number of resolved findings for the unused access analyzer.
+	TotalResolvedFindings *int32
+
+	// A list of details about the total number of findings for each type of unused
+	// access for the analyzer.
+	UnusedAccessTypeStatistics []UnusedAccessTypeStatistics
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about the total number of findings for a type of unused
+// access.
+type UnusedAccessTypeStatistics struct {
+
+	// The total number of findings for the specified unused access type.
+	Total *int32
+
+	// The type of unused access.
+	UnusedAccessType *string
 
 	noSmithyDocumentSerde
 }
@@ -2193,6 +2371,7 @@ func (*UnknownUnionMember) isAclGrantee()                         {}
 func (*UnknownUnionMember) isAnalyzerConfiguration()              {}
 func (*UnknownUnionMember) isConfiguration()                      {}
 func (*UnknownUnionMember) isFindingDetails()                     {}
+func (*UnknownUnionMember) isFindingsStatistics()                 {}
 func (*UnknownUnionMember) isNetworkOriginConfiguration()         {}
 func (*UnknownUnionMember) isPathElement()                        {}
 func (*UnknownUnionMember) isRdsDbClusterSnapshotAttributeValue() {}

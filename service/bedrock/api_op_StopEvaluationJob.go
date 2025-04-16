@@ -10,7 +10,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Stops an in progress model evaluation job.
+// Stops an evaluation job that is current being created or running.
 func (c *Client) StopEvaluationJob(ctx context.Context, params *StopEvaluationJobInput, optFns ...func(*Options)) (*StopEvaluationJobOutput, error) {
 	if params == nil {
 		params = &StopEvaluationJobInput{}
@@ -28,7 +28,7 @@ func (c *Client) StopEvaluationJob(ctx context.Context, params *StopEvaluationJo
 
 type StopEvaluationJobInput struct {
 
-	// The ARN of the model evaluation job you want to stop.
+	// The Amazon Resource Name (ARN) of the evaluation job you want to stop.
 	//
 	// This member is required.
 	JobIdentifier *string
@@ -86,6 +86,9 @@ func (c *Client) addOperationStopEvaluationJobMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -102,6 +105,9 @@ func (c *Client) addOperationStopEvaluationJobMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpStopEvaluationJobValidationMiddleware(stack); err != nil {
@@ -123,6 +129,18 @@ func (c *Client) addOperationStopEvaluationJobMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

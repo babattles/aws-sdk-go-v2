@@ -28,7 +28,7 @@ func (c *Client) UpdateAccessLogSubscription(ctx context.Context, params *Update
 
 type UpdateAccessLogSubscriptionInput struct {
 
-	// The ID or Amazon Resource Name (ARN) of the access log subscription.
+	// The ID or ARN of the access log subscription.
 	//
 	// This member is required.
 	AccessLogSubscriptionIdentifier *string
@@ -117,6 +117,9 @@ func (c *Client) addOperationUpdateAccessLogSubscriptionMiddlewares(stack *middl
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -133,6 +136,9 @@ func (c *Client) addOperationUpdateAccessLogSubscriptionMiddlewares(stack *middl
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateAccessLogSubscriptionValidationMiddleware(stack); err != nil {
@@ -154,6 +160,18 @@ func (c *Client) addOperationUpdateAccessLogSubscriptionMiddlewares(stack *middl
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -33,12 +33,22 @@ type CreateChannelInput struct {
 	// false .
 	Authorized bool
 
+	// Indicates which content-packaging format is used (MPEG-TS or fMP4). If
+	// multitrackInputConfiguration is specified and enabled is true , then
+	// containerFormat is required and must be set to FRAGMENTED_MP4 . Otherwise,
+	// containerFormat may be set to TS or FRAGMENTED_MP4 . Default: TS .
+	ContainerFormat types.ContainerFormat
+
 	// Whether the channel allows insecure RTMP and SRT ingest. Default: false .
 	InsecureIngest bool
 
 	// Channel latency mode. Use NORMAL to broadcast and deliver live video up to Full
 	// HD. Use LOW for near-real-time interaction with viewers. Default: LOW .
 	LatencyMode types.ChannelLatencyMode
+
+	// Object specifying multitrack input configuration. Default: no multitrack input
+	// configuration is specified.
+	MultitrackInputConfiguration *types.MultitrackInputConfiguration
 
 	// Channel name.
 	Name *string
@@ -58,12 +68,12 @@ type CreateChannelInput struct {
 	// enables recording. Default: "" (empty string, recording is disabled).
 	RecordingConfigurationArn *string
 
-	// Array of 1-50 maps, each of the form string:string (key:value) . See [Tagging Amazon Web Services Resources] for more
-	// information, including restrictions that apply to tags and "Tag naming limits
-	// and requirements"; Amazon IVS has no service-specific constraints beyond what is
-	// documented there.
+	// Array of 1-50 maps, each of the form string:string (key:value) . See [Best practices and strategies] in
+	// Tagging Amazon Web Services Resources and Tag Editor for details, including
+	// restrictions that apply to tags and "Tag naming limits and requirements"; Amazon
+	// IVS has no service-specific constraints beyond what is documented there.
 	//
-	// [Tagging Amazon Web Services Resources]: https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html
+	// [Best practices and strategies]: https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html
 	Tags map[string]string
 
 	// Channel type, which determines the allowable resolution and bitrate. If you
@@ -133,6 +143,9 @@ func (c *Client) addOperationCreateChannelMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -151,6 +164,9 @@ func (c *Client) addOperationCreateChannelMiddlewares(stack *middleware.Stack, o
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateChannel(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -167,6 +183,18 @@ func (c *Client) addOperationCreateChannelMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

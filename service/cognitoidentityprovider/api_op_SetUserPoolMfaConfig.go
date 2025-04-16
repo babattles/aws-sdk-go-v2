@@ -11,7 +11,9 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Sets the user pool multi-factor authentication (MFA) configuration.
+// Sets user pool multi-factor authentication (MFA) and passkey configuration. For
+// more information about user pool MFA, see [Adding MFA]. For more information about WebAuthn
+// passkeys see [Authentication flows].
 //
 // This action might generate an SMS text message. Starting June 1, 2021, US
 // telecom carriers require you to register an origination phone number before you
@@ -29,7 +31,9 @@ import (
 // Cognito Developer Guide.
 //
 // [SMS message settings for Amazon Cognito user pools]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-sms-settings.html
+// [Adding MFA]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-mfa.html
 // [sandbox mode]: https://docs.aws.amazon.com/sns/latest/dg/sns-sms-sandbox.html
+// [Authentication flows]: https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-authentication-flow-methods.html#amazon-cognito-user-pools-authentication-flow-methods-passkey
 // [Amazon Pinpoint]: https://console.aws.amazon.com/pinpoint/home/
 func (c *Client) SetUserPoolMfaConfig(ctx context.Context, params *SetUserPoolMfaConfigInput, optFns ...func(*Options)) (*SetUserPoolMfaConfigOutput, error) {
 	if params == nil {
@@ -53,46 +57,77 @@ type SetUserPoolMfaConfigInput struct {
 	// This member is required.
 	UserPoolId *string
 
-	// The MFA configuration. If you set the MfaConfiguration value to ‘ON’, only
-	// users who have set up an MFA factor can sign in. To learn more, see [Adding Multi-Factor Authentication (MFA) to a user pool]. Valid
-	// values include:
+	// Sets configuration for user pool email message MFA and sign-in with one-time
+	// passwords (OTPs). Includes the subject and body of the email message template
+	// for sign-in and MFA messages. To activate this setting, your user pool must be
+	// in the [Essentials tier]or higher.
 	//
-	//   - OFF MFA won't be used for any users.
+	// [Essentials tier]: https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-essentials.html
+	EmailMfaConfiguration *types.EmailMfaConfigType
+
+	// Sets multi-factor authentication (MFA) to be on, off, or optional. When ON , all
+	// users must set up MFA before they can sign in. When OPTIONAL , your application
+	// must make a client-side determination of whether a user wants to register an MFA
+	// device. For user pools with adaptive authentication with threat protection,
+	// choose OPTIONAL .
 	//
-	//   - ON MFA is required for all users to sign in.
-	//
-	//   - OPTIONAL MFA will be required only for individual users who have an MFA
-	//   factor activated.
-	//
-	// [Adding Multi-Factor Authentication (MFA) to a user pool]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-mfa.html
+	// When MfaConfiguration is OPTIONAL , managed login doesn't automatically prompt
+	// users to set up MFA. Amazon Cognito generates MFA prompts in API responses and
+	// in managed login for users who have chosen and configured a preferred MFA
+	// factor.
 	MfaConfiguration types.UserPoolMfaType
 
-	// The SMS text message MFA configuration.
+	// Configures user pool SMS messages for MFA. Sets the message template and the
+	// SMS message sending configuration for Amazon SNS.
 	SmsMfaConfiguration *types.SmsMfaConfigType
 
-	// The software token MFA configuration.
+	// Configures a user pool for time-based one-time password (TOTP) MFA. Enables or
+	// disables TOTP.
 	SoftwareTokenMfaConfiguration *types.SoftwareTokenMfaConfigType
+
+	// The configuration of your user pool for passkey, or WebAuthn, authentication
+	// and registration. You can set this configuration independent of the MFA
+	// configuration options in this operation.
+	WebAuthnConfiguration *types.WebAuthnConfigurationType
 
 	noSmithyDocumentSerde
 }
 
 type SetUserPoolMfaConfigOutput struct {
 
-	// The MFA configuration. Valid values include:
+	// Shows configuration for user pool email message MFA and sign-in with one-time
+	// passwords (OTPs). Includes the subject and body of the email message template
+	// for sign-in and MFA messages. To activate this setting, your user pool must be
+	// in the [Essentials tier]or higher.
 	//
-	//   - OFF MFA won't be used for any users.
+	// [Essentials tier]: https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-essentials.html
+	EmailMfaConfiguration *types.EmailMfaConfigType
+
+	// Displays multi-factor authentication (MFA) as on, off, or optional. When ON ,
+	// all users must set up MFA before they can sign in. When OPTIONAL , your
+	// application must make a client-side determination of whether a user wants to
+	// register an MFA device. For user pools with adaptive authentication with threat
+	// protection, choose OPTIONAL .
 	//
-	//   - ON MFA is required for all users to sign in.
-	//
-	//   - OPTIONAL MFA will be required only for individual users who have an MFA
-	//   factor enabled.
+	// When MfaConfiguration is OPTIONAL , managed login doesn't automatically prompt
+	// users to set up MFA. Amazon Cognito generates MFA prompts in API responses and
+	// in managed login for users who have chosen and configured a preferred MFA
+	// factor.
 	MfaConfiguration types.UserPoolMfaType
 
-	// The SMS text message MFA configuration.
+	// Shows user pool SMS message configuration for MFA and sign-in with SMS-message
+	// OTPs. Includes the message template and the SMS message sending configuration
+	// for Amazon SNS.
 	SmsMfaConfiguration *types.SmsMfaConfigType
 
-	// The software token MFA configuration.
+	// Shows user pool configuration for time-based one-time password (TOTP) MFA.
+	// Includes TOTP enabled or disabled state.
 	SoftwareTokenMfaConfiguration *types.SoftwareTokenMfaConfigType
+
+	// The configuration of your user pool for passkey, or WebAuthn, sign-in with
+	// authenticators like biometric and security-key devices. Includes relying-party
+	// configuration and settings for user-verification requirements.
+	WebAuthnConfiguration *types.WebAuthnConfigurationType
 
 	// Metadata pertaining to the operation's result.
 	ResultMetadata middleware.Metadata
@@ -143,6 +178,9 @@ func (c *Client) addOperationSetUserPoolMfaConfigMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -159,6 +197,9 @@ func (c *Client) addOperationSetUserPoolMfaConfigMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpSetUserPoolMfaConfigValidationMiddleware(stack); err != nil {
@@ -180,6 +221,18 @@ func (c *Client) addOperationSetUserPoolMfaConfigMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

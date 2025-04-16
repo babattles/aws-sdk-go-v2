@@ -10,8 +10,9 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Disconnects a specified participant and revokes the participant permanently
-// from a specified stage.
+// Disconnects a specified participant from a specified stage. If the participant
+// is publishing using an IngestConfiguration, DisconnectParticipant also updates the stageArn in the
+// IngestConfiguration to be an empty string.
 func (c *Client) DisconnectParticipant(ctx context.Context, params *DisconnectParticipantInput, optFns ...func(*Options)) (*DisconnectParticipantOutput, error) {
 	if params == nil {
 		params = &DisconnectParticipantInput{}
@@ -29,8 +30,9 @@ func (c *Client) DisconnectParticipant(ctx context.Context, params *DisconnectPa
 
 type DisconnectParticipantInput struct {
 
-	// Identifier of the participant to be disconnected. This is assigned by IVS and
-	// returned by CreateParticipantToken.
+	// Identifier of the participant to be disconnected. IVS assigns this; it is
+	// returned by CreateParticipantToken(for streams using WebRTC ingest) or CreateIngestConfiguration (for streams using RTMP
+	// ingest).
 	//
 	// This member is required.
 	ParticipantId *string
@@ -96,6 +98,9 @@ func (c *Client) addOperationDisconnectParticipantMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -112,6 +117,9 @@ func (c *Client) addOperationDisconnectParticipantMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDisconnectParticipantValidationMiddleware(stack); err != nil {
@@ -133,6 +141,18 @@ func (c *Client) addOperationDisconnectParticipantMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

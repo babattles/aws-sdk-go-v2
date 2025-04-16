@@ -1,9 +1,9 @@
 module github.com/aws/aws-sdk-go-v2/feature/cloudfront/sign
 
-go 1.21
+go 1.22
 
-require github.com/aws/aws-sdk-go-v2 v1.30.4
+require github.com/aws/aws-sdk-go-v2 v1.36.3
 
-require github.com/aws/smithy-go v1.20.4 // indirect
+require github.com/aws/smithy-go v1.22.2 // indirect
 
 replace github.com/aws/aws-sdk-go-v2 => ../../../

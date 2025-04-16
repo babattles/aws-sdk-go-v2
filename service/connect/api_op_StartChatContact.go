@@ -28,7 +28,7 @@ import (
 //
 // If you use the ChatDurationInMinutes parameter and receive a 400 error, your
 // account may not support the ability to configure custom chat durations. For more
-// information, contact Amazon Web Services Support.
+// information, contact Amazon Web ServicesSupport.
 //
 // For more information about chat, see the following topics in the Amazon Connect
 // Administrator Guide:
@@ -59,9 +59,9 @@ func (c *Client) StartChatContact(ctx context.Context, params *StartChatContactI
 type StartChatContactInput struct {
 
 	// The identifier of the flow for initiating the chat. To see the ContactFlowId in
-	// the Amazon Connect admin website, on the navigation menu go to Routing, Contact
-	// Flows. Choose the flow. On the flow page, under the name of the flow, choose
-	// Show additional flow information. The ContactFlowId is the last part of the ARN,
+	// the Amazon Connect admin website, on the navigation menu go to Routing, Flows.
+	// Choose the flow. On the flow page, under the name of the flow, choose Show
+	// additional flow information. The ContactFlowId is the last part of the ARN,
 	// shown here in bold:
 	//
 	// arn:aws:connect:us-west-2:xxxxxxxxxxxx:instance/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/contact-flow/846ec553-a005-41c0-8341-xxxxxxxxxxxx
@@ -101,6 +101,10 @@ type StartChatContactInput struct {
 	//
 	// [Making retries safe with idempotent APIs]: https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/
 	ClientToken *string
+
+	// The customer's identification number. For example, the CustomerId may be a
+	// customer number from your CRM.
+	CustomerId *string
 
 	// The initial message to be sent to the newly created chat. If you have a Lex bot
 	// in your flow, the initial message is not delivered to the Lex bot.
@@ -220,6 +224,9 @@ func (c *Client) addOperationStartChatContactMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -236,6 +243,9 @@ func (c *Client) addOperationStartChatContactMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opStartChatContactMiddleware(stack, options); err != nil {
@@ -260,6 +270,18 @@ func (c *Client) addOperationStartChatContactMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

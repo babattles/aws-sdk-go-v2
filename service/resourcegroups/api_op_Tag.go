@@ -10,9 +10,9 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Adds tags to a resource group with the specified ARN. Existing tags on a
-// resource group are not changed if they are not specified in the request
-// parameters.
+// Adds tags to a resource group with the specified Amazon resource name (ARN).
+// Existing tags on a resource group are not changed if they are not specified in
+// the request parameters.
 //
 // Do not store personally identifiable information (PII) or other confidential or
 // sensitive information in tags. We use tags to provide you with billing and
@@ -41,7 +41,7 @@ func (c *Client) Tag(ctx context.Context, params *TagInput, optFns ...func(*Opti
 
 type TagInput struct {
 
-	// The ARN of the resource group to which to add tags.
+	// The Amazon resource name (ARN) of the resource group to which to add tags.
 	//
 	// This member is required.
 	Arn *string
@@ -57,7 +57,7 @@ type TagInput struct {
 
 type TagOutput struct {
 
-	// The ARN of the tagged resource.
+	// The Amazon resource name (ARN) of the tagged resource.
 	Arn *string
 
 	// The tags that have been added to the specified resource group.
@@ -112,6 +112,9 @@ func (c *Client) addOperationTagMiddlewares(stack *middleware.Stack, options Opt
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -128,6 +131,9 @@ func (c *Client) addOperationTagMiddlewares(stack *middleware.Stack, options Opt
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpTagValidationMiddleware(stack); err != nil {
@@ -149,6 +155,18 @@ func (c *Client) addOperationTagMiddlewares(stack *middleware.Stack, options Opt
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

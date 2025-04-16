@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
+	"github.com/aws/aws-sdk-go-v2/service/iot/types"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -44,6 +45,16 @@ type AttachThingPrincipalInput struct {
 	//
 	// This member is required.
 	ThingName *string
+
+	// The type of the relation you want to specify when you attach a principal to a
+	// thing.
+	//
+	//   - EXCLUSIVE_THING - Attaches the specified principal to the specified thing,
+	//   exclusively. The thing will be the only thing that’s attached to the principal.
+	//
+	//   - NON_EXCLUSIVE_THING - Attaches the specified principal to the specified
+	//   thing. Multiple things can be attached to the principal.
+	ThingPrincipalType types.ThingPrincipalType
 
 	noSmithyDocumentSerde
 }
@@ -99,6 +110,9 @@ func (c *Client) addOperationAttachThingPrincipalMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -115,6 +129,9 @@ func (c *Client) addOperationAttachThingPrincipalMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpAttachThingPrincipalValidationMiddleware(stack); err != nil {
@@ -136,6 +153,18 @@ func (c *Client) addOperationAttachThingPrincipalMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

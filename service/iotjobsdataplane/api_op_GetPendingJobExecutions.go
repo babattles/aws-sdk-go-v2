@@ -12,6 +12,10 @@ import (
 )
 
 // Gets the list of all jobs for a thing that are not in a terminal status.
+//
+// Requires permission to access the [GetPendingJobExecutions] action.
+//
+// [GetPendingJobExecutions]: https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions
 func (c *Client) GetPendingJobExecutions(ctx context.Context, params *GetPendingJobExecutionsInput, optFns ...func(*Options)) (*GetPendingJobExecutionsOutput, error) {
 	if params == nil {
 		params = &GetPendingJobExecutionsInput{}
@@ -94,6 +98,9 @@ func (c *Client) addOperationGetPendingJobExecutionsMiddlewares(stack *middlewar
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -110,6 +117,9 @@ func (c *Client) addOperationGetPendingJobExecutionsMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetPendingJobExecutionsValidationMiddleware(stack); err != nil {
@@ -131,6 +141,18 @@ func (c *Client) addOperationGetPendingJobExecutionsMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

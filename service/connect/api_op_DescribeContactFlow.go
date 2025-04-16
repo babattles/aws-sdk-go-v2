@@ -16,9 +16,11 @@ import (
 // You can also create and update flows using the [Amazon Connect Flow language].
 //
 // Use the $SAVED alias in the request to describe the SAVED content of a Flow.
-// For example, arn:aws:.../contact-flow/{id}:$SAVED . Once a contact flow is
-// published, $SAVED needs to be supplied to view saved content that has not been
-// published.
+// For example, arn:aws:.../contact-flow/{id}:$SAVED . After a flow is published,
+// $SAVED needs to be supplied to view saved content that has not been published.
+//
+// Use arn:aws:.../contact-flow/{id}:{version} to retrieve the content of a
+// specific flow version.
 //
 // In the response, Status indicates the flow status as either SAVED or PUBLISHED .
 // The PUBLISHED status will initiate validation on the content. SAVED does not
@@ -109,6 +111,9 @@ func (c *Client) addOperationDescribeContactFlowMiddlewares(stack *middleware.St
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -125,6 +130,9 @@ func (c *Client) addOperationDescribeContactFlowMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeContactFlowValidationMiddleware(stack); err != nil {
@@ -146,6 +154,18 @@ func (c *Client) addOperationDescribeContactFlowMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

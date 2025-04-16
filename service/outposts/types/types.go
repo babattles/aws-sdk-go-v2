@@ -59,7 +59,8 @@ type Address struct {
 // Information about hardware assets.
 type AssetInfo struct {
 
-	//  The ID of the asset.
+	//  The ID of the asset. An Outpost asset can be a single server within an
+	// Outposts rack or an Outposts server configuration.
 	AssetId *string
 
 	//  The position of an asset in a rack.
@@ -77,11 +78,65 @@ type AssetInfo struct {
 	noSmithyDocumentSerde
 }
 
+// An Amazon EC2 instance.
+type AssetInstance struct {
+
+	// The ID of the Amazon Web Services account.
+	AccountId *string
+
+	// The ID of the asset. An Outpost asset can be a single server within an Outposts
+	// rack or an Outposts server configuration.
+	AssetId *string
+
+	// The Amazon Web Services service name of the instance.
+	AwsServiceName AWSServiceName
+
+	// The ID of the instance.
+	InstanceId *string
+
+	// The type of instance.
+	InstanceType *string
+
+	noSmithyDocumentSerde
+}
+
+// The capacity for each instance type.
+type AssetInstanceTypeCapacity struct {
+
+	// The number of each instance type.
+	//
+	// This member is required.
+	Count int32
+
+	// The type of instance.
+	//
+	// This member is required.
+	InstanceType *string
+
+	noSmithyDocumentSerde
+}
+
 // Information about the position of the asset in a rack.
 type AssetLocation struct {
 
 	//  The position of an asset in a rack measured in rack units.
 	RackElevation *float32
+
+	noSmithyDocumentSerde
+}
+
+// A running Amazon EC2 instance that can be stopped to free up capacity needed to
+// run the capacity task.
+type BlockingInstance struct {
+
+	// The ID of the Amazon Web Services account.
+	AccountId *string
+
+	// The Amazon Web Services service name that owns the specified blocking instance.
+	AwsServiceName AWSServiceName
+
+	// The ID of the blocking instance.
+	InstanceId *string
 
 	noSmithyDocumentSerde
 }
@@ -102,6 +157,10 @@ type CapacityTaskFailure struct {
 
 // The summary of the capacity task.
 type CapacityTaskSummary struct {
+
+	// The ID of the asset. An Outpost asset can be a single server within an Outposts
+	// rack or an Outposts server configuration.
+	AssetId *string
 
 	// The ID of the specified capacity task.
 	CapacityTaskId *string
@@ -165,6 +224,13 @@ type ComputeAttributes struct {
 	// given asset.
 	InstanceFamilies []string
 
+	// The instance type capacities configured for this asset. This can be changed
+	// through a capacity task.
+	InstanceTypeCapacities []AssetInstanceTypeCapacity
+
+	// The maximum number of vCPUs possible for the specified asset.
+	MaxVcpus *int32
+
 	// The state.
 	//
 	//   - ACTIVE - The asset is available and can provide capacity for new compute
@@ -217,6 +283,24 @@ type EC2Capacity struct {
 
 	//  The quantity of the EC2 capacity.
 	Quantity *string
+
+	noSmithyDocumentSerde
+}
+
+// User-specified instances that must not be stopped. These instances will not
+// appear in the list of instances that Amazon Web Services recommends to stop in
+// order to free up capacity.
+type InstancesToExclude struct {
+
+	// IDs of the accounts that own each instance that must not be stopped.
+	AccountIds []string
+
+	// List of user-specified instances that must not be stopped.
+	Instances []string
+
+	// Names of the services that own each instance that must not be stopped in order
+	// to free up the capacity needed to run the capacity task.
+	Services []AWSServiceName
 
 	noSmithyDocumentSerde
 }
@@ -283,7 +367,8 @@ type LineItem struct {
 // Information about a line item asset.
 type LineItemAssetInformation struct {
 
-	//  The ID of the asset.
+	//  The ID of the asset. An Outpost asset can be a single server within an
+	// Outposts rack or an Outposts server configuration.
 	AssetId *string
 
 	//  The MAC addresses of the asset.
@@ -335,8 +420,10 @@ type Order struct {
 	//
 	//   - PREPARING - Order is received and being prepared.
 	//
-	//   - IN_PROGRESS - Order is either being built, shipped, or installed. To get
-	//   more details, see the line item status.
+	//   - IN_PROGRESS - Order is either being built or shipped. To get more details,
+	//   see the line item status.
+	//
+	//   - DELIVERED - Order was delivered to the Outpost site.
 	//
 	//   - COMPLETED - Order is complete.
 	//

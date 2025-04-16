@@ -12,8 +12,8 @@ import (
 	"time"
 )
 
-// Lists the Amazon SageMaker Studio Lifecycle Configurations in your Amazon Web
-// Services Account.
+// Lists the Amazon SageMaker AI Studio Lifecycle Configurations in your Amazon
+// Web Services Account.
 func (c *Client) ListStudioLifecycleConfigs(ctx context.Context, params *ListStudioLifecycleConfigsInput, optFns ...func(*Options)) (*ListStudioLifecycleConfigsOutput, error) {
 	if params == nil {
 		params = &ListStudioLifecycleConfigsInput{}
@@ -133,6 +133,9 @@ func (c *Client) addOperationListStudioLifecycleConfigsMiddlewares(stack *middle
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -151,6 +154,9 @@ func (c *Client) addOperationListStudioLifecycleConfigsMiddlewares(stack *middle
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListStudioLifecycleConfigs(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -167,6 +173,18 @@ func (c *Client) addOperationListStudioLifecycleConfigsMiddlewares(stack *middle
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

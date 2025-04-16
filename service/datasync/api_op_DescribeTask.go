@@ -47,9 +47,9 @@ type DescribeTaskOutput struct {
 	// The Amazon Resource Name (ARN) of an Amazon CloudWatch log group for monitoring
 	// your task.
 	//
-	// For more information, see [Monitoring DataSync with Amazon CloudWatch].
+	// For more information, see [Monitoring data transfers with CloudWatch Logs].
 	//
-	// [Monitoring DataSync with Amazon CloudWatch]: https://docs.aws.amazon.com/datasync/latest/userguide/monitor-datasync.html
+	// [Monitoring data transfers with CloudWatch Logs]: https://docs.aws.amazon.com/datasync/latest/userguide/configure-logging.html
 	CloudWatchLogGroupArn *string
 
 	// The time that the task was created.
@@ -132,6 +132,11 @@ type DescribeTaskOutput struct {
 	// The ARN of your task.
 	TaskArn *string
 
+	// The task mode that you're using. For more information, see [Choosing a task mode for your data transfer].
+	//
+	// [Choosing a task mode for your data transfer]: https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html
+	TaskMode types.TaskMode
+
 	// The configuration of your task report, which provides detailed information
 	// about your DataSync transfer. For more information, see [Monitoring your DataSync transfers with task reports].
 	//
@@ -187,6 +192,9 @@ func (c *Client) addOperationDescribeTaskMiddlewares(stack *middleware.Stack, op
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -203,6 +211,9 @@ func (c *Client) addOperationDescribeTaskMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeTaskValidationMiddleware(stack); err != nil {
@@ -224,6 +235,18 @@ func (c *Client) addOperationDescribeTaskMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

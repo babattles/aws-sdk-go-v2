@@ -11,7 +11,11 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Used to override a stage condition.
+// Used to override a stage condition. For more information about conditions, see [Stage conditions]
+// and [How do stage conditions work?].
+//
+// [Stage conditions]: https://docs.aws.amazon.com/codepipeline/latest/userguide/stage-conditions.html
+// [How do stage conditions work?]: https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts-how-it-works-conditions.html
 func (c *Client) OverrideStageCondition(ctx context.Context, params *OverrideStageConditionInput, optFns ...func(*Options)) (*OverrideStageConditionOutput, error) {
 	if params == nil {
 		params = &OverrideStageConditionInput{}
@@ -103,6 +107,9 @@ func (c *Client) addOperationOverrideStageConditionMiddlewares(stack *middleware
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -119,6 +126,9 @@ func (c *Client) addOperationOverrideStageConditionMiddlewares(stack *middleware
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpOverrideStageConditionValidationMiddleware(stack); err != nil {
@@ -140,6 +150,18 @@ func (c *Client) addOperationOverrideStageConditionMiddlewares(stack *middleware
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

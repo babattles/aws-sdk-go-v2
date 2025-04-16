@@ -19,7 +19,7 @@ import (
 // CreateSipMediaApplicationCall action with the corresponding SIP media
 // application ID.
 //
-// This API is is not available in a dedicated namespace.
+// This API is not available in a dedicated namespace.
 func (c *Client) CreateMeetingDialOut(ctx context.Context, params *CreateMeetingDialOutInput, optFns ...func(*Options)) (*CreateMeetingDialOutOutput, error) {
 	if params == nil {
 		params = &CreateMeetingDialOutInput{}
@@ -117,6 +117,9 @@ func (c *Client) addOperationCreateMeetingDialOutMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -133,6 +136,9 @@ func (c *Client) addOperationCreateMeetingDialOutMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateMeetingDialOutValidationMiddleware(stack); err != nil {
@@ -154,6 +160,18 @@ func (c *Client) addOperationCreateMeetingDialOutMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

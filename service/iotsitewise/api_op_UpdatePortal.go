@@ -80,6 +80,16 @@ type UpdatePortalInput struct {
 	//   - The ID of an existing image. Choose this option to keep an existing image.
 	PortalLogoImage *types.Image
 
+	// Define the type of portal. The value for IoT SiteWise Monitor (Classic) is
+	// SITEWISE_PORTAL_V1 . The value for IoT SiteWise Monitor (AI-aware) is
+	// SITEWISE_PORTAL_V2 .
+	PortalType types.PortalType
+
+	// The configuration entry associated with the specific portal type. The value for
+	// IoT SiteWise Monitor (Classic) is SITEWISE_PORTAL_V1 . The value for IoT
+	// SiteWise Monitor (AI-aware) is SITEWISE_PORTAL_V2 .
+	PortalTypeConfiguration map[string]types.PortalTypeEntry
+
 	noSmithyDocumentSerde
 }
 
@@ -140,6 +150,9 @@ func (c *Client) addOperationUpdatePortalMiddlewares(stack *middleware.Stack, op
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -156,6 +169,9 @@ func (c *Client) addOperationUpdatePortalMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addEndpointPrefix_opUpdatePortalMiddleware(stack); err != nil {
@@ -183,6 +199,18 @@ func (c *Client) addOperationUpdatePortalMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

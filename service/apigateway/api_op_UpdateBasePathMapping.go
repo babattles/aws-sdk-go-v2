@@ -42,6 +42,10 @@ type UpdateBasePathMappingInput struct {
 	// This member is required.
 	DomainName *string
 
+	//  The identifier for the domain name resource. Supported only for private custom
+	// domain names.
+	DomainNameId *string
+
 	// For more information about supported patch operations, see [Patch Operations].
 	//
 	// [Patch Operations]: https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html
@@ -113,6 +117,9 @@ func (c *Client) addOperationUpdateBasePathMappingMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -129,6 +136,9 @@ func (c *Client) addOperationUpdateBasePathMappingMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateBasePathMappingValidationMiddleware(stack); err != nil {
@@ -153,6 +163,18 @@ func (c *Client) addOperationUpdateBasePathMappingMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

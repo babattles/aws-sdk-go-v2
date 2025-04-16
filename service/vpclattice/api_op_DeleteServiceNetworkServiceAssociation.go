@@ -11,8 +11,8 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Deletes the association between a specified service and the specific service
-// network. This operation fails if an association is still in progress.
+// Deletes the association between a service and a service network. This operation
+// fails if an association is still in progress.
 func (c *Client) DeleteServiceNetworkServiceAssociation(ctx context.Context, params *DeleteServiceNetworkServiceAssociationInput, optFns ...func(*Options)) (*DeleteServiceNetworkServiceAssociationOutput, error) {
 	if params == nil {
 		params = &DeleteServiceNetworkServiceAssociationInput{}
@@ -30,7 +30,7 @@ func (c *Client) DeleteServiceNetworkServiceAssociation(ctx context.Context, par
 
 type DeleteServiceNetworkServiceAssociationInput struct {
 
-	// The ID or Amazon Resource Name (ARN) of the association.
+	// The ID or ARN of the association.
 	//
 	// This member is required.
 	ServiceNetworkServiceAssociationIdentifier *string
@@ -100,6 +100,9 @@ func (c *Client) addOperationDeleteServiceNetworkServiceAssociationMiddlewares(s
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -116,6 +119,9 @@ func (c *Client) addOperationDeleteServiceNetworkServiceAssociationMiddlewares(s
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteServiceNetworkServiceAssociationValidationMiddleware(stack); err != nil {
@@ -137,6 +143,18 @@ func (c *Client) addOperationDeleteServiceNetworkServiceAssociationMiddlewares(s
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

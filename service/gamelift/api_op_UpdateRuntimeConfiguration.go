@@ -13,9 +13,7 @@ import (
 
 // Updates the runtime configuration for the specified fleet. The runtime
 // configuration tells Amazon GameLift how to launch server processes on computes
-// in the fleet. For managed EC2 fleets, it determines what server processes to run
-// on each fleet instance. For container fleets, it describes what server processes
-// to run in each replica container group. You can update a fleet's runtime
+// in managed EC2 and Anywhere fleets. You can update a fleet's runtime
 // configuration at any time after the fleet is created; it does not need to be in
 // ACTIVE status.
 //
@@ -58,9 +56,9 @@ type UpdateRuntimeConfigurationInput struct {
 	FleetId *string
 
 	// Instructions for launching server processes on fleet computes. Server processes
-	// run either a custom game build executable or a Realtime Servers script. The
-	// runtime configuration lists the types of server processes to run, how to launch
-	// them, and the number of processes to run concurrently.
+	// run either a custom game build executable or a Amazon GameLift Realtime script.
+	// The runtime configuration lists the types of server processes to run, how to
+	// launch them, and the number of processes to run concurrently.
 	//
 	// This member is required.
 	RuntimeConfiguration *types.RuntimeConfiguration
@@ -123,6 +121,9 @@ func (c *Client) addOperationUpdateRuntimeConfigurationMiddlewares(stack *middle
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -139,6 +140,9 @@ func (c *Client) addOperationUpdateRuntimeConfigurationMiddlewares(stack *middle
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateRuntimeConfigurationValidationMiddleware(stack); err != nil {
@@ -160,6 +164,18 @@ func (c *Client) addOperationUpdateRuntimeConfigurationMiddlewares(stack *middle
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

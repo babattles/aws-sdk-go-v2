@@ -44,7 +44,8 @@ type CompleteMigrationInput struct {
 
 type CompleteMigrationOutput struct {
 
-	// Contains all of the attributes of a specific Redis OSS replication group.
+	// Contains all of the attributes of a specific Valkey or Redis OSS replication
+	// group.
 	ReplicationGroup *types.ReplicationGroup
 
 	// Metadata pertaining to the operation's result.
@@ -96,6 +97,9 @@ func (c *Client) addOperationCompleteMigrationMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -112,6 +116,9 @@ func (c *Client) addOperationCompleteMigrationMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCompleteMigrationValidationMiddleware(stack); err != nil {
@@ -133,6 +140,18 @@ func (c *Client) addOperationCompleteMigrationMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -21,7 +21,7 @@ import (
 // Amazon Web Services account is subscribed to Amazon QuickSight. The namespace
 // must be unique within the Amazon Web Services account. By default, there is a
 // limit of 100 namespaces per Amazon Web Services account. To increase your limit,
-// create a ticket with Amazon Web Services Support.
+// create a ticket with Amazon Web ServicesSupport.
 func (c *Client) CreateNamespace(ctx context.Context, params *CreateNamespaceInput, optFns ...func(*Options)) (*CreateNamespaceOutput, error) {
 	if params == nil {
 		params = &CreateNamespaceInput{}
@@ -140,6 +140,9 @@ func (c *Client) addOperationCreateNamespaceMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -156,6 +159,9 @@ func (c *Client) addOperationCreateNamespaceMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateNamespaceValidationMiddleware(stack); err != nil {
@@ -177,6 +183,18 @@ func (c *Client) addOperationCreateNamespaceMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

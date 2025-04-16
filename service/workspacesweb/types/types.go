@@ -124,6 +124,89 @@ type CookieSynchronizationConfiguration struct {
 	noSmithyDocumentSerde
 }
 
+// The pattern configuration for redacting custom data types in session.
+type CustomPattern struct {
+
+	// The pattern name for the custom pattern.
+	//
+	// This member is required.
+	PatternName *string
+
+	// The pattern regex for the customer pattern. The format must follow JavaScript
+	// regex format. The pattern must be enclosed between slashes, and can have flags
+	// behind the second slash. For example: “/ab+c/gi”.
+	//
+	// This member is required.
+	PatternRegex *string
+
+	// The keyword regex for the customer pattern. After there is a match to the
+	// pattern regex, the keyword regex is used to search within the proximity of the
+	// match. If there is a keyword match, then the match is confirmed. If no keyword
+	// regex is provided, the pattern regex match will automatically be confirmed. The
+	// format must follow JavaScript regex format. The pattern must be enclosed between
+	// slashes, and can have flags behind the second slash. For example, “/ab+c/gi”
+	KeywordRegex *string
+
+	// The pattern description for the customer pattern.
+	PatternDescription *string
+
+	noSmithyDocumentSerde
+}
+
+// The data protection settings resource that can be associated with a web portal.
+type DataProtectionSettings struct {
+
+	// The ARN of the data protection settings resource.
+	//
+	// This member is required.
+	DataProtectionSettingsArn *string
+
+	// The additional encryption context of the data protection settings.
+	AdditionalEncryptionContext map[string]string
+
+	// A list of web portal ARNs that this data protection settings resource is
+	// associated with.
+	AssociatedPortalArns []string
+
+	// The creation date timestamp of the data protection settings.
+	CreationDate *time.Time
+
+	// The customer managed key used to encrypt sensitive information in the data
+	// protection settings.
+	CustomerManagedKey *string
+
+	// The description of the data protection settings.
+	Description *string
+
+	// The display name of the data protection settings.
+	DisplayName *string
+
+	// The inline redaction configuration for the data protection settings.
+	InlineRedactionConfiguration *InlineRedactionConfiguration
+
+	noSmithyDocumentSerde
+}
+
+// The summary of the data protection settings.
+type DataProtectionSettingsSummary struct {
+
+	// The ARN of the data protection settings.
+	//
+	// This member is required.
+	DataProtectionSettingsArn *string
+
+	// The creation date timestamp of the data protection settings.
+	CreationDate *time.Time
+
+	// The description of the data protection settings.
+	Description *string
+
+	// The display name of the data protection settings.
+	DisplayName *string
+
+	noSmithyDocumentSerde
+}
+
 // The identity provider.
 type IdentityProvider struct {
 
@@ -222,6 +305,75 @@ type IdentityProviderSummary struct {
 
 	// The identity provider type.
 	IdentityProviderType IdentityProviderType
+
+	noSmithyDocumentSerde
+}
+
+// The configuration for in-session inline redaction.
+type InlineRedactionConfiguration struct {
+
+	// The inline redaction patterns to be enabled for the inline redaction
+	// configuration.
+	//
+	// This member is required.
+	InlineRedactionPatterns []InlineRedactionPattern
+
+	// The global confidence level for the inline redaction configuration. This
+	// indicates the certainty of data type matches in the redaction process.
+	// Confidence level 3 means high confidence, and requires a formatted text pattern
+	// match in order for content to be redacted. Confidence level 2 means medium
+	// confidence, and redaction considers both formatted and unformatted text, and
+	// adds keyword associate to the logic. Confidence level 1 means low confidence,
+	// and redaction is enforced for both formatted pattern + unformatted pattern
+	// without keyword. This is applied to patterns that do not have a pattern-level
+	// confidence level. Defaults to confidence level 2.
+	GlobalConfidenceLevel *int32
+
+	// The global enforced URL configuration for the inline redaction configuration.
+	// This is applied to patterns that do not have a pattern-level enforced URL list.
+	GlobalEnforcedUrls []string
+
+	// The global exempt URL configuration for the inline redaction configuration.
+	// This is applied to patterns that do not have a pattern-level exempt URL list.
+	GlobalExemptUrls []string
+
+	noSmithyDocumentSerde
+}
+
+// The set of patterns that determine the data types redacted in session.
+type InlineRedactionPattern struct {
+
+	// The redaction placeholder that will replace the redacted text in session for
+	// the inline redaction pattern.
+	//
+	// This member is required.
+	RedactionPlaceHolder *RedactionPlaceHolder
+
+	// The built-in pattern from the list of preconfigured patterns. Either a
+	// customPattern or builtInPatternId is required.
+	BuiltInPatternId *string
+
+	// The confidence level for inline redaction pattern. This indicates the certainty
+	// of data type matches in the redaction process. Confidence level 3 means high
+	// confidence, and requires a formatted text pattern match in order for content to
+	// be redacted. Confidence level 2 means medium confidence, and redaction considers
+	// both formatted and unformatted text, and adds keyword associate to the logic.
+	// Confidence level 1 means low confidence, and redaction is enforced for both
+	// formatted pattern + unformatted pattern without keyword. This overrides the
+	// global confidence level.
+	ConfidenceLevel *int32
+
+	// >The configuration for a custom pattern. Either a customPattern or
+	// builtInPatternId is required.
+	CustomPattern *CustomPattern
+
+	// The enforced URL configuration for the inline redaction pattern. This will
+	// override the global enforced URL configuration.
+	EnforcedUrls []string
+
+	// The exempt URL configuration for the inline redaction pattern. This will
+	// override the global exempt URL configuration for the inline redaction pattern.
+	ExemptUrls []string
 
 	noSmithyDocumentSerde
 }
@@ -355,10 +507,10 @@ type Portal struct {
 	// with your web portal. User and group access to your web portal is controlled
 	// through your identity provider.
 	//
-	// IAM Identity Center web portals are authenticated through IAM Identity Center
-	// (successor to Single Sign-On). Identity sources (including external identity
-	// provider integration), plus user and group access to your web portal, can be
-	// configured in the IAM Identity Center.
+	// IAM Identity Center web portals are authenticated through IAM Identity Center.
+	// Identity sources (including external identity provider integration), plus user
+	// and group access to your web portal, can be configured in the IAM Identity
+	// Center.
 	AuthenticationType AuthenticationType
 
 	// The ARN of the browser settings that is associated with this web portal.
@@ -372,6 +524,9 @@ type Portal struct {
 
 	// The customer managed key used to encrypt sensitive information in the portal.
 	CustomerManagedKey *string
+
+	// The ARN of the data protection settings.
+	DataProtectionSettingsArn *string
 
 	// The name of the web portal.
 	DisplayName *string
@@ -430,10 +585,10 @@ type PortalSummary struct {
 	// with your web portal. User and group access to your web portal is controlled
 	// through your identity provider.
 	//
-	// IAM Identity Center web portals are authenticated through IAM Identity Center
-	// (successor to Single Sign-On). Identity sources (including external identity
-	// provider integration), plus user and group access to your web portal, can be
-	// configured in the IAM Identity Center.
+	// IAM Identity Center web portals are authenticated through IAM Identity Center.
+	// Identity sources (including external identity provider integration), plus user
+	// and group access to your web portal, can be configured in the IAM Identity
+	// Center.
 	AuthenticationType AuthenticationType
 
 	// The ARN of the browser settings that is associated with the web portal.
@@ -444,6 +599,9 @@ type PortalSummary struct {
 
 	// The creation date of the web portal.
 	CreationDate *time.Time
+
+	// The ARN of the data protection settings.
+	DataProtectionSettingsArn *string
 
 	// The name of the web portal.
 	DisplayName *string
@@ -483,6 +641,72 @@ type PortalSummary struct {
 	noSmithyDocumentSerde
 }
 
+// The redaction placeholder that will replace the redacted text in session.
+type RedactionPlaceHolder struct {
+
+	// The redaction placeholder type that will replace the redacted text in session.
+	//
+	// This member is required.
+	RedactionPlaceHolderType RedactionPlaceHolderType
+
+	// The redaction placeholder text that will replace the redacted text in session
+	// for the custom text redaction placeholder type.
+	RedactionPlaceHolderText *string
+
+	noSmithyDocumentSerde
+}
+
+// Information about a secure browser session.
+type Session struct {
+
+	// The IP address of the client.
+	ClientIpAddresses []string
+
+	// The end time of the session.
+	EndTime *time.Time
+
+	// The ARN of the web portal.
+	PortalArn *string
+
+	// The ID of the session.
+	SessionId *string
+
+	// The start time of the session.
+	StartTime *time.Time
+
+	// The status of the session.
+	Status SessionStatus
+
+	// The username of the session.
+	Username *string
+
+	noSmithyDocumentSerde
+}
+
+// Summary information about a secure browser session.
+type SessionSummary struct {
+
+	// The end time of the session.
+	EndTime *time.Time
+
+	// The ARN of the web portal.
+	PortalArn *string
+
+	// The ID of the session.
+	SessionId *string
+
+	// The start time of the session.
+	StartTime *time.Time
+
+	// The status of the session.
+	Status SessionStatus
+
+	// The username of the session.
+	Username *string
+
+	noSmithyDocumentSerde
+}
+
 // The tag.
 type Tag struct {
 
@@ -495,6 +719,28 @@ type Tag struct {
 	//
 	// This member is required.
 	Value *string
+
+	noSmithyDocumentSerde
+}
+
+// The configuration of the toolbar. This allows administrators to select the
+// toolbar type and visual mode, set maximum display resolution for sessions, and
+// choose which items are visible to end users during their sessions. If
+// administrators do not modify these settings, end users retain control over their
+// toolbar preferences.
+type ToolbarConfiguration struct {
+
+	// The list of toolbar items to be hidden.
+	HiddenToolbarItems []ToolbarItem
+
+	// The maximum display resolution that is allowed for the session.
+	MaxDisplayResolution MaxDisplayResolution
+
+	// The type of toolbar displayed during the session.
+	ToolbarType ToolbarType
+
+	// The visual mode of the toolbar.
+	VisualMode VisualMode
 
 	noSmithyDocumentSerde
 }
@@ -612,6 +858,13 @@ type UserSettings struct {
 	// Specifies whether the user can print to the local device.
 	PrintAllowed EnabledType
 
+	// The configuration of the toolbar. This allows administrators to select the
+	// toolbar type and visual mode, set maximum display resolution for sessions, and
+	// choose which items are visible to end users during their sessions. If
+	// administrators do not modify these settings, end users retain control over their
+	// toolbar preferences.
+	ToolbarConfiguration *ToolbarConfiguration
+
 	// Specifies whether the user can upload files from the local device to the
 	// streaming session.
 	UploadAllowed EnabledType
@@ -658,6 +911,13 @@ type UserSettingsSummary struct {
 
 	// Specifies whether the user can print to the local device.
 	PrintAllowed EnabledType
+
+	// The configuration of the toolbar. This allows administrators to select the
+	// toolbar type and visual mode, set maximum display resolution for sessions, and
+	// choose which items are visible to end users during their sessions. If
+	// administrators do not modify these settings, end users retain control over their
+	// toolbar preferences.
+	ToolbarConfiguration *ToolbarConfiguration
 
 	// Specifies whether the user can upload files from the local device to the
 	// streaming session.

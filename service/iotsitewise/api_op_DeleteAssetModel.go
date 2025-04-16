@@ -49,6 +49,23 @@ type DeleteAssetModelInput struct {
 	// request is required.
 	ClientToken *string
 
+	// The expected current entity tag (ETag) for the asset model’s latest or active
+	// version (specified using matchForVersionType ). The delete request is rejected
+	// if the tag does not match the latest or active version's current entity tag. See
+	// [Optimistic locking for asset model writes]in the IoT SiteWise User Guide.
+	//
+	// [Optimistic locking for asset model writes]: https://docs.aws.amazon.com/iot-sitewise/latest/userguide/opt-locking-for-model.html
+	IfMatch *string
+
+	// Accepts * to reject the delete request if an active version (specified using
+	// matchForVersionType as ACTIVE ) already exists for the asset model.
+	IfNoneMatch *string
+
+	// Specifies the asset model version type ( LATEST or ACTIVE ) used in conjunction
+	// with If-Match or If-None-Match headers to determine the target ETag for the
+	// delete operation.
+	MatchForVersionType types.AssetModelVersionType
+
 	noSmithyDocumentSerde
 }
 
@@ -109,6 +126,9 @@ func (c *Client) addOperationDeleteAssetModelMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -125,6 +145,9 @@ func (c *Client) addOperationDeleteAssetModelMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addEndpointPrefix_opDeleteAssetModelMiddleware(stack); err != nil {
@@ -152,6 +175,18 @@ func (c *Client) addOperationDeleteAssetModelMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

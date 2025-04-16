@@ -12,6 +12,10 @@ import (
 )
 
 // Gets details of a job execution.
+//
+// Requires permission to access the [DescribeJobExecution] action.
+//
+// [DescribeJobExecution]: https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions
 func (c *Client) DescribeJobExecution(ctx context.Context, params *DescribeJobExecutionInput, optFns ...func(*Options)) (*DescribeJobExecutionOutput, error) {
 	if params == nil {
 		params = &DescribeJobExecutionInput{}
@@ -43,8 +47,8 @@ type DescribeJobExecutionInput struct {
 	// device. If not specified, the latest job execution is returned.
 	ExecutionNumber *int64
 
-	// Optional. When set to true, the response contains the job document. The default
-	// is false.
+	// Optional. Unless set to false, the response contains the job document. The
+	// default is true.
 	IncludeJobDocument *bool
 
 	noSmithyDocumentSerde
@@ -104,6 +108,9 @@ func (c *Client) addOperationDescribeJobExecutionMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -120,6 +127,9 @@ func (c *Client) addOperationDescribeJobExecutionMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeJobExecutionValidationMiddleware(stack); err != nil {
@@ -141,6 +151,18 @@ func (c *Client) addOperationDescribeJobExecutionMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

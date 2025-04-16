@@ -59,6 +59,9 @@ type DeauthorizeDataShareOutput struct {
 	// and data consumers.
 	DataShareAssociations []types.DataShareAssociation
 
+	//  The type of the datashare created by RegisterNamespace.
+	DataShareType types.DataShareType
+
 	// The identifier of a datashare to show its managing entity.
 	ManagedBy *string
 
@@ -114,6 +117,9 @@ func (c *Client) addOperationDeauthorizeDataShareMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -130,6 +136,9 @@ func (c *Client) addOperationDeauthorizeDataShareMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeauthorizeDataShareValidationMiddleware(stack); err != nil {
@@ -151,6 +160,18 @@ func (c *Client) addOperationDeauthorizeDataShareMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

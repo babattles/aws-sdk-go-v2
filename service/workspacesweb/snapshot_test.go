@@ -74,6 +74,18 @@ func TestCheckSnapshot_AssociateBrowserSettings(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_AssociateDataProtectionSettings(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.AssociateDataProtectionSettings(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "AssociateDataProtectionSettings")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_AssociateIpAccessSettings(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.AssociateIpAccessSettings(context.Background(), nil, func(o *Options) {
@@ -139,6 +151,18 @@ func TestCheckSnapshot_CreateBrowserSettings(t *testing.T) {
 	_, err := svc.CreateBrowserSettings(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "CreateBrowserSettings")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_CreateDataProtectionSettings(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateDataProtectionSettings(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "CreateDataProtectionSettings")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -242,6 +266,18 @@ func TestCheckSnapshot_DeleteBrowserSettings(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_DeleteDataProtectionSettings(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteDataProtectionSettings(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DeleteDataProtectionSettings")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_DeleteIdentityProvider(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.DeleteIdentityProvider(context.Background(), nil, func(o *Options) {
@@ -338,6 +374,18 @@ func TestCheckSnapshot_DisassociateBrowserSettings(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_DisassociateDataProtectionSettings(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DisassociateDataProtectionSettings(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DisassociateDataProtectionSettings")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_DisassociateIpAccessSettings(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.DisassociateIpAccessSettings(context.Background(), nil, func(o *Options) {
@@ -398,11 +446,35 @@ func TestCheckSnapshot_DisassociateUserSettings(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_ExpireSession(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ExpireSession(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ExpireSession")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_GetBrowserSettings(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.GetBrowserSettings(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "GetBrowserSettings")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_GetDataProtectionSettings(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetDataProtectionSettings(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GetDataProtectionSettings")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -470,6 +542,18 @@ func TestCheckSnapshot_GetPortalServiceProviderMetadata(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_GetSession(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetSession(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GetSession")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_GetTrustStore(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.GetTrustStore(context.Background(), nil, func(o *Options) {
@@ -530,6 +614,18 @@ func TestCheckSnapshot_ListBrowserSettings(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_ListDataProtectionSettings(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListDataProtectionSettings(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListDataProtectionSettings")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_ListIdentityProviders(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ListIdentityProviders(context.Background(), nil, func(o *Options) {
@@ -571,6 +667,18 @@ func TestCheckSnapshot_ListPortals(t *testing.T) {
 	_, err := svc.ListPortals(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "ListPortals")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_ListSessions(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListSessions(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListSessions")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -674,6 +782,18 @@ func TestCheckSnapshot_UpdateBrowserSettings(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_UpdateDataProtectionSettings(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateDataProtectionSettings(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "UpdateDataProtectionSettings")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_UpdateIdentityProvider(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.UpdateIdentityProvider(context.Background(), nil, func(o *Options) {
@@ -769,6 +889,18 @@ func TestUpdateSnapshot_AssociateBrowserSettings(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_AssociateDataProtectionSettings(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.AssociateDataProtectionSettings(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "AssociateDataProtectionSettings")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_AssociateIpAccessSettings(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.AssociateIpAccessSettings(context.Background(), nil, func(o *Options) {
@@ -834,6 +966,18 @@ func TestUpdateSnapshot_CreateBrowserSettings(t *testing.T) {
 	_, err := svc.CreateBrowserSettings(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "CreateBrowserSettings")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_CreateDataProtectionSettings(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateDataProtectionSettings(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "CreateDataProtectionSettings")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -937,6 +1081,18 @@ func TestUpdateSnapshot_DeleteBrowserSettings(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_DeleteDataProtectionSettings(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteDataProtectionSettings(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DeleteDataProtectionSettings")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_DeleteIdentityProvider(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.DeleteIdentityProvider(context.Background(), nil, func(o *Options) {
@@ -1033,6 +1189,18 @@ func TestUpdateSnapshot_DisassociateBrowserSettings(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_DisassociateDataProtectionSettings(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DisassociateDataProtectionSettings(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DisassociateDataProtectionSettings")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_DisassociateIpAccessSettings(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.DisassociateIpAccessSettings(context.Background(), nil, func(o *Options) {
@@ -1093,11 +1261,35 @@ func TestUpdateSnapshot_DisassociateUserSettings(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_ExpireSession(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ExpireSession(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ExpireSession")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_GetBrowserSettings(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.GetBrowserSettings(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "GetBrowserSettings")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_GetDataProtectionSettings(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetDataProtectionSettings(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GetDataProtectionSettings")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -1165,6 +1357,18 @@ func TestUpdateSnapshot_GetPortalServiceProviderMetadata(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_GetSession(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetSession(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GetSession")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_GetTrustStore(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.GetTrustStore(context.Background(), nil, func(o *Options) {
@@ -1225,6 +1429,18 @@ func TestUpdateSnapshot_ListBrowserSettings(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_ListDataProtectionSettings(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListDataProtectionSettings(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListDataProtectionSettings")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_ListIdentityProviders(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ListIdentityProviders(context.Background(), nil, func(o *Options) {
@@ -1266,6 +1482,18 @@ func TestUpdateSnapshot_ListPortals(t *testing.T) {
 	_, err := svc.ListPortals(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "ListPortals")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_ListSessions(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListSessions(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListSessions")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -1362,6 +1590,18 @@ func TestUpdateSnapshot_UpdateBrowserSettings(t *testing.T) {
 	_, err := svc.UpdateBrowserSettings(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "UpdateBrowserSettings")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_UpdateDataProtectionSettings(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateDataProtectionSettings(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "UpdateDataProtectionSettings")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {

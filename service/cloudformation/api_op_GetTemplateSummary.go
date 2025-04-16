@@ -73,28 +73,21 @@ type GetTemplateSummaryInput struct {
 	StackSetName *string
 
 	// Structure containing the template body with a minimum length of 1 byte and a
-	// maximum length of 51,200 bytes. For more information about templates, see [Template anatomy]in
-	// the CloudFormation User Guide.
+	// maximum length of 51,200 bytes.
 	//
 	// Conditional: You must specify only one of the following parameters: StackName ,
 	// StackSetName , TemplateBody , or TemplateURL .
-	//
-	// [Template anatomy]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html
 	TemplateBody *string
 
 	// Specifies options for the GetTemplateSummary API action.
 	TemplateSummaryConfig *types.TemplateSummaryConfig
 
-	// Location of file containing the template body. The URL must point to a template
-	// (max size: 460,800 bytes) that's located in an Amazon S3 bucket or a Systems
-	// Manager document. For more information about templates, see [Template anatomy]in the
-	// CloudFormation User Guide. The location for an Amazon S3 bucket must start with
-	// https:// .
+	// The URL of a file containing the template body. The URL must point to a
+	// template (max size: 1 MB) that's located in an Amazon S3 bucket or a Systems
+	// Manager document. The location for an Amazon S3 bucket must start with https:// .
 	//
 	// Conditional: You must specify only one of the following parameters: StackName ,
 	// StackSetName , TemplateBody , or TemplateURL .
-	//
-	// [Template anatomy]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html
 	TemplateURL *string
 
 	noSmithyDocumentSerde
@@ -108,9 +101,9 @@ type GetTemplateSummaryOutput struct {
 	// for this parameter when you use the CreateStackor UpdateStack actions with your template; otherwise,
 	// those actions return an InsufficientCapabilities error.
 	//
-	// For more information, see [Acknowledging IAM Resources in CloudFormation Templates].
+	// For more information, see [Acknowledging IAM resources in CloudFormation templates].
 	//
-	// [Acknowledging IAM Resources in CloudFormation Templates]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-iam-template.html#capabilities
+	// [Acknowledging IAM resources in CloudFormation templates]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/control-access-with-iam.html#using-iam-capabilities
 	Capabilities []types.Capability
 
 	// The list of resources that generated the values in the Capabilities response
@@ -196,6 +189,9 @@ func (c *Client) addOperationGetTemplateSummaryMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -214,6 +210,9 @@ func (c *Client) addOperationGetTemplateSummaryMiddlewares(stack *middleware.Sta
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opGetTemplateSummary(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -230,6 +229,18 @@ func (c *Client) addOperationGetTemplateSummaryMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

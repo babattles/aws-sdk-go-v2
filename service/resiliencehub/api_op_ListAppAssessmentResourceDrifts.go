@@ -11,8 +11,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Indicates the list of resource drifts that were detected while running an
-// assessment.
+// List of resource drifts that were detected while running an assessment.
 func (c *Client) ListAppAssessmentResourceDrifts(ctx context.Context, params *ListAppAssessmentResourceDriftsInput, optFns ...func(*Options)) (*ListAppAssessmentResourceDriftsOutput, error) {
 	if params == nil {
 		params = &ListAppAssessmentResourceDriftsInput{}
@@ -39,9 +38,9 @@ type ListAppAssessmentResourceDriftsInput struct {
 	// This member is required.
 	AssessmentArn *string
 
-	// Indicates the maximum number of drift results to include in the response. If
-	// more results exist than the specified MaxResults value, a token is included in
-	// the response so that the remaining results can be retrieved.
+	// Maximum number of drift results to include in the response. If more results
+	// exist than the specified MaxResults value, a token is included in the response
+	// so that the remaining results can be retrieved.
 	MaxResults *int32
 
 	// Null, or the token from a previous call to get the next set of results.
@@ -109,6 +108,9 @@ func (c *Client) addOperationListAppAssessmentResourceDriftsMiddlewares(stack *m
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -125,6 +127,9 @@ func (c *Client) addOperationListAppAssessmentResourceDriftsMiddlewares(stack *m
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListAppAssessmentResourceDriftsValidationMiddleware(stack); err != nil {
@@ -148,15 +153,27 @@ func (c *Client) addOperationListAppAssessmentResourceDriftsMiddlewares(stack *m
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
+		return err
+	}
 	return nil
 }
 
 // ListAppAssessmentResourceDriftsPaginatorOptions is the paginator options for
 // ListAppAssessmentResourceDrifts
 type ListAppAssessmentResourceDriftsPaginatorOptions struct {
-	// Indicates the maximum number of drift results to include in the response. If
-	// more results exist than the specified MaxResults value, a token is included in
-	// the response so that the remaining results can be retrieved.
+	// Maximum number of drift results to include in the response. If more results
+	// exist than the specified MaxResults value, a token is included in the response
+	// so that the remaining results can be retrieved.
 	Limit int32
 
 	// Set to true if pagination should stop if the service returns a pagination token

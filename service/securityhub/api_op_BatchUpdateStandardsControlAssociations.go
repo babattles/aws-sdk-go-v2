@@ -33,6 +33,10 @@ type BatchUpdateStandardsControlAssociationsInput struct {
 
 	//  Updates the enablement status of a security control in a specified standard.
 	//
+	// Calls to this operation return a RESOURCE_NOT_FOUND_EXCEPTION error when the
+	// standard subscription for the control has StandardsControlsUpdatable value
+	// NOT_READY_FOR_UPDATES .
+	//
 	// This member is required.
 	StandardsControlAssociationUpdates []types.StandardsControlAssociationUpdate
 
@@ -95,6 +99,9 @@ func (c *Client) addOperationBatchUpdateStandardsControlAssociationsMiddlewares(
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -111,6 +118,9 @@ func (c *Client) addOperationBatchUpdateStandardsControlAssociationsMiddlewares(
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpBatchUpdateStandardsControlAssociationsValidationMiddleware(stack); err != nil {
@@ -132,6 +142,18 @@ func (c *Client) addOperationBatchUpdateStandardsControlAssociationsMiddlewares(
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

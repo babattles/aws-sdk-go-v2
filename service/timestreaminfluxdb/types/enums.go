@@ -2,6 +2,50 @@
 
 package types
 
+type ClusterDeploymentType string
+
+// Enum values for ClusterDeploymentType
+const (
+	ClusterDeploymentTypeMultiNodeReadReplicas ClusterDeploymentType = "MULTI_NODE_READ_REPLICAS"
+)
+
+// Values returns all known values for ClusterDeploymentType. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ClusterDeploymentType) Values() []ClusterDeploymentType {
+	return []ClusterDeploymentType{
+		"MULTI_NODE_READ_REPLICAS",
+	}
+}
+
+type ClusterStatus string
+
+// Enum values for ClusterStatus
+const (
+	ClusterStatusCreating  ClusterStatus = "CREATING"
+	ClusterStatusUpdating  ClusterStatus = "UPDATING"
+	ClusterStatusDeleting  ClusterStatus = "DELETING"
+	ClusterStatusAvailable ClusterStatus = "AVAILABLE"
+	ClusterStatusFailed    ClusterStatus = "FAILED"
+	ClusterStatusDeleted   ClusterStatus = "DELETED"
+)
+
+// Values returns all known values for ClusterStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ClusterStatus) Values() []ClusterStatus {
+	return []ClusterStatus{
+		"CREATING",
+		"UPDATING",
+		"DELETING",
+		"AVAILABLE",
+		"FAILED",
+		"DELETED",
+	}
+}
+
 type DbInstanceType string
 
 // Enum values for DbInstanceType
@@ -73,6 +117,69 @@ func (DeploymentType) Values() []DeploymentType {
 	}
 }
 
+type DurationType string
+
+// Enum values for DurationType
+const (
+	DurationTypeHours        DurationType = "hours"
+	DurationTypeMinutes      DurationType = "minutes"
+	DurationTypeSeconds      DurationType = "seconds"
+	DurationTypeMilliseconds DurationType = "milliseconds"
+)
+
+// Values returns all known values for DurationType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DurationType) Values() []DurationType {
+	return []DurationType{
+		"hours",
+		"minutes",
+		"seconds",
+		"milliseconds",
+	}
+}
+
+type FailoverMode string
+
+// Enum values for FailoverMode
+const (
+	FailoverModeAutomatic  FailoverMode = "AUTOMATIC"
+	FailoverModeNoFailover FailoverMode = "NO_FAILOVER"
+)
+
+// Values returns all known values for FailoverMode. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (FailoverMode) Values() []FailoverMode {
+	return []FailoverMode{
+		"AUTOMATIC",
+		"NO_FAILOVER",
+	}
+}
+
+type InstanceMode string
+
+// Enum values for InstanceMode
+const (
+	InstanceModePrimary InstanceMode = "PRIMARY"
+	InstanceModeStandby InstanceMode = "STANDBY"
+	InstanceModeReplica InstanceMode = "REPLICA"
+)
+
+// Values returns all known values for InstanceMode. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (InstanceMode) Values() []InstanceMode {
+	return []InstanceMode{
+		"PRIMARY",
+		"STANDBY",
+		"REPLICA",
+	}
+}
+
 type LogLevel string
 
 // Enum values for LogLevel
@@ -94,17 +201,38 @@ func (LogLevel) Values() []LogLevel {
 	}
 }
 
+type NetworkType string
+
+// Enum values for NetworkType
+const (
+	NetworkTypeIpv4 NetworkType = "IPV4"
+	NetworkTypeDual NetworkType = "DUAL"
+)
+
+// Values returns all known values for NetworkType. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (NetworkType) Values() []NetworkType {
+	return []NetworkType{
+		"IPV4",
+		"DUAL",
+	}
+}
+
 type Status string
 
 // Enum values for Status
 const (
-	StatusCreating  Status = "CREATING"
-	StatusAvailable Status = "AVAILABLE"
-	StatusDeleting  Status = "DELETING"
-	StatusModifying Status = "MODIFYING"
-	StatusUpdating  Status = "UPDATING"
-	StatusDeleted   Status = "DELETED"
-	StatusFailed    Status = "FAILED"
+	StatusCreating               Status = "CREATING"
+	StatusAvailable              Status = "AVAILABLE"
+	StatusDeleting               Status = "DELETING"
+	StatusModifying              Status = "MODIFYING"
+	StatusUpdating               Status = "UPDATING"
+	StatusDeleted                Status = "DELETED"
+	StatusFailed                 Status = "FAILED"
+	StatusUpdatingDeploymentType Status = "UPDATING_DEPLOYMENT_TYPE"
+	StatusUpdatingInstanceType   Status = "UPDATING_INSTANCE_TYPE"
 )
 
 // Values returns all known values for Status. Note that this can be expanded in
@@ -120,6 +248,8 @@ func (Status) Values() []Status {
 		"UPDATING",
 		"DELETED",
 		"FAILED",
+		"UPDATING_DEPLOYMENT_TYPE",
+		"UPDATING_INSTANCE_TYPE",
 	}
 }
 

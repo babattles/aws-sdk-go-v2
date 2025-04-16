@@ -12,7 +12,7 @@ import (
 )
 
 // Lists the aliases for all keys in the caller's Amazon Web Services account and
-// Amazon Web Services Region. You can filter the list of aliases. For more
+// Amazon Web Services Region. You can filter the aliases by keyARN . For more
 // information, see [Using aliases]in the Amazon Web Services Payment Cryptography User Guide.
 //
 // This is a paginated operation, which means that each response might contain
@@ -56,6 +56,9 @@ func (c *Client) ListAliases(ctx context.Context, params *ListAliasesInput, optF
 }
 
 type ListAliasesInput struct {
+
+	// The keyARN for which you want to list all aliases.
+	KeyArn *string
 
 	// Use this parameter to specify the maximum number of items to return. When this
 	// value is present, Amazon Web Services Payment Cryptography does not return more
@@ -133,6 +136,9 @@ func (c *Client) addOperationListAliasesMiddlewares(stack *middleware.Stack, opt
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -151,6 +157,9 @@ func (c *Client) addOperationListAliasesMiddlewares(stack *middleware.Stack, opt
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListAliases(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -167,6 +176,18 @@ func (c *Client) addOperationListAliasesMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

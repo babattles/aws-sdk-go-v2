@@ -11,7 +11,8 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Lists Chime Webhook Configurations optionally filtered by ChatConfigurationArn
+// Lists Amazon Chime webhook configurations optionally filtered by
+// ChatConfigurationArn
 func (c *Client) DescribeChimeWebhookConfigurations(ctx context.Context, params *DescribeChimeWebhookConfigurationsInput, optFns ...func(*Options)) (*DescribeChimeWebhookConfigurationsOutput, error) {
 	if params == nil {
 		params = &DescribeChimeWebhookConfigurationsInput{}
@@ -29,7 +30,8 @@ func (c *Client) DescribeChimeWebhookConfigurations(ctx context.Context, params 
 
 type DescribeChimeWebhookConfigurationsInput struct {
 
-	// An optional ARN of a ChimeWebhookConfiguration to describe.
+	// An optional Amazon Resource Name (ARN) of a ChimeWebhookConfiguration to
+	// describe.
 	ChatConfigurationArn *string
 
 	// The maximum number of results to include in the response. If more results exist
@@ -52,7 +54,7 @@ type DescribeChimeWebhookConfigurationsOutput struct {
 	// includes only results beyond the token, up to the value specified by MaxResults.
 	NextToken *string
 
-	// A list of Chime webhooks associated with the account.
+	// A list of Amazon Chime webhooks associated with the account.
 	WebhookConfigurations []types.ChimeWebhookConfiguration
 
 	// Metadata pertaining to the operation's result.
@@ -104,6 +106,9 @@ func (c *Client) addOperationDescribeChimeWebhookConfigurationsMiddlewares(stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -122,6 +127,9 @@ func (c *Client) addOperationDescribeChimeWebhookConfigurationsMiddlewares(stack
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeChimeWebhookConfigurations(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -138,6 +146,18 @@ func (c *Client) addOperationDescribeChimeWebhookConfigurationsMiddlewares(stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

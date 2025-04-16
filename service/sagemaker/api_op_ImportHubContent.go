@@ -71,6 +71,9 @@ type ImportHubContentInput struct {
 	// The version of the hub content to import.
 	HubContentVersion *string
 
+	// The status of the hub content resource.
+	SupportStatus types.HubContentSupportStatus
+
 	// Any tags associated with the hub content.
 	Tags []types.Tag
 
@@ -138,6 +141,9 @@ func (c *Client) addOperationImportHubContentMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -154,6 +160,9 @@ func (c *Client) addOperationImportHubContentMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpImportHubContentValidationMiddleware(stack); err != nil {
@@ -175,6 +184,18 @@ func (c *Client) addOperationImportHubContentMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

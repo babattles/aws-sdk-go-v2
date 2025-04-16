@@ -45,8 +45,15 @@ type ListAppsInput struct {
 	// [Amazon Resource Names (ARNs)]: https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html
 	AppArn *string
 
-	// Indicates the lower limit of the range that is used to filter applications
-	// based on their last assessment times.
+	// Amazon Resource Name (ARN) of Resource Groups group that is integrated with an
+	// AppRegistry application. For more information about ARNs, see [Amazon Resource Names (ARNs)]in the Amazon Web
+	// Services General Reference guide.
+	//
+	// [Amazon Resource Names (ARNs)]: https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html
+	AwsApplicationArn *string
+
+	// Lower limit of the range that is used to filter applications based on their
+	// last assessment times.
 	FromLastAssessmentTime *time.Time
 
 	// Maximum number of results to include in the response. If more results exist
@@ -66,8 +73,8 @@ type ListAppsInput struct {
 	// field to True .
 	ReverseOrder *bool
 
-	// Indicates the upper limit of the range that is used to filter the applications
-	// based on their last assessment times.
+	// Upper limit of the range that is used to filter the applications based on their
+	// last assessment times.
 	ToLastAssessmentTime *time.Time
 
 	noSmithyDocumentSerde
@@ -132,6 +139,9 @@ func (c *Client) addOperationListAppsMiddlewares(stack *middleware.Stack, option
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -150,6 +160,9 @@ func (c *Client) addOperationListAppsMiddlewares(stack *middleware.Stack, option
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListApps(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -166,6 +179,18 @@ func (c *Client) addOperationListAppsMiddlewares(stack *middleware.Stack, option
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

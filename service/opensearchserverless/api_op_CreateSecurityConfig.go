@@ -48,6 +48,10 @@ type CreateSecurityConfigInput struct {
 	// A description of the security configuration.
 	Description *string
 
+	// Describes IAM Identity Center options in the form of a key-value map. This
+	// field is required if you specify iamidentitycenter for the type parameter.
+	IamIdentityCenterOptions *types.CreateIamIdentityCenterConfigOptions
+
 	// Describes SAML options in in the form of a key-value map. This field is
 	// required if you specify saml for the type parameter.
 	SamlOptions *types.SamlConfigOptions
@@ -109,6 +113,9 @@ func (c *Client) addOperationCreateSecurityConfigMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -125,6 +132,9 @@ func (c *Client) addOperationCreateSecurityConfigMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateSecurityConfigMiddleware(stack, options); err != nil {
@@ -149,6 +159,18 @@ func (c *Client) addOperationCreateSecurityConfigMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

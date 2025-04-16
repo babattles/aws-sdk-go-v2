@@ -14,6 +14,8 @@ import (
 // Gets a listing of all the webhooks in this Amazon Web Services Region for this
 // account. The output lists all webhooks and includes the webhook URL and ARN and
 // the configuration for each webhook.
+//
+// If a secret token was provided, it will be redacted in the response.
 func (c *Client) ListWebhooks(ctx context.Context, params *ListWebhooksInput, optFns ...func(*Options)) (*ListWebhooksOutput, error) {
 	if params == nil {
 		params = &ListWebhooksInput{}
@@ -102,6 +104,9 @@ func (c *Client) addOperationListWebhooksMiddlewares(stack *middleware.Stack, op
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -120,6 +125,9 @@ func (c *Client) addOperationListWebhooksMiddlewares(stack *middleware.Stack, op
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListWebhooks(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -136,6 +144,18 @@ func (c *Client) addOperationListWebhooksMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

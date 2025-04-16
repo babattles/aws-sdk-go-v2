@@ -12,7 +12,6 @@ import (
 	smithytime "github.com/aws/smithy-go/time"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	smithywaiter "github.com/aws/smithy-go/waiter"
-	jmespath "github.com/jmespath/go-jmespath"
 	"time"
 )
 
@@ -114,6 +113,16 @@ type DescribePortalOutput struct {
 	// The portal's logo image, which is available at a URL.
 	PortalLogoImageLocation *types.ImageLocation
 
+	// Define the type of portal. The value for IoT SiteWise Monitor (Classic) is
+	// SITEWISE_PORTAL_V1 . The value for IoT SiteWise Monitor (AI-aware) is
+	// SITEWISE_PORTAL_V2 .
+	PortalType types.PortalType
+
+	// The configuration entry associated with the specific portal type. The value for
+	// IoT SiteWise Monitor (Classic) is SITEWISE_PORTAL_V1 . The value for IoT
+	// SiteWise Monitor (AI-aware) is SITEWISE_PORTAL_V2 .
+	PortalTypeConfiguration map[string]types.PortalTypeEntry
+
 	// The [ARN] of the service role that allows the portal's users to access your IoT
 	// SiteWise resources on your behalf. For more information, see [Using service roles for IoT SiteWise Monitor]in the IoT
 	// SiteWise User Guide.
@@ -171,6 +180,9 @@ func (c *Client) addOperationDescribePortalMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -187,6 +199,9 @@ func (c *Client) addOperationDescribePortalMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addEndpointPrefix_opDescribePortalMiddleware(stack); err != nil {
@@ -211,6 +226,18 @@ func (c *Client) addOperationDescribePortalMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -375,22 +402,23 @@ func (w *PortalActiveWaiter) WaitForOutput(ctx context.Context, params *Describe
 func portalActiveStateRetryable(ctx context.Context, input *DescribePortalInput, output *DescribePortalOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("portalStatus.state", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.PortalStatus
+		var v2 types.PortalState
+		if v1 != nil {
+			v3 := v1.State
+			v2 = v3
 		}
-
 		expectedValue := "ACTIVE"
-		value, ok := pathValue.(types.PortalState)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.PortalState value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v2)
+		if pathValue == expectedValue {
 			return false, nil
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 
@@ -560,6 +588,9 @@ func portalNotExistsStateRetryable(ctx context.Context, input *DescribePortalInp
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 

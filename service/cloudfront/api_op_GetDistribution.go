@@ -11,7 +11,6 @@ import (
 	smithytime "github.com/aws/smithy-go/time"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	smithywaiter "github.com/aws/smithy-go/waiter"
-	jmespath "github.com/jmespath/go-jmespath"
 	"time"
 )
 
@@ -102,6 +101,9 @@ func (c *Client) addOperationGetDistributionMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -118,6 +120,9 @@ func (c *Client) addOperationGetDistributionMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetDistributionValidationMiddleware(stack); err != nil {
@@ -139,6 +144,18 @@ func (c *Client) addOperationGetDistributionMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -168,7 +185,7 @@ type DistributionDeployedWaiterOptions struct {
 	MinDelay time.Duration
 
 	// MaxDelay is the maximum amount of time to delay between retries. If unset or
-	// set to zero, DistributionDeployedWaiter will use default max delay of 120
+	// set to zero, DistributionDeployedWaiter will use default max delay of 2100
 	// seconds. Note that MaxDelay must resolve to value greater than or equal to the
 	// MinDelay.
 	MaxDelay time.Duration
@@ -199,7 +216,7 @@ type DistributionDeployedWaiter struct {
 func NewDistributionDeployedWaiter(client GetDistributionAPIClient, optFns ...func(*DistributionDeployedWaiterOptions)) *DistributionDeployedWaiter {
 	options := DistributionDeployedWaiterOptions{}
 	options.MinDelay = 60 * time.Second
-	options.MaxDelay = 120 * time.Second
+	options.MaxDelay = 2100 * time.Second
 	options.Retryable = distributionDeployedStateRetryable
 
 	for _, fn := range optFns {
@@ -234,7 +251,7 @@ func (w *DistributionDeployedWaiter) WaitForOutput(ctx context.Context, params *
 	}
 
 	if options.MaxDelay <= 0 {
-		options.MaxDelay = 120 * time.Second
+		options.MaxDelay = 2100 * time.Second
 	}
 
 	if options.MinDelay > options.MaxDelay {
@@ -306,22 +323,25 @@ func (w *DistributionDeployedWaiter) WaitForOutput(ctx context.Context, params *
 func distributionDeployedStateRetryable(ctx context.Context, input *GetDistributionInput, output *GetDistributionOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Distribution.Status", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Distribution
+		var v2 *string
+		if v1 != nil {
+			v3 := v1.Status
+			v2 = v3
 		}
-
 		expectedValue := "Deployed"
-		value, ok := pathValue.(*string)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected *string value, got %T", pathValue)
+		var pathValue string
+		if v2 != nil {
+			pathValue = string(*v2)
 		}
-
-		if string(*value) == expectedValue {
+		if pathValue == expectedValue {
 			return false, nil
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 

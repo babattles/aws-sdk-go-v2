@@ -44,7 +44,7 @@ type ListStoredQueriesOutput struct {
 
 	// If the previous paginated request didn't return all of the remaining results,
 	// the response object's NextToken parameter value is set to a token. To retrieve
-	// the next set of results, call this action again and assign that token to the
+	// the next set of results, call this operation again and assign that token to the
 	// request object's NextToken parameter. If there are no remaining results, the
 	// previous response object's NextToken parameter is set to null .
 	NextToken *string
@@ -101,6 +101,9 @@ func (c *Client) addOperationListStoredQueriesMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -119,6 +122,9 @@ func (c *Client) addOperationListStoredQueriesMiddlewares(stack *middleware.Stac
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListStoredQueries(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -135,6 +141,18 @@ func (c *Client) addOperationListStoredQueriesMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

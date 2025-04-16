@@ -58,16 +58,29 @@ type UpdateIndexInput struct {
 	RoleArn *string
 
 	// The user context policy.
+	//
+	// If you're using an Amazon Kendra Gen AI Enterprise Edition index, you can only
+	// use ATTRIBUTE_FILTER to filter search results by user context. If you're using
+	// an Amazon Kendra Gen AI Enterprise Edition index and you try to use USER_TOKEN
+	// to configure user context policy, Amazon Kendra returns a ValidationException
+	// error.
 	UserContextPolicy types.UserContextPolicy
 
 	// Gets users and groups from IAM Identity Center identity source. To configure
 	// this, see [UserGroupResolutionConfiguration]. This is useful for user context filtering, where search results are
 	// filtered based on the user or their group access to documents.
 	//
+	// If you're using an Amazon Kendra Gen AI Enterprise Edition index,
+	// UserGroupResolutionConfiguration isn't supported.
+	//
 	// [UserGroupResolutionConfiguration]: https://docs.aws.amazon.com/kendra/latest/dg/API_UserGroupResolutionConfiguration.html
 	UserGroupResolutionConfiguration *types.UserGroupResolutionConfiguration
 
 	// The user token configuration.
+	//
+	// If you're using an Amazon Kendra Gen AI Enterprise Edition index and you try to
+	// use UserTokenConfigurations to configure user context policy, Amazon Kendra
+	// returns a ValidationException error.
 	UserTokenConfigurations []types.UserTokenConfiguration
 
 	noSmithyDocumentSerde
@@ -123,6 +136,9 @@ func (c *Client) addOperationUpdateIndexMiddlewares(stack *middleware.Stack, opt
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -139,6 +155,9 @@ func (c *Client) addOperationUpdateIndexMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateIndexValidationMiddleware(stack); err != nil {
@@ -160,6 +179,18 @@ func (c *Client) addOperationUpdateIndexMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

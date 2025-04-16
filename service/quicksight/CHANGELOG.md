@@ -1,3 +1,174 @@
+# v1.85.1 (2025-04-03)
+
+* No change notes available for this release.
+
+# v1.85.0 (2025-03-28)
+
+* **Feature**: RLS permission dataset with userAs: RLS_RULES flag, Q in QuickSight/Threshold Alerts/Schedules/Snapshots in QS embedding, toggle dataset refresh email alerts via API, transposed table with options: column width, type and index, toggle Q&A on dashboards, Oracle Service Name when creating data source.
+
+# v1.84.3 (2025-03-13)
+
+* No change notes available for this release.
+
+# v1.84.2 (2025-03-04.2)
+
+* **Bug Fix**: Add assurance test for operation order.
+
+# v1.84.1 (2025-03-04)
+
+* No change notes available for this release.
+
+# v1.84.0 (2025-02-27)
+
+* **Feature**: Track credential providers via User-Agent Feature ids
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.83.7 (2025-02-18)
+
+* **Bug Fix**: Bump go version to 1.22
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.83.6 (2025-02-06)
+
+* No change notes available for this release.
+
+# v1.83.5 (2025-02-05)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.83.4 (2025-02-04)
+
+* No change notes available for this release.
+
+# v1.83.3 (2025-01-31)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.83.2 (2025-01-30)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.83.1 (2025-01-24)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+* **Dependency Update**: Upgrade to smithy-go v1.22.2.
+
+# v1.83.0 (2025-01-21)
+
+* **Feature**: Added `DigitGroupingStyle` in ThousandsSeparator to allow grouping by `LAKH`( Indian Grouping system ) currency. Support LAKH and `CRORE` currency types in Column Formatting.
+
+# v1.82.4 (2025-01-17)
+
+* **Bug Fix**: Fix bug where credentials weren't refreshed during retry loop.
+
+# v1.82.3 (2025-01-15)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.82.2 (2025-01-09)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.82.1 (2024-12-19)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.82.0 (2024-12-18)
+
+* **Feature**: Add support for PerformanceConfiguration attribute to Dataset entity. Allow PerformanceConfiguration specification in CreateDataset and UpdateDataset APIs.
+
+# v1.81.0 (2024-12-03.2)
+
+* **Feature**: This release includes API needed to support for Unstructured Data in Q in QuickSight Q&A (IDC).
+
+# v1.80.1 (2024-12-02)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.80.0 (2024-11-22)
+
+* **Feature**: This release includes: Update APIs to support Image, Layer Map, font customization, and Plugin Visual. Add Identity center related information in ListNamsespace API. Update API for restrictedFolder support in topics and add API for SearchTopics, Describe/Update DashboardsQA Configration.
+
+# v1.79.1 (2024-11-18)
+
+* **Dependency Update**: Update to smithy-go v1.22.1.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.79.0 (2024-11-14)
+
+* **Feature**: This release adds APIs for Custom Permissions management in QuickSight, and APIs to support QuickSight Branding.
+
+# v1.78.0 (2024-11-07)
+
+* **Feature**: Add Client Credentials based OAuth support for Snowflake and Starburst
+* **Bug Fix**: Adds case-insensitive handling of error message fields in service responses
+
+# v1.77.2 (2024-11-06)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.77.1 (2024-10-28)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.77.0 (2024-10-17)
+
+* **Feature**: Add StartDashboardSnapshotJobSchedule API. RestoreAnalysis now supports restoring analysis to folders.
+
+# v1.76.2 (2024-10-08)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.76.1 (2024-10-07)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.76.0 (2024-10-04)
+
+* **Feature**: Add support for HTTP client metrics.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.75.0 (2024-10-03)
+
+* **Feature**: QuickSight: Add support for exporting and importing folders in AssetBundle APIs
+
+# v1.74.0 (2024-09-27)
+
+* **Feature**: Adding personalization in QuickSight data stories. Admins can enable or disable personalization through QuickSight settings.
+
+# v1.73.2 (2024-09-25)
+
+* No change notes available for this release.
+
+# v1.73.1 (2024-09-23)
+
+* No change notes available for this release.
+
+# v1.73.0 (2024-09-20)
+
+* **Feature**: Add tracing and metrics support to service clients.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.72.0 (2024-09-19)
+
+* **Feature**: QuickSight: 1. Add new API - ListFoldersForResource. 2. Commit mode adds visibility configuration of Apply button on multi-select controls for authors.
+
+# v1.71.3 (2024-09-17)
+
+* **Bug Fix**: **BREAKFIX**: Only generate AccountIDEndpointMode config for services that use it. This is a compiler break, but removes no actual functionality, as no services currently use the account ID in endpoint resolution.
+
+# v1.71.2 (2024-09-04)
+
+* No change notes available for this release.
+
+# v1.71.1 (2024-09-03)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.71.0 (2024-08-29)
+
+* **Feature**: Increased Character Limit for Dataset Calculation Field expressions
+
 # v1.70.0 (2024-08-22)
 
 * **Feature**: Explicit query for authors and dashboard viewing sharing for embedded users

@@ -47,6 +47,10 @@ type DeleteOrganizationInput struct {
 	// The idempotency token associated with the request.
 	ClientToken *string
 
+	// Deletes IAM Identity Center application for WorkMail. This action does not
+	// affect authentication settings for any organization.
+	DeleteIdentityCenterApplication bool
+
 	// Deletes a WorkMail organization even if the organization has enabled users.
 	ForceDelete bool
 
@@ -110,6 +114,9 @@ func (c *Client) addOperationDeleteOrganizationMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -126,6 +133,9 @@ func (c *Client) addOperationDeleteOrganizationMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opDeleteOrganizationMiddleware(stack, options); err != nil {
@@ -150,6 +160,18 @@ func (c *Client) addOperationDeleteOrganizationMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

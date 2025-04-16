@@ -14,7 +14,7 @@ import (
 // Retrieves information about the EC2 instances in an Amazon GameLift managed
 // fleet, including instance ID, connection data, and status. You can use this
 // operation with a multi-location fleet to get location-specific instance
-// information. As an alternative, use the operations ListComputeand DescribeCompute to retrieve information
+// information. As an alternative, use the operations [https://docs.aws.amazon.com/gamelift/latest/apireference/API_ListCompute]and [https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeCompute] to retrieve information
 // for compute resources, including EC2 and Anywhere fleets.
 //
 // You can call this operation in the following ways:
@@ -44,8 +44,10 @@ import (
 //
 // [All APIs by task]
 //
+// [https://docs.aws.amazon.com/gamelift/latest/apireference/API_ListCompute]: https://docs.aws.amazon.com/gamelift/latest/apireference/API_ListCompute
 // [Remotely connect to fleet instances]: https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-remote-access.html
 // [Debug fleet issues]: https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-creating-debug.html
+// [https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeCompute]: https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeCompute
 // [All APIs by task]: https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets
 func (c *Client) DescribeInstances(ctx context.Context, params *DescribeInstancesInput, optFns ...func(*Options)) (*DescribeInstancesOutput, error) {
 	if params == nil {
@@ -149,6 +151,9 @@ func (c *Client) addOperationDescribeInstancesMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -165,6 +170,9 @@ func (c *Client) addOperationDescribeInstancesMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeInstancesValidationMiddleware(stack); err != nil {
@@ -186,6 +194,18 @@ func (c *Client) addOperationDescribeInstancesMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

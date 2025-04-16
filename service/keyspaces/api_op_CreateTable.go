@@ -19,9 +19,9 @@ import (
 // the new table by using the GetTable operation, which returns the current status
 // of the table. You can start using a table when the status is ACTIVE .
 //
-// For more information, see [Creating tables] in the Amazon Keyspaces Developer Guide.
+// For more information, see [Create a table] in the Amazon Keyspaces Developer Guide.
 //
-// [Creating tables]: https://docs.aws.amazon.com/keyspaces/latest/devguide/working-with-tables.html#tables-create
+// [Create a table]: https://docs.aws.amazon.com/keyspaces/latest/devguide/getting-started.tables.html
 func (c *Client) CreateTable(ctx context.Context, params *CreateTableInput, optFns ...func(*Options)) (*CreateTableOutput, error) {
 	if params == nil {
 		params = &CreateTableInput{}
@@ -264,6 +264,9 @@ func (c *Client) addOperationCreateTableMiddlewares(stack *middleware.Stack, opt
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -280,6 +283,9 @@ func (c *Client) addOperationCreateTableMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateTableValidationMiddleware(stack); err != nil {
@@ -301,6 +307,18 @@ func (c *Client) addOperationCreateTableMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

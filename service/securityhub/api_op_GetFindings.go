@@ -13,9 +13,9 @@ import (
 
 // Returns a list of findings that match the specified criteria.
 //
-// If finding aggregation is enabled, then when you call GetFindings from the
-// aggregation Region, the results include all of the matching findings from both
-// the aggregation Region and the linked Regions.
+// If cross-Region aggregation is enabled, then when you call GetFindings from the
+// home Region, the results include all of the matching findings from both the home
+// Region and linked Regions.
 func (c *Client) GetFindings(ctx context.Context, params *GetFindingsInput, optFns ...func(*Options)) (*GetFindingsOutput, error) {
 	if params == nil {
 		params = &GetFindingsInput{}
@@ -118,6 +118,9 @@ func (c *Client) addOperationGetFindingsMiddlewares(stack *middleware.Stack, opt
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -136,6 +139,9 @@ func (c *Client) addOperationGetFindingsMiddlewares(stack *middleware.Stack, opt
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opGetFindings(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -152,6 +158,18 @@ func (c *Client) addOperationGetFindingsMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

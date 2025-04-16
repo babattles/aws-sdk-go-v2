@@ -19,6 +19,12 @@ import (
 // teams. Only users who work in research and engineering, and therefore belong in
 // the intellectual property group, can see top-secret company documents in their
 // Amazon Q Business chat results.
+//
+// There are two options for creating groups, either passing group members inline
+// or using an S3 file via the S3PathForGroupMembers field. For inline groups,
+// there is a limit of 1000 members per group and for provided S3 files there is a
+// limit of 100 thousand members. When creating a group using an S3 file, you
+// provide both an S3 file and a RoleArn for Amazon Q Buisness to access the file.
 func (c *Client) PutGroup(ctx context.Context, params *PutGroupInput, optFns ...func(*Options)) (*PutGroupOutput, error) {
 	if params == nil {
 		params = &PutGroupInput{}
@@ -73,6 +79,10 @@ type PutGroupInput struct {
 	// documents stored in Salesforce.
 	DataSourceId *string
 
+	// The Amazon Resource Name (ARN) of an IAM role that has access to the S3 file
+	// that contains your list of users that belong to a group.
+	RoleArn *string
+
 	noSmithyDocumentSerde
 }
 
@@ -126,6 +136,9 @@ func (c *Client) addOperationPutGroupMiddlewares(stack *middleware.Stack, option
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -142,6 +155,9 @@ func (c *Client) addOperationPutGroupMiddlewares(stack *middleware.Stack, option
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpPutGroupValidationMiddleware(stack); err != nil {
@@ -163,6 +179,18 @@ func (c *Client) addOperationPutGroupMiddlewares(stack *middleware.Stack, option
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

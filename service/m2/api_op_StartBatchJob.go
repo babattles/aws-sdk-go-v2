@@ -41,6 +41,10 @@ type StartBatchJobInput struct {
 	// This member is required.
 	BatchJobIdentifier types.BatchJobIdentifier
 
+	// The Amazon Web Services Secrets Manager containing user's credentials for
+	// authentication and authorization for Start Batch Job execution operation.
+	AuthSecretsManagerArn *string
+
 	// The collection of batch job parameters. For details about limits for keys and
 	// values, see [Coding variables in JCL].
 	//
@@ -106,6 +110,9 @@ func (c *Client) addOperationStartBatchJobMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -122,6 +129,9 @@ func (c *Client) addOperationStartBatchJobMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpStartBatchJobValidationMiddleware(stack); err != nil {
@@ -143,6 +153,18 @@ func (c *Client) addOperationStartBatchJobMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

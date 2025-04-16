@@ -50,6 +50,66 @@ func (m *validateOpAssociateQAppWithUser) HandleInitialize(ctx context.Context, 
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpBatchCreateCategory struct {
+}
+
+func (*validateOpBatchCreateCategory) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpBatchCreateCategory) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*BatchCreateCategoryInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpBatchCreateCategoryInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpBatchDeleteCategory struct {
+}
+
+func (*validateOpBatchDeleteCategory) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpBatchDeleteCategory) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*BatchDeleteCategoryInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpBatchDeleteCategoryInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpBatchUpdateCategory struct {
+}
+
+func (*validateOpBatchUpdateCategory) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpBatchUpdateCategory) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*BatchUpdateCategoryInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpBatchUpdateCategoryInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpCreateLibraryItem struct {
 }
 
@@ -65,6 +125,26 @@ func (m *validateOpCreateLibraryItem) HandleInitialize(ctx context.Context, in m
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpCreateLibraryItemInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpCreatePresignedUrl struct {
+}
+
+func (*validateOpCreatePresignedUrl) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpCreatePresignedUrl) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*CreatePresignedUrlInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpCreatePresignedUrlInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -130,6 +210,26 @@ func (m *validateOpDeleteQApp) HandleInitialize(ctx context.Context, in middlewa
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpDescribeQAppPermissions struct {
+}
+
+func (*validateOpDescribeQAppPermissions) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDescribeQAppPermissions) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DescribeQAppPermissionsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDescribeQAppPermissionsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpDisassociateLibraryItemReview struct {
 }
 
@@ -165,6 +265,26 @@ func (m *validateOpDisassociateQAppFromUser) HandleInitialize(ctx context.Contex
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpDisassociateQAppFromUserInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpExportQAppSessionData struct {
+}
+
+func (*validateOpExportQAppSessionData) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpExportQAppSessionData) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ExportQAppSessionDataInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpExportQAppSessionDataInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -230,6 +350,26 @@ func (m *validateOpGetQAppSession) HandleInitialize(ctx context.Context, in midd
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpGetQAppSessionMetadata struct {
+}
+
+func (*validateOpGetQAppSessionMetadata) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetQAppSessionMetadata) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetQAppSessionMetadataInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetQAppSessionMetadataInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpImportDocument struct {
 }
 
@@ -250,6 +390,26 @@ func (m *validateOpImportDocument) HandleInitialize(ctx context.Context, in midd
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpListCategories struct {
+}
+
+func (*validateOpListCategories) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListCategories) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListCategoriesInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListCategoriesInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpListLibraryItems struct {
 }
 
@@ -265,6 +425,26 @@ func (m *validateOpListLibraryItems) HandleInitialize(ctx context.Context, in mi
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpListLibraryItemsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpListQAppSessionData struct {
+}
+
+func (*validateOpListQAppSessionData) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListQAppSessionData) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListQAppSessionDataInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListQAppSessionDataInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -430,6 +610,26 @@ func (m *validateOpUpdateLibraryItem) HandleInitialize(ctx context.Context, in m
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpUpdateLibraryItemMetadata struct {
+}
+
+func (*validateOpUpdateLibraryItemMetadata) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpUpdateLibraryItemMetadata) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*UpdateLibraryItemMetadataInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpUpdateLibraryItemMetadataInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpUpdateQApp struct {
 }
 
@@ -445,6 +645,26 @@ func (m *validateOpUpdateQApp) HandleInitialize(ctx context.Context, in middlewa
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpUpdateQAppInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpUpdateQAppPermissions struct {
+}
+
+func (*validateOpUpdateQAppPermissions) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpUpdateQAppPermissions) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*UpdateQAppPermissionsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpUpdateQAppPermissionsInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -470,6 +690,26 @@ func (m *validateOpUpdateQAppSession) HandleInitialize(ctx context.Context, in m
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpUpdateQAppSessionMetadata struct {
+}
+
+func (*validateOpUpdateQAppSessionMetadata) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpUpdateQAppSessionMetadata) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*UpdateQAppSessionMetadataInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpUpdateQAppSessionMetadataInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 func addOpAssociateLibraryItemReviewValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpAssociateLibraryItemReview{}, middleware.After)
 }
@@ -478,8 +718,24 @@ func addOpAssociateQAppWithUserValidationMiddleware(stack *middleware.Stack) err
 	return stack.Initialize.Add(&validateOpAssociateQAppWithUser{}, middleware.After)
 }
 
+func addOpBatchCreateCategoryValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpBatchCreateCategory{}, middleware.After)
+}
+
+func addOpBatchDeleteCategoryValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpBatchDeleteCategory{}, middleware.After)
+}
+
+func addOpBatchUpdateCategoryValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpBatchUpdateCategory{}, middleware.After)
+}
+
 func addOpCreateLibraryItemValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpCreateLibraryItem{}, middleware.After)
+}
+
+func addOpCreatePresignedUrlValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpCreatePresignedUrl{}, middleware.After)
 }
 
 func addOpCreateQAppValidationMiddleware(stack *middleware.Stack) error {
@@ -494,12 +750,20 @@ func addOpDeleteQAppValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDeleteQApp{}, middleware.After)
 }
 
+func addOpDescribeQAppPermissionsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDescribeQAppPermissions{}, middleware.After)
+}
+
 func addOpDisassociateLibraryItemReviewValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDisassociateLibraryItemReview{}, middleware.After)
 }
 
 func addOpDisassociateQAppFromUserValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDisassociateQAppFromUser{}, middleware.After)
+}
+
+func addOpExportQAppSessionDataValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpExportQAppSessionData{}, middleware.After)
 }
 
 func addOpGetLibraryItemValidationMiddleware(stack *middleware.Stack) error {
@@ -514,12 +778,24 @@ func addOpGetQAppSessionValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpGetQAppSession{}, middleware.After)
 }
 
+func addOpGetQAppSessionMetadataValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetQAppSessionMetadata{}, middleware.After)
+}
+
 func addOpImportDocumentValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpImportDocument{}, middleware.After)
 }
 
+func addOpListCategoriesValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListCategories{}, middleware.After)
+}
+
 func addOpListLibraryItemsValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpListLibraryItems{}, middleware.After)
+}
+
+func addOpListQAppSessionDataValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListQAppSessionData{}, middleware.After)
 }
 
 func addOpListQAppsValidationMiddleware(stack *middleware.Stack) error {
@@ -554,12 +830,24 @@ func addOpUpdateLibraryItemValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpUpdateLibraryItem{}, middleware.After)
 }
 
+func addOpUpdateLibraryItemMetadataValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpUpdateLibraryItemMetadata{}, middleware.After)
+}
+
 func addOpUpdateQAppValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpUpdateQApp{}, middleware.After)
 }
 
+func addOpUpdateQAppPermissionsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpUpdateQAppPermissions{}, middleware.After)
+}
+
 func addOpUpdateQAppSessionValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpUpdateQAppSession{}, middleware.After)
+}
+
+func addOpUpdateQAppSessionMetadataValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpUpdateQAppSessionMetadata{}, middleware.After)
 }
 
 func validateAppDefinitionInput(v *types.AppDefinitionInput) error {
@@ -660,6 +948,38 @@ func validateAttributeFilters(v []types.AttributeFilter) error {
 	}
 }
 
+func validateBatchCreateCategoryInputCategory(v *types.BatchCreateCategoryInputCategory) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "BatchCreateCategoryInputCategory"}
+	if v.Title == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Title"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateBatchCreateCategoryInputCategoryList(v []types.BatchCreateCategoryInputCategory) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "BatchCreateCategoryInputCategoryList"}
+	for i := range v {
+		if err := validateBatchCreateCategoryInputCategory(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateCardInput(v types.CardInput) error {
 	if v == nil {
 		return nil
@@ -669,6 +989,11 @@ func validateCardInput(v types.CardInput) error {
 	case *types.CardInputMemberFileUpload:
 		if err := validateFileUploadCardInput(&uv.Value); err != nil {
 			invalidParams.AddNested("[fileUpload]", err.(smithy.InvalidParamsError))
+		}
+
+	case *types.CardInputMemberFormInput:
+		if err := validateFormInputCardInput(&uv.Value); err != nil {
+			invalidParams.AddNested("[formInput]", err.(smithy.InvalidParamsError))
 		}
 
 	case *types.CardInputMemberQPlugin:
@@ -722,6 +1047,11 @@ func validateCardValue(v *types.CardValue) error {
 	if v.Value == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("Value"))
 	}
+	if v.SubmissionMutation != nil {
+		if err := validateSubmissionMutation(v.SubmissionMutation); err != nil {
+			invalidParams.AddNested("SubmissionMutation", err.(smithy.InvalidParamsError))
+		}
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -736,6 +1066,41 @@ func validateCardValueList(v []types.CardValue) error {
 	invalidParams := smithy.InvalidParamsError{Context: "CardValueList"}
 	for i := range v {
 		if err := validateCardValue(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateCategoryInput(v *types.CategoryInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CategoryInput"}
+	if v.Id == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Id"))
+	}
+	if v.Title == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Title"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateCategoryListInput(v []types.CategoryInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CategoryListInput"}
+	for i := range v {
+		if err := validateCategoryInput(&v[i]); err != nil {
 			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
 		}
 	}
@@ -803,6 +1168,49 @@ func validateFileUploadCardInput(v *types.FileUploadCardInput) error {
 	}
 }
 
+func validateFormInputCardInput(v *types.FormInputCardInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "FormInputCardInput"}
+	if v.Title == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Title"))
+	}
+	if v.Id == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Id"))
+	}
+	if len(v.Type) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Type"))
+	}
+	if v.Metadata == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Metadata"))
+	} else if v.Metadata != nil {
+		if err := validateFormInputCardMetadata(v.Metadata); err != nil {
+			invalidParams.AddNested("Metadata", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateFormInputCardMetadata(v *types.FormInputCardMetadata) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "FormInputCardMetadata"}
+	if v.Schema == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Schema"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateMessageList(v []types.ConversationMessage) error {
 	if v == nil {
 		return nil
@@ -810,6 +1218,41 @@ func validateMessageList(v []types.ConversationMessage) error {
 	invalidParams := smithy.InvalidParamsError{Context: "MessageList"}
 	for i := range v {
 		if err := validateConversationMessage(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validatePermissionInput(v *types.PermissionInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "PermissionInput"}
+	if len(v.Action) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Action"))
+	}
+	if v.Principal == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Principal"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validatePermissionsInputList(v []types.PermissionInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "PermissionsInputList"}
+	for i := range v {
+		if err := validatePermissionInput(&v[i]); err != nil {
 			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
 		}
 	}
@@ -895,6 +1338,39 @@ func validateQQueryCardInput(v *types.QQueryCardInput) error {
 	}
 }
 
+func validateSessionSharingConfiguration(v *types.SessionSharingConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "SessionSharingConfiguration"}
+	if v.Enabled == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Enabled"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateSubmissionMutation(v *types.SubmissionMutation) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "SubmissionMutation"}
+	if v.SubmissionId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("SubmissionId"))
+	}
+	if len(v.MutationType) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("MutationType"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateTextInputCardInput(v *types.TextInputCardInput) error {
 	if v == nil {
 		return nil
@@ -952,6 +1428,68 @@ func validateOpAssociateQAppWithUserInput(v *AssociateQAppWithUserInput) error {
 	}
 }
 
+func validateOpBatchCreateCategoryInput(v *BatchCreateCategoryInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "BatchCreateCategoryInput"}
+	if v.InstanceId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("InstanceId"))
+	}
+	if v.Categories == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Categories"))
+	} else if v.Categories != nil {
+		if err := validateBatchCreateCategoryInputCategoryList(v.Categories); err != nil {
+			invalidParams.AddNested("Categories", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpBatchDeleteCategoryInput(v *BatchDeleteCategoryInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "BatchDeleteCategoryInput"}
+	if v.InstanceId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("InstanceId"))
+	}
+	if v.Categories == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Categories"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpBatchUpdateCategoryInput(v *BatchUpdateCategoryInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "BatchUpdateCategoryInput"}
+	if v.InstanceId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("InstanceId"))
+	}
+	if v.Categories == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Categories"))
+	} else if v.Categories != nil {
+		if err := validateCategoryListInput(v.Categories); err != nil {
+			invalidParams.AddNested("Categories", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpCreateLibraryItemInput(v *CreateLibraryItemInput) error {
 	if v == nil {
 		return nil
@@ -968,6 +1506,36 @@ func validateOpCreateLibraryItemInput(v *CreateLibraryItemInput) error {
 	}
 	if v.Categories == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("Categories"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpCreatePresignedUrlInput(v *CreatePresignedUrlInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CreatePresignedUrlInput"}
+	if v.InstanceId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("InstanceId"))
+	}
+	if v.CardId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("CardId"))
+	}
+	if v.AppId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AppId"))
+	}
+	if v.FileContentsSha256 == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("FileContentsSha256"))
+	}
+	if v.FileName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("FileName"))
+	}
+	if len(v.Scope) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Scope"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1037,6 +1605,24 @@ func validateOpDeleteQAppInput(v *DeleteQAppInput) error {
 	}
 }
 
+func validateOpDescribeQAppPermissionsInput(v *DescribeQAppPermissionsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DescribeQAppPermissionsInput"}
+	if v.InstanceId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("InstanceId"))
+	}
+	if v.AppId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AppId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpDisassociateLibraryItemReviewInput(v *DisassociateLibraryItemReviewInput) error {
 	if v == nil {
 		return nil
@@ -1065,6 +1651,24 @@ func validateOpDisassociateQAppFromUserInput(v *DisassociateQAppFromUserInput) e
 	}
 	if v.AppId == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("AppId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpExportQAppSessionDataInput(v *ExportQAppSessionDataInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ExportQAppSessionDataInput"}
+	if v.InstanceId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("InstanceId"))
+	}
+	if v.SessionId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("SessionId"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1127,6 +1731,24 @@ func validateOpGetQAppSessionInput(v *GetQAppSessionInput) error {
 	}
 }
 
+func validateOpGetQAppSessionMetadataInput(v *GetQAppSessionMetadataInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetQAppSessionMetadataInput"}
+	if v.InstanceId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("InstanceId"))
+	}
+	if v.SessionId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("SessionId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpImportDocumentInput(v *ImportDocumentInput) error {
 	if v == nil {
 		return nil
@@ -1157,6 +1779,21 @@ func validateOpImportDocumentInput(v *ImportDocumentInput) error {
 	}
 }
 
+func validateOpListCategoriesInput(v *ListCategoriesInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListCategoriesInput"}
+	if v.InstanceId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("InstanceId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpListLibraryItemsInput(v *ListLibraryItemsInput) error {
 	if v == nil {
 		return nil
@@ -1164,6 +1801,24 @@ func validateOpListLibraryItemsInput(v *ListLibraryItemsInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "ListLibraryItemsInput"}
 	if v.InstanceId == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("InstanceId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpListQAppSessionDataInput(v *ListQAppSessionDataInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListQAppSessionDataInput"}
+	if v.InstanceId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("InstanceId"))
+	}
+	if v.SessionId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("SessionId"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1320,6 +1975,24 @@ func validateOpUpdateLibraryItemInput(v *UpdateLibraryItemInput) error {
 	}
 }
 
+func validateOpUpdateLibraryItemMetadataInput(v *UpdateLibraryItemMetadataInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdateLibraryItemMetadataInput"}
+	if v.InstanceId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("InstanceId"))
+	}
+	if v.LibraryItemId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("LibraryItemId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpUpdateQAppInput(v *UpdateQAppInput) error {
 	if v == nil {
 		return nil
@@ -1343,6 +2016,34 @@ func validateOpUpdateQAppInput(v *UpdateQAppInput) error {
 	}
 }
 
+func validateOpUpdateQAppPermissionsInput(v *UpdateQAppPermissionsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdateQAppPermissionsInput"}
+	if v.InstanceId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("InstanceId"))
+	}
+	if v.AppId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AppId"))
+	}
+	if v.GrantPermissions != nil {
+		if err := validatePermissionsInputList(v.GrantPermissions); err != nil {
+			invalidParams.AddNested("GrantPermissions", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.RevokePermissions != nil {
+		if err := validatePermissionsInputList(v.RevokePermissions); err != nil {
+			invalidParams.AddNested("RevokePermissions", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpUpdateQAppSessionInput(v *UpdateQAppSessionInput) error {
 	if v == nil {
 		return nil
@@ -1357,6 +2058,31 @@ func validateOpUpdateQAppSessionInput(v *UpdateQAppSessionInput) error {
 	if v.Values != nil {
 		if err := validateCardValueList(v.Values); err != nil {
 			invalidParams.AddNested("Values", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpUpdateQAppSessionMetadataInput(v *UpdateQAppSessionMetadataInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdateQAppSessionMetadataInput"}
+	if v.InstanceId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("InstanceId"))
+	}
+	if v.SessionId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("SessionId"))
+	}
+	if v.SharingConfiguration == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("SharingConfiguration"))
+	} else if v.SharingConfiguration != nil {
+		if err := validateSessionSharingConfiguration(v.SharingConfiguration); err != nil {
+			invalidParams.AddNested("SharingConfiguration", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {

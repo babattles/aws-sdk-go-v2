@@ -4,6 +4,7 @@ package types
 
 import (
 	smithydocument "github.com/aws/smithy-go/document"
+	"time"
 )
 
 // An object with your accountId and TRN information.
@@ -62,11 +63,17 @@ type AdditionalInfoRequest struct {
 	//  Additional tax information associated with your TRN in Canada.
 	CanadaAdditionalInfo *CanadaAdditionalInfo
 
+	// Additional tax information to specify for a TRN in Egypt.
+	EgyptAdditionalInfo *EgyptAdditionalInfo
+
 	//  Additional tax information to specify for a TRN in Estonia.
 	EstoniaAdditionalInfo *EstoniaAdditionalInfo
 
 	//  Additional tax information to specify for a TRN in Georgia.
 	GeorgiaAdditionalInfo *GeorgiaAdditionalInfo
+
+	// Additional tax information to specify for a TRN in Greece.
+	GreeceAdditionalInfo *GreeceAdditionalInfo
 
 	//  Additional tax information to specify for a TRN in Israel.
 	IsraelAdditionalInfo *IsraelAdditionalInfo
@@ -101,6 +108,9 @@ type AdditionalInfoRequest struct {
 	//  Additional tax information associated with your TRN in Ukraine.
 	UkraineAdditionalInfo *UkraineAdditionalInfo
 
+	// Additional tax information to specify for a TRN in Vietnam.
+	VietnamAdditionalInfo *VietnamAdditionalInfo
+
 	noSmithyDocumentSerde
 }
 
@@ -118,11 +128,17 @@ type AdditionalInfoResponse struct {
 	// Additional tax information associated with your TRN in Canada.
 	CanadaAdditionalInfo *CanadaAdditionalInfo
 
+	// Additional tax information to specify for a TRN in Egypt.
+	EgyptAdditionalInfo *EgyptAdditionalInfo
+
 	//  Additional tax information associated with your TRN in Estonia.
 	EstoniaAdditionalInfo *EstoniaAdditionalInfo
 
 	//  Additional tax information associated with your TRN in Georgia.
 	GeorgiaAdditionalInfo *GeorgiaAdditionalInfo
+
+	// Additional tax information to specify for a TRN in Greece.
+	GreeceAdditionalInfo *GreeceAdditionalInfo
 
 	//  Additional tax information in India.
 	IndiaAdditionalInfo *IndiaAdditionalInfo
@@ -159,6 +175,9 @@ type AdditionalInfoResponse struct {
 
 	//  Additional tax information associated with your TRN in Ukraine.
 	UkraineAdditionalInfo *UkraineAdditionalInfo
+
+	// Additional tax information to specify for a TRN in Vietnam.
+	VietnamAdditionalInfo *VietnamAdditionalInfo
 
 	noSmithyDocumentSerde
 }
@@ -201,11 +220,27 @@ type Address struct {
 	// you set a TRN in Brazil, use districtOrCounty for the neighborhood name.
 	DistrictOrCounty *string
 
-	// The state, region, or province that the address is located.
+	// The state, region, or province that the address is located. This field is only
+	// required for Canada, India, United Arab Emirates, Romania, and Brazil (CPF). It
+	// is optional for all other countries.
 	//
 	// If this is required for tax settings, use the same name as shown on the Tax
 	// Settings page.
 	StateOrRegion *string
+
+	noSmithyDocumentSerde
+}
+
+// The address domain associate with the tax information.
+type Authority struct {
+
+	//  The country code for the country that the address is in.
+	//
+	// This member is required.
+	Country *string
+
+	//  The state that the address is located.
+	State *string
 
 	noSmithyDocumentSerde
 }
@@ -280,9 +315,9 @@ type CanadaAdditionalInfo struct {
 	CanadaQuebecSalesTaxNumber *string
 
 	//  Manitoba Retail Sales Tax ID number. Customers purchasing Amazon Web Services
-	// for resale in Manitoba must provide a valid Retail Sales Tax ID number for
-	// Manitoba. Leave this blank if you do not have a Retail Sales Tax ID number in
-	// Manitoba or are not purchasing Amazon Web Services for resale.
+	// services for resale in Manitoba must provide a valid Retail Sales Tax ID number
+	// for Manitoba. Leave this blank if you do not have a Retail Sales Tax ID number
+	// in Manitoba or are not purchasing Amazon Web Services services for resale.
 	CanadaRetailSalesTaxNumber *string
 
 	//  The value for this parameter must be true if the provincialSalesTaxId value is
@@ -328,6 +363,19 @@ type DestinationS3Location struct {
 	noSmithyDocumentSerde
 }
 
+// Additional tax information to specify for a TRN in Egypt.
+type EgyptAdditionalInfo struct {
+
+	// The unique identification number provided by the Egypt Tax Authority.
+	UniqueIdentificationNumber *string
+
+	// The expiration date of the unique identification number provided by the Egypt
+	// Tax Authority.
+	UniqueIdentificationNumberExpirationDate *string
+
+	noSmithyDocumentSerde
+}
+
 // Additional tax information associated with your TRN in Estonia.
 type EstoniaAdditionalInfo struct {
 
@@ -340,6 +388,22 @@ type EstoniaAdditionalInfo struct {
 	noSmithyDocumentSerde
 }
 
+// The exemption certificate.
+type ExemptionCertificate struct {
+
+	// The exemption certificate file content.
+	//
+	// This member is required.
+	DocumentFile []byte
+
+	// The exemption certificate file name.
+	//
+	// This member is required.
+	DocumentName *string
+
+	noSmithyDocumentSerde
+}
+
 // Additional tax information associated with your TRN in Georgia.
 type GeorgiaAdditionalInfo struct {
 
@@ -347,6 +411,15 @@ type GeorgiaAdditionalInfo struct {
 	//
 	// This member is required.
 	PersonType PersonType
+
+	noSmithyDocumentSerde
+}
+
+// Additional tax information to specify for a TRN in Greece.
+type GreeceAdditionalInfo struct {
+
+	// The code of contracting authority for e-invoicing.
+	ContractingAuthorityCode *string
 
 	noSmithyDocumentSerde
 }
@@ -432,10 +505,42 @@ type KenyaAdditionalInfo struct {
 // Additional tax information associated with your TRN in Malaysia.
 type MalaysiaAdditionalInfo struct {
 
-	// List of service tax codes for your TRN in Malaysia.
+	// The tax registration number (TRN) in Malaysia.
 	//
-	// This member is required.
+	// For individual, you can specify the taxInformationNumber in
+	// MalaysiaAdditionalInfo with NRIC type, and a valid MyKad or NRIC number. For
+	// business, you must specify a businessRegistrationNumber in
+	// MalaysiaAdditionalInfo with a TIN type and tax identification number. For
+	// business resellers, you must specify a businessRegistrationNumber and
+	// taxInformationNumber in MalaysiaAdditionalInfo with a sales and service tax
+	// (SST) type and a valid SST number.
+	//
+	// For business resellers with service codes, you must specify
+	// businessRegistrationNumber , taxInformationNumber , and distinct serviceTaxCodes
+	// in MalaysiaAdditionalInfo with a SST type and valid sales and service tax (SST)
+	// number. By using this API operation, Amazon Web Services registers your
+	// self-declaration that you’re an authorized business reseller registered with the
+	// Royal Malaysia Customs Department (RMCD), and have a valid SST number.
+	BusinessRegistrationNumber *string
+
+	// List of service tax codes for your TRN in Malaysia.
 	ServiceTaxCodes []MalaysiaServiceTaxCode
+
+	// The tax information number in Malaysia.
+	//
+	// For individual, you can specify the taxInformationNumber in
+	// MalaysiaAdditionalInfo with NRIC type, and a valid MyKad or NRIC number. For
+	// business resellers, you must specify a businessRegistrationNumber and
+	// taxInformationNumber in MalaysiaAdditionalInfo with a sales and service tax
+	// (SST) type and a valid SST number.
+	//
+	// For business resellers with service codes, you must specify
+	// businessRegistrationNumber , taxInformationNumber , and distinct serviceTaxCodes
+	// in MalaysiaAdditionalInfo with a SST type and valid sales and service tax (SST)
+	// number. By using this API operation, Amazon Web Services registers your
+	// self-declaration that you’re an authorized business reseller registered with the
+	// Royal Malaysia Customs Department (RMCD), and have a valid SST number.
+	TaxInformationNumber *string
 
 	noSmithyDocumentSerde
 }
@@ -526,6 +631,70 @@ type SpainAdditionalInfo struct {
 	noSmithyDocumentSerde
 }
 
+// Supplemental TRN details.
+type SupplementalTaxRegistration struct {
+
+	//  The details of the address associated with the TRN information.
+	//
+	// This member is required.
+	Address *Address
+
+	//  Unique authority ID for the supplemental TRN.
+	//
+	// This member is required.
+	AuthorityId *string
+
+	//  The legal name associated with your TRN registration.
+	//
+	// This member is required.
+	LegalName *string
+
+	//  The supplemental TRN unique identifier.
+	//
+	// This member is required.
+	RegistrationId *string
+
+	//  Type of supplemental TRN. Currently, this can only be VAT.
+	//
+	// This member is required.
+	RegistrationType SupplementalTaxRegistrationType
+
+	//  The status of your TRN.
+	//
+	// This member is required.
+	Status TaxRegistrationStatus
+
+	noSmithyDocumentSerde
+}
+
+//	The supplemental TRN information to provide when adding or updating a
+//
+// supplemental TRN.
+type SupplementalTaxRegistrationEntry struct {
+
+	//  The details of the address associated with the TRN information.
+	//
+	// This member is required.
+	Address *Address
+
+	//  The legal name associated with your TRN registration.
+	//
+	// This member is required.
+	LegalName *string
+
+	//  The supplemental TRN unique identifier.
+	//
+	// This member is required.
+	RegistrationId *string
+
+	//  Type of supplemental TRN. Currently, this can only be VAT.
+	//
+	// This member is required.
+	RegistrationType SupplementalTaxRegistrationType
+
+	noSmithyDocumentSerde
+}
+
 // The metadata for your tax document.
 type TaxDocumentMetadata struct {
 
@@ -543,6 +712,69 @@ type TaxDocumentMetadata struct {
 	//
 	// This member is required.
 	TaxDocumentName *string
+
+	noSmithyDocumentSerde
+}
+
+// The tax exemption.
+type TaxExemption struct {
+
+	// The address domain associate with tax exemption.
+	//
+	// This member is required.
+	Authority *Authority
+
+	// The tax exemption type.
+	//
+	// This member is required.
+	TaxExemptionType *TaxExemptionType
+
+	// The tax exemption effective date.
+	EffectiveDate *time.Time
+
+	// The tax exemption expiration date.
+	ExpirationDate *time.Time
+
+	// The tax exemption status.
+	Status EntityExemptionAccountStatus
+
+	// The tax exemption recording time in the TaxSettings system.
+	SystemEffectiveDate *time.Time
+
+	noSmithyDocumentSerde
+}
+
+// The tax exemption details.
+type TaxExemptionDetails struct {
+
+	// The indicator if the tax exemption is inherited from the consolidated billing
+	// family management account.
+	HeritageObtainedDetails *bool
+
+	// The consolidated billing family management account the tax exemption inherited
+	// from.
+	HeritageObtainedParentEntity *string
+
+	// The reason of the heritage inheritance.
+	HeritageObtainedReason *string
+
+	// Tax exemptions.
+	TaxExemptions []TaxExemption
+
+	noSmithyDocumentSerde
+}
+
+// The tax exemption type.
+type TaxExemptionType struct {
+
+	// The tax exemption's applicable jurisdictions.
+	ApplicableJurisdictions []Authority
+
+	// The tax exemption's type description.
+	Description *string
+
+	// The tax exemption's type display name.
+	DisplayName *string
 
 	noSmithyDocumentSerde
 }
@@ -577,7 +809,7 @@ type TaxRegistration struct {
 	// This member is required.
 	RegistrationId *string
 
-	// Type of your tax registration. This can be either VAT or GST .
+	// Type of your tax registration.
 	//
 	// This member is required.
 	RegistrationType TaxRegistrationType
@@ -607,12 +839,29 @@ type TaxRegistration struct {
 	noSmithyDocumentSerde
 }
 
+// The tax registration document.
+type TaxRegistrationDocFile struct {
+
+	// The tax registration document content.
+	//
+	// This member is required.
+	FileContent []byte
+
+	// The tax registration document name.
+	//
+	// This member is required.
+	FileName *string
+
+	noSmithyDocumentSerde
+}
+
 // Tax registration document information.
 type TaxRegistrationDocument struct {
 
+	// The tax registration document.
+	File *TaxRegistrationDocFile
+
 	// The Amazon S3 location where your tax registration document is stored.
-	//
-	// This member is required.
 	S3Location *SourceS3Location
 
 	noSmithyDocumentSerde
@@ -781,6 +1030,28 @@ type VerificationDetails struct {
 	// The tax registration document, which is required for specific countries such as
 	// Bangladesh, Kenya, South Korea and Spain.
 	TaxRegistrationDocuments []TaxRegistrationDocument
+
+	noSmithyDocumentSerde
+}
+
+// Additional tax information to specify for a TRN in Vietnam.
+type VietnamAdditionalInfo struct {
+
+	// The electronic transaction code number on the tax return document. This field
+	// must be provided for successful API operation.
+	ElectronicTransactionCodeNumber *string
+
+	// The enterprise identification number for tax registration. This field must be
+	// provided for successful API operation.
+	EnterpriseIdentificationNumber *string
+
+	// The payment voucher number on the tax return payment document. This field must
+	// be provided for successful API operation.
+	PaymentVoucherNumber *string
+
+	// The date on the tax return payment document. This field must be provided for
+	// successful API operation.
+	PaymentVoucherNumberDate *string
 
 	noSmithyDocumentSerde
 }

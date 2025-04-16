@@ -29,14 +29,14 @@ func (c *Client) ListProtectedResourcesByBackupVault(ctx context.Context, params
 
 type ListProtectedResourcesByBackupVaultInput struct {
 
-	// This is the list of protected resources by backup vault within the vault(s) you
-	// specify by name.
+	// The list of protected resources by backup vault within the vault(s) you specify
+	// by name.
 	//
 	// This member is required.
 	BackupVaultName *string
 
-	// This is the list of protected resources by backup vault within the vault(s) you
-	// specify by account ID.
+	// The list of protected resources by backup vault within the vault(s) you specify
+	// by account ID.
 	BackupVaultAccountId *string
 
 	// The maximum number of items to be returned.
@@ -112,6 +112,9 @@ func (c *Client) addOperationListProtectedResourcesByBackupVaultMiddlewares(stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -128,6 +131,9 @@ func (c *Client) addOperationListProtectedResourcesByBackupVaultMiddlewares(stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListProtectedResourcesByBackupVaultValidationMiddleware(stack); err != nil {
@@ -149,6 +155,18 @@ func (c *Client) addOperationListProtectedResourcesByBackupVaultMiddlewares(stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

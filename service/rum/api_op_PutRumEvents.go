@@ -60,6 +60,14 @@ type PutRumEventsInput struct {
 	// This member is required.
 	UserDetails *types.UserDetails
 
+	// If the app monitor uses a resource-based policy that requires PutRumEvents
+	// requests to specify a certain alias, specify that alias here. This alias will be
+	// compared to the rum:alias context key in the resource-based policy. For more
+	// information, see [Using resource-based policies with CloudWatch RUM].
+	//
+	// [Using resource-based policies with CloudWatch RUM]: https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM-resource-policies.html
+	Alias *string
+
 	noSmithyDocumentSerde
 }
 
@@ -113,6 +121,9 @@ func (c *Client) addOperationPutRumEventsMiddlewares(stack *middleware.Stack, op
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -129,6 +140,9 @@ func (c *Client) addOperationPutRumEventsMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addEndpointPrefix_opPutRumEventsMiddleware(stack); err != nil {
@@ -153,6 +167,18 @@ func (c *Client) addOperationPutRumEventsMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

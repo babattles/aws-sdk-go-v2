@@ -14,6 +14,13 @@ import (
 // Automatically enables Amazon Security Lake for new member accounts in your
 // organization. Security Lake is not automatically enabled for any existing member
 // accounts in your organization.
+//
+// This operation merges the new data lake organization configuration with the
+// existing configuration for Security Lake in your organization. If you want to
+// create a new data lake organization configuration, you must delete the existing
+// one using [DeleteDataLakeOrganizationConfiguration].
+//
+// [DeleteDataLakeOrganizationConfiguration]: https://docs.aws.amazon.com/security-lake/latest/APIReference/API_DeleteDataLakeOrganizationConfiguration.html
 func (c *Client) CreateDataLakeOrganizationConfiguration(ctx context.Context, params *CreateDataLakeOrganizationConfigurationInput, optFns ...func(*Options)) (*CreateDataLakeOrganizationConfigurationOutput, error) {
 	if params == nil {
 		params = &CreateDataLakeOrganizationConfigurationInput{}
@@ -88,6 +95,9 @@ func (c *Client) addOperationCreateDataLakeOrganizationConfigurationMiddlewares(
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -104,6 +114,9 @@ func (c *Client) addOperationCreateDataLakeOrganizationConfigurationMiddlewares(
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateDataLakeOrganizationConfigurationValidationMiddleware(stack); err != nil {
@@ -125,6 +138,18 @@ func (c *Client) addOperationCreateDataLakeOrganizationConfigurationMiddlewares(
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -120,6 +120,42 @@ var _ *types.ActionReviewEvent
 var _ *types.MetadataEvent
 var _ *types.TextOutputEvent
 
+func ExampleContentSource_outputUsage() {
+	var union types.ContentSource
+	// type switches can be used to check the union value
+	switch v := union.(type) {
+	case *types.ContentSourceMemberRetriever:
+		_ = v.Value // Value is types.RetrieverContentSource
+
+	case *types.UnknownUnionMember:
+		fmt.Println("unknown tag:", v.Tag)
+
+	default:
+		fmt.Println("union is nil or unknown type")
+
+	}
+}
+
+var _ *types.RetrieverContentSource
+
+func ExampleCopyFromSource_outputUsage() {
+	var union types.CopyFromSource
+	// type switches can be used to check the union value
+	switch v := union.(type) {
+	case *types.CopyFromSourceMemberConversation:
+		_ = v.Value // Value is types.ConversationSource
+
+	case *types.UnknownUnionMember:
+		fmt.Println("unknown tag:", v.Tag)
+
+	default:
+		fmt.Println("union is nil or unknown type")
+
+	}
+}
+
+var _ *types.ConversationSource
+
 func ExampleDocumentAttributeBoostingConfiguration_outputUsage() {
 	var union types.DocumentAttributeBoostingConfiguration
 	// type switches can be used to check the union value
@@ -231,6 +267,9 @@ func ExamplePluginAuthConfiguration_outputUsage() {
 	case *types.PluginAuthConfigurationMemberBasicAuthConfiguration:
 		_ = v.Value // Value is types.BasicAuthConfiguration
 
+	case *types.PluginAuthConfigurationMemberIdcAuthConfiguration:
+		_ = v.Value // Value is types.IdcAuthConfiguration
+
 	case *types.PluginAuthConfigurationMemberNoAuthConfiguration:
 		_ = v.Value // Value is types.NoAuthConfiguration
 
@@ -247,6 +286,7 @@ func ExamplePluginAuthConfiguration_outputUsage() {
 }
 
 var _ *types.BasicAuthConfiguration
+var _ *types.IdcAuthConfiguration
 var _ *types.OAuth2ClientCredentialConfiguration
 var _ *types.NoAuthConfiguration
 
@@ -315,6 +355,54 @@ func ExampleRuleConfiguration_outputUsage() {
 
 var _ *types.ContentRetrievalRule
 var _ *types.ContentBlockerRule
+
+func ExampleSourceDetails_outputUsage() {
+	var union types.SourceDetails
+	// type switches can be used to check the union value
+	switch v := union.(type) {
+	case *types.SourceDetailsMemberAudioSourceDetails:
+		_ = v.Value // Value is types.AudioSourceDetails
+
+	case *types.SourceDetailsMemberImageSourceDetails:
+		_ = v.Value // Value is types.ImageSourceDetails
+
+	case *types.SourceDetailsMemberVideoSourceDetails:
+		_ = v.Value // Value is types.VideoSourceDetails
+
+	case *types.UnknownUnionMember:
+		fmt.Println("unknown tag:", v.Tag)
+
+	default:
+		fmt.Println("union is nil or unknown type")
+
+	}
+}
+
+var _ *types.ImageSourceDetails
+var _ *types.VideoSourceDetails
+var _ *types.AudioSourceDetails
+
+func ExampleSubscriptionPrincipal_outputUsage() {
+	var union types.SubscriptionPrincipal
+	// type switches can be used to check the union value
+	switch v := union.(type) {
+	case *types.SubscriptionPrincipalMemberGroup:
+		_ = v.Value // Value is string
+
+	case *types.SubscriptionPrincipalMemberUser:
+		_ = v.Value // Value is string
+
+	case *types.UnknownUnionMember:
+		fmt.Println("unknown tag:", v.Tag)
+
+	default:
+		fmt.Println("union is nil or unknown type")
+
+	}
+}
+
+var _ *string
+var _ *string
 
 func ExampleWebExperienceAuthConfiguration_outputUsage() {
 	var union types.WebExperienceAuthConfiguration

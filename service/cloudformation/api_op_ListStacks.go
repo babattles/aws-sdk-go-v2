@@ -12,10 +12,10 @@ import (
 )
 
 // Returns the summary information for stacks whose status matches the specified
-// StackStatusFilter. Summary information for stacks that have been deleted is kept
-// for 90 days after the stack is deleted. If no StackStatusFilter is specified,
-// summary information for all stacks is returned (including existing stacks and
-// stacks that have been deleted).
+// StackStatusFilter . Summary information for stacks that have been deleted is
+// kept for 90 days after the stack is deleted. If no StackStatusFilter is
+// specified, summary information for all stacks is returned (including existing
+// stacks and stacks that have been deleted).
 func (c *Client) ListStacks(ctx context.Context, params *ListStacksInput, optFns ...func(*Options)) (*ListStacksOutput, error) {
 	if params == nil {
 		params = &ListStacksInput{}
@@ -105,6 +105,9 @@ func (c *Client) addOperationListStacksMiddlewares(stack *middleware.Stack, opti
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -123,6 +126,9 @@ func (c *Client) addOperationListStacksMiddlewares(stack *middleware.Stack, opti
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListStacks(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -139,6 +145,18 @@ func (c *Client) addOperationListStacksMiddlewares(stack *middleware.Stack, opti
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -43,9 +43,9 @@ type ListFrameworksInput struct {
 
 type ListFrameworksOutput struct {
 
-	// A list of frameworks with details for each framework, including the framework
-	// name, Amazon Resource Name (ARN), description, number of controls, creation
-	// time, and deployment status.
+	// The frameworks with details for each framework, including the framework name,
+	// Amazon Resource Name (ARN), description, number of controls, creation time, and
+	// deployment status.
 	Frameworks []types.Framework
 
 	// An identifier that was returned from the previous call to this operation, which
@@ -101,6 +101,9 @@ func (c *Client) addOperationListFrameworksMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -119,6 +122,9 @@ func (c *Client) addOperationListFrameworksMiddlewares(stack *middleware.Stack, 
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListFrameworks(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -135,6 +141,18 @@ func (c *Client) addOperationListFrameworksMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

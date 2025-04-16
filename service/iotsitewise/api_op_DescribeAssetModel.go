@@ -12,7 +12,6 @@ import (
 	smithytime "github.com/aws/smithy-go/time"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	smithywaiter "github.com/aws/smithy-go/waiter"
-	jmespath "github.com/jmespath/go-jmespath"
 	"time"
 )
 
@@ -42,6 +41,13 @@ type DescribeAssetModelInput struct {
 	//
 	// This member is required.
 	AssetModelId *string
+
+	// The version alias that specifies the latest or active version of the asset
+	// model. The details are returned in the response. The default value is LATEST .
+	// See [Asset model versions]in the IoT SiteWise User Guide.
+	//
+	// [Asset model versions]: https://docs.aws.amazon.com/iot-sitewise/latest/userguide/model-active-version.html
+	AssetModelVersion *string
 
 	//  Whether or not to exclude asset model properties from the response.
 	ExcludeProperties bool
@@ -127,6 +133,20 @@ type DescribeAssetModelOutput struct {
 	//   this type of asset model.
 	AssetModelType types.AssetModelType
 
+	// The version of the asset model. See [Asset model versions] in the IoT SiteWise User Guide.
+	//
+	// [Asset model versions]: https://docs.aws.amazon.com/iot-sitewise/latest/userguide/model-active-version.html
+	AssetModelVersion *string
+
+	// The entity tag (ETag) is a hash of the retrieved version of the asset model.
+	// It's used to make concurrent updates safely to the resource. See [Optimistic locking for asset model writes]in the IoT
+	// SiteWise User Guide.
+	//
+	// See [Optimistic locking for asset model writes] in the IoT SiteWise User Guide.
+	//
+	// [Optimistic locking for asset model writes]: https://docs.aws.amazon.com/iot-sitewise/latest/userguide/opt-locking-for-model.html
+	ETag *string
+
 	// Metadata pertaining to the operation's result.
 	ResultMetadata middleware.Metadata
 
@@ -176,6 +196,9 @@ func (c *Client) addOperationDescribeAssetModelMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -192,6 +215,9 @@ func (c *Client) addOperationDescribeAssetModelMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addEndpointPrefix_opDescribeAssetModelMiddleware(stack); err != nil {
@@ -216,6 +242,18 @@ func (c *Client) addOperationDescribeAssetModelMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -381,39 +419,38 @@ func (w *AssetModelActiveWaiter) WaitForOutput(ctx context.Context, params *Desc
 func assetModelActiveStateRetryable(ctx context.Context, input *DescribeAssetModelInput, output *DescribeAssetModelOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("assetModelStatus.state", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.AssetModelStatus
+		var v2 types.AssetModelState
+		if v1 != nil {
+			v3 := v1.State
+			v2 = v3
 		}
-
 		expectedValue := "ACTIVE"
-		value, ok := pathValue.(types.AssetModelState)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.AssetModelState value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v2)
+		if pathValue == expectedValue {
 			return false, nil
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("assetModelStatus.state", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.AssetModelStatus
+		var v2 types.AssetModelState
+		if v1 != nil {
+			v3 := v1.State
+			v2 = v3
 		}
-
 		expectedValue := "FAILED"
-		value, ok := pathValue.(types.AssetModelState)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.AssetModelState value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v2)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 
@@ -585,6 +622,9 @@ func assetModelNotExistsStateRetryable(ctx context.Context, input *DescribeAsset
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 

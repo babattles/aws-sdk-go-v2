@@ -92,6 +92,11 @@ type DescribeTagsInput struct {
 	//
 	//   - Snapshot copy grant
 	//
+	//   - Integration (zero-ETL integration or S3 event integration)
+	//
+	// To describe the tags associated with an integration , don't specify ResourceType
+	//   , instead specify the ResourceName of the integration.
+	//
 	// For more information about Amazon Redshift resource types and constructing
 	// ARNs, go to [Specifying Policy Elements: Actions, Effects, Resources, and Principals]in the Amazon Redshift Cluster Management Guide.
 	//
@@ -176,6 +181,9 @@ func (c *Client) addOperationDescribeTagsMiddlewares(stack *middleware.Stack, op
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -194,6 +202,9 @@ func (c *Client) addOperationDescribeTagsMiddlewares(stack *middleware.Stack, op
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeTags(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -210,6 +221,18 @@ func (c *Client) addOperationDescribeTagsMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

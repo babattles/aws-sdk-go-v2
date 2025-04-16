@@ -59,6 +59,32 @@ type Address struct {
 	noSmithyDocumentSerde
 }
 
+// A report that captures key activity from the last 30 days of network traffic
+// monitored by your firewall.
+//
+// You can generate up to one report per traffic type, per 30 day period. For
+// example, when you successfully create an HTTP traffic report, you cannot create
+// another HTTP traffic report until 30 days pass. Alternatively, if you generate a
+// report that combines metrics on both HTTP and HTTPS traffic, you cannot create
+// another report for either traffic type until 30 days pass.
+type AnalysisReport struct {
+
+	// The unique ID of the query that ran when you requested an analysis report.
+	AnalysisReportId *string
+
+	// The type of traffic that will be used to generate a report.
+	AnalysisType EnabledAnalysisType
+
+	// The date and time the analysis report was ran.
+	ReportTime *time.Time
+
+	// The status of the analysis report you specify. Statuses include RUNNING ,
+	// COMPLETED , or FAILED .
+	Status *string
+
+	noSmithyDocumentSerde
+}
+
 // The analysis result for Network Firewall's stateless rule group analyzer. Every
 // time you call CreateRuleGroup, UpdateRuleGroup, or DescribeRuleGroup on a stateless rule group, Network Firewall analyzes the
 // stateless rule groups in your account and identifies the rules that might
@@ -66,6 +92,9 @@ type Address struct {
 // detects a rule that's routing traffic asymmetrically, which impacts the
 // service's ability to properly process traffic, the service includes the rule in
 // a list of analysis results.
+//
+// The AnalysisResult data type is not related to traffic analysis reports you
+// generate using StartAnalysisReport. For information on traffic analysis report results, see AnalysisTypeReportResult.
 type AnalysisResult struct {
 
 	// Provides analysis details for the identified rule.
@@ -103,6 +132,32 @@ type AnalysisResult struct {
 	//   for changes in TCP flags throughout the TCP connection cycle, for example SYN
 	//   and ACK flags used in a 3-way TCP handshake.
 	IdentifiedType IdentifiedType
+
+	noSmithyDocumentSerde
+}
+
+// The results of a COMPLETED analysis report generated with StartAnalysisReport.
+//
+// For an example of traffic analysis report results, see the response syntax of GetAnalysisReportResults.
+type AnalysisTypeReportResult struct {
+
+	// The most frequently accessed domains.
+	Domain *string
+
+	// The date and time any domain was first accessed (within the last 30 day period).
+	FirstAccessed *time.Time
+
+	// The number of attempts made to access a observed domain.
+	Hits *Hits
+
+	// The date and time any domain was last accessed (within the last 30 day period).
+	LastAccessed *time.Time
+
+	// The type of traffic captured by the analysis report.
+	Protocol *string
+
+	// The number of unique source IP addresses that connected to a domain.
+	UniqueSources *UniqueSources
 
 	noSmithyDocumentSerde
 }
@@ -335,6 +390,10 @@ type Firewall struct {
 
 	// A description of the firewall.
 	Description *string
+
+	// An optional setting indicating the specific traffic analysis types to enable on
+	// the firewall.
+	EnabledAnalysisTypes []EnabledAnalysisType
 
 	// A complex type that contains the Amazon Web Services KMS encryption
 	// configuration settings for your firewall.
@@ -579,6 +638,143 @@ type FirewallStatus struct {
 	noSmithyDocumentSerde
 }
 
+// Any number of arrays, where each array is a single flow identified in the scope
+// of the operation. If multiple flows were in the scope of the operation, multiple
+// Flows arrays are returned.
+type Flow struct {
+
+	// Returned as info about age of the flows identified by the flow operation.
+	Age *int32
+
+	// Returns the number of bytes received or transmitted in a specific flow.
+	ByteCount int64
+
+	// A single IP address specification. This is used in the MatchAttributes source and destination
+	// specifications.
+	DestinationAddress *Address
+
+	// The destination port to inspect for. You can specify an individual port, for
+	// example 1994 and you can specify a port range, for example 1990:1994 . To match
+	// with any port, specify ANY .
+	DestinationPort *string
+
+	// Returns the total number of data packets received or transmitted in a flow.
+	PacketCount *int32
+
+	// The protocols to inspect for, specified using the assigned internet protocol
+	// number (IANA) for each protocol. If not specified, this matches with any
+	// protocol.
+	Protocol *string
+
+	// A single IP address specification. This is used in the MatchAttributes source and destination
+	// specifications.
+	SourceAddress *Address
+
+	// The source port to inspect for. You can specify an individual port, for example
+	// 1994 and you can specify a port range, for example 1990:1994 . To match with any
+	// port, specify ANY .
+	SourcePort *string
+
+	noSmithyDocumentSerde
+}
+
+// Defines the scope a flow operation. You can use up to 20 filters to configure a
+// single flow operation.
+type FlowFilter struct {
+
+	// A single IP address specification. This is used in the MatchAttributes source and destination
+	// specifications.
+	DestinationAddress *Address
+
+	// The destination port to inspect for. You can specify an individual port, for
+	// example 1994 and you can specify a port range, for example 1990:1994 . To match
+	// with any port, specify ANY .
+	DestinationPort *string
+
+	// The protocols to inspect for, specified using the assigned internet protocol
+	// number (IANA) for each protocol. If not specified, this matches with any
+	// protocol.
+	Protocols []string
+
+	// A single IP address specification. This is used in the MatchAttributes source and destination
+	// specifications.
+	SourceAddress *Address
+
+	// The source port to inspect for. You can specify an individual port, for example
+	// 1994 and you can specify a port range, for example 1990:1994 . To match with any
+	// port, specify ANY .
+	SourcePort *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about a flow operation, such as related statuses, unique
+// identifiers, and all filters defined in the operation.
+//
+// Flow operations let you manage the flows tracked in the flow table, also known
+// as the firewall table.
+//
+// A flow is network traffic that is monitored by a firewall, either by stateful
+// or stateless rules. For traffic to be considered part of a flow, it must share
+// Destination, DestinationPort, Direction, Protocol, Source, and SourcePort.
+type FlowOperation struct {
+
+	// Defines the scope a flow operation. You can use up to 20 filters to configure a
+	// single flow operation.
+	FlowFilters []FlowFilter
+
+	// The reqested FlowOperation ignores flows with an age (in seconds) lower than
+	// MinimumFlowAgeInSeconds . You provide this for start commands.
+	MinimumFlowAgeInSeconds *int32
+
+	noSmithyDocumentSerde
+}
+
+// An array of objects with metadata about the requested FlowOperation .
+type FlowOperationMetadata struct {
+
+	// A unique identifier for the flow operation. This ID is returned in the
+	// responses to start and list commands. You provide to describe commands.
+	FlowOperationId *string
+
+	// Returns the status of the flow operation. This string is returned in the
+	// responses to start, list, and describe commands.
+	//
+	// If the status is COMPLETED_WITH_ERRORS , results may be returned with any number
+	// of Flows missing from the response. If the status is FAILED , Flows returned
+	// will be empty.
+	FlowOperationStatus FlowOperationStatus
+
+	// Defines the type of FlowOperation .
+	FlowOperationType FlowOperationType
+
+	// A timestamp indicating when the Suricata engine identified flows impacted by an
+	// operation.
+	FlowRequestTimestamp *time.Time
+
+	noSmithyDocumentSerde
+}
+
+// Describes the amount of time that can pass without any traffic sent through the
+// firewall before the firewall determines that the connection is idle and Network
+// Firewall removes the flow entry from its flow table. Existing connections and
+// flows are not impacted when you update this value. Only new connections after
+// you update this value are impacted.
+type FlowTimeouts struct {
+
+	// The number of seconds that can pass without any TCP traffic sent through the
+	// firewall before the firewall determines that the connection is idle. After the
+	// idle timeout passes, data packets are dropped, however, the next TCP SYN packet
+	// is considered a new flow and is processed by the firewall. Clients or targets
+	// can use TCP keepalive packets to reset the idle timeout.
+	//
+	// You can define the TcpIdleTimeoutSeconds value to be between 60 and 6000
+	// seconds. If no value is provided, it defaults to 350 seconds.
+	TcpIdleTimeoutSeconds *int32
+
+	noSmithyDocumentSerde
+}
+
 // The basic rule criteria for Network Firewall to use to inspect packet headers
 // in stateful traffic flow inspection. Traffic flows that match the criteria are a
 // match for the corresponding StatefulRule.
@@ -673,6 +869,15 @@ type Header struct {
 	//
 	// This member is required.
 	SourcePort *string
+
+	noSmithyDocumentSerde
+}
+
+// Attempts made to a access domain.
+type Hits struct {
+
+	// The number of attempts made to access a domain.
+	Count int32
 
 	noSmithyDocumentSerde
 }
@@ -803,26 +1008,29 @@ type LoggingConfiguration struct {
 // items such as IP address, CIDR range, port number, protocol, and TCP flags.
 type MatchAttributes struct {
 
-	// The destination ports to inspect for. If not specified, this matches with any
-	// destination port. This setting is only used for protocols 6 (TCP) and 17 (UDP).
+	// The destination port to inspect for. You can specify an individual port, for
+	// example 1994 and you can specify a port range, for example 1990:1994 . To match
+	// with any port, specify ANY .
 	//
-	// You can specify individual ports, for example 1994 and you can specify port
-	// ranges, for example 1990:1994 .
+	// This setting is only used for protocols 6 (TCP) and 17 (UDP).
 	DestinationPorts []PortRange
 
 	// The destination IP addresses and address ranges to inspect for, in CIDR
 	// notation. If not specified, this matches with any destination address.
 	Destinations []Address
 
-	// The protocols to inspect for, specified using each protocol's assigned internet
-	// protocol number (IANA). If not specified, this matches with any protocol.
+	// The protocols to inspect for, specified using the assigned internet protocol
+	// number (IANA) for each protocol. If not specified, this matches with any
+	// protocol.
 	Protocols []int32
 
-	// The source ports to inspect for. If not specified, this matches with any source
-	// port. This setting is only used for protocols 6 (TCP) and 17 (UDP).
+	// The source port to inspect for. You can specify an individual port, for example
+	// 1994 and you can specify a port range, for example 1990:1994 . To match with any
+	// port, specify ANY .
 	//
-	// You can specify individual ports, for example 1994 and you can specify port
-	// ranges, for example 1990:1994 .
+	// If not specified, this matches with any source port.
+	//
+	// This setting is only used for protocols 6 (TCP) and 17 (UDP).
 	SourcePorts []PortRange
 
 	// The source IP addresses and address ranges to inspect for, in CIDR notation. If
@@ -1108,7 +1316,7 @@ type RuleOption struct {
 	// (signature ID), and can optionally include other keywords. For information about
 	// Suricata compatible keywords, see [Rule options]in the Suricata documentation.
 	//
-	// [Rule options]: https://suricata.readthedocs.io/en/suricata-6.0.9/rules/intro.html#rule-options
+	// [Rule options]: https://suricata.readthedocs.io/en/suricata-7.0.3/rules/intro.html#rule-options
 	//
 	// This member is required.
 	Keyword *string
@@ -1118,7 +1326,7 @@ type RuleOption struct {
 	// the Keyword . For more information about the settings for specific options, see [Rule options]
 	// .
 	//
-	// [Rule options]: https://suricata.readthedocs.io/en/suricata-6.0.9/rules/intro.html#rule-options
+	// [Rule options]: https://suricata.readthedocs.io/en/suricata-7.0.3/rules/intro.html#rule-options
 	Settings []string
 
 	noSmithyDocumentSerde
@@ -1149,7 +1357,7 @@ type RulesSource struct {
 	// protocol, source and destination, ports, direction, and rule options. For
 	// information about the Suricata Rules format, see [Rules Format].
 	//
-	// [Rules Format]: https://suricata.readthedocs.io/en/suricata-6.0.9/rules/intro.html
+	// [Rules Format]: https://suricata.readthedocs.io/en/suricata-7.0.3/rules/intro.html
 	StatefulRules []StatefulRule
 
 	// Stateless inspection criteria to be used in a stateless rule group.
@@ -1297,9 +1505,11 @@ type ServerCertificateScope struct {
 	// CIDR notation. If not specified, this matches with any destination address.
 	Destinations []Address
 
-	// The protocols to decrypt for inspection, specified using each protocol's
-	// assigned internet protocol number (IANA). Network Firewall currently supports
-	// only TCP.
+	// The protocols to inspect for, specified using the assigned internet protocol
+	// number (IANA) for each protocol. If not specified, this matches with any
+	// protocol.
+	//
+	// Network Firewall currently supports only TCP.
 	Protocols []int32
 
 	// The source ports to decrypt for inspection, in Transmission Control Protocol
@@ -1341,6 +1551,10 @@ type SourceMetadata struct {
 // Configuration settings for the handling of the stateful rule groups in a
 // firewall policy.
 type StatefulEngineOptions struct {
+
+	// Configures the amount of time that can pass without any traffic sent through
+	// the firewall before the firewall determines that the connection is idle.
+	FlowTimeouts *FlowTimeouts
 
 	// Indicates how to manage the order of stateful rule evaluation for the policy.
 	// STRICT_ORDER is the default and recommended option. With STRICT_ORDER , provide
@@ -1386,7 +1600,7 @@ type StatefulEngineOptions struct {
 // destination, ports, direction, and rule options. For information about the
 // Suricata Rules format, see [Rules Format].
 //
-// [Rules Format]: https://suricata.readthedocs.io/en/suricata-6.0.9/rules/intro.html
+// [Rules Format]: https://suricata.readthedocs.io/en/suricata-7.0.3/rules/intro.html
 type StatefulRule struct {
 
 	// Defines what Network Firewall should do with the packets in a traffic flow when
@@ -1761,6 +1975,15 @@ type TLSInspectionConfigurationResponse struct {
 
 	// The key:value pairs to associate with the resource.
 	Tags []Tag
+
+	noSmithyDocumentSerde
+}
+
+// A unique source IP address that connected to a domain.
+type UniqueSources struct {
+
+	// The number of unique source IP addresses that connected to a domain.
+	Count int32
 
 	noSmithyDocumentSerde
 }

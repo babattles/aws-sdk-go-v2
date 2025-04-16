@@ -14,11 +14,18 @@ import (
 // Authorizes the aggregator account and region to collect data from the source
 // account and region.
 //
+// # Tags are added at creation and cannot be updated with this operation
+//
 // PutAggregationAuthorization is an idempotent API. Subsequent requests won’t
 // create a duplicate resource if one was already created. If a following request
 // has different tags values, Config will ignore these differences and treat it as
 // an idempotent request of the previous. In this case, tags will not be updated,
 // even if they are different.
+//
+// Use [TagResource] and [UntagResource] to update tags after creation.
+//
+// [TagResource]: https://docs.aws.amazon.com/config/latest/APIReference/API_TagResource.html
+// [UntagResource]: https://docs.aws.amazon.com/config/latest/APIReference/API_UntagResource.html
 func (c *Client) PutAggregationAuthorization(ctx context.Context, params *PutAggregationAuthorizationInput, optFns ...func(*Options)) (*PutAggregationAuthorizationOutput, error) {
 	if params == nil {
 		params = &PutAggregationAuthorizationInput{}
@@ -106,6 +113,9 @@ func (c *Client) addOperationPutAggregationAuthorizationMiddlewares(stack *middl
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -122,6 +132,9 @@ func (c *Client) addOperationPutAggregationAuthorizationMiddlewares(stack *middl
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpPutAggregationAuthorizationValidationMiddleware(stack); err != nil {
@@ -143,6 +156,18 @@ func (c *Client) addOperationPutAggregationAuthorizationMiddlewares(stack *middl
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

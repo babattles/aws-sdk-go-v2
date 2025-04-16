@@ -11,8 +11,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Returns metadata of your saved backup plan templates, including the template
-// ID, name, and the creation and deletion dates.
+// Lists the backup plan templates.
 func (c *Client) ListBackupPlanTemplates(ctx context.Context, params *ListBackupPlanTemplatesInput, optFns ...func(*Options)) (*ListBackupPlanTemplatesOutput, error) {
 	if params == nil {
 		params = &ListBackupPlanTemplatesInput{}
@@ -30,7 +29,7 @@ func (c *Client) ListBackupPlanTemplates(ctx context.Context, params *ListBackup
 
 type ListBackupPlanTemplatesInput struct {
 
-	// The maximum number of items to be returned.
+	// The maximum number of items to return.
 	MaxResults *int32
 
 	// The next item following a partial list of returned items. For example, if a
@@ -102,6 +101,9 @@ func (c *Client) addOperationListBackupPlanTemplatesMiddlewares(stack *middlewar
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -118,6 +120,9 @@ func (c *Client) addOperationListBackupPlanTemplatesMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListBackupPlanTemplates(options.Region), middleware.Before); err != nil {
@@ -138,13 +143,25 @@ func (c *Client) addOperationListBackupPlanTemplatesMiddlewares(stack *middlewar
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
+		return err
+	}
 	return nil
 }
 
 // ListBackupPlanTemplatesPaginatorOptions is the paginator options for
 // ListBackupPlanTemplates
 type ListBackupPlanTemplatesPaginatorOptions struct {
-	// The maximum number of items to be returned.
+	// The maximum number of items to return.
 	Limit int32
 
 	// Set to true if pagination should stop if the service returns a pagination token

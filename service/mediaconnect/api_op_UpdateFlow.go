@@ -11,7 +11,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Updates flow
+// Updates an existing flow.
 func (c *Client) UpdateFlow(ctx context.Context, params *UpdateFlowInput, optFns ...func(*Options)) (*UpdateFlowOutput, error) {
 	if params == nil {
 		params = &UpdateFlowInput{}
@@ -27,26 +27,32 @@ func (c *Client) UpdateFlow(ctx context.Context, params *UpdateFlowInput, optFns
 	return out, nil
 }
 
-// A request to update flow.
 type UpdateFlowInput struct {
 
-	// The flow that you want to update.
+	//  The Amazon Resource Name (ARN) of the flow that you want to update.
 	//
 	// This member is required.
 	FlowArn *string
 
-	// Update maintenance setting for a flow
+	//  The maintenance setting of the flow.
 	Maintenance *types.UpdateMaintenance
 
-	// The settings for source failover.
+	//  Specifies the configuration settings for NDI outputs. Required when the flow
+	// includes NDI outputs.
+	NdiConfig *types.NdiConfig
+
+	//  The settings for source failover.
 	SourceFailoverConfig *types.UpdateFailoverConfig
+
+	//  The settings for source monitoring.
+	SourceMonitoringConfig *types.MonitoringConfig
 
 	noSmithyDocumentSerde
 }
 
 type UpdateFlowOutput struct {
 
-	// The settings for a flow, including its source, outputs, and entitlements.
+	//  The updated flow.
 	Flow *types.Flow
 
 	// Metadata pertaining to the operation's result.
@@ -98,6 +104,9 @@ func (c *Client) addOperationUpdateFlowMiddlewares(stack *middleware.Stack, opti
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -114,6 +123,9 @@ func (c *Client) addOperationUpdateFlowMiddlewares(stack *middleware.Stack, opti
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateFlowValidationMiddleware(stack); err != nil {
@@ -135,6 +147,18 @@ func (c *Client) addOperationUpdateFlowMiddlewares(stack *middleware.Stack, opti
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

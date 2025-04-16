@@ -67,6 +67,14 @@ type UpdateAppInput struct {
 	// The cache configuration for the Amplify app.
 	CacheConfig *types.CacheConfig
 
+	// The Amazon Resource Name (ARN) of the IAM role to assign to an SSR app. The SSR
+	// Compute role allows the Amplify Hosting compute service to securely access
+	// specific Amazon Web Services resources based on the role's permissions. For more
+	// information about the SSR Compute role, see [Adding an SSR Compute role]in the Amplify User Guide.
+	//
+	// [Adding an SSR Compute role]: https://docs.aws.amazon.com/amplify/latest/userguide/amplify-SSR-compute-role.html
+	ComputeRoleArn *string
+
 	// The custom HTTP headers for an Amplify app.
 	CustomHeaders *string
 
@@ -92,7 +100,7 @@ type UpdateAppInput struct {
 	// The environment variables for an Amplify app.
 	EnvironmentVariables map[string]string
 
-	// The AWS Identity and Access Management (IAM) service role for an Amplify app.
+	// The Amazon Resource Name (ARN) of the IAM service role for the Amplify app.
 	IamServiceRoleArn *string
 
 	// The name for an Amplify app.
@@ -120,6 +128,9 @@ type UpdateAppInput struct {
 	// . For a dynamic server-side rendered (SSR) app, set the platform type to
 	// WEB_COMPUTE . For an app requiring Amplify Hosting's original SSR support only,
 	// set the platform type to WEB_DYNAMIC .
+	//
+	// If you are deploying an SSG only app with Next.js version 14 or later, you must
+	// set the platform type to WEB_COMPUTE .
 	Platform types.Platform
 
 	// The name of the Git repository for an Amplify app.
@@ -185,6 +196,9 @@ func (c *Client) addOperationUpdateAppMiddlewares(stack *middleware.Stack, optio
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -201,6 +215,9 @@ func (c *Client) addOperationUpdateAppMiddlewares(stack *middleware.Stack, optio
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateAppValidationMiddleware(stack); err != nil {
@@ -222,6 +239,18 @@ func (c *Client) addOperationUpdateAppMiddlewares(stack *middleware.Stack, optio
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

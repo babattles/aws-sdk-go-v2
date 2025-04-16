@@ -761,6 +761,25 @@ func (ScheduleStatus) Values() []ScheduleStatus {
 	}
 }
 
+type SmbAuthenticationType string
+
+// Enum values for SmbAuthenticationType
+const (
+	SmbAuthenticationTypeNtlm     SmbAuthenticationType = "NTLM"
+	SmbAuthenticationTypeKerberos SmbAuthenticationType = "KERBEROS"
+)
+
+// Values returns all known values for SmbAuthenticationType. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (SmbAuthenticationType) Values() []SmbAuthenticationType {
+	return []SmbAuthenticationType{
+		"NTLM",
+		"KERBEROS",
+	}
+}
+
 type SmbSecurityDescriptorCopyFlags string
 
 // Enum values for SmbSecurityDescriptorCopyFlags
@@ -877,6 +896,25 @@ func (TaskFilterName) Values() []TaskFilterName {
 	return []TaskFilterName{
 		"LocationId",
 		"CreationTime",
+	}
+}
+
+type TaskMode string
+
+// Enum values for TaskMode
+const (
+	TaskModeBasic    TaskMode = "BASIC"
+	TaskModeEnhanced TaskMode = "ENHANCED"
+)
+
+// Values returns all known values for TaskMode. Note that this can be expanded in
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (TaskMode) Values() []TaskMode {
+	return []TaskMode{
+		"BASIC",
+		"ENHANCED",
 	}
 }
 

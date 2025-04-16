@@ -63,9 +63,9 @@ type DescribeLocationS3Output struct {
 	// Specifies the Amazon Resource Name (ARN) of the Identity and Access Management
 	// (IAM) role that DataSync uses to access your S3 bucket.
 	//
-	// For more information, see [Accessing S3 buckets].
+	// For more information, see [Providing DataSync access to S3 buckets].
 	//
-	// [Accessing S3 buckets]: https://docs.aws.amazon.com/datasync/latest/userguide/create-s3-location.html#create-s3-location-access
+	// [Providing DataSync access to S3 buckets]: https://docs.aws.amazon.com/datasync/latest/userguide/create-s3-location.html#create-s3-location-access
 	S3Config *types.S3Config
 
 	// When Amazon S3 is a destination location, this is the storage class that you
@@ -126,6 +126,9 @@ func (c *Client) addOperationDescribeLocationS3Middlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -142,6 +145,9 @@ func (c *Client) addOperationDescribeLocationS3Middlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeLocationS3ValidationMiddleware(stack); err != nil {
@@ -163,6 +169,18 @@ func (c *Client) addOperationDescribeLocationS3Middlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -10,7 +10,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Deletes a Teams user identity
+// Identifes a user level permission for a channel configuration.
 func (c *Client) DeleteMicrosoftTeamsUserIdentity(ctx context.Context, params *DeleteMicrosoftTeamsUserIdentityInput, optFns ...func(*Options)) (*DeleteMicrosoftTeamsUserIdentityOutput, error) {
 	if params == nil {
 		params = &DeleteMicrosoftTeamsUserIdentityInput{}
@@ -34,7 +34,7 @@ type DeleteMicrosoftTeamsUserIdentityInput struct {
 	// This member is required.
 	ChatConfigurationArn *string
 
-	// Id from Microsoft Teams for user.
+	// The Microsoft Teams user ID.
 	//
 	// This member is required.
 	UserId *string
@@ -92,6 +92,9 @@ func (c *Client) addOperationDeleteMicrosoftTeamsUserIdentityMiddlewares(stack *
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -108,6 +111,9 @@ func (c *Client) addOperationDeleteMicrosoftTeamsUserIdentityMiddlewares(stack *
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteMicrosoftTeamsUserIdentityValidationMiddleware(stack); err != nil {
@@ -129,6 +135,18 @@ func (c *Client) addOperationDeleteMicrosoftTeamsUserIdentityMiddlewares(stack *
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

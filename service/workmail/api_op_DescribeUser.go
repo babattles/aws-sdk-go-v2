@@ -87,6 +87,16 @@ type DescribeUserOutput struct {
 	// If enabled, the user is hidden from the global address list.
 	HiddenFromGlobalAddressList bool
 
+	//  Identity Store ID from the IAM Identity Center. If this parameter is empty it
+	// will be updated automatically when the user logs in for the first time to the
+	// mailbox associated with WorkMail.
+	IdentityProviderIdentityStoreId *string
+
+	// User ID from the IAM Identity Center. If this parameter is empty it will be
+	// updated automatically when the user logs in for the first time to the mailbox
+	// associated with WorkMail.
+	IdentityProviderUserId *string
+
 	// Initials of the user.
 	Initials *string
 
@@ -181,6 +191,9 @@ func (c *Client) addOperationDescribeUserMiddlewares(stack *middleware.Stack, op
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -197,6 +210,9 @@ func (c *Client) addOperationDescribeUserMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeUserValidationMiddleware(stack); err != nil {
@@ -218,6 +234,18 @@ func (c *Client) addOperationDescribeUserMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

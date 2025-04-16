@@ -39,6 +39,11 @@ type CreateSuiteDefinitionInput struct {
 	// This member is required.
 	SuiteDefinitionConfiguration *types.SuiteDefinitionConfiguration
 
+	// The client token for the test suite definition creation. This token is used for
+	// tracking test suite definition creation using retries and obtaining its status.
+	// This parameter is optional.
+	ClientToken *string
+
 	// The tags to be attached to the suite definition.
 	Tags map[string]string
 
@@ -108,6 +113,9 @@ func (c *Client) addOperationCreateSuiteDefinitionMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -124,6 +132,12 @@ func (c *Client) addOperationCreateSuiteDefinitionMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
+	if err = addIdempotencyToken_opCreateSuiteDefinitionMiddleware(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateSuiteDefinitionValidationMiddleware(stack); err != nil {
@@ -147,7 +161,52 @@ func (c *Client) addOperationCreateSuiteDefinitionMiddlewares(stack *middleware.
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
+		return err
+	}
 	return nil
+}
+
+type idempotencyToken_initializeOpCreateSuiteDefinition struct {
+	tokenProvider IdempotencyTokenProvider
+}
+
+func (*idempotencyToken_initializeOpCreateSuiteDefinition) ID() string {
+	return "OperationIdempotencyTokenAutoFill"
+}
+
+func (m *idempotencyToken_initializeOpCreateSuiteDefinition) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	if m.tokenProvider == nil {
+		return next.HandleInitialize(ctx, in)
+	}
+
+	input, ok := in.Parameters.(*CreateSuiteDefinitionInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("expected middleware input to be of type *CreateSuiteDefinitionInput ")
+	}
+
+	if input.ClientToken == nil {
+		t, err := m.tokenProvider.GetIdempotencyToken()
+		if err != nil {
+			return out, metadata, err
+		}
+		input.ClientToken = &t
+	}
+	return next.HandleInitialize(ctx, in)
+}
+func addIdempotencyToken_opCreateSuiteDefinitionMiddleware(stack *middleware.Stack, cfg Options) error {
+	return stack.Initialize.Add(&idempotencyToken_initializeOpCreateSuiteDefinition{tokenProvider: cfg.IdempotencyTokenProvider}, middleware.Before)
 }
 
 func newServiceMetadataMiddleware_opCreateSuiteDefinition(region string) *awsmiddleware.RegisterServiceMetadata {

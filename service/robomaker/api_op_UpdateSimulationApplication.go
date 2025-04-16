@@ -12,7 +12,15 @@ import (
 	"time"
 )
 
+// End of support notice: On September 10, 2025, Amazon Web Services will
+// discontinue support for Amazon Web Services RoboMaker. After September 10, 2025,
+// you will no longer be able to access the Amazon Web Services RoboMaker console
+// or Amazon Web Services RoboMaker resources. For more information on
+// transitioning to Batch to help run containerized simulations, visit [https://aws.amazon.com/blogs/hpc/run-simulations-using-multiple-containers-in-a-single-aws-batch-job/].
+//
 // Updates a simulation application.
+//
+// [https://aws.amazon.com/blogs/hpc/run-simulations-using-multiple-containers-in-a-single-aws-batch-job/]: https://aws.amazon.com/blogs/hpc/run-simulations-using-multiple-containers-in-a-single-aws-batch-job/
 func (c *Client) UpdateSimulationApplication(ctx context.Context, params *UpdateSimulationApplicationInput, optFns ...func(*Options)) (*UpdateSimulationApplicationOutput, error) {
 	if params == nil {
 		params = &UpdateSimulationApplicationInput{}
@@ -35,7 +43,7 @@ type UpdateSimulationApplicationInput struct {
 	// This member is required.
 	Application *string
 
-	// Information about the robot software suite (ROS distribution).
+	// Information about the robot software suite.
 	//
 	// This member is required.
 	RobotSoftwareSuite *types.RobotSoftwareSuite
@@ -82,7 +90,7 @@ type UpdateSimulationApplicationOutput struct {
 	// The revision id of the simulation application.
 	RevisionId *string
 
-	// Information about the robot software suite (ROS distribution).
+	// Information about the robot software suite.
 	RobotSoftwareSuite *types.RobotSoftwareSuite
 
 	// The simulation software suite used by the simulation application.
@@ -143,6 +151,9 @@ func (c *Client) addOperationUpdateSimulationApplicationMiddlewares(stack *middl
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -159,6 +170,9 @@ func (c *Client) addOperationUpdateSimulationApplicationMiddlewares(stack *middl
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateSimulationApplicationValidationMiddleware(stack); err != nil {
@@ -180,6 +194,18 @@ func (c *Client) addOperationUpdateSimulationApplicationMiddlewares(stack *middl
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

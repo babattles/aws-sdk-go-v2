@@ -9,6 +9,7 @@ const (
 	BuildTypeUserInitiated BuildType = "USER_INITIATED"
 	BuildTypeScheduled     BuildType = "SCHEDULED"
 	BuildTypeImport        BuildType = "IMPORT"
+	BuildTypeImportIso     BuildType = "IMPORT_ISO"
 )
 
 // Values returns all known values for BuildType. Note that this can be expanded
@@ -20,6 +21,7 @@ func (BuildType) Values() []BuildType {
 		"USER_INITIATED",
 		"SCHEDULED",
 		"IMPORT",
+		"IMPORT_ISO",
 	}
 }
 
@@ -45,6 +47,8 @@ type ComponentStatus string
 // Enum values for ComponentStatus
 const (
 	ComponentStatusDeprecated ComponentStatus = "DEPRECATED"
+	ComponentStatusDisabled   ComponentStatus = "DISABLED"
+	ComponentStatusActive     ComponentStatus = "ACTIVE"
 )
 
 // Values returns all known values for ComponentStatus. Note that this can be
@@ -54,6 +58,8 @@ const (
 func (ComponentStatus) Values() []ComponentStatus {
 	return []ComponentStatus{
 		"DEPRECATED",
+		"DISABLED",
+		"ACTIVE",
 	}
 }
 
@@ -448,6 +454,25 @@ func (LifecyclePolicyTimeUnit) Values() []LifecyclePolicyTimeUnit {
 	}
 }
 
+type MarketplaceResourceType string
+
+// Enum values for MarketplaceResourceType
+const (
+	MarketplaceResourceTypeComponentData     MarketplaceResourceType = "COMPONENT_DATA"
+	MarketplaceResourceTypeComponentArtifact MarketplaceResourceType = "COMPONENT_ARTIFACT"
+)
+
+// Values returns all known values for MarketplaceResourceType. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (MarketplaceResourceType) Values() []MarketplaceResourceType {
+	return []MarketplaceResourceType{
+		"COMPONENT_DATA",
+		"COMPONENT_ARTIFACT",
+	}
+}
+
 type OnWorkflowFailure string
 
 // Enum values for OnWorkflowFailure
@@ -471,10 +496,11 @@ type Ownership string
 
 // Enum values for Ownership
 const (
-	OwnershipSelf       Ownership = "Self"
-	OwnershipShared     Ownership = "Shared"
-	OwnershipAmazon     Ownership = "Amazon"
-	OwnershipThirdparty Ownership = "ThirdParty"
+	OwnershipSelf           Ownership = "Self"
+	OwnershipShared         Ownership = "Shared"
+	OwnershipAmazon         Ownership = "Amazon"
+	OwnershipThirdparty     Ownership = "ThirdParty"
+	OwnershipAwsMarketplace Ownership = "AWSMarketplace"
 )
 
 // Values returns all known values for Ownership. Note that this can be expanded
@@ -487,6 +513,7 @@ func (Ownership) Values() []Ownership {
 		"Shared",
 		"Amazon",
 		"ThirdParty",
+		"AWSMarketplace",
 	}
 }
 
@@ -535,6 +562,7 @@ type Platform string
 const (
 	PlatformWindows Platform = "Windows"
 	PlatformLinux   Platform = "Linux"
+	PlatformMacos   Platform = "macOS"
 )
 
 // Values returns all known values for Platform. Note that this can be expanded in
@@ -545,6 +573,24 @@ func (Platform) Values() []Platform {
 	return []Platform{
 		"Windows",
 		"Linux",
+		"macOS",
+	}
+}
+
+type ProductCodeType string
+
+// Enum values for ProductCodeType
+const (
+	ProductCodeTypeMarketplace ProductCodeType = "marketplace"
+)
+
+// Values returns all known values for ProductCodeType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ProductCodeType) Values() []ProductCodeType {
+	return []ProductCodeType{
+		"marketplace",
 	}
 }
 
@@ -568,6 +614,27 @@ func (ResourceStatus) Values() []ResourceStatus {
 		"DELETED",
 		"DEPRECATED",
 		"DISABLED",
+	}
+}
+
+type TenancyType string
+
+// Enum values for TenancyType
+const (
+	TenancyTypeDefault   TenancyType = "default"
+	TenancyTypeDedicated TenancyType = "dedicated"
+	TenancyTypeHost      TenancyType = "host"
+)
+
+// Values returns all known values for TenancyType. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (TenancyType) Values() []TenancyType {
+	return []TenancyType{
+		"default",
+		"dedicated",
+		"host",
 	}
 }
 

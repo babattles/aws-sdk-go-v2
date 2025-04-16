@@ -32,7 +32,7 @@ func (c *Client) DescribeRemediationExecutionStatus(ctx context.Context, params 
 
 type DescribeRemediationExecutionStatusInput struct {
 
-	// A list of Config rule names.
+	// The name of the Config rule.
 	//
 	// This member is required.
 	ConfigRuleName *string
@@ -110,6 +110,9 @@ func (c *Client) addOperationDescribeRemediationExecutionStatusMiddlewares(stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -126,6 +129,9 @@ func (c *Client) addOperationDescribeRemediationExecutionStatusMiddlewares(stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeRemediationExecutionStatusValidationMiddleware(stack); err != nil {
@@ -147,6 +153,18 @@ func (c *Client) addOperationDescribeRemediationExecutionStatusMiddlewares(stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

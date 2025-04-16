@@ -44,7 +44,7 @@ type CreateStackInstancesInput struct {
 	// This member is required.
 	StackSetName *string
 
-	// [Self-managed permissions] The names of one or more Amazon Web Services
+	// [Self-managed permissions] The account IDs of one or more Amazon Web Services
 	// accounts that you want to create stack instances in the specified Region(s) for.
 	//
 	// You can specify Accounts or DeploymentTargets , but not both.
@@ -178,6 +178,9 @@ func (c *Client) addOperationCreateStackInstancesMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -194,6 +197,9 @@ func (c *Client) addOperationCreateStackInstancesMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateStackInstancesMiddleware(stack, options); err != nil {
@@ -218,6 +224,18 @@ func (c *Client) addOperationCreateStackInstancesMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

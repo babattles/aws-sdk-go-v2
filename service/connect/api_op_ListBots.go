@@ -14,7 +14,7 @@ import (
 // This API is in preview release for Amazon Connect and is subject to change.
 //
 // For the specified version of Amazon Lex, returns a paginated list of all the
-// Amazon Lex bots currently associated with the instance. Use this API to returns
+// Amazon Lex bots currently associated with the instance. Use this API to return
 // both Amazon Lex V1 and V2 bots.
 func (c *Client) ListBots(ctx context.Context, params *ListBotsInput, optFns ...func(*Options)) (*ListBotsOutput, error) {
 	if params == nil {
@@ -114,6 +114,9 @@ func (c *Client) addOperationListBotsMiddlewares(stack *middleware.Stack, option
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -130,6 +133,9 @@ func (c *Client) addOperationListBotsMiddlewares(stack *middleware.Stack, option
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListBotsValidationMiddleware(stack); err != nil {
@@ -151,6 +157,18 @@ func (c *Client) addOperationListBotsMiddlewares(stack *middleware.Stack, option
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

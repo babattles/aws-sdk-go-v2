@@ -39,6 +39,12 @@ type BatchGetFlowAssociationInput struct {
 
 	// A list of resource identifiers to retrieve flow associations.
 	//
+	//   - Amazon Web Services End User Messaging SMS phone number ARN when using
+	//   SMS_PHONE_NUMBER
+	//
+	//   - Amazon Web Services End User Messaging Social phone number ARN when using
+	//   WHATSAPP_MESSAGING_PHONE_NUMBER
+	//
 	// This member is required.
 	ResourceIds []string
 
@@ -102,6 +108,9 @@ func (c *Client) addOperationBatchGetFlowAssociationMiddlewares(stack *middlewar
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -118,6 +127,9 @@ func (c *Client) addOperationBatchGetFlowAssociationMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpBatchGetFlowAssociationValidationMiddleware(stack); err != nil {
@@ -139,6 +151,18 @@ func (c *Client) addOperationBatchGetFlowAssociationMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

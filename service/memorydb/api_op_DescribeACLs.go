@@ -11,7 +11,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Returns a list of ACLs
+// Returns a list of ACLs.
 func (c *Client) DescribeACLs(ctx context.Context, params *DescribeACLsInput, optFns ...func(*Options)) (*DescribeACLsOutput, error) {
 	if params == nil {
 		params = &DescribeACLsInput{}
@@ -29,7 +29,7 @@ func (c *Client) DescribeACLs(ctx context.Context, params *DescribeACLsInput, op
 
 type DescribeACLsInput struct {
 
-	// The name of the ACL
+	// The name of the ACL.
 	ACLName *string
 
 	// The maximum number of records to include in the response. If more records exist
@@ -49,7 +49,7 @@ type DescribeACLsInput struct {
 
 type DescribeACLsOutput struct {
 
-	// The list of ACLs
+	// The list of ACLs.
 	ACLs []types.ACL
 
 	// If nextToken is returned, there are more results available. The value of
@@ -107,6 +107,9 @@ func (c *Client) addOperationDescribeACLsMiddlewares(stack *middleware.Stack, op
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -125,6 +128,9 @@ func (c *Client) addOperationDescribeACLsMiddlewares(stack *middleware.Stack, op
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeACLs(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -141,6 +147,18 @@ func (c *Client) addOperationDescribeACLsMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

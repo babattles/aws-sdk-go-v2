@@ -20,7 +20,7 @@ import (
 // control via resource tags applied to the resource identified by load balancer
 // name . For more information, see the [Lightsail Developer Guide].
 //
-// [Lightsail Developer Guide]: https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-controlling-access-using-tags
+// [Lightsail Developer Guide]: https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags
 func (c *Client) AttachInstancesToLoadBalancer(ctx context.Context, params *AttachInstancesToLoadBalancerInput, optFns ...func(*Options)) (*AttachInstancesToLoadBalancerOutput, error) {
 	if params == nil {
 		params = &AttachInstancesToLoadBalancerInput{}
@@ -114,6 +114,9 @@ func (c *Client) addOperationAttachInstancesToLoadBalancerMiddlewares(stack *mid
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -130,6 +133,9 @@ func (c *Client) addOperationAttachInstancesToLoadBalancerMiddlewares(stack *mid
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpAttachInstancesToLoadBalancerValidationMiddleware(stack); err != nil {
@@ -151,6 +157,18 @@ func (c *Client) addOperationAttachInstancesToLoadBalancerMiddlewares(stack *mid
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

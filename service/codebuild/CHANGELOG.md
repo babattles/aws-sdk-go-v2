@@ -1,3 +1,173 @@
+# v1.58.1 (2025-04-03)
+
+* No change notes available for this release.
+
+# v1.58.0 (2025-04-02)
+
+* **Feature**: This release adds support for environment type WINDOWS_SERVER_2022_CONTAINER in ProjectEnvironment
+
+# v1.57.0 (2025-03-28)
+
+* **Feature**: This release adds support for cacheNamespace in ProjectCache
+
+# v1.56.0 (2025-03-13)
+
+* **Feature**: AWS CodeBuild now supports webhook filtering by organization name
+
+# v1.55.1 (2025-03-04.2)
+
+* **Bug Fix**: Add assurance test for operation order.
+
+# v1.55.0 (2025-02-27)
+
+* **Feature**: Track credential providers via User-Agent Feature ids
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.54.0 (2025-02-25)
+
+* **Feature**: Adding "reportArns" field in output of BatchGetBuildBatches API. "reportArns" is an array that contains the ARNs of reports created by merging reports from builds associated with the batch build.
+
+# v1.53.0 (2025-02-20)
+
+* **Feature**: Add webhook status and status message to AWS CodeBuild webhooks
+
+# v1.52.1 (2025-02-18)
+
+* **Bug Fix**: Bump go version to 1.22
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.52.0 (2025-02-14)
+
+* **Feature**: Added test suite names to test case metadata
+
+# v1.51.3 (2025-02-12)
+
+* **Documentation**: Add note for the RUNNER_BUILDKITE_BUILD buildType.
+
+# v1.51.2 (2025-02-05)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.51.1 (2025-02-04)
+
+* No change notes available for this release.
+
+# v1.51.0 (2025-01-31)
+
+* **Feature**: Added support for CodeBuild self-hosted Buildkite runner builds
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.50.4 (2025-01-30)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.50.3 (2025-01-24)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+* **Dependency Update**: Upgrade to smithy-go v1.22.2.
+
+# v1.50.2 (2025-01-17)
+
+* **Bug Fix**: Fix bug where credentials weren't refreshed during retry loop.
+
+# v1.50.1 (2025-01-15)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.50.0 (2025-01-09)
+
+* **Feature**: AWS CodeBuild Now Supports BuildBatch in Reserved Capacity and Lambda
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.49.4 (2024-12-19)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.49.3 (2024-12-13)
+
+* No change notes available for this release.
+
+# v1.49.2 (2024-12-02)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.49.1 (2024-11-18)
+
+* **Dependency Update**: Update to smithy-go v1.22.1.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.49.0 (2024-11-12)
+
+* **Feature**: AWS CodeBuild now supports non-containerized Linux and Windows builds on Reserved Capacity.
+
+# v1.48.1 (2024-11-07)
+
+* **Bug Fix**: Adds case-insensitive handling of error message fields in service responses
+
+# v1.48.0 (2024-11-06)
+
+* **Feature**: AWS CodeBuild now adds additional compute types for reserved capacity fleet.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.47.1 (2024-10-28)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.47.0 (2024-10-25)
+
+* **Feature**: AWS CodeBuild now supports automatically retrying failed builds
+
+# v1.46.0 (2024-10-15)
+
+* **Feature**: Enable proxy for reserved capacity fleet.
+
+# v1.45.2 (2024-10-08)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.45.1 (2024-10-07)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.45.0 (2024-10-04)
+
+* **Feature**: Add support for HTTP client metrics.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.44.4 (2024-10-03)
+
+* No change notes available for this release.
+
+# v1.44.3 (2024-09-27)
+
+* No change notes available for this release.
+
+# v1.44.2 (2024-09-25)
+
+* No change notes available for this release.
+
+# v1.44.1 (2024-09-23)
+
+* No change notes available for this release.
+
+# v1.44.0 (2024-09-20)
+
+* **Feature**: Add tracing and metrics support to service clients.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.43.0 (2024-09-17)
+
+* **Feature**: GitLab Enhancements - Add support for Self-Hosted GitLab runners in CodeBuild. Add group webhooks
+* **Bug Fix**: **BREAKFIX**: Only generate AccountIDEndpointMode config for services that use it. This is a compiler break, but removes no actual functionality, as no services currently use the account ID in endpoint resolution.
+
+# v1.42.3 (2024-09-04)
+
+* No change notes available for this release.
+
+# v1.42.2 (2024-09-03)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
 # v1.42.1 (2024-08-23)
 
 * **Documentation**: Added support for the MAC_ARM environment type for CodeBuild fleets.

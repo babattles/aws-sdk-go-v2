@@ -13,11 +13,16 @@ import (
 
 // Stops a specific database that is currently running in Amazon Lightsail.
 //
+// If you don't manually start your database instance after it has been stopped
+// for seven consecutive days, Amazon Lightsail automatically starts it for you.
+// This action helps ensure that your database instance doesn't fall behind on any
+// required maintenance updates.
+//
 // The stop relational database operation supports tag-based access control via
 // resource tags applied to the resource identified by relationalDatabaseName. For
 // more information, see the [Amazon Lightsail Developer Guide].
 //
-// [Amazon Lightsail Developer Guide]: https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-controlling-access-using-tags
+// [Amazon Lightsail Developer Guide]: https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags
 func (c *Client) StopRelationalDatabase(ctx context.Context, params *StopRelationalDatabaseInput, optFns ...func(*Options)) (*StopRelationalDatabaseOutput, error) {
 	if params == nil {
 		params = &StopRelationalDatabaseInput{}
@@ -103,6 +108,9 @@ func (c *Client) addOperationStopRelationalDatabaseMiddlewares(stack *middleware
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -119,6 +127,9 @@ func (c *Client) addOperationStopRelationalDatabaseMiddlewares(stack *middleware
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpStopRelationalDatabaseValidationMiddleware(stack); err != nil {
@@ -140,6 +151,18 @@ func (c *Client) addOperationStopRelationalDatabaseMiddlewares(stack *middleware
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

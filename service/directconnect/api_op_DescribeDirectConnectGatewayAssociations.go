@@ -39,6 +39,18 @@ import (
 // The response contains the association between the Direct Connect gateway and
 //
 //	transit gateway.
+//
+//	- A Direct Connect gateway and a virtual private gateway
+//
+// The response contains the association between the Direct Connect gateway and
+//
+//	virtual private gateway.
+//
+//	- A Direct Connect gateway association to a Cloud WAN core network
+//
+// The response contains the Cloud WAN core network ID that the Direct Connect
+//
+//	gateway is associated to.
 func (c *Client) DescribeDirectConnectGatewayAssociations(ctx context.Context, params *DescribeDirectConnectGatewayAssociationsInput, optFns ...func(*Options)) (*DescribeDirectConnectGatewayAssociationsOutput, error) {
 	if params == nil {
 		params = &DescribeDirectConnectGatewayAssociationsInput{}
@@ -137,6 +149,9 @@ func (c *Client) addOperationDescribeDirectConnectGatewayAssociationsMiddlewares
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -155,6 +170,9 @@ func (c *Client) addOperationDescribeDirectConnectGatewayAssociationsMiddlewares
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeDirectConnectGatewayAssociations(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -171,6 +189,18 @@ func (c *Client) addOperationDescribeDirectConnectGatewayAssociationsMiddlewares
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

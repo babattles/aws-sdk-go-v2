@@ -37,7 +37,7 @@ type ImportDocumentInput struct {
 	// This member is required.
 	AppId *string
 
-	// The unique identifier of the card the file is associated with, if applicable.
+	// The unique identifier of the card the file is associated with.
 	//
 	// This member is required.
 	CardId *string
@@ -57,7 +57,7 @@ type ImportDocumentInput struct {
 	// This member is required.
 	InstanceId *string
 
-	// Whether the file is associated with an Q App definition or a specific Q App
+	// Whether the file is associated with a Q App definition or a specific Q App
 	// session.
 	//
 	// This member is required.
@@ -124,6 +124,9 @@ func (c *Client) addOperationImportDocumentMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -140,6 +143,9 @@ func (c *Client) addOperationImportDocumentMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpImportDocumentValidationMiddleware(stack); err != nil {
@@ -161,6 +167,18 @@ func (c *Client) addOperationImportDocumentMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

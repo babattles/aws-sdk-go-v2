@@ -170,6 +170,18 @@ func TestCheckSnapshot_CreateStackInstances(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_CreateStackRefactor(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateStackRefactor(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "CreateStackRefactor")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_CreateStackSet(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.CreateStackSet(context.Background(), nil, func(o *Options) {
@@ -398,6 +410,18 @@ func TestCheckSnapshot_DescribeStackInstance(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_DescribeStackRefactor(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DescribeStackRefactor(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DescribeStackRefactor")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_DescribeStackResource(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.DescribeStackResource(context.Background(), nil, func(o *Options) {
@@ -554,6 +578,18 @@ func TestCheckSnapshot_ExecuteChangeSet(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_ExecuteStackRefactor(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ExecuteStackRefactor(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ExecuteStackRefactor")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_GetGeneratedTemplate(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.GetGeneratedTemplate(context.Background(), nil, func(o *Options) {
@@ -650,6 +686,18 @@ func TestCheckSnapshot_ListGeneratedTemplates(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_ListHookResults(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListHookResults(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListHookResults")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_ListImports(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ListImports(context.Background(), nil, func(o *Options) {
@@ -715,6 +763,30 @@ func TestCheckSnapshot_ListStackInstances(t *testing.T) {
 	_, err := svc.ListStackInstances(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "ListStackInstances")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_ListStackRefactorActions(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListStackRefactorActions(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListStackRefactorActions")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_ListStackRefactors(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListStackRefactors(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListStackRefactors")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -1153,6 +1225,18 @@ func TestUpdateSnapshot_CreateStackInstances(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_CreateStackRefactor(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateStackRefactor(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "CreateStackRefactor")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_CreateStackSet(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.CreateStackSet(context.Background(), nil, func(o *Options) {
@@ -1381,6 +1465,18 @@ func TestUpdateSnapshot_DescribeStackInstance(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_DescribeStackRefactor(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DescribeStackRefactor(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DescribeStackRefactor")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_DescribeStackResource(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.DescribeStackResource(context.Background(), nil, func(o *Options) {
@@ -1537,6 +1633,18 @@ func TestUpdateSnapshot_ExecuteChangeSet(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_ExecuteStackRefactor(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ExecuteStackRefactor(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ExecuteStackRefactor")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_GetGeneratedTemplate(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.GetGeneratedTemplate(context.Background(), nil, func(o *Options) {
@@ -1633,6 +1741,18 @@ func TestUpdateSnapshot_ListGeneratedTemplates(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_ListHookResults(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListHookResults(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListHookResults")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_ListImports(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ListImports(context.Background(), nil, func(o *Options) {
@@ -1698,6 +1818,30 @@ func TestUpdateSnapshot_ListStackInstances(t *testing.T) {
 	_, err := svc.ListStackInstances(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "ListStackInstances")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_ListStackRefactorActions(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListStackRefactorActions(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListStackRefactorActions")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_ListStackRefactors(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListStackRefactors(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListStackRefactors")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {

@@ -248,6 +248,9 @@ type PutScalingPolicyInput struct {
 	// [Target tracking scaling policies]: https://docs.aws.amazon.com/autoscaling/application/userguide/application-auto-scaling-target-tracking.html
 	PolicyType types.PolicyType
 
+	//  The configuration of the predictive scaling policy.
+	PredictiveScalingPolicyConfiguration *types.PredictiveScalingPolicyConfiguration
+
 	// A step scaling policy.
 	//
 	// This parameter is required if you are creating a policy and the policy type is
@@ -323,6 +326,9 @@ func (c *Client) addOperationPutScalingPolicyMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -339,6 +345,9 @@ func (c *Client) addOperationPutScalingPolicyMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpPutScalingPolicyValidationMiddleware(stack); err != nil {
@@ -360,6 +369,18 @@ func (c *Client) addOperationPutScalingPolicyMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

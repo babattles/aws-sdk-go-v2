@@ -13,9 +13,10 @@ import (
 
 // Provides a pre-signed Amazon S3 URL in response for uploading your content.
 //
-// You may only use this API to upload attachments to an [Amazon Connect Case].
+// You may only use this API to upload attachments to an [Amazon Connect Case] or [Amazon Connect Email].
 //
 // [Amazon Connect Case]: https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_CreateCase.html
+// [Amazon Connect Email]: https://docs.aws.amazon.com/connect/latest/adminguide/setup-email-channel.html
 func (c *Client) StartAttachedFileUpload(ctx context.Context, params *StartAttachedFileUploadInput, optFns ...func(*Options)) (*StartAttachedFileUploadOutput, error) {
 	if params == nil {
 		params = &StartAttachedFileUploadInput{}
@@ -33,12 +34,13 @@ func (c *Client) StartAttachedFileUpload(ctx context.Context, params *StartAttac
 
 type StartAttachedFileUploadInput struct {
 
-	// The resource to which the attached file is (being) uploaded to. [Cases] are the only
-	// current supported resource.
+	// The resource to which the attached file is (being) uploaded to. The supported
+	// resources are [Cases]and [Email].
 	//
 	// This value must be a valid ARN.
 	//
-	// [Cases]: https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_CreateCase.html
+	// [Email]: https://docs.aws.amazon.com/connect/latest/adminguide/setup-email-channel.html
+	// [Cases]: https://docs.aws.amazon.com/connect/latest/adminguide/cases.html
 	//
 	// This member is required.
 	AssociatedResourceArn *string
@@ -54,6 +56,8 @@ type StartAttachedFileUploadInput struct {
 	FileSizeInBytes *int64
 
 	// The use case for the file.
+	//
+	// Only ATTACHMENTS are supported.
 	//
 	// This member is required.
 	FileUseCaseType types.FileUseCaseType
@@ -104,7 +108,7 @@ type StartAttachedFileUploadOutput struct {
 	// The current status of the attached file.
 	FileStatus types.FileStatusType
 
-	// Information to be used while uploading the attached file.
+	// The headers to be provided while uploading the file to the URL.
 	UploadUrlMetadata *types.UploadUrlMetadata
 
 	// Metadata pertaining to the operation's result.
@@ -156,6 +160,9 @@ func (c *Client) addOperationStartAttachedFileUploadMiddlewares(stack *middlewar
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -172,6 +179,9 @@ func (c *Client) addOperationStartAttachedFileUploadMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opStartAttachedFileUploadMiddleware(stack, options); err != nil {
@@ -196,6 +206,18 @@ func (c *Client) addOperationStartAttachedFileUploadMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

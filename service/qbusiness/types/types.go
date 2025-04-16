@@ -39,6 +39,20 @@ type AccessControl struct {
 	noSmithyDocumentSerde
 }
 
+// Specifies an allowed action and its associated filter configuration.
+type ActionConfiguration struct {
+
+	// The Amazon Q Business action that is allowed.
+	//
+	// This member is required.
+	Action *string
+
+	// The filter configuration for the action, if any.
+	FilterConfiguration *ActionFilterConfiguration
+
+	noSmithyDocumentSerde
+}
+
 // Performs an Amazon Q Business plugin action during a non-streaming chat
 // conversation.
 type ActionExecution struct {
@@ -94,6 +108,17 @@ type ActionExecutionPayloadField struct {
 	//
 	// This member is required.
 	Value document.Interface
+
+	noSmithyDocumentSerde
+}
+
+// Specifies filters to apply to an allowed action.
+type ActionFilterConfiguration struct {
+
+	// Enables filtering of responses based on document attributes or metadata fields.
+	//
+	// This member is required.
+	DocumentAttributeFilter *AttributeFilter
 
 	noSmithyDocumentSerde
 }
@@ -166,6 +191,10 @@ type ActionReviewPayloadField struct {
 	// Amazon Q Business for Amazon Q Business to perform the requested plugin action.
 	AllowedValues []ActionReviewPayloadFieldAllowedValue
 
+	// Use to create a custom form with array fields (fields with nested objects
+	// inside an array).
+	ArrayItemJsonSchema document.Interface
+
 	// The field level description of each action review input field. This could be an
 	// explanation of the field. In the Amazon Q Business web experience, these
 	// descriptions could be used to display as tool tips to help users understand the
@@ -199,6 +228,31 @@ type ActionReviewPayloadFieldAllowedValue struct {
 
 	// The field value.
 	Value document.Interface
+
+	noSmithyDocumentSerde
+}
+
+// Summary information for an Amazon Q Business plugin action.
+type ActionSummary struct {
+
+	// The identifier of an Amazon Q Business plugin action.
+	ActionIdentifier *string
+
+	// The description of an Amazon Q Business plugin action.
+	Description *string
+
+	// The display name assigned by Amazon Q Business to a plugin action. You can't
+	// modify this value.
+	DisplayName *string
+
+	// An Amazon Q Business suggested prompt and end user can use to invoke a plugin
+	// action. This value can be modified and sent as input to initiate an action. For
+	// example:
+	//
+	//   - Create a Jira task
+	//
+	//   - Create a chat assistant task to find the root cause of a specific incident
+	InstructionExample *string
 
 	noSmithyDocumentSerde
 }
@@ -253,6 +307,10 @@ type Application struct {
 	// The authentication type being used by a Amazon Q Business application.
 	IdentityType IdentityType
 
+	// The Amazon QuickSight configuration for an Amazon Q Business application that
+	// uses QuickSight as the identity provider.
+	QuickSightConfiguration *QuickSightConfiguration
+
 	// The status of the Amazon Q Business application. The application is ready to
 	// use when the status is ACTIVE .
 	Status ApplicationStatus
@@ -293,17 +351,74 @@ type AppliedCreatorModeConfiguration struct {
 	noSmithyDocumentSerde
 }
 
-// A file directly uploaded into a web experience chat.
+// The chat orchestration specific admin controls configured for an Amazon Q
+// Business application. Determines whether Amazon Q Business automatically routes
+// chat requests across configured plugins and data sources in your Amazon Q
+// Business application.
+//
+// For more information, see [Chat orchestration settings].
+//
+// [Chat orchestration settings]: https://docs.aws.amazon.com/amazonq/latest/qbusiness-ug/guardrails-global-controls.html#guardrails-global-orchestration
+type AppliedOrchestrationConfiguration struct {
+
+	//  Information about whether chat orchestration is enabled or disabled for an
+	// Amazon Q Business application.
+	//
+	// This member is required.
+	Control OrchestrationControl
+
+	noSmithyDocumentSerde
+}
+
+// An attachment in an Amazon Q Business conversation.
+type Attachment struct {
+
+	// The identifier of the Amazon Q Business attachment.
+	AttachmentId *string
+
+	// The identifier of the Amazon Q Business conversation the attachment is
+	// associated with.
+	ConversationId *string
+
+	// A CopyFromSource containing a reference to the original source of the Amazon Q
+	// Business attachment.
+	CopyFrom CopyFromSource
+
+	// The Unix timestamp when the Amazon Q Business attachment was created.
+	CreatedAt *time.Time
+
+	// ErrorDetail providing information about a Amazon Q Business attachment error.
+	Error *ErrorDetail
+
+	// Size in bytes of the Amazon Q Business attachment.
+	FileSize *int32
+
+	// Filetype of the Amazon Q Business attachment.
+	FileType *string
+
+	// MD5 checksum of the Amazon Q Business attachment contents.
+	Md5chksum *string
+
+	// Filename of the Amazon Q Business attachment.
+	Name *string
+
+	// AttachmentStatus of the Amazon Q Business attachment.
+	Status AttachmentStatus
+
+	noSmithyDocumentSerde
+}
+
+// This is either a file directly uploaded into a web experience chat or a
+// reference to an existing attachment that is part of a web experience chat.
 type AttachmentInput struct {
 
-	// The data contained within the uploaded file.
-	//
-	// This member is required.
+	// A reference to an existing attachment.
+	CopyFrom CopyFromSource
+
+	// The contents of the attachment.
 	Data []byte
 
-	// The name of the file.
-	//
-	// This member is required.
+	// The filename of the attachment.
 	Name *string
 
 	noSmithyDocumentSerde
@@ -313,7 +428,8 @@ type AttachmentInput struct {
 // web experience chat.
 type AttachmentInputEvent struct {
 
-	// A file directly uploaded into a web experience chat.
+	// This is either a file directly uploaded into a web experience chat or a
+	// reference to an existing attachment that is part of a web experience chat.
 	Attachment *AttachmentInput
 
 	noSmithyDocumentSerde
@@ -321,6 +437,12 @@ type AttachmentInputEvent struct {
 
 // The details of a file uploaded during chat.
 type AttachmentOutput struct {
+
+	// The unique identifier of the Amazon Q Business attachment.
+	AttachmentId *string
+
+	// The unique identifier of the Amazon Q Business conversation.
+	ConversationId *string
 
 	// An error associated with a file uploaded during chat.
 	Error *ErrorDetail
@@ -400,6 +522,40 @@ type AttributeFilter struct {
 
 	//  Performs a logical OR operation on all supplied filters.
 	OrAllFilters []AttributeFilter
+
+	noSmithyDocumentSerde
+}
+
+// Configuration settings for audio content extraction and processing.
+type AudioExtractionConfiguration struct {
+
+	// The status of audio extraction (ENABLED or DISABLED) for processing audio
+	// content from files.
+	//
+	// This member is required.
+	AudioExtractionStatus AudioExtractionStatus
+
+	noSmithyDocumentSerde
+}
+
+// Details about an audio source, including its identifier, format, and time
+// information.
+type AudioSourceDetails struct {
+
+	// The type of audio extraction performed on the content.
+	AudioExtractionType AudioExtractionType
+
+	// The ending timestamp in milliseconds for the relevant audio segment.
+	EndTimeMilliseconds *int64
+
+	// Unique identifier for the audio media file.
+	MediaId *string
+
+	// The MIME type of the audio file (e.g., audio/mp3, audio/wav).
+	MediaMimeType *string
+
+	// The starting timestamp in milliseconds for the relevant audio segment.
+	StartTimeMilliseconds *int64
 
 	noSmithyDocumentSerde
 }
@@ -519,6 +675,26 @@ type BlockedPhrasesConfigurationUpdate struct {
 	// The configured custom message displayed to your end user when they use blocked
 	// phrase during chat.
 	SystemMessageOverride *string
+
+	noSmithyDocumentSerde
+}
+
+// The container for browser extension configuration for an Amazon Q Business web
+// experience.
+type BrowserExtensionConfiguration struct {
+
+	// Specify the browser extensions allowed for your Amazon Q web experience.
+	//
+	//   - CHROME — Enables the extension for Chromium-based browsers (Google Chrome,
+	//   Microsoft Edge, Opera, etc.).
+	//
+	//   - FIREFOX — Enables the extension for Mozilla Firefox.
+	//
+	//   - CHROME and FIREFOX — Enable the extension for Chromium-based browsers and
+	//   Mozilla Firefox.
+	//
+	// This member is required.
+	EnabledBrowserExtensions []BrowserExtension
 
 	noSmithyDocumentSerde
 }
@@ -741,6 +917,24 @@ type ContentRetrievalRule struct {
 	noSmithyDocumentSerde
 }
 
+// Specifies the source of content to search in.
+//
+// The following types satisfy this interface:
+//
+//	ContentSourceMemberRetriever
+type ContentSource interface {
+	isContentSource()
+}
+
+// The retriever to use as the content source.
+type ContentSourceMemberRetriever struct {
+	Value RetrieverContentSource
+
+	noSmithyDocumentSerde
+}
+
+func (*ContentSourceMemberRetriever) isContentSource() {}
+
 // A conversation in an Amazon Q Business application.
 type Conversation struct {
 
@@ -756,6 +950,40 @@ type Conversation struct {
 	noSmithyDocumentSerde
 }
 
+// The source reference for an existing attachment in an existing conversation.
+type ConversationSource struct {
+
+	// The unique identifier of the Amazon Q Business attachment.
+	//
+	// This member is required.
+	AttachmentId *string
+
+	// The unique identifier of the Amazon Q Business conversation.
+	//
+	// This member is required.
+	ConversationId *string
+
+	noSmithyDocumentSerde
+}
+
+// The source reference for an existing attachment.
+//
+// The following types satisfy this interface:
+//
+//	CopyFromSourceMemberConversation
+type CopyFromSource interface {
+	isCopyFromSource()
+}
+
+// A reference to an attachment in an existing conversation.
+type CopyFromSourceMemberConversation struct {
+	Value ConversationSource
+
+	noSmithyDocumentSerde
+}
+
+func (*CopyFromSourceMemberConversation) isCopyFromSource() {}
+
 // Configuration information required to invoke chat in CREATOR_MODE .
 //
 // For more information, see [Admin controls and guardrails] and [Conversation settings].
@@ -769,6 +997,30 @@ type CreatorModeConfiguration struct {
 	//
 	// This member is required.
 	CreatorModeControl CreatorModeControl
+
+	noSmithyDocumentSerde
+}
+
+// Contains the configuration information to customize the logo, font, and color
+// of an Amazon Q Business web experience with individual files for each property
+// or a CSS file for them all.
+type CustomizationConfiguration struct {
+
+	// Provides the URL where the custom CSS file is hosted for an Amazon Q web
+	// experience.
+	CustomCSSUrl *string
+
+	// Provides the URL where the custom favicon file is hosted for an Amazon Q web
+	// experience.
+	FaviconUrl *string
+
+	// Provides the URL where the custom font file is hosted for an Amazon Q web
+	// experience.
+	FontUrl *string
+
+	// Provides the URL where the custom logo file is hosted for an Amazon Q web
+	// experience.
+	LogoUrl *string
 
 	noSmithyDocumentSerde
 }
@@ -791,6 +1043,35 @@ type CustomPluginConfiguration struct {
 	//
 	// This member is required.
 	Description *string
+
+	noSmithyDocumentSerde
+}
+
+// Provides summary information about a data accessor.
+type DataAccessor struct {
+
+	// The timestamp when the data accessor was created.
+	CreatedAt *time.Time
+
+	// The Amazon Resource Name (ARN) of the data accessor.
+	DataAccessorArn *string
+
+	// The unique identifier of the data accessor.
+	DataAccessorId *string
+
+	// The friendly name of the data accessor.
+	DisplayName *string
+
+	// The Amazon Resource Name (ARN) of the associated IAM Identity Center
+	// application.
+	IdcApplicationArn *string
+
+	// The Amazon Resource Name (ARN) of the IAM role for the ISV associated with this
+	// data accessor.
+	Principal *string
+
+	// The timestamp when the data accessor was last updated.
+	UpdatedAt *time.Time
 
 	noSmithyDocumentSerde
 }
@@ -959,6 +1240,9 @@ type Document struct {
 	// The configuration information for altering document metadata and content during
 	// the document ingestion process.
 	DocumentEnrichmentConfiguration *DocumentEnrichmentConfiguration
+
+	// The configuration for extracting information from media in the document.
+	MediaExtractionConfiguration *MediaExtractionConfiguration
 
 	// The title of the document.
 	Title *string
@@ -1346,13 +1630,13 @@ type EndOfInputEvent struct {
 	noSmithyDocumentSerde
 }
 
-// Provides information about a data source sync error.
+// Provides information about a Amazon Q Business request error.
 type ErrorDetail struct {
 
-	// The code associated with the data source sync error.
+	// The code associated with the Amazon Q Business request error.
 	ErrorCode ErrorCode
 
-	// The message explaining the data source sync error.
+	// The message explaining the Amazon Q Business request error.
 	ErrorMessage *string
 
 	noSmithyDocumentSerde
@@ -1407,6 +1691,10 @@ type GroupMembers struct {
 	// A list of users that belong to a group. For example, a list of interns all
 	// belong to the "Interns" group.
 	MemberUsers []MemberUser
+
+	// Information required for Amazon Q Business to find a specific file in an Amazon
+	// S3 bucket.
+	S3PathForGroupMembers *S3
 
 	noSmithyDocumentSerde
 }
@@ -1482,6 +1770,25 @@ type HookConfiguration struct {
 	noSmithyDocumentSerde
 }
 
+// Information about the IAM Identity Center Application used to configure
+// authentication for a plugin.
+type IdcAuthConfiguration struct {
+
+	// The Amazon Resource Name (ARN) of the IAM Identity Center Application used to
+	// configure authentication.
+	//
+	// This member is required.
+	IdcApplicationArn *string
+
+	// The Amazon Resource Name (ARN) of the IAM role with permissions to perform
+	// actions on Amazon Web Services services on your behalf.
+	//
+	// This member is required.
+	RoleArn *string
+
+	noSmithyDocumentSerde
+}
+
 // Provides information about the identity provider (IdP) used to authenticate end
 // users of an Amazon Q Business web experience.
 //
@@ -1513,6 +1820,33 @@ type IdentityProviderConfigurationMemberSamlConfiguration struct {
 }
 
 func (*IdentityProviderConfigurationMemberSamlConfiguration) isIdentityProviderConfiguration() {}
+
+// The configuration for extracting semantic meaning from images in documents. For
+// more information, see [Extracting semantic meaning from images and visuals].
+//
+// [Extracting semantic meaning from images and visuals]: https://docs.aws.amazon.com/amazonq/latest/qbusiness-ug/extracting-meaning-from-images.html
+type ImageExtractionConfiguration struct {
+
+	// Specify whether to extract semantic meaning from images and visuals from
+	// documents.
+	//
+	// This member is required.
+	ImageExtractionStatus ImageExtractionStatus
+
+	noSmithyDocumentSerde
+}
+
+// Details about an image source, including its identifier and format.
+type ImageSourceDetails struct {
+
+	// Unique identifier for the image file.
+	MediaId *string
+
+	// The MIME type of the image file.
+	MediaMimeType *string
+
+	noSmithyDocumentSerde
+}
 
 // Summary information for your Amazon Q Business index.
 type Index struct {
@@ -1616,6 +1950,26 @@ type KendraIndexConfiguration struct {
 	//
 	// This member is required.
 	IndexId *string
+
+	noSmithyDocumentSerde
+}
+
+// The configuration for extracting information from media in documents.
+type MediaExtractionConfiguration struct {
+
+	// Configuration settings for extracting and processing audio content from media
+	// files.
+	AudioExtractionConfiguration *AudioExtractionConfiguration
+
+	// The configuration for extracting semantic meaning from images in documents. For
+	// more information, see [Extracting semantic meaning from images and visuals].
+	//
+	// [Extracting semantic meaning from images and visuals]: https://docs.aws.amazon.com/amazonq/latest/qbusiness-ug/extracting-meaning-from-images.html
+	ImageExtractionConfiguration *ImageExtractionConfiguration
+
+	// Configuration settings for extracting and processing video content from media
+	// files.
+	VideoExtractionConfiguration *VideoExtractionConfiguration
 
 	noSmithyDocumentSerde
 }
@@ -1787,6 +2141,14 @@ type OAuth2ClientCredentialConfiguration struct {
 	// This member is required.
 	SecretArn *string
 
+	// The redirect URL required by the OAuth 2.0 protocol for Amazon Q Business to
+	// authenticate a plugin user through a third party authentication server.
+	AuthorizationUrl *string
+
+	// The URL required by the OAuth 2.0 protocol to exchange an end user
+	// authorization code for an access token.
+	TokenUrl *string
+
 	noSmithyDocumentSerde
 }
 
@@ -1805,6 +2167,24 @@ type OpenIDConnectProviderConfiguration struct {
 	//
 	// This member is required.
 	SecretsRole *string
+
+	noSmithyDocumentSerde
+}
+
+// Configuration information required to enable chat orchestration for your Amazon
+// Q Business application.
+//
+// Chat orchestration is optimized to work for English language content. For more
+// details on language support in Amazon Q Business, see [Supported languages].
+//
+// [Supported languages]: https://docs.aws.amazon.com/amazonq/latest/qbusiness-ug/supported-languages.html
+type OrchestrationConfiguration struct {
+
+	//  Status information about whether chat orchestration is activated or
+	// deactivated for your Amazon Q Business application.
+	//
+	// This member is required.
+	Control OrchestrationControl
 
 	noSmithyDocumentSerde
 }
@@ -1860,6 +2240,7 @@ type Plugin struct {
 // The following types satisfy this interface:
 //
 //	PluginAuthConfigurationMemberBasicAuthConfiguration
+//	PluginAuthConfigurationMemberIdcAuthConfiguration
 //	PluginAuthConfigurationMemberNoAuthConfiguration
 //	PluginAuthConfigurationMemberOAuth2ClientCredentialConfiguration
 type PluginAuthConfiguration interface {
@@ -1875,6 +2256,16 @@ type PluginAuthConfigurationMemberBasicAuthConfiguration struct {
 }
 
 func (*PluginAuthConfigurationMemberBasicAuthConfiguration) isPluginAuthConfiguration() {}
+
+// Information about the IAM Identity Center Application used to configure
+// authentication for a plugin.
+type PluginAuthConfigurationMemberIdcAuthConfiguration struct {
+	Value IdcAuthConfiguration
+
+	noSmithyDocumentSerde
+}
+
+func (*PluginAuthConfigurationMemberIdcAuthConfiguration) isPluginAuthConfiguration() {}
 
 // Information about invoking a custom plugin without any authentication.
 type PluginAuthConfigurationMemberNoAuthConfiguration struct {
@@ -1909,6 +2300,22 @@ type PluginConfiguration struct {
 	//
 	// This member is required.
 	PluginId *string
+
+	noSmithyDocumentSerde
+}
+
+// Summary metadata information for a Amazon Q Business plugin.
+type PluginTypeMetadataSummary struct {
+
+	// The category of the plugin type.
+	Category PluginTypeCategory
+
+	// The description assigned by Amazon Q Business to a plugin. You can't modify
+	// this value.
+	Description *string
+
+	// The type of the plugin.
+	Type PluginType
 
 	noSmithyDocumentSerde
 }
@@ -1976,7 +2383,7 @@ type PrincipalUser struct {
 	noSmithyDocumentSerde
 }
 
-// Configuration information about Amazon Q Apps. (preview feature)
+// Configuration information about Amazon Q Apps.
 type QAppsConfiguration struct {
 
 	// Status information about whether end users can create and use Amazon Q Apps in
@@ -1984,6 +2391,47 @@ type QAppsConfiguration struct {
 	//
 	// This member is required.
 	QAppsControlMode QAppsControlMode
+
+	noSmithyDocumentSerde
+}
+
+// The Amazon QuickSight configuration for an Amazon Q Business application that
+// uses QuickSight as the identity provider. For more information, see [Creating an Amazon QuickSight integrated application].
+//
+// [Creating an Amazon QuickSight integrated application]: https://docs.aws.amazon.com/amazonq/latest/qbusiness-ug/create-quicksight-integrated-application.html
+type QuickSightConfiguration struct {
+
+	// The Amazon QuickSight namespace that is used as the identity provider. For more
+	// information about QuickSight namespaces, see [Namespace operations].
+	//
+	// [Namespace operations]: https://docs.aws.amazon.com/quicksight/latest/developerguide/namespace-operations.html
+	//
+	// This member is required.
+	ClientNamespace *string
+
+	noSmithyDocumentSerde
+}
+
+// Represents a piece of content that is relevant to a search query.
+type RelevantContent struct {
+
+	// The actual content of the relevant item.
+	Content *string
+
+	// Additional attributes of the document containing the relevant content.
+	DocumentAttributes []DocumentAttribute
+
+	// The unique identifier of the document containing the relevant content.
+	DocumentId *string
+
+	// The title of the document containing the relevant content.
+	DocumentTitle *string
+
+	// The URI of the document containing the relevant content.
+	DocumentUri *string
+
+	// Attributes related to the relevance score of the content.
+	ScoreAttributes *ScoreAttributes
 
 	noSmithyDocumentSerde
 }
@@ -2040,6 +2488,17 @@ type RetrieverConfigurationMemberNativeIndexConfiguration struct {
 }
 
 func (*RetrieverConfigurationMemberNativeIndexConfiguration) isRetrieverConfiguration() {}
+
+// Specifies a retriever as the content source for a search.
+type RetrieverContentSource struct {
+
+	// The unique identifier of the retriever to use as the content source.
+	//
+	// This member is required.
+	RetrieverId *string
+
+	noSmithyDocumentSerde
+}
 
 // Guardrail rules for an Amazon Q Business application. Amazon Q Business
 // supports only one rule at a time.
@@ -2150,6 +2609,15 @@ type SamlProviderConfiguration struct {
 	noSmithyDocumentSerde
 }
 
+// Provides information about the relevance score of content.
+type ScoreAttributes struct {
+
+	// The confidence level of the relevance score.
+	ScoreConfidence ScoreConfidence
+
+	noSmithyDocumentSerde
+}
+
 // Contains the relevant text excerpt from a source that was used to generate a
 // citation text segment in an Amazon Q Business chat response.
 type SnippetExcerpt struct {
@@ -2186,6 +2654,45 @@ type SourceAttribution struct {
 
 	noSmithyDocumentSerde
 }
+
+// Container for details about different types of media sources (image, audio, or
+// video).
+//
+// The following types satisfy this interface:
+//
+//	SourceDetailsMemberAudioSourceDetails
+//	SourceDetailsMemberImageSourceDetails
+//	SourceDetailsMemberVideoSourceDetails
+type SourceDetails interface {
+	isSourceDetails()
+}
+
+// Details specific to audio content within the source.
+type SourceDetailsMemberAudioSourceDetails struct {
+	Value AudioSourceDetails
+
+	noSmithyDocumentSerde
+}
+
+func (*SourceDetailsMemberAudioSourceDetails) isSourceDetails() {}
+
+// Details specific to image content within the source.
+type SourceDetailsMemberImageSourceDetails struct {
+	Value ImageSourceDetails
+
+	noSmithyDocumentSerde
+}
+
+func (*SourceDetailsMemberImageSourceDetails) isSourceDetails() {}
+
+// Details specific to video content within the source.
+type SourceDetailsMemberVideoSourceDetails struct {
+	Value VideoSourceDetails
+
+	noSmithyDocumentSerde
+}
+
+func (*SourceDetailsMemberVideoSourceDetails) isSourceDetails() {}
 
 // Provides information on boosting STRING type document attributes.
 //
@@ -2235,6 +2742,78 @@ type StringListAttributeBoostingConfiguration struct {
 
 	noSmithyDocumentSerde
 }
+
+// Information about an Amazon Q Business subscription.
+//
+// Subscriptions are used to provide access for an IAM Identity Center user or a
+// group to an Amazon Q Business application.
+//
+// Amazon Q Business offers two subscription tiers: Q_LITE and Q_BUSINESS .
+// Subscription tier determines feature access for the user. For more information
+// on subscriptions and pricing tiers, see [Amazon Q Business pricing].
+//
+// [Amazon Q Business pricing]: https://aws.amazon.com/q/business/pricing/
+type Subscription struct {
+
+	// The type of your current Amazon Q Business subscription.
+	CurrentSubscription *SubscriptionDetails
+
+	// The type of the Amazon Q Business subscription for the next month.
+	NextSubscription *SubscriptionDetails
+
+	// The IAM Identity Center UserId or GroupId of a user or group in the IAM
+	// Identity Center instance connected to the Amazon Q Business application.
+	Principal SubscriptionPrincipal
+
+	// The Amazon Resource Name (ARN) of the Amazon Q Business subscription that was
+	// updated.
+	SubscriptionArn *string
+
+	// The identifier of the Amazon Q Business subscription to be updated.
+	SubscriptionId *string
+
+	noSmithyDocumentSerde
+}
+
+// The details of an Amazon Q Business subscription.
+type SubscriptionDetails struct {
+
+	//  The type of an Amazon Q Business subscription.
+	Type SubscriptionType
+
+	noSmithyDocumentSerde
+}
+
+// A user or group in the IAM Identity Center instance connected to the Amazon Q
+// Business application.
+//
+// The following types satisfy this interface:
+//
+//	SubscriptionPrincipalMemberGroup
+//	SubscriptionPrincipalMemberUser
+type SubscriptionPrincipal interface {
+	isSubscriptionPrincipal()
+}
+
+// The identifier of a group in the IAM Identity Center instance connected to the
+// Amazon Q Business application.
+type SubscriptionPrincipalMemberGroup struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*SubscriptionPrincipalMemberGroup) isSubscriptionPrincipal() {}
+
+// The identifier of a user in the IAM Identity Center instance connected to the
+// Amazon Q Business application.
+type SubscriptionPrincipalMemberUser struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*SubscriptionPrincipalMemberUser) isSubscriptionPrincipal() {}
 
 // A list of key/value pairs that identify an index, FAQ, or data source. Tag keys
 // and values can consist of Unicode letters, digits, white space, and any of the
@@ -2311,9 +2890,26 @@ type TextSegment struct {
 	// ends.
 	EndOffset *int32
 
+	// The identifier of the media object associated with the text segment in the
+	// source attribution.
+	//
+	// Deprecated: Deprecated in favor of using mediaId within the respective
+	// sourceDetails field.
+	MediaId *string
+
+	// The MIME type (image/png) of the media object associated with the text segment
+	// in the source attribution.
+	//
+	// Deprecated: Deprecated in favor of using mediaMimeType within the respective
+	// sourceDetails field.
+	MediaMimeType *string
+
 	// The relevant text excerpt from a source that was used to generate a citation
 	// text segment in an Amazon Q Business chat response.
 	SnippetExcerpt *SnippetExcerpt
+
+	// Source information for a segment of extracted text, including its media type.
+	SourceDetails SourceDetails
 
 	noSmithyDocumentSerde
 }
@@ -2359,11 +2955,11 @@ type UserAlias struct {
 	noSmithyDocumentSerde
 }
 
-// Provides information about users and groups associated with a topic control
-// rule.
+// Provides information about users and group names associated with a topic
+// control rule.
 type UsersAndGroups struct {
 
-	// The user groups associated with a topic control rule.
+	// The user group names associated with a topic control rule.
 	UserGroups []string
 
 	// The user ids associated with a topic control rule.
@@ -2385,6 +2981,40 @@ type ValidationExceptionField struct {
 	//
 	// This member is required.
 	Name *string
+
+	noSmithyDocumentSerde
+}
+
+// Configuration settings for video content extraction and processing.
+type VideoExtractionConfiguration struct {
+
+	// The status of video extraction (ENABLED or DISABLED) for processing video
+	// content from files.
+	//
+	// This member is required.
+	VideoExtractionStatus VideoExtractionStatus
+
+	noSmithyDocumentSerde
+}
+
+// Details about a video source, including its identifier, format, and time
+// information.
+type VideoSourceDetails struct {
+
+	// The ending timestamp in milliseconds for the relevant video segment.
+	EndTimeMilliseconds *int64
+
+	// Unique identifier for the video media file.
+	MediaId *string
+
+	// The MIME type of the video file (e.g., video/mp4, video/avi).
+	MediaMimeType *string
+
+	// The starting timestamp in milliseconds for the relevant video segment.
+	StartTimeMilliseconds *int64
+
+	// The type of video extraction performed on the content.
+	VideoExtractionType VideoExtractionType
 
 	noSmithyDocumentSerde
 }
@@ -2447,6 +3077,8 @@ func (*UnknownUnionMember) isAPISchema()                              {}
 func (*UnknownUnionMember) isChatInputStream()                        {}
 func (*UnknownUnionMember) isChatModeConfiguration()                  {}
 func (*UnknownUnionMember) isChatOutputStream()                       {}
+func (*UnknownUnionMember) isContentSource()                          {}
+func (*UnknownUnionMember) isCopyFromSource()                         {}
 func (*UnknownUnionMember) isDocumentAttributeBoostingConfiguration() {}
 func (*UnknownUnionMember) isDocumentAttributeValue()                 {}
 func (*UnknownUnionMember) isDocumentContent()                        {}
@@ -2455,4 +3087,6 @@ func (*UnknownUnionMember) isPluginAuthConfiguration()                {}
 func (*UnknownUnionMember) isPrincipal()                              {}
 func (*UnknownUnionMember) isRetrieverConfiguration()                 {}
 func (*UnknownUnionMember) isRuleConfiguration()                      {}
+func (*UnknownUnionMember) isSourceDetails()                          {}
+func (*UnknownUnionMember) isSubscriptionPrincipal()                  {}
 func (*UnknownUnionMember) isWebExperienceAuthConfiguration()         {}

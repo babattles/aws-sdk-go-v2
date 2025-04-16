@@ -2,6 +2,25 @@
 
 package types
 
+type ActorSessionMfaStatus string
+
+// Enum values for ActorSessionMfaStatus
+const (
+	ActorSessionMfaStatusEnabled  ActorSessionMfaStatus = "ENABLED"
+	ActorSessionMfaStatusDisabled ActorSessionMfaStatus = "DISABLED"
+)
+
+// Values returns all known values for ActorSessionMfaStatus. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ActorSessionMfaStatus) Values() []ActorSessionMfaStatus {
+	return []ActorSessionMfaStatus{
+		"ENABLED",
+		"DISABLED",
+	}
+}
+
 type AdminStatus string
 
 // Enum values for AdminStatus
@@ -176,6 +195,25 @@ func (ConfigurationPolicyAssociationStatus) Values() []ConfigurationPolicyAssoci
 		"PENDING",
 		"SUCCESS",
 		"FAILED",
+	}
+}
+
+type ConnectionDirection string
+
+// Enum values for ConnectionDirection
+const (
+	ConnectionDirectionInbound  ConnectionDirection = "INBOUND"
+	ConnectionDirectionOutbound ConnectionDirection = "OUTBOUND"
+)
+
+// Values returns all known values for ConnectionDirection. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ConnectionDirection) Values() []ConnectionDirection {
+	return []ConnectionDirection{
+		"INBOUND",
+		"OUTBOUND",
 	}
 }
 
@@ -606,6 +644,25 @@ func (SortOrder) Values() []SortOrder {
 	}
 }
 
+type StandardsControlsUpdatable string
+
+// Enum values for StandardsControlsUpdatable
+const (
+	StandardsControlsUpdatableReadyForUpdates    StandardsControlsUpdatable = "READY_FOR_UPDATES"
+	StandardsControlsUpdatableNotReadyForUpdates StandardsControlsUpdatable = "NOT_READY_FOR_UPDATES"
+)
+
+// Values returns all known values for StandardsControlsUpdatable. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (StandardsControlsUpdatable) Values() []StandardsControlsUpdatable {
+	return []StandardsControlsUpdatable{
+		"READY_FOR_UPDATES",
+		"NOT_READY_FOR_UPDATES",
+	}
+}
+
 type StandardsStatus string
 
 // Enum values for StandardsStatus
@@ -635,8 +692,9 @@ type StatusReasonCode string
 
 // Enum values for StatusReasonCode
 const (
-	StatusReasonCodeNoAvailableConfigurationRecorder StatusReasonCode = "NO_AVAILABLE_CONFIGURATION_RECORDER"
-	StatusReasonCodeInternalError                    StatusReasonCode = "INTERNAL_ERROR"
+	StatusReasonCodeNoAvailableConfigurationRecorder   StatusReasonCode = "NO_AVAILABLE_CONFIGURATION_RECORDER"
+	StatusReasonCodeMaximumNumberOfConfigRulesExceeded StatusReasonCode = "MAXIMUM_NUMBER_OF_CONFIG_RULES_EXCEEDED"
+	StatusReasonCodeInternalError                      StatusReasonCode = "INTERNAL_ERROR"
 )
 
 // Values returns all known values for StatusReasonCode. Note that this can be
@@ -646,6 +704,7 @@ const (
 func (StatusReasonCode) Values() []StatusReasonCode {
 	return []StatusReasonCode{
 		"NO_AVAILABLE_CONFIGURATION_RECORDER",
+		"MAXIMUM_NUMBER_OF_CONFIG_RULES_EXCEEDED",
 		"INTERNAL_ERROR",
 	}
 }

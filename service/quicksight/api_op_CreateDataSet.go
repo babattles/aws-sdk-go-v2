@@ -83,6 +83,10 @@ type CreateDataSetInput struct {
 	// tables.
 	LogicalTableMap map[string]types.LogicalTable
 
+	// The configuration for the performance optimization of the dataset that contains
+	// a UniqueKey configuration.
+	PerformanceConfiguration *types.PerformanceConfiguration
+
 	// A list of resource permissions on the dataset.
 	Permissions []types.ResourcePermission
 
@@ -96,6 +100,10 @@ type CreateDataSetInput struct {
 	// Contains a map of the key-value pairs for the resource tag or tags assigned to
 	// the dataset.
 	Tags []types.Tag
+
+	// The usage of the dataset. RLS_RULES must be specified for RLS permission
+	// datasets.
+	UseAs types.DataSetUseAs
 
 	noSmithyDocumentSerde
 }
@@ -172,6 +180,9 @@ func (c *Client) addOperationCreateDataSetMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -188,6 +199,9 @@ func (c *Client) addOperationCreateDataSetMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateDataSetValidationMiddleware(stack); err != nil {
@@ -209,6 +223,18 @@ func (c *Client) addOperationCreateDataSetMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

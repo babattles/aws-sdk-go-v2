@@ -68,14 +68,12 @@ type UpdateKnowledgeBaseInput struct {
 	// This member is required.
 	RoleArn *string
 
-	// Specifies the configuration for the vector store used for the knowledge base.
-	// You must use the same configuration as when the knowledge base was created.
-	//
-	// This member is required.
-	StorageConfiguration *types.StorageConfiguration
-
 	// Specifies a new description for the knowledge base.
 	Description *string
+
+	// Specifies the configuration for the vector store used for the knowledge base.
+	// You must use the same configuration as when the knowledge base was created.
+	StorageConfiguration *types.StorageConfiguration
 
 	noSmithyDocumentSerde
 }
@@ -136,6 +134,9 @@ func (c *Client) addOperationUpdateKnowledgeBaseMiddlewares(stack *middleware.St
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -152,6 +153,9 @@ func (c *Client) addOperationUpdateKnowledgeBaseMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateKnowledgeBaseValidationMiddleware(stack); err != nil {
@@ -173,6 +177,18 @@ func (c *Client) addOperationUpdateKnowledgeBaseMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

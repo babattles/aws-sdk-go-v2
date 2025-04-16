@@ -1,3 +1,255 @@
+# v1.187.0 (2025-04-03)
+
+* **Feature**: Adds support for i3en, m7i, r7i instance types for SageMaker Hyperpod
+
+# v1.186.0 (2025-04-01)
+
+* **Feature**: Added tagging support for SageMaker notebook instance lifecycle configurations
+
+# v1.185.1 (2025-03-31)
+
+* No change notes available for this release.
+
+# v1.185.0 (2025-03-28)
+
+* **Feature**: TransformAmiVersion for Batch Transform and SageMaker Search Service Aggregate Search API Extension
+
+# v1.184.0 (2025-03-27)
+
+* **Feature**: add: recovery mode for SageMaker Studio apps
+
+# v1.183.0 (2025-03-25)
+
+* **Feature**: This release adds support for customer-managed KMS keys in Amazon SageMaker Partner AI Apps
+
+# v1.182.0 (2025-03-21)
+
+* **Feature**: This release does the following: 1.) Adds DurationHours as a required field to the SearchTrainingPlanOfferings action in the SageMaker AI API; 2.) Adds support for G6e instance types for SageMaker AI inference optimization jobs.
+
+# v1.181.0 (2025-03-19)
+
+* **Feature**: Added support for g6, g6e, m6i, c6i instance types in SageMaker Processing Jobs.
+
+# v1.180.2 (2025-03-11)
+
+* No change notes available for this release.
+
+# v1.180.1 (2025-03-04.2)
+
+* **Bug Fix**: Add assurance test for operation order.
+
+# v1.180.0 (2025-03-04)
+
+* **Feature**: Add DomainId to CreateDomainResponse
+
+# v1.179.0 (2025-02-27)
+
+* **Feature**: SageMaker HubService is introducing support for creating Training Jobs in Curated Hub (Private Hub). Additionally, it is introducing two new APIs: UpdateHubContent and UpdateHubContentReference.
+* **Feature**: Track credential providers via User-Agent Feature ids
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.178.0 (2025-02-26)
+
+* **Feature**: AWS SageMaker InferenceComponents now support rolling update deployments for Inference Components.
+
+# v1.177.0 (2025-02-20)
+
+* **Feature**: Added new capability in the UpdateCluster operation to remove instance groups from your SageMaker HyperPod cluster.
+
+# v1.176.0 (2025-02-19)
+
+* **Feature**: Adds r8g instance type support to SageMaker Realtime Endpoints
+
+# v1.175.1 (2025-02-18)
+
+* **Bug Fix**: Bump go version to 1.22
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.175.0 (2025-02-13)
+
+* **Feature**: Adds additional values to the InferenceAmiVersion parameter in the ProductionVariant data type.
+
+# v1.174.3 (2025-02-06)
+
+* No change notes available for this release.
+
+# v1.174.2 (2025-02-05)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.174.1 (2025-02-04)
+
+* **Documentation**: IPv6 support for Hyperpod clusters
+
+# v1.174.0 (2025-01-31)
+
+* **Feature**: This release introduces a new valid value in InstanceType parameter: p5en.48xlarge, in ProductionVariant.
+* **Dependency Update**: Switch to code-generated waiter matchers, removing the dependency on go-jmespath.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.173.3 (2025-01-30)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.173.2 (2025-01-24)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+* **Dependency Update**: Upgrade to smithy-go v1.22.2.
+
+# v1.173.1 (2025-01-17)
+
+* **Bug Fix**: Fix bug where credentials weren't refreshed during retry loop.
+* **Documentation**: Correction of docs for  "Added support for ml.trn1.32xlarge instance type in Reserved Capacity Offering"
+
+# v1.173.0 (2025-01-16)
+
+* **Feature**: Added support for ml.trn1.32xlarge instance type in Reserved Capacity Offering
+
+# v1.172.3 (2025-01-15)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.172.2 (2025-01-14)
+
+* **Bug Fix**: Fix issue where waiters were not failing on unmatched errors as they should. This may have breaking behavioral changes for users in fringe cases. See [this announcement](https://github.com/aws/aws-sdk-go-v2/discussions/2954) for more information.
+
+# v1.172.1 (2025-01-09)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.172.0 (2025-01-08)
+
+* **Feature**: Adds support for IPv6 for SageMaker HyperPod cluster nodes.
+
+# v1.171.0 (2025-01-02)
+
+* **Feature**: Adding ETag information with Model Artifacts for Model Registry
+
+# v1.170.0 (2024-12-20)
+
+* **Feature**: This release adds support for c6i, m6i and r6i instance on SageMaker Hyperpod and trn1 instances in batch
+
+# v1.169.1 (2024-12-19)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.169.0 (2024-12-04)
+
+* **Feature**: Amazon SageMaker HyperPod launched task governance to help customers maximize accelerator utilization for model development and flexible training plans to meet training timelines and budget while reducing weeks of training time. AI apps from AWS partner is now available in SageMaker.
+
+# v1.168.1 (2024-12-02)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.168.0 (2024-11-22)
+
+* **Feature**: This release adds APIs for new features for SageMaker endpoint to scale down to zero instances, native support for multi-adapter inference, and endpoint scaling improvements.
+
+# v1.167.1 (2024-11-18)
+
+* **Dependency Update**: Update to smithy-go v1.22.1.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.167.0 (2024-11-14)
+
+* **Feature**: Add support for Neuron instance types [ trn1/trn1n/inf2 ] on SageMaker Notebook Instances Platform.
+
+# v1.166.2 (2024-11-07)
+
+* **Bug Fix**: Adds case-insensitive handling of error message fields in service responses
+
+# v1.166.1 (2024-11-06)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.166.0 (2024-10-31)
+
+* **Feature**: SageMaker HyperPod adds scale-down at instance level via BatchDeleteClusterNodes API and group level via UpdateCluster API. SageMaker Training exposes secondary job status in TrainingJobSummary from ListTrainingJobs API. SageMaker now supports G6, G6e, P5e instances for HyperPod and Training.
+
+# v1.165.0 (2024-10-30)
+
+* **Feature**: Added support for Model Registry Staging construct. Users can define series of stages that models can progress through for model workflows and lifecycle. This simplifies tracking and managing models as they transition through development, testing, and production stages.
+
+# v1.164.0 (2024-10-29)
+
+* **Feature**: Adding `notebook-al2-v3` as allowed value to SageMaker NotebookInstance PlatformIdentifier attribute
+
+# v1.163.3 (2024-10-28)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.163.2 (2024-10-08)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.163.1 (2024-10-07)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.163.0 (2024-10-04)
+
+* **Feature**: Add support for HTTP client metrics.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.162.1 (2024-10-03)
+
+* No change notes available for this release.
+
+# v1.162.0 (2024-10-02)
+
+* **Feature**: releasing builtinlcc to public
+
+# v1.161.1 (2024-09-27)
+
+* No change notes available for this release.
+
+# v1.161.0 (2024-09-26)
+
+* **Feature**: Adding `TagPropagation` attribute to Sagemaker API
+
+# v1.160.1 (2024-09-25)
+
+* No change notes available for this release.
+
+# v1.160.0 (2024-09-24)
+
+* **Feature**: Adding `HiddenInstanceTypes` and `HiddenSageMakerImageVersionAliases` attribute to SageMaker API
+
+# v1.159.1 (2024-09-23)
+
+* No change notes available for this release.
+
+# v1.159.0 (2024-09-20)
+
+* **Feature**: Add tracing and metrics support to service clients.
+* **Feature**: Amazon SageMaker now supports using manifest files to specify the location of uncompressed model artifacts within Model Packages
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.158.0 (2024-09-19)
+
+* **Feature**: Introduced support for G6e instance types on SageMaker Studio for JupyterLab and CodeEditor applications.
+
+# v1.157.1 (2024-09-17)
+
+* **Bug Fix**: **BREAKFIX**: Only generate AccountIDEndpointMode config for services that use it. This is a compiler break, but removes no actual functionality, as no services currently use the account ID in endpoint resolution.
+
+# v1.157.0 (2024-09-09)
+
+* **Feature**: Amazon Sagemaker supports orchestrating SageMaker HyperPod clusters with Amazon EKS
+
+# v1.156.0 (2024-09-05)
+
+* **Feature**: Amazon SageMaker now supports idle shutdown of JupyterLab and CodeEditor applications on SageMaker Studio.
+
+# v1.155.1 (2024-09-04)
+
+* No change notes available for this release.
+
+# v1.155.0 (2024-09-03)
+
+* **Feature**: Amazon SageMaker now supports automatic mounting of a user's home folder in the Amazon Elastic File System (EFS) associated with the SageMaker Studio domain to their Studio Spaces to enable users to share data between their own private spaces.
+* **Dependency Update**: Updated to the latest SDK module versions
+
 # v1.154.0 (2024-08-16)
 
 * **Feature**: Introduce Endpoint and EndpointConfig Arns in sagemaker:ListPipelineExecutionSteps API response

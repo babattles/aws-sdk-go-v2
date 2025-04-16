@@ -266,6 +266,18 @@ func TestCheckSnapshot_GetFindingRecommendation(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_GetFindingsStatistics(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetFindingsStatistics(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GetFindingsStatistics")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_GetFindingV2(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.GetFindingV2(context.Background(), nil, func(o *Options) {
@@ -439,6 +451,18 @@ func TestCheckSnapshot_UntagResource(t *testing.T) {
 	_, err := svc.UntagResource(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "UntagResource")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_UpdateAnalyzer(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateAnalyzer(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "UpdateAnalyzer")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -685,6 +709,18 @@ func TestUpdateSnapshot_GetFindingRecommendation(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_GetFindingsStatistics(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetFindingsStatistics(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GetFindingsStatistics")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_GetFindingV2(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.GetFindingV2(context.Background(), nil, func(o *Options) {
@@ -858,6 +894,18 @@ func TestUpdateSnapshot_UntagResource(t *testing.T) {
 	_, err := svc.UntagResource(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "UntagResource")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_UpdateAnalyzer(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateAnalyzer(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "UpdateAnalyzer")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {

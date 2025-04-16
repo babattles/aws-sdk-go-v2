@@ -136,6 +136,14 @@ type DeleteCustomDBEngineVersionOutput struct {
 	// The major engine version of the CEV.
 	MajorEngineVersion *string
 
+	// Specifies any Aurora Serverless v2 properties or limits that differ between
+	// Aurora engine versions. You can test the values of this attribute when deciding
+	// which Aurora version to use in a new or upgraded DB cluster. You can also
+	// retrieve the version of an existing DB cluster and check whether that version
+	// supports certain Aurora Serverless v2 features before you attempt to use those
+	// features.
+	ServerlessV2FeaturesSupport *types.ServerlessV2FeaturesSupport
+
 	// The status of the DB engine version, either available or deprecated .
 	Status *string
 
@@ -277,6 +285,9 @@ func (c *Client) addOperationDeleteCustomDBEngineVersionMiddlewares(stack *middl
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -293,6 +304,9 @@ func (c *Client) addOperationDeleteCustomDBEngineVersionMiddlewares(stack *middl
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteCustomDBEngineVersionValidationMiddleware(stack); err != nil {
@@ -314,6 +328,18 @@ func (c *Client) addOperationDeleteCustomDBEngineVersionMiddlewares(stack *middl
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

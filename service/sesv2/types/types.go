@@ -43,6 +43,59 @@ type AccountDetails struct {
 	noSmithyDocumentSerde
 }
 
+// Used to associate a configuration set with a MailManager archive.
+type ArchivingOptions struct {
+
+	// The Amazon Resource Name (ARN) of the MailManager archive where the Amazon SES
+	// API v2 will archive sent emails.
+	ArchiveArn *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains metadata and attachment raw content.
+type Attachment struct {
+
+	// The file name for the attachment as it will appear in the email. Amazon SES
+	// restricts certain file extensions. To ensure attachments are accepted, check the
+	// [Unsupported attachment types]in the Amazon SES Developer Guide.
+	//
+	// [Unsupported attachment types]: https://docs.aws.amazon.com/ses/latest/dg/mime-types.html
+	//
+	// This member is required.
+	FileName *string
+
+	//  The raw data of the attachment. It needs to be base64-encoded if you are
+	// accessing Amazon SES directly through the HTTPS interface. If you are accessing
+	// Amazon SES using an Amazon Web Services SDK, the SDK takes care of the base
+	// 64-encoding for you.
+	//
+	// This member is required.
+	RawContent []byte
+
+	//  A brief description of the attachment content.
+	ContentDescription *string
+
+	//  A standard descriptor indicating how the attachment should be rendered in the
+	// email. Supported values: ATTACHMENT or INLINE .
+	ContentDisposition AttachmentContentDisposition
+
+	//  Unique identifier for the attachment, used for referencing attachments with
+	// INLINE disposition in HTML content.
+	ContentId *string
+
+	//  Specifies how the attachment is encoded. Supported values: BASE64 ,
+	// QUOTED_PRINTABLE , SEVEN_BIT .
+	ContentTransferEncoding AttachmentContentTransferEncoding
+
+	//  The MIME type of the attachment.
+	//
+	// Example: application/pdf , image/jpeg
+	ContentType *string
+
+	noSmithyDocumentSerde
+}
+
 // Represents a single metric data query to include in a batch.
 type BatchGetMetricDataQuery struct {
 
@@ -598,6 +651,11 @@ type DeliverabilityTestReport struct {
 // Used to associate a configuration set with a dedicated IP pool.
 type DeliveryOptions struct {
 
+	// The maximum amount of time, in seconds, that Amazon SES API v2 will attempt
+	// delivery of email. If specified, the value must greater than or equal to 300
+	// seconds (5 minutes) and less than or equal to 50400 seconds (840 minutes).
+	MaxDeliverySeconds *int64
+
 	// The name of the dedicated IP pool to associate with the configuration set.
 	SendingPoolName *string
 
@@ -638,6 +696,19 @@ type Destination struct {
 	noSmithyDocumentSerde
 }
 
+// An object that contains configuration details of multi-region endpoint
+// (global-endpoint).
+type Details struct {
+
+	// A list of route configuration details. Must contain exactly one route
+	// configuration.
+	//
+	// This member is required.
+	RoutesDetails []RouteDetails
+
+	noSmithyDocumentSerde
+}
+
 // An object that contains information about the DKIM authentication status for an
 // email identity.
 //
@@ -670,6 +741,94 @@ type DkimAttributes struct {
 	//
 	//   - EXTERNAL – Indicates that DKIM was configured for the identity by using
 	//   Bring Your Own DKIM (BYODKIM).
+	//
+	//   - AWS_SES_AF_SOUTH_1 – Indicates that DKIM was configured for the identity by
+	//   replicating signing attributes from a parent identity in Africa (Cape Town)
+	//   region using Deterministic Easy-DKIM (DEED).
+	//
+	//   - AWS_SES_EU_NORTH_1 – Indicates that DKIM was configured for the identity by
+	//   replicating signing attributes from a parent identity in Europe (Stockholm)
+	//   region using Deterministic Easy-DKIM (DEED).
+	//
+	//   - AWS_SES_AP_SOUTH_1 – Indicates that DKIM was configured for the identity by
+	//   replicating signing attributes from a parent identity in Asia Pacific (Mumbai)
+	//   region using Deterministic Easy-DKIM (DEED).
+	//
+	//   - AWS_SES_EU_WEST_3 – Indicates that DKIM was configured for the identity by
+	//   replicating signing attributes from a parent identity in Europe (Paris) region
+	//   using Deterministic Easy-DKIM (DEED).
+	//
+	//   - AWS_SES_EU_WEST_2 – Indicates that DKIM was configured for the identity by
+	//   replicating signing attributes from a parent identity in Europe (London) region
+	//   using Deterministic Easy-DKIM (DEED).
+	//
+	//   - AWS_SES_EU_SOUTH_1 – Indicates that DKIM was configured for the identity by
+	//   replicating signing attributes from a parent identity in Europe (Milan) region
+	//   using Deterministic Easy-DKIM (DEED).
+	//
+	//   - AWS_SES_EU_WEST_1 – Indicates that DKIM was configured for the identity by
+	//   replicating signing attributes from a parent identity in Europe (Ireland) region
+	//   using Deterministic Easy-DKIM (DEED).
+	//
+	//   - AWS_SES_AP_NORTHEAST_3 – Indicates that DKIM was configured for the identity
+	//   by replicating signing attributes from a parent identity in Asia Pacific (Osaka)
+	//   region using Deterministic Easy-DKIM (DEED).
+	//
+	//   - AWS_SES_AP_NORTHEAST_2 – Indicates that DKIM was configured for the identity
+	//   by replicating signing attributes from a parent identity in Asia Pacific (Seoul)
+	//   region using Deterministic Easy-DKIM (DEED).
+	//
+	//   - AWS_SES_ME_SOUTH_1 – Indicates that DKIM was configured for the identity by
+	//   replicating signing attributes from a parent identity in Middle East (Bahrain)
+	//   region using Deterministic Easy-DKIM (DEED).
+	//
+	//   - AWS_SES_AP_NORTHEAST_1 – Indicates that DKIM was configured for the identity
+	//   by replicating signing attributes from a parent identity in Asia Pacific (Tokyo)
+	//   region using Deterministic Easy-DKIM (DEED).
+	//
+	//   - AWS_SES_IL_CENTRAL_1 – Indicates that DKIM was configured for the identity
+	//   by replicating signing attributes from a parent identity in Israel (Tel Aviv)
+	//   region using Deterministic Easy-DKIM (DEED).
+	//
+	//   - AWS_SES_SA_EAST_1 – Indicates that DKIM was configured for the identity by
+	//   replicating signing attributes from a parent identity in South America (São
+	//   Paulo) region using Deterministic Easy-DKIM (DEED).
+	//
+	//   - AWS_SES_CA_CENTRAL_1 – Indicates that DKIM was configured for the identity
+	//   by replicating signing attributes from a parent identity in Canada (Central)
+	//   region using Deterministic Easy-DKIM (DEED).
+	//
+	//   - AWS_SES_AP_SOUTHEAST_1 – Indicates that DKIM was configured for the identity
+	//   by replicating signing attributes from a parent identity in Asia Pacific
+	//   (Singapore) region using Deterministic Easy-DKIM (DEED).
+	//
+	//   - AWS_SES_AP_SOUTHEAST_2 – Indicates that DKIM was configured for the identity
+	//   by replicating signing attributes from a parent identity in Asia Pacific
+	//   (Sydney) region using Deterministic Easy-DKIM (DEED).
+	//
+	//   - AWS_SES_AP_SOUTHEAST_3 – Indicates that DKIM was configured for the identity
+	//   by replicating signing attributes from a parent identity in Asia Pacific
+	//   (Jakarta) region using Deterministic Easy-DKIM (DEED).
+	//
+	//   - AWS_SES_EU_CENTRAL_1 – Indicates that DKIM was configured for the identity
+	//   by replicating signing attributes from a parent identity in Europe (Frankfurt)
+	//   region using Deterministic Easy-DKIM (DEED).
+	//
+	//   - AWS_SES_US_EAST_1 – Indicates that DKIM was configured for the identity by
+	//   replicating signing attributes from a parent identity in US East (N. Virginia)
+	//   region using Deterministic Easy-DKIM (DEED).
+	//
+	//   - AWS_SES_US_EAST_2 – Indicates that DKIM was configured for the identity by
+	//   replicating signing attributes from a parent identity in US East (Ohio) region
+	//   using Deterministic Easy-DKIM (DEED).
+	//
+	//   - AWS_SES_US_WEST_1 – Indicates that DKIM was configured for the identity by
+	//   replicating signing attributes from a parent identity in US West (N. California)
+	//   region using Deterministic Easy-DKIM (DEED).
+	//
+	//   - AWS_SES_US_WEST_2 – Indicates that DKIM was configured for the identity by
+	//   replicating signing attributes from a parent identity in US West (Oregon) region
+	//   using Deterministic Easy-DKIM (DEED).
 	//
 	// [Easy DKIM]: https://docs.aws.amazon.com/ses/latest/DeveloperGuide/easy-dkim.html
 	SigningAttributesOrigin DkimSigningAttributesOrigin
@@ -720,6 +879,109 @@ type DkimAttributes struct {
 // An object that contains configuration for Bring Your Own DKIM (BYODKIM), or,
 // for Easy DKIM
 type DkimSigningAttributes struct {
+
+	// The attribute to use for configuring DKIM for the identity depends on the
+	// operation:
+	//
+	//   - For PutEmailIdentityDkimSigningAttributes :
+	//
+	//   - None of the values are allowed - use the [SigningAttributesOrigin]SigningAttributesOrigin parameter
+	//   instead
+	//
+	//   - For CreateEmailIdentity when replicating a parent identity's DKIM
+	//   configuration:
+	//
+	//   - Allowed values: All values except AWS_SES and EXTERNAL
+	//
+	//   - AWS_SES – Configure DKIM for the identity by using Easy DKIM.
+	//
+	//   - EXTERNAL – Configure DKIM for the identity by using Bring Your Own DKIM
+	//   (BYODKIM).
+	//
+	//   - AWS_SES_AF_SOUTH_1 – Configure DKIM for the identity by replicating from a
+	//   parent identity in Africa (Cape Town) region using Deterministic Easy-DKIM
+	//   (DEED).
+	//
+	//   - AWS_SES_EU_NORTH_1 – Configure DKIM for the identity by replicating from a
+	//   parent identity in Europe (Stockholm) region using Deterministic Easy-DKIM
+	//   (DEED).
+	//
+	//   - AWS_SES_AP_SOUTH_1 – Configure DKIM for the identity by replicating from a
+	//   parent identity in Asia Pacific (Mumbai) region using Deterministic Easy-DKIM
+	//   (DEED).
+	//
+	//   - AWS_SES_EU_WEST_3 – Configure DKIM for the identity by replicating from a
+	//   parent identity in Europe (Paris) region using Deterministic Easy-DKIM (DEED).
+	//
+	//   - AWS_SES_EU_WEST_2 – Configure DKIM for the identity by replicating from a
+	//   parent identity in Europe (London) region using Deterministic Easy-DKIM (DEED).
+	//
+	//   - AWS_SES_EU_SOUTH_1 – Configure DKIM for the identity by replicating from a
+	//   parent identity in Europe (Milan) region using Deterministic Easy-DKIM (DEED).
+	//
+	//   - AWS_SES_EU_WEST_1 – Configure DKIM for the identity by replicating from a
+	//   parent identity in Europe (Ireland) region using Deterministic Easy-DKIM (DEED).
+	//
+	//   - AWS_SES_AP_NORTHEAST_3 – Configure DKIM for the identity by replicating from
+	//   a parent identity in Asia Pacific (Osaka) region using Deterministic Easy-DKIM
+	//   (DEED).
+	//
+	//   - AWS_SES_AP_NORTHEAST_2 – Configure DKIM for the identity by replicating from
+	//   a parent identity in Asia Pacific (Seoul) region using Deterministic Easy-DKIM
+	//   (DEED).
+	//
+	//   - AWS_SES_ME_SOUTH_1 – Configure DKIM for the identity by replicating from a
+	//   parent identity in Middle East (Bahrain) region using Deterministic Easy-DKIM
+	//   (DEED).
+	//
+	//   - AWS_SES_AP_NORTHEAST_1 – Configure DKIM for the identity by replicating from
+	//   a parent identity in Asia Pacific (Tokyo) region using Deterministic Easy-DKIM
+	//   (DEED).
+	//
+	//   - AWS_SES_IL_CENTRAL_1 – Configure DKIM for the identity by replicating from a
+	//   parent identity in Israel (Tel Aviv) region using Deterministic Easy-DKIM
+	//   (DEED).
+	//
+	//   - AWS_SES_SA_EAST_1 – Configure DKIM for the identity by replicating from a
+	//   parent identity in South America (São Paulo) region using Deterministic
+	//   Easy-DKIM (DEED).
+	//
+	//   - AWS_SES_CA_CENTRAL_1 – Configure DKIM for the identity by replicating from a
+	//   parent identity in Canada (Central) region using Deterministic Easy-DKIM (DEED).
+	//
+	//   - AWS_SES_AP_SOUTHEAST_1 – Configure DKIM for the identity by replicating from
+	//   a parent identity in Asia Pacific (Singapore) region using Deterministic
+	//   Easy-DKIM (DEED).
+	//
+	//   - AWS_SES_AP_SOUTHEAST_2 – Configure DKIM for the identity by replicating from
+	//   a parent identity in Asia Pacific (Sydney) region using Deterministic Easy-DKIM
+	//   (DEED).
+	//
+	//   - AWS_SES_AP_SOUTHEAST_3 – Configure DKIM for the identity by replicating from
+	//   a parent identity in Asia Pacific (Jakarta) region using Deterministic Easy-DKIM
+	//   (DEED).
+	//
+	//   - AWS_SES_EU_CENTRAL_1 – Configure DKIM for the identity by replicating from a
+	//   parent identity in Europe (Frankfurt) region using Deterministic Easy-DKIM
+	//   (DEED).
+	//
+	//   - AWS_SES_US_EAST_1 – Configure DKIM for the identity by replicating from a
+	//   parent identity in US East (N. Virginia) region using Deterministic Easy-DKIM
+	//   (DEED).
+	//
+	//   - AWS_SES_US_EAST_2 – Configure DKIM for the identity by replicating from a
+	//   parent identity in US East (Ohio) region using Deterministic Easy-DKIM (DEED).
+	//
+	//   - AWS_SES_US_WEST_1 – Configure DKIM for the identity by replicating from a
+	//   parent identity in US West (N. California) region using Deterministic Easy-DKIM
+	//   (DEED).
+	//
+	//   - AWS_SES_US_WEST_2 – Configure DKIM for the identity by replicating from a
+	//   parent identity in US West (Oregon) region using Deterministic Easy-DKIM (DEED).
+	//
+	//
+	// [SigningAttributesOrigin]: https://docs.aws.amazon.com/ses/latest/APIReference-V2/API_PutEmailIdentityDkimSigningAttributes.html#SES-PutEmailIdentityDkimSigningAttributes-request-SigningAttributesOrigin
+	DomainSigningAttributesOrigin DkimSigningAttributesOrigin
 
 	// [Bring Your Own DKIM] A private key that's used to generate a DKIM signature.
 	//
@@ -849,10 +1111,11 @@ type DomainIspPlacement struct {
 }
 
 // An object that defines the entire content of the email, including the message
-// headers and the body content. You can create a simple email message, in which
-// you specify the subject and the text and HTML versions of the message body. You
-// can also create raw messages, in which you specify a complete MIME-formatted
-// message. Raw messages can include attachments and custom headers.
+// headers, body content, and attachments. For a simple email message, you specify
+// the subject and provide both text and HTML versions of the message body. You can
+// also add attachments to simple and templated messages. For a raw message, you
+// provide a complete MIME-formatted message, which can include custom headers and
+// attachments.
 type EmailContent struct {
 
 	// The raw email message. The message has to meet the following criteria:
@@ -881,7 +1144,8 @@ type EmailContent struct {
 	// [RFC 5321]: https://tools.ietf.org/html/rfc5321
 	Raw *RawMessage
 
-	// The simple email message. The message consists of a subject and a message body.
+	// The simple email message. The message consists of a subject, message body and
+	// attachments list.
 	Simple *Message
 
 	// The template to use for the email message.
@@ -1548,6 +1812,10 @@ type Message struct {
 	// This member is required.
 	Subject *Content
 
+	//  The List of attachments to include in your email. All recipients will receive
+	// the same attachments.
+	Attachments []Attachment
+
 	// The list of message headers that will be added to the email message.
 	Headers []MessageHeader
 
@@ -1748,6 +2016,40 @@ type MetricsDataSource struct {
 	noSmithyDocumentSerde
 }
 
+// An object that contains multi-region endpoint (global-endpoint) properties.
+type MultiRegionEndpoint struct {
+
+	// The time stamp of when the multi-region endpoint (global-endpoint) was created.
+	CreatedTimestamp *time.Time
+
+	// The ID of the multi-region endpoint (global-endpoint).
+	EndpointId *string
+
+	// The name of the multi-region endpoint (global-endpoint).
+	EndpointName *string
+
+	// The time stamp of when the multi-region endpoint (global-endpoint) was last
+	// updated.
+	LastUpdatedTimestamp *time.Time
+
+	// Primary and secondary regions between which multi-region endpoint splits
+	// sending traffic.
+	Regions []string
+
+	// The status of the multi-region endpoint (global-endpoint).
+	//
+	//   - CREATING – The resource is being provisioned.
+	//
+	//   - READY – The resource is ready to use.
+	//
+	//   - FAILED – The resource failed to be provisioned.
+	//
+	//   - DELETING – The resource is being deleted as requested.
+	Status Status
+
+	noSmithyDocumentSerde
+}
+
 // An object that contains information about email that was sent from the selected
 // domain.
 type OverallVolume struct {
@@ -1864,7 +2166,8 @@ type Recommendation struct {
 	// The recommendation status, with values like OPEN or FIXED .
 	Status RecommendationStatus
 
-	// The recommendation type, with values like DKIM , SPF , DMARC or BIMI .
+	// The recommendation type, with values like DKIM , SPF , DMARC , BIMI , or
+	// COMPLAINT .
 	Type RecommendationType
 
 	noSmithyDocumentSerde
@@ -1929,6 +2232,29 @@ type ReviewDetails struct {
 	//   - FAILED – An internal error occurred and we didn't receive your appeal. You
 	//   can submit your appeal again.
 	Status ReviewStatus
+
+	noSmithyDocumentSerde
+}
+
+// An object which contains an AWS-Region and routing status.
+type Route struct {
+
+	// The name of an AWS-Region.
+	//
+	// This member is required.
+	Region *string
+
+	noSmithyDocumentSerde
+}
+
+// An object that contains route configuration. Includes secondary region name.
+type RouteDetails struct {
+
+	// The name of an AWS-Region to be a secondary region for the multi-region
+	// endpoint (global-endpoint).
+	//
+	// This member is required.
+	Region *string
 
 	noSmithyDocumentSerde
 }
@@ -2162,15 +2488,28 @@ type Tag struct {
 
 // An object that defines the email template to use for an email message, and the
 // values to use for any message variables in that template. An email template is a
-// type of message template that contains content that you want to define, save,
-// and reuse in email messages that you send.
+// type of message template that contains content that you want to reuse in email
+// messages that you send. You can specifiy the email template by providing the
+// name or ARN of an email template previously saved in your Amazon SES account or
+// by providing the full template content.
 type Template struct {
+
+	//  The List of attachments to include in your email. All recipients will receive
+	// the same attachments.
+	Attachments []Attachment
 
 	// The list of message headers that will be added to the email message.
 	Headers []MessageHeader
 
 	// The Amazon Resource Name (ARN) of the template.
 	TemplateArn *string
+
+	// The content of the template.
+	//
+	// Amazon SES supports only simple substitions when you send email using the
+	// SendEmail or SendBulkEmail operations and you provide the full template content
+	// in the request.
+	TemplateContent *EmailTemplateContent
 
 	// An object that defines the values to use for message variables in the template.
 	// This object is a set of key-value pairs. Each key defines a message variable in
@@ -2256,6 +2595,9 @@ type TrackingOptions struct {
 	// This member is required.
 	CustomRedirectDomain *string
 
+	// The https policy to use for tracking open and click events.
+	HttpsPolicy HttpsPolicy
+
 	noSmithyDocumentSerde
 }
 
@@ -2321,6 +2663,29 @@ type VerificationInfo struct {
 	//
 	//   - DNS_SERVER_ERROR – The DNS server encountered an issue and was unable to
 	//   complete the request.
+	//
+	//   - REPLICATION_ACCESS_DENIED – The verification failed because the user does
+	//   not have the required permissions to replicate the DKIM key from the primary
+	//   region. Ensure you have the necessary permissions in both primary and replica
+	//   regions.
+	//
+	//   - REPLICATION_PRIMARY_NOT_FOUND – The verification failed because no
+	//   corresponding identity was found in the specified primary region. Ensure the
+	//   identity exists in the primary region before attempting replication.
+	//
+	//   - REPLICATION_PRIMARY_BYO_DKIM_NOT_SUPPORTED – The verification failed because
+	//   the identity in the primary region is configured with Bring Your Own DKIM
+	//   (BYODKIM). DKIM key replication is only supported for identities using Easy
+	//   DKIM.
+	//
+	//   - REPLICATION_REPLICA_AS_PRIMARY_NOT_SUPPORTED – The verification failed
+	//   because the specified primary identity is a replica of another identity, and
+	//   multi-level replication is not supported; the primary identity must be a
+	//   non-replica identity.
+	//
+	//   - REPLICATION_PRIMARY_INVALID_REGION – The verification failed due to an
+	//   invalid primary region specified. Ensure you provide a valid Amazon Web Services
+	//   region where Amazon SES is available and different from the replica region.
 	ErrorType VerificationError
 
 	// The last time a verification attempt was made for this identity.

@@ -99,6 +99,10 @@ type CreateReplicationInstanceInput struct {
 	// created, the default is the latest engine version available.
 	EngineVersion *string
 
+	// Specifies the settings required for kerberos authentication when creating the
+	// replication instance.
+	KerberosAuthenticationSettings *types.KerberosAuthenticationSettings
+
 	// An KMS key identifier that is used to encrypt the data on the replication
 	// instance.
 	//
@@ -215,6 +219,9 @@ func (c *Client) addOperationCreateReplicationInstanceMiddlewares(stack *middlew
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -231,6 +238,9 @@ func (c *Client) addOperationCreateReplicationInstanceMiddlewares(stack *middlew
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateReplicationInstanceValidationMiddleware(stack); err != nil {
@@ -252,6 +262,18 @@ func (c *Client) addOperationCreateReplicationInstanceMiddlewares(stack *middlew
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

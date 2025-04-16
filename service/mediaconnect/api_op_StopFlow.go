@@ -29,7 +29,7 @@ func (c *Client) StopFlow(ctx context.Context, params *StopFlowInput, optFns ...
 
 type StopFlowInput struct {
 
-	// The ARN of the flow that you want to stop.
+	//  The Amazon Resource Name (ARN) of the flow that you want to stop.
 	//
 	// This member is required.
 	FlowArn *string
@@ -39,10 +39,10 @@ type StopFlowInput struct {
 
 type StopFlowOutput struct {
 
-	// The ARN of the flow that you stopped.
+	//  The ARN of the flow that you stopped.
 	FlowArn *string
 
-	// The status of the flow when the StopFlow process begins.
+	//  The status of the flow when the StopFlow process begins.
 	Status types.Status
 
 	// Metadata pertaining to the operation's result.
@@ -94,6 +94,9 @@ func (c *Client) addOperationStopFlowMiddlewares(stack *middleware.Stack, option
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -110,6 +113,9 @@ func (c *Client) addOperationStopFlowMiddlewares(stack *middleware.Stack, option
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpStopFlowValidationMiddleware(stack); err != nil {
@@ -131,6 +137,18 @@ func (c *Client) addOperationStopFlowMiddlewares(stack *middleware.Stack, option
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

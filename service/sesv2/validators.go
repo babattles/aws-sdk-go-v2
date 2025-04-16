@@ -290,6 +290,26 @@ func (m *validateOpCreateImportJob) HandleInitialize(ctx context.Context, in mid
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpCreateMultiRegionEndpoint struct {
+}
+
+func (*validateOpCreateMultiRegionEndpoint) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpCreateMultiRegionEndpoint) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*CreateMultiRegionEndpointInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpCreateMultiRegionEndpointInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpDeleteConfigurationSetEventDestination struct {
 }
 
@@ -465,6 +485,26 @@ func (m *validateOpDeleteEmailTemplate) HandleInitialize(ctx context.Context, in
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpDeleteEmailTemplateInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpDeleteMultiRegionEndpoint struct {
+}
+
+func (*validateOpDeleteMultiRegionEndpoint) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDeleteMultiRegionEndpoint) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DeleteMultiRegionEndpointInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDeleteMultiRegionEndpointInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -830,6 +870,26 @@ func (m *validateOpGetMessageInsights) HandleInitialize(ctx context.Context, in 
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpGetMultiRegionEndpoint struct {
+}
+
+func (*validateOpGetMultiRegionEndpoint) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetMultiRegionEndpoint) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetMultiRegionEndpointInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetMultiRegionEndpointInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpGetSuppressedDestination struct {
 }
 
@@ -945,6 +1005,26 @@ func (m *validateOpPutAccountVdmAttributes) HandleInitialize(ctx context.Context
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpPutAccountVdmAttributesInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpPutConfigurationSetArchivingOptions struct {
+}
+
+func (*validateOpPutConfigurationSetArchivingOptions) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpPutConfigurationSetArchivingOptions) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*PutConfigurationSetArchivingOptionsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpPutConfigurationSetArchivingOptionsInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -1566,6 +1646,10 @@ func addOpCreateImportJobValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpCreateImportJob{}, middleware.After)
 }
 
+func addOpCreateMultiRegionEndpointValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpCreateMultiRegionEndpoint{}, middleware.After)
+}
+
 func addOpDeleteConfigurationSetEventDestinationValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDeleteConfigurationSetEventDestination{}, middleware.After)
 }
@@ -1600,6 +1684,10 @@ func addOpDeleteEmailIdentityPolicyValidationMiddleware(stack *middleware.Stack)
 
 func addOpDeleteEmailTemplateValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDeleteEmailTemplate{}, middleware.After)
+}
+
+func addOpDeleteMultiRegionEndpointValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDeleteMultiRegionEndpoint{}, middleware.After)
 }
 
 func addOpDeleteSuppressedDestinationValidationMiddleware(stack *middleware.Stack) error {
@@ -1674,6 +1762,10 @@ func addOpGetMessageInsightsValidationMiddleware(stack *middleware.Stack) error 
 	return stack.Initialize.Add(&validateOpGetMessageInsights{}, middleware.After)
 }
 
+func addOpGetMultiRegionEndpointValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetMultiRegionEndpoint{}, middleware.After)
+}
+
 func addOpGetSuppressedDestinationValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpGetSuppressedDestination{}, middleware.After)
 }
@@ -1696,6 +1788,10 @@ func addOpPutAccountDetailsValidationMiddleware(stack *middleware.Stack) error {
 
 func addOpPutAccountVdmAttributesValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpPutAccountVdmAttributes{}, middleware.After)
+}
+
+func addOpPutConfigurationSetArchivingOptionsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpPutConfigurationSetArchivingOptions{}, middleware.After)
 }
 
 func addOpPutConfigurationSetDeliveryOptionsValidationMiddleware(stack *middleware.Stack) error {
@@ -1808,6 +1904,41 @@ func addOpUpdateEmailIdentityPolicyValidationMiddleware(stack *middleware.Stack)
 
 func addOpUpdateEmailTemplateValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpUpdateEmailTemplate{}, middleware.After)
+}
+
+func validateAttachment(v *types.Attachment) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "Attachment"}
+	if v.RawContent == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RawContent"))
+	}
+	if v.FileName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("FileName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateAttachmentList(v []types.Attachment) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "AttachmentList"}
+	for i := range v {
+		if err := validateAttachment(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
 }
 
 func validateBatchGetMetricDataQueries(v []types.BatchGetMetricDataQuery) error {
@@ -2025,6 +2156,25 @@ func validateContent(v *types.Content) error {
 	}
 }
 
+func validateDetails(v *types.Details) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "Details"}
+	if v.RoutesDetails == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RoutesDetails"))
+	} else if v.RoutesDetails != nil {
+		if err := validateRoutesDetails(v.RoutesDetails); err != nil {
+			invalidParams.AddNested("RoutesDetails", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateEmailContent(v *types.EmailContent) error {
 	if v == nil {
 		return nil
@@ -2233,6 +2383,11 @@ func validateMessage(v *types.Message) error {
 			invalidParams.AddNested("Headers", err.(smithy.InvalidParamsError))
 		}
 	}
+	if v.Attachments != nil {
+		if err := validateAttachmentList(v.Attachments); err != nil {
+			invalidParams.AddNested("Attachments", err.(smithy.InvalidParamsError))
+		}
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -2370,6 +2525,38 @@ func validateRawMessage(v *types.RawMessage) error {
 	}
 }
 
+func validateRouteDetails(v *types.RouteDetails) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "RouteDetails"}
+	if v.Region == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Region"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateRoutesDetails(v []types.RouteDetails) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "RoutesDetails"}
+	for i := range v {
+		if err := validateRouteDetails(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateSnsDestination(v *types.SnsDestination) error {
 	if v == nil {
 		return nil
@@ -2443,6 +2630,11 @@ func validateTemplate(v *types.Template) error {
 	if v.Headers != nil {
 		if err := validateMessageHeaderList(v.Headers); err != nil {
 			invalidParams.AddNested("Headers", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.Attachments != nil {
+		if err := validateAttachmentList(v.Attachments); err != nil {
+			invalidParams.AddNested("Attachments", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {
@@ -2875,6 +3067,33 @@ func validateOpCreateImportJobInput(v *CreateImportJobInput) error {
 	}
 }
 
+func validateOpCreateMultiRegionEndpointInput(v *CreateMultiRegionEndpointInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CreateMultiRegionEndpointInput"}
+	if v.EndpointName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("EndpointName"))
+	}
+	if v.Details == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Details"))
+	} else if v.Details != nil {
+		if err := validateDetails(v.Details); err != nil {
+			invalidParams.AddNested("Details", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.Tags != nil {
+		if err := validateTagList(v.Tags); err != nil {
+			invalidParams.AddNested("Tags", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpDeleteConfigurationSetEventDestinationInput(v *DeleteConfigurationSetEventDestinationInput) error {
 	if v == nil {
 		return nil
@@ -3011,6 +3230,21 @@ func validateOpDeleteEmailTemplateInput(v *DeleteEmailTemplateInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "DeleteEmailTemplateInput"}
 	if v.TemplateName == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("TemplateName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpDeleteMultiRegionEndpointInput(v *DeleteMultiRegionEndpointInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DeleteMultiRegionEndpointInput"}
+	if v.EndpointName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("EndpointName"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -3298,6 +3532,21 @@ func validateOpGetMessageInsightsInput(v *GetMessageInsightsInput) error {
 	}
 }
 
+func validateOpGetMultiRegionEndpointInput(v *GetMultiRegionEndpointInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetMultiRegionEndpointInput"}
+	if v.EndpointName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("EndpointName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpGetSuppressedDestinationInput(v *GetSuppressedDestinationInput) error {
 	if v == nil {
 		return nil
@@ -3393,6 +3642,21 @@ func validateOpPutAccountVdmAttributesInput(v *PutAccountVdmAttributesInput) err
 		if err := validateVdmAttributes(v.VdmAttributes); err != nil {
 			invalidParams.AddNested("VdmAttributes", err.(smithy.InvalidParamsError))
 		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpPutConfigurationSetArchivingOptionsInput(v *PutConfigurationSetArchivingOptionsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "PutConfigurationSetArchivingOptionsInput"}
+	if v.ConfigurationSetName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ConfigurationSetName"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams

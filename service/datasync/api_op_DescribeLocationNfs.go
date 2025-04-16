@@ -56,7 +56,8 @@ type DescribeLocationNfsOutput struct {
 	// The mount options that DataSync uses to mount your NFS file server.
 	MountOptions *types.NfsMountOptions
 
-	// The DataSync agents that are connecting to a Network File System (NFS) location.
+	// The DataSync agents that can connect to your Network File System (NFS) file
+	// server.
 	OnPremConfig *types.OnPremConfig
 
 	// Metadata pertaining to the operation's result.
@@ -108,6 +109,9 @@ func (c *Client) addOperationDescribeLocationNfsMiddlewares(stack *middleware.St
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -124,6 +128,9 @@ func (c *Client) addOperationDescribeLocationNfsMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeLocationNfsValidationMiddleware(stack); err != nil {
@@ -145,6 +152,18 @@ func (c *Client) addOperationDescribeLocationNfsMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

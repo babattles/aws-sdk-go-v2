@@ -10,7 +10,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Deletes a Slack user identity
+// Deletes a user level permission for a Slack channel configuration.
 func (c *Client) DeleteSlackUserIdentity(ctx context.Context, params *DeleteSlackUserIdentityInput, optFns ...func(*Options)) (*DeleteSlackUserIdentityOutput, error) {
 	if params == nil {
 		params = &DeleteSlackUserIdentityInput{}
@@ -39,7 +39,7 @@ type DeleteSlackUserIdentityInput struct {
 	// This member is required.
 	SlackTeamId *string
 
-	// The ID of the user in Slack.
+	// The ID of the user in Slack
 	//
 	// This member is required.
 	SlackUserId *string
@@ -97,6 +97,9 @@ func (c *Client) addOperationDeleteSlackUserIdentityMiddlewares(stack *middlewar
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -113,6 +116,9 @@ func (c *Client) addOperationDeleteSlackUserIdentityMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteSlackUserIdentityValidationMiddleware(stack); err != nil {
@@ -134,6 +140,18 @@ func (c *Client) addOperationDeleteSlackUserIdentityMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

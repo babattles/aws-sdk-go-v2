@@ -7,6 +7,52 @@ import (
 	"time"
 )
 
+// An array of structures, where each structure includes an error indicating that
+// one of the requests in the array was not valid.
+type BatchUpdateExclusionWindowsError struct {
+
+	// The error code.
+	//
+	// This member is required.
+	ErrorCode *string
+
+	// The error message.
+	//
+	// This member is required.
+	ErrorMessage *string
+
+	// The SLO ID in the error.
+	//
+	// This member is required.
+	SloId *string
+
+	noSmithyDocumentSerde
+}
+
+// This object defines the length of the look-back window used to calculate one
+// burn rate metric for this SLO. The burn rate measures how fast the service is
+// consuming the error budget, relative to the attainment goal of the SLO. A burn
+// rate of exactly 1 indicates that the SLO goal will be met exactly.
+//
+// For example, if you specify 60 as the number of minutes in the look-back
+// window, the burn rate is calculated as the following:
+//
+// burn rate = error rate over the look-back window / (100% - attainment goal
+// percentage)
+//
+// For more information about burn rates, see [Calculate burn rates].
+//
+// [Calculate burn rates]: https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-ServiceLevelObjectives.html#CloudWatch-ServiceLevelObjectives-burn
+type BurnRateConfiguration struct {
+
+	// The number of minutes to use as the look-back window.
+	//
+	// This member is required.
+	LookBackWindowMinutes *int32
+
+	noSmithyDocumentSerde
+}
+
 // If the interval for this service level objective is a calendar interval, this
 // structure contains the interval specifications.
 type CalendarInterval struct {
@@ -39,6 +85,43 @@ type CalendarInterval struct {
 	noSmithyDocumentSerde
 }
 
+// Identifies the dependency using the DependencyKeyAttributes and
+// DependencyOperationName .
+//
+// When creating a service dependency SLO, you must specify the KeyAttributes of
+// the service, and the DependencyConfig for the dependency. You can specify the
+// OperationName of the service, from which it calls the dependency. Alternatively,
+// you can exclude OperationName and the SLO will monitor all of the service's
+// operations that call the dependency.
+type DependencyConfig struct {
+
+	// This is a string-to-string map. It can include the following fields.
+	//
+	//   - Type designates the type of object this is.
+	//
+	//   - ResourceType specifies the type of the resource. This field is used only
+	//   when the value of the Type field is Resource or AWS::Resource .
+	//
+	//   - Name specifies the name of the object. This is used only if the value of the
+	//   Type field is Service , RemoteService , or AWS::Service .
+	//
+	//   - Identifier identifies the resource objects of this resource. This is used
+	//   only if the value of the Type field is Resource or AWS::Resource .
+	//
+	//   - Environment specifies the location where this object is hosted, or what it
+	//   belongs to.
+	//
+	// This member is required.
+	DependencyKeyAttributes map[string]string
+
+	// The name of the called operation in the dependency.
+	//
+	// This member is required.
+	DependencyOperationName *string
+
+	noSmithyDocumentSerde
+}
+
 // A dimension is a name/value pair that is part of the identity of a metric.
 // Because dimensions are part of the unique identifier for a metric, whenever you
 // add a unique name/value pair to one of your metrics, you are creating a new
@@ -67,15 +150,43 @@ type Dimension struct {
 	noSmithyDocumentSerde
 }
 
+// The core SLO time window exclusion object that includes Window, StartTime,
+// RecurrenceRule, and Reason.
+type ExclusionWindow struct {
+
+	// The SLO time window exclusion .
+	//
+	// This member is required.
+	Window *Window
+
+	// A description explaining why this time period should be excluded from SLO
+	// calculations.
+	Reason *string
+
+	// The recurrence rule for the SLO time window exclusion. Supports both cron and
+	// rate expressions.
+	RecurrenceRule *RecurrenceRule
+
+	// The start of the SLO time window exclusion. Defaults to current time if not
+	// specified.
+	StartTime *time.Time
+
+	noSmithyDocumentSerde
+}
+
 // This structure contains the attributes that determine the goal of an SLO. This
 // includes the time period for evaluation and the attainment threshold.
 type Goal struct {
 
-	// The threshold that determines if the goal is being met. An attainment goal is
-	// the ratio of good periods that meet the threshold requirements to the total
-	// periods within the interval. For example, an attainment goal of 99.9% means that
-	// within your interval, you are targeting 99.9% of the periods to be in healthy
-	// state.
+	// The threshold that determines if the goal is being met.
+	//
+	// If this is a period-based SLO, the attainment goal is the percentage of good
+	// periods that meet the threshold requirements to the total periods within the
+	// interval. For example, an attainment goal of 99.9% means that within your
+	// interval, you are targeting 99.9% of the periods to be in healthy state.
+	//
+	// If this is a request-based SLO, the attainment goal is the percentage of
+	// requests that must be successful to meet the attainment goal.
 	//
 	// If you omit this parameter, 99 is used to represent 99% as the attainment goal.
 	AttainmentGoal *float64
@@ -175,7 +286,7 @@ type MetricDataQuery struct {
 	Id *string
 
 	// The ID of the account where this metric is located. If you are performing this
-	// operatiion in a monitoring account, use this to specify which source account to
+	// operation in a monitoring account, use this to specify which source account to
 	// retrieve this metric from.
 	AccountId *string
 
@@ -262,6 +373,9 @@ type MetricReference struct {
 	// This member is required.
 	Namespace *string
 
+	// Amazon Web Services account ID.
+	AccountId *string
+
 	// An array of one or more dimensions that further define the metric. For more
 	// information, see [CloudWatchDimensions].
 	//
@@ -306,6 +420,203 @@ type MetricStat struct {
 	// match the data collected, the results of the operation are null. CloudWatch does
 	// not perform unit conversions.
 	Unit StandardUnit
+
+	noSmithyDocumentSerde
+}
+
+// This structure defines the metric that is used as the "good request" or "bad
+// request" value for a request-based SLO. This value observed for the metric
+// defined in TotalRequestCountMetric is divided by the number found for
+// MonitoredRequestCountMetric to determine the percentage of successful requests
+// that this SLO tracks.
+//
+// The following types satisfy this interface:
+//
+//	MonitoredRequestCountMetricDataQueriesMemberBadCountMetric
+//	MonitoredRequestCountMetricDataQueriesMemberGoodCountMetric
+type MonitoredRequestCountMetricDataQueries interface {
+	isMonitoredRequestCountMetricDataQueries()
+}
+
+// If you want to count "bad requests" to determine the percentage of successful
+// requests for this request-based SLO, specify the metric to use as "bad requests"
+// in this structure.
+type MonitoredRequestCountMetricDataQueriesMemberBadCountMetric struct {
+	Value []MetricDataQuery
+
+	noSmithyDocumentSerde
+}
+
+func (*MonitoredRequestCountMetricDataQueriesMemberBadCountMetric) isMonitoredRequestCountMetricDataQueries() {
+}
+
+// If you want to count "good requests" to determine the percentage of successful
+// requests for this request-based SLO, specify the metric to use as "good
+// requests" in this structure.
+type MonitoredRequestCountMetricDataQueriesMemberGoodCountMetric struct {
+	Value []MetricDataQuery
+
+	noSmithyDocumentSerde
+}
+
+func (*MonitoredRequestCountMetricDataQueriesMemberGoodCountMetric) isMonitoredRequestCountMetricDataQueries() {
+}
+
+// The recurrence rule for the SLO time window exclusion .
+type RecurrenceRule struct {
+
+	// A cron or rate expression that specifies the schedule for the exclusion window.
+	//
+	// This member is required.
+	Expression *string
+
+	noSmithyDocumentSerde
+}
+
+// This structure contains information about the performance metric that a
+// request-based SLO monitors.
+type RequestBasedServiceLevelIndicator struct {
+
+	// A structure that contains information about the metric that the SLO monitors.
+	//
+	// This member is required.
+	RequestBasedSliMetric *RequestBasedServiceLevelIndicatorMetric
+
+	// The arithmetic operation used when comparing the specified metric to the
+	// threshold.
+	ComparisonOperator ServiceLevelIndicatorComparisonOperator
+
+	// This value is the threshold that the observed metric values of the SLI metric
+	// are compared to.
+	MetricThreshold *float64
+
+	noSmithyDocumentSerde
+}
+
+// This structure specifies the information about the service and the performance
+// metric that a request-based SLO is to monitor.
+type RequestBasedServiceLevelIndicatorConfig struct {
+
+	// Use this structure to specify the metric to be used for the SLO.
+	//
+	// This member is required.
+	RequestBasedSliMetricConfig *RequestBasedServiceLevelIndicatorMetricConfig
+
+	// The arithmetic operation to use when comparing the specified metric to the
+	// threshold. This parameter is required if this SLO is tracking the Latency
+	// metric.
+	ComparisonOperator ServiceLevelIndicatorComparisonOperator
+
+	// The value that the SLI metric is compared to. This parameter is required if
+	// this SLO is tracking the Latency metric.
+	MetricThreshold *float64
+
+	noSmithyDocumentSerde
+}
+
+// This structure contains the information about the metric that is used for a
+// request-based SLO.
+type RequestBasedServiceLevelIndicatorMetric struct {
+
+	// This structure defines the metric that is used as the "good request" or "bad
+	// request" value for a request-based SLO. This value observed for the metric
+	// defined in TotalRequestCountMetric is divided by the number found for
+	// MonitoredRequestCountMetric to determine the percentage of successful requests
+	// that this SLO tracks.
+	//
+	// This member is required.
+	MonitoredRequestCountMetric MonitoredRequestCountMetricDataQueries
+
+	// This structure defines the metric that is used as the "total requests" number
+	// for a request-based SLO. The number observed for this metric is divided by the
+	// number of "good requests" or "bad requests" that is observed for the metric
+	// defined in MonitoredRequestCountMetric .
+	//
+	// This member is required.
+	TotalRequestCountMetric []MetricDataQuery
+
+	// Identifies the dependency using the DependencyKeyAttributes and
+	// DependencyOperationName .
+	DependencyConfig *DependencyConfig
+
+	// This is a string-to-string map that contains information about the type of
+	// object that this SLO is related to. It can include the following fields.
+	//
+	//   - Type designates the type of object that this SLO is related to.
+	//
+	//   - ResourceType specifies the type of the resource. This field is used only
+	//   when the value of the Type field is Resource or AWS::Resource .
+	//
+	//   - Name specifies the name of the object. This is used only if the value of the
+	//   Type field is Service , RemoteService , or AWS::Service .
+	//
+	//   - Identifier identifies the resource objects of this resource. This is used
+	//   only if the value of the Type field is Resource or AWS::Resource .
+	//
+	//   - Environment specifies the location where this object is hosted, or what it
+	//   belongs to.
+	KeyAttributes map[string]string
+
+	// If the SLO monitors either the LATENCY or AVAILABILITY metric that Application
+	// Signals collects, this field displays which of those metrics is used.
+	MetricType ServiceLevelIndicatorMetricType
+
+	// If the SLO monitors a specific operation of the service, this field displays
+	// that operation name.
+	OperationName *string
+
+	noSmithyDocumentSerde
+}
+
+// Use this structure to specify the information for the metric that a
+// period-based SLO will monitor.
+type RequestBasedServiceLevelIndicatorMetricConfig struct {
+
+	// Identifies the dependency using the DependencyKeyAttributes and
+	// DependencyOperationName .
+	DependencyConfig *DependencyConfig
+
+	// If this SLO is related to a metric collected by Application Signals, you must
+	// use this field to specify which service the SLO metric is related to. To do so,
+	// you must specify at least the Type , Name , and Environment attributes.
+	//
+	// This is a string-to-string map. It can include the following fields.
+	//
+	//   - Type designates the type of object this is.
+	//
+	//   - ResourceType specifies the type of the resource. This field is used only
+	//   when the value of the Type field is Resource or AWS::Resource .
+	//
+	//   - Name specifies the name of the object. This is used only if the value of the
+	//   Type field is Service , RemoteService , or AWS::Service .
+	//
+	//   - Identifier identifies the resource objects of this resource. This is used
+	//   only if the value of the Type field is Resource or AWS::Resource .
+	//
+	//   - Environment specifies the location where this object is hosted, or what it
+	//   belongs to.
+	KeyAttributes map[string]string
+
+	// If the SLO is to monitor either the LATENCY or AVAILABILITY metric that
+	// Application Signals collects, use this field to specify which of those metrics
+	// is used.
+	MetricType ServiceLevelIndicatorMetricType
+
+	// Use this structure to define the metric that you want to use as the "good
+	// request" or "bad request" value for a request-based SLO. This value observed for
+	// the metric defined in TotalRequestCountMetric will be divided by the number
+	// found for MonitoredRequestCountMetric to determine the percentage of successful
+	// requests that this SLO tracks.
+	MonitoredRequestCountMetric MonitoredRequestCountMetricDataQueries
+
+	// If the SLO is to monitor a specific operation of the service, use this field to
+	// specify the name of that operation.
+	OperationName *string
+
+	// Use this structure to define the metric that you want to use as the "total
+	// requests" number for a request-based SLO. This result will be divided by the
+	// "good request" or "bad request" value defined in MonitoredRequestCountMetric .
+	TotalRequestCountMetric []MetricDataQuery
 
 	noSmithyDocumentSerde
 }
@@ -387,7 +698,7 @@ type Service struct {
 	//
 	//   - Host is the name of the host, for all platform types.
 	//
-	// Applciation attributes contain information about the application.
+	// Application attributes contain information about the application.
 	//
 	//   - AWS.Application is the application's name in Amazon Web Services Service
 	//   Catalog AppRegistry.
@@ -507,8 +818,8 @@ type ServiceDependent struct {
 	noSmithyDocumentSerde
 }
 
-// This structure contains information about the performance metric that an SLO
-// monitors.
+// This structure contains information about the performance metric that a
+// period-based SLO monitors.
 type ServiceLevelIndicator struct {
 
 	// The arithmetic operation used when comparing the specified metric to the
@@ -531,7 +842,7 @@ type ServiceLevelIndicator struct {
 }
 
 // This structure specifies the information about the service and the performance
-// metric that an SLO is to monitor.
+// metric that a period-based SLO is to monitor.
 type ServiceLevelIndicatorConfig struct {
 
 	// The arithmetic operation to use when comparing the specified metric to the
@@ -540,7 +851,9 @@ type ServiceLevelIndicatorConfig struct {
 	// This member is required.
 	ComparisonOperator ServiceLevelIndicatorComparisonOperator
 
-	// The value that the SLI metric is compared to.
+	// This parameter is used only when a request-based SLO tracks the Latency metric.
+	// Specify the threshold value that the observed Latency metric values are to be
+	// compared to.
 	//
 	// This member is required.
 	MetricThreshold *float64
@@ -553,8 +866,8 @@ type ServiceLevelIndicatorConfig struct {
 	noSmithyDocumentSerde
 }
 
-// This structure contains the information about the metric that is used for the
-// SLO.
+// This structure contains the information about the metric that is used for a
+// period-based SLO.
 type ServiceLevelIndicatorMetric struct {
 
 	// If this SLO monitors a CloudWatch metric or the result of a CloudWatch metric
@@ -563,6 +876,10 @@ type ServiceLevelIndicatorMetric struct {
 	//
 	// This member is required.
 	MetricDataQueries []MetricDataQuery
+
+	// Identifies the dependency using the DependencyKeyAttributes and
+	// DependencyOperationName .
+	DependencyConfig *DependencyConfig
 
 	// This is a string-to-string map that contains information about the type of
 	// object that this SLO is related to. It can include the following fields.
@@ -593,9 +910,13 @@ type ServiceLevelIndicatorMetric struct {
 	noSmithyDocumentSerde
 }
 
-// Use this structure to specify the information for the metric that the SLO will
-// monitor.
+// Use this structure to specify the information for the metric that a
+// period-based SLO will monitor.
 type ServiceLevelIndicatorMetricConfig struct {
+
+	// Identifies the dependency using the DependencyKeyAttributes and
+	// DependencyOperationName .
+	DependencyConfig *DependencyConfig
 
 	// If this SLO is related to a metric collected by Application Signals, you must
 	// use this field to specify which service the SLO metric is related to. To do so,
@@ -684,14 +1005,34 @@ type ServiceLevelObjective struct {
 	// This member is required.
 	Name *string
 
-	// A structure containing information about the performance metric that this SLO
-	// monitors.
-	//
-	// This member is required.
-	Sli *ServiceLevelIndicator
+	// Each object in this array defines the length of the look-back window used to
+	// calculate one burn rate metric for this SLO. The burn rate measures how fast the
+	// service is consuming the error budget, relative to the attainment goal of the
+	// SLO.
+	BurnRateConfigurations []BurnRateConfiguration
 
 	// The description that you created for this SLO.
 	Description *string
+
+	// Displays whether this is a period-based SLO or a request-based SLO.
+	EvaluationType EvaluationType
+
+	// Displays the SLI metric source type for this SLO. Supported types are:
+	//
+	//   - Service operation
+	//
+	//   - Service dependency
+	//
+	//   - CloudWatch metric
+	MetricSourceType MetricSourceType
+
+	// A structure containing information about the performance metric that this SLO
+	// monitors, if this is a request-based SLO.
+	RequestBasedSli *RequestBasedServiceLevelIndicator
+
+	// A structure containing information about the performance metric that this SLO
+	// monitors, if this is a period-based SLO.
+	Sli *ServiceLevelIndicator
 
 	noSmithyDocumentSerde
 }
@@ -716,7 +1057,7 @@ type ServiceLevelObjectiveBudgetReport struct {
 	//   - BREACHED means that the SLO's budget was exhausted, as of the time that you
 	//   specified in TimeStamp .
 	//
-	//   - INSUFFICIENT_DATA means that the specifed start and end times were before
+	//   - INSUFFICIENT_DATA means that the specified start and end times were before
 	//   the SLO was created, or that attainment data is missing.
 	//
 	// This member is required.
@@ -727,25 +1068,62 @@ type ServiceLevelObjectiveBudgetReport struct {
 	// This member is required.
 	Name *string
 
-	// A number between 0 and 100 that represents the percentage of time periods that
-	// the service has attained the SLO's attainment goal, as of the time of the
+	// A number between 0 and 100 that represents the success percentage of your
+	// application compared to the goal set by the SLO.
+	//
+	// If this is a period-based SLO, the number is the percentage of time periods
+	// that the service has attained the SLO's attainment goal, as of the time of the
 	// request.
+	//
+	// If this is a request-based SLO, the number is the number of successful requests
+	// divided by the number of total requests, multiplied by 100, during the time
+	// range that you specified in your request.
 	Attainment *float64
+
+	// This field is displayed only for request-based SLOs. It displays the number of
+	// failed requests that can be tolerated before any more successful requests occur,
+	// and still have the application meet its SLO goal.
+	//
+	// This number can go up and down between different reports, based on both how
+	// many successful requests and how many failed requests occur in that time.
+	BudgetRequestsRemaining *int32
 
 	// The budget amount remaining before the SLO status becomes BREACHING , at the
 	// time specified in the Timestemp parameter of the request. If this value is
 	// negative, then the SLO is already in BREACHING status.
+	//
+	// This field is included only if the SLO is a period-based SLO.
 	BudgetSecondsRemaining *int32
+
+	// Displays whether this budget report is for a period-based SLO or a
+	// request-based SLO.
+	EvaluationType EvaluationType
 
 	// This structure contains the attributes that determine the goal of an SLO. This
 	// includes the time period for evaluation and the attainment threshold.
 	Goal *Goal
 
+	// This structure contains information about the performance metric that a
+	// request-based SLO monitors.
+	RequestBasedSli *RequestBasedServiceLevelIndicator
+
 	// A structure that contains information about the performance metric that this
 	// SLO monitors.
 	Sli *ServiceLevelIndicator
 
-	// The total number of seconds in the error budget for the interval.
+	// This field is displayed only for request-based SLOs. It displays the total
+	// number of failed requests that can be tolerated during the time range between
+	// the start of the interval and the time stamp supplied in the budget report
+	// request. It is based on the total number of requests that occurred, and the
+	// percentage specified in the attainment goal. If the number of failed requests
+	// matches this number or is higher, then this SLO is currently breaching.
+	//
+	// This number can go up and down between reports with different time stamps,
+	// based on both how many total requests occur.
+	TotalBudgetRequests *int32
+
+	// The total number of seconds in the error budget for the interval. This field is
+	// included only if the SLO is a period-based SLO.
 	TotalBudgetSeconds *int32
 
 	noSmithyDocumentSerde
@@ -798,6 +1176,13 @@ type ServiceLevelObjectiveSummary struct {
 	// expressed as the number of milliseconds since Jan 1, 1970 00:00:00 UTC.
 	CreatedTime *time.Time
 
+	// Identifies the dependency using the DependencyKeyAttributes and
+	// DependencyOperationName .
+	DependencyConfig *DependencyConfig
+
+	// Displays whether this is a period-based SLO or a request-based SLO.
+	EvaluationType EvaluationType
+
 	// This is a string-to-string map. It can include the following fields.
 	//
 	//   - Type designates the type of object this service level objective is for.
@@ -814,6 +1199,15 @@ type ServiceLevelObjectiveSummary struct {
 	//   - Environment specifies the location where this object is hosted, or what it
 	//   belongs to.
 	KeyAttributes map[string]string
+
+	// Displays the SLI metric source type for this SLO. Supported types are:
+	//
+	//   - Service operation
+	//
+	//   - Service dependency
+	//
+	//   - CloudWatch metric
+	MetricSourceType MetricSourceType
 
 	// If this service level objective is specific to a single operation, this field
 	// displays the name of that operation.
@@ -844,7 +1238,7 @@ type ServiceOperation struct {
 }
 
 // This structure contains information about one of your services that was
-// discoverd by Application Signals
+// discovered by Application Signals
 type ServiceSummary struct {
 
 	// This is a string-to-string map that help identify the objects discovered by
@@ -903,7 +1297,7 @@ type ServiceSummary struct {
 	//
 	//   - Host is the name of the host, for all platform types.
 	//
-	// Applciation attributes contain information about the application.
+	// Application attributes contain information about the application.
 	//
 	//   - AWS.Application is the application's name in Amazon Web Services Service
 	//   Catalog AppRegistry.
@@ -944,6 +1338,23 @@ type Tag struct {
 	noSmithyDocumentSerde
 }
 
+// The object that defines the time length of an exclusion window.
+type Window struct {
+
+	// The number of time units for the exclusion window length.
+	//
+	// This member is required.
+	Duration *int32
+
+	// The unit of time for the exclusion window duration. Valid values: MINUTE, HOUR,
+	// DAY, MONTH.
+	//
+	// This member is required.
+	DurationUnit DurationUnit
+
+	noSmithyDocumentSerde
+}
+
 type noSmithyDocumentSerde = smithydocument.NoSerde
 
 // UnknownUnionMember is returned when a union member is returned over the wire,
@@ -955,4 +1366,5 @@ type UnknownUnionMember struct {
 	noSmithyDocumentSerde
 }
 
-func (*UnknownUnionMember) isInterval() {}
+func (*UnknownUnionMember) isInterval()                               {}
+func (*UnknownUnionMember) isMonitoredRequestCountMetricDataQueries() {}

@@ -40,6 +40,9 @@ type SendVoiceMessageInput struct {
 	// The origination identity to use for the voice call. This can be the
 	// PhoneNumber, PhoneNumberId, PhoneNumberArn, PoolId, or PoolArn.
 	//
+	// If you are using a shared AWS End User Messaging SMS and Voice resource then
+	// you must use the full Amazon Resource Name(ARN).
+	//
 	// This member is required.
 	OriginationIdentity *string
 
@@ -70,6 +73,10 @@ type SendVoiceMessageInput struct {
 	//
 	// [speech synthesis markup language (SSML)]: https://docs.aws.amazon.com/polly/latest/dg/what-is.html
 	MessageBodyTextType types.VoiceMessageBodyTextType
+
+	// Set to true to enable message feedback for the message. When a user receives
+	// the message you need to update the message status using PutMessageFeedback.
+	MessageFeedbackEnabled *bool
 
 	// The unique identifier for the protect configuration.
 	ProtectConfigurationId *string
@@ -139,6 +146,9 @@ func (c *Client) addOperationSendVoiceMessageMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -155,6 +165,9 @@ func (c *Client) addOperationSendVoiceMessageMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpSendVoiceMessageValidationMiddleware(stack); err != nil {
@@ -176,6 +189,18 @@ func (c *Client) addOperationSendVoiceMessageMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

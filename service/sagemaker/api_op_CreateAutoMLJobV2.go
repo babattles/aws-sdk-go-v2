@@ -14,20 +14,21 @@ import (
 // Creates an Autopilot job also referred to as Autopilot experiment or AutoML job
 // V2.
 //
-// An AutoML job in SageMaker is a fully automated process that allows you to
+// An AutoML job in SageMaker AI is a fully automated process that allows you to
 // build machine learning models with minimal effort and machine learning
 // expertise. When initiating an AutoML job, you provide your data and optionally
-// specify parameters tailored to your use case. SageMaker then automates the
+// specify parameters tailored to your use case. SageMaker AI then automates the
 // entire model development lifecycle, including data preprocessing, model
 // training, tuning, and evaluation. AutoML jobs are designed to simplify and
 // accelerate the model building process by automating various tasks and exploring
 // different combinations of machine learning algorithms, data preprocessing
 // techniques, and hyperparameter values. The output of an AutoML job comprises one
 // or more trained models ready for deployment and inference. Additionally,
-// SageMaker AutoML jobs generate a candidate model leaderboard, allowing you to
+// SageMaker AI AutoML jobs generate a candidate model leaderboard, allowing you to
 // select the best-performing model for deployment.
 //
-// For more information about AutoML jobs, see [https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-automate-model-development.html] in the SageMaker developer guide.
+// For more information about AutoML jobs, see [https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-automate-model-development.html] in the SageMaker AI developer
+// guide.
 //
 // AutoML jobs V2 support various problem types such as regression, binary, and
 // multiclass classification with tabular data, text and image classification,
@@ -222,6 +223,9 @@ func (c *Client) addOperationCreateAutoMLJobV2Middlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -238,6 +242,9 @@ func (c *Client) addOperationCreateAutoMLJobV2Middlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateAutoMLJobV2ValidationMiddleware(stack); err != nil {
@@ -259,6 +266,18 @@ func (c *Client) addOperationCreateAutoMLJobV2Middlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

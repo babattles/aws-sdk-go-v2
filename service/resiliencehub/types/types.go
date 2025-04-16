@@ -19,6 +19,20 @@ type AcceptGroupingRecommendationEntry struct {
 	noSmithyDocumentSerde
 }
 
+// Indicates the Amazon CloudWatch alarm detected while running an assessment.
+type Alarm struct {
+
+	// Amazon Resource Name (ARN) of the Amazon CloudWatch alarm.
+	AlarmArn *string
+
+	// Indicates the source of the Amazon CloudWatch alarm. That is, it indicates if
+	// the alarm was created using Resilience Hub recommendation ( AwsResilienceHub ),
+	// or if you had created the alarm in Amazon CloudWatch ( Customer ).
+	Source *string
+
+	noSmithyDocumentSerde
+}
+
 // Defines a recommendation for a CloudWatch alarm.
 type AlarmRecommendation struct {
 
@@ -81,7 +95,7 @@ type App struct {
 	// This member is required.
 	AppArn *string
 
-	// Date and time when the app was created.
+	// Date and time when the application was created.
 	//
 	// This member is required.
 	CreationTime *time.Time
@@ -93,6 +107,13 @@ type App struct {
 
 	// Assessment execution schedule with 'Daily' or 'Disabled' values.
 	AssessmentSchedule AppAssessmentScheduleType
+
+	// Amazon Resource Name (ARN) of Resource Groups group that is integrated with an
+	// AppRegistry application. For more information about ARNs, see [Amazon Resource Names (ARNs)]in the Amazon Web
+	// Services General Reference guide.
+	//
+	// [Amazon Resource Names (ARNs)]: https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html
+	AwsApplicationArn *string
 
 	// Current status of compliance for the resiliency policy.
 	ComplianceStatus AppComplianceStatusType
@@ -217,8 +238,10 @@ type AppAssessment struct {
 	// Starting time for the action.
 	StartTime *time.Time
 
-	// Indicates a concise summary that provides an overview of the Resilience Hub
-	// assessment.
+	// Indicates the AI-generated summary for the Resilience Hub assessment, providing
+	// a concise overview that highlights the top risks and recommendations.
+	//
+	// This property is available only in the US East (N. Virginia) Region.
 	Summary *AssessmentSummary
 
 	// Tags assigned to the resource. A tag is a label that you assign to an Amazon
@@ -406,6 +429,13 @@ type AppSummary struct {
 	//  Assessment execution schedule with 'Daily' or 'Disabled' values.
 	AssessmentSchedule AppAssessmentScheduleType
 
+	// Amazon Resource Name (ARN) of Resource Groups group that is integrated with an
+	// AppRegistry application. For more information about ARNs, see [Amazon Resource Names (ARNs)]in the Amazon Web
+	// Services General Reference guide.
+	//
+	// [Amazon Resource Names (ARNs)]: https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html
+	AwsApplicationArn *string
+
 	// The current status of compliance for the resiliency policy.
 	ComplianceStatus AppComplianceStatusType
 
@@ -467,7 +497,7 @@ type AppVersionSummary struct {
 type AssessmentRiskRecommendation struct {
 
 	// Indicates the Application Components (AppComponents) that were assessed as part
-	// of the assessnent and are associated with the identified risk and
+	// of the assessment and are associated with the identified risk and
 	// recommendation.
 	//
 	// This property is available only in the US East (N. Virginia) Region.
@@ -543,18 +573,19 @@ type BatchUpdateRecommendationStatusSuccessfulEntry struct {
 	// This member is required.
 	Excluded *bool
 
-	// The operational recommendation item.
-	//
-	// This member is required.
-	Item *UpdateRecommendationStatusItem
-
 	// Reference identifier of the operational recommendation.
 	//
 	// This member is required.
 	ReferenceId *string
 
+	// Indicates the identifier of an AppComponent.
+	AppComponentId *string
+
 	// Indicates the reason for excluding an operational recommendation.
 	ExcludeReason ExcludeRecommendationReason
+
+	// The operational recommendation item.
+	Item *UpdateRecommendationStatusItem
 
 	noSmithyDocumentSerde
 }
@@ -624,6 +655,26 @@ type ComponentRecommendation struct {
 	//
 	// This member is required.
 	RecommendationStatus RecommendationComplianceStatus
+
+	noSmithyDocumentSerde
+}
+
+// Indicates the condition based on which you want to filter the metrics.
+type Condition struct {
+
+	// Indicates the field in the metric.
+	//
+	// This member is required.
+	Field *string
+
+	// Indicates the type of operator or comparison to be used when evaluating a
+	// condition against the specified field.
+	//
+	// This member is required.
+	Operator ConditionOperatorType
+
+	// Indicates the value or data against which a condition is evaluated.
+	Value *string
 
 	noSmithyDocumentSerde
 }
@@ -776,6 +827,15 @@ type EksSourceClusterNamespace struct {
 	noSmithyDocumentSerde
 }
 
+// Indicates the error that was encountered while importing a resource.
+type ErrorDetail struct {
+
+	// Provides additional information about the error.
+	ErrorMessage *string
+
+	noSmithyDocumentSerde
+}
+
 // Indicates an event you would like to subscribe and get notification for.
 // Currently, Resilience Hub supports notifications only for Drift detected and
 // Scheduled assessment failure events.
@@ -800,6 +860,18 @@ type EventSubscription struct {
 	//
 	// [Amazon Resource Names (ARNs)]: https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html
 	SnsTopicArn *string
+
+	noSmithyDocumentSerde
+}
+
+// Indicates the FIS experiment detected while running an assessment.
+type Experiment struct {
+
+	// Amazon Resource Name (ARN) of the FIS experiment.
+	ExperimentArn *string
+
+	// Identifier of the FIS experiment template.
+	ExperimentTemplateId *string
 
 	noSmithyDocumentSerde
 }
@@ -832,6 +904,22 @@ type FailurePolicy struct {
 	//
 	// This member is required.
 	RtoInSecs int32
+
+	noSmithyDocumentSerde
+}
+
+// Indicates the field or attribute of a resource or data structure on which a
+// condition is being applied or evaluated.
+type Field struct {
+
+	// Name of the field.
+	//
+	// This member is required.
+	Name *string
+
+	// (Optional) Indicates the type of aggregation or summary operation (such as Sum,
+	// Average, and so on) to be performed on a particular field or set of data.
+	Aggregation FieldAggregationType
 
 	noSmithyDocumentSerde
 }
@@ -991,6 +1079,11 @@ type PermissionModel struct {
 	// Existing Amazon Web Services IAM role name in the primary Amazon Web Services
 	// account that will be assumed by Resilience Hub Service Principle to obtain a
 	// read-only access to your application resources while running an assessment.
+	//
+	// If your IAM role includes a path, you must include the path in the
+	// invokerRoleName parameter. For example, if your IAM role's ARN is
+	// arn:aws:iam:123456789012:role/my-path/role-name , you should pass
+	// my-path/role-name .
 	//
 	//   - You must have iam:passRole permission for this role while creating or
 	//   updating the application.
@@ -1161,11 +1254,19 @@ type RecommendationItem struct {
 	// Specifies if the recommendation has already been implemented.
 	AlreadyImplemented *bool
 
+	// Indicates the previously implemented Amazon CloudWatch alarm discovered by
+	// Resilience Hub.
+	DiscoveredAlarm *Alarm
+
 	// Indicates the reason for excluding an operational recommendation.
 	ExcludeReason ExcludeRecommendationReason
 
 	// Indicates if an operational recommendation item is excluded.
 	Excluded *bool
+
+	// Indicates the experiment created in FIS that was discovered by Resilience Hub,
+	// which matches the recommendation.
+	LatestDiscoveredExperiment *Experiment
 
 	// Identifier of the resource.
 	ResourceId *string
@@ -1304,7 +1405,7 @@ type ResiliencyPolicy struct {
 	// [Amazon Resource Names (ARNs)]: https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html
 	PolicyArn *string
 
-	// The description for the policy.
+	// Description of the resiliency policy.
 	PolicyDescription *string
 
 	// The name of the policy
@@ -1540,6 +1641,23 @@ type SopRecommendation struct {
 	noSmithyDocumentSerde
 }
 
+// Indicates the sorting order of the fields in the metrics.
+type Sort struct {
+
+	// Indicates the order in which you want to sort the metrics. By default, the list
+	// is sorted in ascending order. To sort the list in descending order, set this
+	// field to False.
+	//
+	// This member is required.
+	Field *string
+
+	// Indicates the name or identifier of the field or attribute that should be used
+	// as the basis for sorting the metrics.
+	Ascending *bool
+
+	noSmithyDocumentSerde
+}
+
 // The Terraform s3 state file you need to import.
 type TerraformSource struct {
 
@@ -1558,6 +1676,9 @@ type TestRecommendation struct {
 	//
 	// This member is required.
 	ReferenceId *string
+
+	// Indicates the identifier of the AppComponent.
+	AppComponentId *string
 
 	// Name of the Application Component.
 	AppComponentName *string
@@ -1651,18 +1772,19 @@ type UpdateRecommendationStatusRequestEntry struct {
 	// This member is required.
 	Excluded *bool
 
-	// The operational recommendation item.
-	//
-	// This member is required.
-	Item *UpdateRecommendationStatusItem
-
 	// Reference identifier of the operational recommendation item.
 	//
 	// This member is required.
 	ReferenceId *string
 
+	// Indicates the identifier of the AppComponent.
+	AppComponentId *string
+
 	// Indicates the reason for excluding an operational recommendation.
 	ExcludeReason ExcludeRecommendationReason
+
+	// The operational recommendation item.
+	Item *UpdateRecommendationStatusItem
 
 	noSmithyDocumentSerde
 }

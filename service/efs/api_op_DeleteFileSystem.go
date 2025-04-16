@@ -18,7 +18,7 @@ import (
 // can delete an EFS file system. This step is performed for you when you use the
 // Amazon Web Services console to delete a file system.
 //
-// You cannot delete a file system that is part of an EFS Replication
+// You cannot delete a file system that is part of an EFS replication
 // configuration. You need to delete the replication configuration first.
 //
 // You can't delete a file system that is in use. That is, if the file system has
@@ -107,6 +107,9 @@ func (c *Client) addOperationDeleteFileSystemMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -123,6 +126,9 @@ func (c *Client) addOperationDeleteFileSystemMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteFileSystemValidationMiddleware(stack); err != nil {
@@ -144,6 +150,18 @@ func (c *Client) addOperationDeleteFileSystemMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

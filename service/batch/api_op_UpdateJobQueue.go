@@ -49,7 +49,8 @@ type UpdateJobQueueInput struct {
 
 	// The set of actions that Batch perform on jobs that remain at the head of the
 	// job queue in the specified state longer than specified times. Batch will perform
-	// each action after maxTimeSeconds has passed.
+	// each action after maxTimeSeconds has passed. (Note: The minimum value for
+	// maxTimeSeconds is 600 (10 minutes) and its maximum value is 86,400 (24 hours).)
 	JobStateTimeLimitActions []types.JobStateTimeLimitAction
 
 	// The priority of the job queue. Job queues with a higher priority (or a higher
@@ -61,8 +62,8 @@ type UpdateJobQueueInput struct {
 	// FARGATE_SPOT ). EC2 and Fargate compute environments can't be mixed.
 	Priority *int32
 
-	// Amazon Resource Name (ARN) of the fair share scheduling policy. Once a job
-	// queue is created, the fair share scheduling policy can be replaced but not
+	// Amazon Resource Name (ARN) of the fair-share scheduling policy. Once a job
+	// queue is created, the fair-share scheduling policy can be replaced but not
 	// removed. The format is
 	// aws:Partition:batch:Region:Account:scheduling-policy/Name . For example,
 	// aws:aws:batch:us-west-2:123456789012:scheduling-policy/MySchedulingPolicy .
@@ -133,6 +134,9 @@ func (c *Client) addOperationUpdateJobQueueMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -149,6 +153,9 @@ func (c *Client) addOperationUpdateJobQueueMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateJobQueueValidationMiddleware(stack); err != nil {
@@ -170,6 +177,18 @@ func (c *Client) addOperationUpdateJobQueueMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

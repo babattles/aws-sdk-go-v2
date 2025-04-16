@@ -41,7 +41,7 @@ type DeleteStackInstancesInput struct {
 	//
 	// For more information, see [Stack set operation options].
 	//
-	// [Stack set operation options]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-concepts.html#stackset-ops-options
+	// [Stack set operation options]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/what-is-cfnstacksets.html#stackset-ops-options
 	//
 	// This member is required.
 	RetainStacks *bool
@@ -52,8 +52,8 @@ type DeleteStackInstancesInput struct {
 	// This member is required.
 	StackSetName *string
 
-	// [Self-managed permissions] The names of the Amazon Web Services accounts that
-	// you want to delete stack instances for.
+	// [Self-managed permissions] The account IDs of the Amazon Web Services accounts
+	// that you want to delete stack instances for.
 	//
 	// You can specify Accounts or DeploymentTargets , but not both.
 	Accounts []string
@@ -156,6 +156,9 @@ func (c *Client) addOperationDeleteStackInstancesMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -172,6 +175,9 @@ func (c *Client) addOperationDeleteStackInstancesMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opDeleteStackInstancesMiddleware(stack, options); err != nil {
@@ -196,6 +202,18 @@ func (c *Client) addOperationDeleteStackInstancesMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

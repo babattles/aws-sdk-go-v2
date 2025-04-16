@@ -65,8 +65,7 @@ type UpdateGameSessionInput struct {
 
 	// Game session protection policy to apply to this game session only.
 	//
-	//   - NoProtection -- The game session can be terminated during a scale-down
-	//   event.
+	//   - NoProtection -- The game session can be terminated during a scale-down event.
 	//
 	//   - FullProtection -- If the game session is in an ACTIVE status, it cannot be
 	//   terminated during a scale-down event.
@@ -129,6 +128,9 @@ func (c *Client) addOperationUpdateGameSessionMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -145,6 +147,9 @@ func (c *Client) addOperationUpdateGameSessionMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateGameSessionValidationMiddleware(stack); err != nil {
@@ -166,6 +171,18 @@ func (c *Client) addOperationUpdateGameSessionMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

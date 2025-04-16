@@ -92,6 +92,35 @@ func (Distribution) Values() []Distribution {
 	}
 }
 
+type EntityRejectionErrorType string
+
+// Enum values for EntityRejectionErrorType
+const (
+	EntityRejectionErrorTypeInvalidEntity           EntityRejectionErrorType = "InvalidEntity"
+	EntityRejectionErrorTypeInvalidTypeValue        EntityRejectionErrorType = "InvalidTypeValue"
+	EntityRejectionErrorTypeInvalidKeyAttribute     EntityRejectionErrorType = "InvalidKeyAttributes"
+	EntityRejectionErrorTypeInvalidAttributes       EntityRejectionErrorType = "InvalidAttributes"
+	EntityRejectionErrorTypeEntitySizeTooLarge      EntityRejectionErrorType = "EntitySizeTooLarge"
+	EntityRejectionErrorTypeUnsupportedLogGroupType EntityRejectionErrorType = "UnsupportedLogGroupType"
+	EntityRejectionErrorTypeMissingRequiredFields   EntityRejectionErrorType = "MissingRequiredFields"
+)
+
+// Values returns all known values for EntityRejectionErrorType. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (EntityRejectionErrorType) Values() []EntityRejectionErrorType {
+	return []EntityRejectionErrorType{
+		"InvalidEntity",
+		"InvalidTypeValue",
+		"InvalidKeyAttributes",
+		"InvalidAttributes",
+		"EntitySizeTooLarge",
+		"UnsupportedLogGroupType",
+		"MissingRequiredFields",
+	}
+}
+
 type EvaluationFrequency string
 
 // Enum values for EvaluationFrequency
@@ -146,6 +175,44 @@ func (ExportTaskStatusCode) Values() []ExportTaskStatusCode {
 	}
 }
 
+type FlattenedElement string
+
+// Enum values for FlattenedElement
+const (
+	FlattenedElementFirst FlattenedElement = "first"
+	FlattenedElementLast  FlattenedElement = "last"
+)
+
+// Values returns all known values for FlattenedElement. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (FlattenedElement) Values() []FlattenedElement {
+	return []FlattenedElement{
+		"first",
+		"last",
+	}
+}
+
+type IndexSource string
+
+// Enum values for IndexSource
+const (
+	IndexSourceAccount  IndexSource = "ACCOUNT"
+	IndexSourceLogGroup IndexSource = "LOG_GROUP"
+)
+
+// Values returns all known values for IndexSource. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (IndexSource) Values() []IndexSource {
+	return []IndexSource{
+		"ACCOUNT",
+		"LOG_GROUP",
+	}
+}
+
 type InheritedProperty string
 
 // Enum values for InheritedProperty
@@ -160,6 +227,44 @@ const (
 func (InheritedProperty) Values() []InheritedProperty {
 	return []InheritedProperty{
 		"ACCOUNT_DATA_PROTECTION",
+	}
+}
+
+type IntegrationStatus string
+
+// Enum values for IntegrationStatus
+const (
+	IntegrationStatusProvisioning IntegrationStatus = "PROVISIONING"
+	IntegrationStatusActive       IntegrationStatus = "ACTIVE"
+	IntegrationStatusFailed       IntegrationStatus = "FAILED"
+)
+
+// Values returns all known values for IntegrationStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (IntegrationStatus) Values() []IntegrationStatus {
+	return []IntegrationStatus{
+		"PROVISIONING",
+		"ACTIVE",
+		"FAILED",
+	}
+}
+
+type IntegrationType string
+
+// Enum values for IntegrationType
+const (
+	IntegrationTypeOpensearch IntegrationType = "OPENSEARCH"
+)
+
+// Values returns all known values for IntegrationType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (IntegrationType) Values() []IntegrationType {
+	return []IntegrationType{
+		"OPENSEARCH",
 	}
 }
 
@@ -179,6 +284,28 @@ func (LogGroupClass) Values() []LogGroupClass {
 	return []LogGroupClass{
 		"STANDARD",
 		"INFREQUENT_ACCESS",
+	}
+}
+
+type OpenSearchResourceStatusType string
+
+// Enum values for OpenSearchResourceStatusType
+const (
+	OpenSearchResourceStatusTypeActive   OpenSearchResourceStatusType = "ACTIVE"
+	OpenSearchResourceStatusTypeNotFound OpenSearchResourceStatusType = "NOT_FOUND"
+	OpenSearchResourceStatusTypeError    OpenSearchResourceStatusType = "ERROR"
+)
+
+// Values returns all known values for OpenSearchResourceStatusType. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (OpenSearchResourceStatusType) Values() []OpenSearchResourceStatusType {
+	return []OpenSearchResourceStatusType{
+		"ACTIVE",
+		"NOT_FOUND",
+		"ERROR",
 	}
 }
 
@@ -232,6 +359,8 @@ type PolicyType string
 const (
 	PolicyTypeDataProtectionPolicy     PolicyType = "DATA_PROTECTION_POLICY"
 	PolicyTypeSubscriptionFilterPolicy PolicyType = "SUBSCRIPTION_FILTER_POLICY"
+	PolicyTypeFieldIndexPolicy         PolicyType = "FIELD_INDEX_POLICY"
+	PolicyTypeTransformerPolicy        PolicyType = "TRANSFORMER_POLICY"
 )
 
 // Values returns all known values for PolicyType. Note that this can be expanded
@@ -242,6 +371,29 @@ func (PolicyType) Values() []PolicyType {
 	return []PolicyType{
 		"DATA_PROTECTION_POLICY",
 		"SUBSCRIPTION_FILTER_POLICY",
+		"FIELD_INDEX_POLICY",
+		"TRANSFORMER_POLICY",
+	}
+}
+
+type QueryLanguage string
+
+// Enum values for QueryLanguage
+const (
+	QueryLanguageCwli QueryLanguage = "CWLI"
+	QueryLanguageSql  QueryLanguage = "SQL"
+	QueryLanguagePpl  QueryLanguage = "PPL"
+)
+
+// Values returns all known values for QueryLanguage. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (QueryLanguage) Values() []QueryLanguage {
+	return []QueryLanguage{
+		"CWLI",
+		"SQL",
+		"PPL",
 	}
 }
 
@@ -437,5 +589,28 @@ func (SuppressionUnit) Values() []SuppressionUnit {
 		"SECONDS",
 		"MINUTES",
 		"HOURS",
+	}
+}
+
+type Type string
+
+// Enum values for Type
+const (
+	TypeBoolean Type = "boolean"
+	TypeInteger Type = "integer"
+	TypeDouble  Type = "double"
+	TypeString  Type = "string"
+)
+
+// Values returns all known values for Type. Note that this can be expanded in the
+// future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (Type) Values() []Type {
+	return []Type{
+		"boolean",
+		"integer",
+		"double",
+		"string",
 	}
 }

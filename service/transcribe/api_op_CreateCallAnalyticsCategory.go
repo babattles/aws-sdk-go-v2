@@ -83,6 +83,14 @@ type CreateCallAnalyticsCategoryInput struct {
 	// category by default.
 	InputType types.InputType
 
+	// Adds one or more custom tags, each in the form of a key:value pair, to a new
+	// call analytics category at the time you start this new job.
+	//
+	// To learn more about using tags with Amazon Transcribe, refer to [Tagging resources].
+	//
+	// [Tagging resources]: https://docs.aws.amazon.com/transcribe/latest/dg/tagging.html
+	Tags []types.Tag
+
 	noSmithyDocumentSerde
 }
 
@@ -141,6 +149,9 @@ func (c *Client) addOperationCreateCallAnalyticsCategoryMiddlewares(stack *middl
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -157,6 +168,9 @@ func (c *Client) addOperationCreateCallAnalyticsCategoryMiddlewares(stack *middl
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateCallAnalyticsCategoryValidationMiddleware(stack); err != nil {
@@ -178,6 +192,18 @@ func (c *Client) addOperationCreateCallAnalyticsCategoryMiddlewares(stack *middl
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

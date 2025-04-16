@@ -28,7 +28,7 @@ import (
 //   - in the ElastiCache User Guide.
 //
 // [ModifyCacheParameterGroup]: https://docs.aws.amazon.com/AmazonElastiCache/latest/APIReference/API_ModifyCacheParameterGroup.html
-// [Parameters and Parameter Groups]: https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/ParameterGroups.html
+// [Parameters and Parameter Groups]: https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/ParameterGroups.html
 func (c *Client) CreateCacheParameterGroup(ctx context.Context, params *CreateCacheParameterGroupInput, optFns ...func(*Options)) (*CreateCacheParameterGroupOutput, error) {
 	if params == nil {
 		params = &CreateCacheParameterGroupInput{}
@@ -50,8 +50,8 @@ type CreateCacheParameterGroupInput struct {
 	// The name of the cache parameter group family that the cache parameter group can
 	// be used with.
 	//
-	// Valid values are: memcached1.4 | memcached1.5 | memcached1.6 | redis2.6 |
-	// redis2.8 | redis3.2 | redis4.0 | redis5.0 | redis6.x | redis7
+	// Valid values are: valkey8 | valkey7 | memcached1.4 | memcached1.5 | memcached1.6
+	// | redis2.6 | redis2.8 | redis3.2 | redis4.0 | redis5.0 | redis6.x | redis7
 	//
 	// This member is required.
 	CacheParameterGroupFamily *string
@@ -127,6 +127,9 @@ func (c *Client) addOperationCreateCacheParameterGroupMiddlewares(stack *middlew
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -143,6 +146,9 @@ func (c *Client) addOperationCreateCacheParameterGroupMiddlewares(stack *middlew
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateCacheParameterGroupValidationMiddleware(stack); err != nil {
@@ -164,6 +170,18 @@ func (c *Client) addOperationCreateCacheParameterGroupMiddlewares(stack *middlew
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

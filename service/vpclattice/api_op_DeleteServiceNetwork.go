@@ -34,7 +34,7 @@ func (c *Client) DeleteServiceNetwork(ctx context.Context, params *DeleteService
 
 type DeleteServiceNetworkInput struct {
 
-	// The Amazon Resource Name (ARN) or ID of the service network.
+	// The ID or ARN of the service network.
 	//
 	// This member is required.
 	ServiceNetworkIdentifier *string
@@ -92,6 +92,9 @@ func (c *Client) addOperationDeleteServiceNetworkMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -108,6 +111,9 @@ func (c *Client) addOperationDeleteServiceNetworkMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteServiceNetworkValidationMiddleware(stack); err != nil {
@@ -129,6 +135,18 @@ func (c *Client) addOperationDeleteServiceNetworkMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

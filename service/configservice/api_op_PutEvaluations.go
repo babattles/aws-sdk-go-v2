@@ -11,8 +11,9 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Used by an Lambda function to deliver evaluation results to Config. This action
-// is required in every Lambda function that is invoked by an Config rule.
+// Used by an Lambda function to deliver evaluation results to Config. This
+// operation is required in every Lambda function that is invoked by an Config
+// rule.
 func (c *Client) PutEvaluations(ctx context.Context, params *PutEvaluationsInput, optFns ...func(*Options)) (*PutEvaluationsOutput, error) {
 	if params == nil {
 		params = &PutEvaluationsInput{}
@@ -107,6 +108,9 @@ func (c *Client) addOperationPutEvaluationsMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -123,6 +127,9 @@ func (c *Client) addOperationPutEvaluationsMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpPutEvaluationsValidationMiddleware(stack); err != nil {
@@ -144,6 +151,18 @@ func (c *Client) addOperationPutEvaluationsMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

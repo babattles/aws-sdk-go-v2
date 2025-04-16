@@ -48,7 +48,7 @@ type ChatInput struct {
 	// The identifier used to associate a user message with a AI generated response.
 	ParentMessageId *string
 
-	// The groups that a user associated with the chat input belongs to.
+	// The group names that a user associated with the chat input belongs to.
 	UserGroups []string
 
 	// The identifier of the user attached to the chat input.
@@ -120,6 +120,9 @@ func (c *Client) addOperationChatMiddlewares(stack *middleware.Stack, options Op
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -133,6 +136,9 @@ func (c *Client) addOperationChatMiddlewares(stack *middleware.Stack, options Op
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opChatMiddleware(stack, options); err != nil {
@@ -157,6 +163,18 @@ func (c *Client) addOperationChatMiddlewares(stack *middleware.Stack, options Op
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

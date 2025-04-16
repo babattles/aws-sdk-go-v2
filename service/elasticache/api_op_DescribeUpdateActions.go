@@ -32,7 +32,7 @@ type DescribeUpdateActionsInput struct {
 	// The cache cluster IDs
 	CacheClusterIds []string
 
-	// The Elasticache engine to which the update applies. Either Redis OSS or
+	// The Elasticache engine to which the update applies. Either Valkey, Redis OSS or
 	// Memcached.
 	Engine *string
 
@@ -127,6 +127,9 @@ func (c *Client) addOperationDescribeUpdateActionsMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -145,6 +148,9 @@ func (c *Client) addOperationDescribeUpdateActionsMiddlewares(stack *middleware.
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeUpdateActions(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -161,6 +167,18 @@ func (c *Client) addOperationDescribeUpdateActionsMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

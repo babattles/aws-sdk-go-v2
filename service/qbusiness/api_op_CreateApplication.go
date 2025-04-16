@@ -19,7 +19,17 @@ import (
 // Business Pro, see [Amazon Q Business tiers]. You must use the Amazon Q Business console to assign
 // subscription tiers to users.
 //
+// An Amazon Q Apps service linked role will be created if it's absent in the
+// Amazon Web Services account when QAppsConfiguration is enabled in the request.
+// For more information, see [Using service-linked roles for Q Apps].
+//
+// When you create an application, Amazon Q Business may securely transmit data
+// for processing from your selected Amazon Web Services region, but within your
+// geography. For more information, see [Cross region inference in Amazon Q Business].
+//
 // [Amazon Q Business tiers]: https://docs.aws.amazon.com/amazonq/latest/qbusiness-ug/tiers.html#user-sub-tiers
+// [Using service-linked roles for Q Apps]: https://docs.aws.amazon.com/amazonq/latest/qbusiness-ug/using-service-linked-roles-qapps.html
+// [Cross region inference in Amazon Q Business]: https://docs.aws.amazon.com/amazonq/latest/qbusiness-ug/cross-region-inference.html
 func (c *Client) CreateApplication(ctx context.Context, params *CreateApplicationInput, optFns ...func(*Options)) (*CreateApplicationOutput, error) {
 	if params == nil {
 		params = &CreateApplicationInput{}
@@ -80,8 +90,19 @@ type CreateApplicationInput struct {
 	// experience.
 	QAppsConfiguration *types.QAppsConfiguration
 
+	// The Amazon QuickSight configuration for an Amazon Q Business application that
+	// uses QuickSight for authentication. This configuration is required if your
+	// application uses QuickSight as the identity provider. For more information, see [Creating an Amazon QuickSight integrated application]
+	// .
+	//
+	// [Creating an Amazon QuickSight integrated application]: https://docs.aws.amazon.com/amazonq/latest/qbusiness-ug/create-quicksight-integrated-application.html
+	QuickSightConfiguration *types.QuickSightConfiguration
+
 	//  The Amazon Resource Name (ARN) of an IAM role with permissions to access your
-	// Amazon CloudWatch logs and metrics.
+	// Amazon CloudWatch logs and metrics. If this property is not specified, Amazon Q
+	// Business will create a [service linked role (SLR)]and use it as the application's role.
+	//
+	// [service linked role (SLR)]: https://docs.aws.amazon.com/amazonq/latest/qbusiness-ug/using-service-linked-roles.html#slr-permissions
 	RoleArn *string
 
 	// A list of key-value pairs that identify or categorize your Amazon Q Business
@@ -150,6 +171,9 @@ func (c *Client) addOperationCreateApplicationMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -166,6 +190,9 @@ func (c *Client) addOperationCreateApplicationMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateApplicationMiddleware(stack, options); err != nil {
@@ -190,6 +217,18 @@ func (c *Client) addOperationCreateApplicationMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

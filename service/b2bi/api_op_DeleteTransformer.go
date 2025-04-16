@@ -10,8 +10,10 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Deletes the specified transformer. A transformer describes how to process the
-// incoming EDI documents and extract the necessary information to the output file.
+// Deletes the specified transformer. A transformer can take an EDI file as input
+// and transform it into a JSON-or XML-formatted document. Alternatively, a
+// transformer can take a JSON-or XML-formatted document as input and transform it
+// into an EDI file.
 func (c *Client) DeleteTransformer(ctx context.Context, params *DeleteTransformerInput, optFns ...func(*Options)) (*DeleteTransformerOutput, error) {
 	if params == nil {
 		params = &DeleteTransformerInput{}
@@ -87,6 +89,9 @@ func (c *Client) addOperationDeleteTransformerMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -103,6 +108,9 @@ func (c *Client) addOperationDeleteTransformerMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteTransformerValidationMiddleware(stack); err != nil {
@@ -124,6 +132,18 @@ func (c *Client) addOperationDeleteTransformerMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -36,6 +36,10 @@ type GetSupportedResourceTypesOutput struct {
 	//
 	//   - Aurora for Amazon Aurora
 	//
+	//   - CloudFormation for CloudFormation
+	//
+	//   - DocumentDB for Amazon DocumentDB (with MongoDB compatibility)
+	//
 	//   - DynamoDB for Amazon DynamoDB
 	//
 	//   - EBS for Amazon Elastic Block Store
@@ -44,15 +48,24 @@ type GetSupportedResourceTypesOutput struct {
 	//
 	//   - EFS for Amazon Elastic File System
 	//
-	//   - FSX for Amazon FSx
+	//   - FSx for Amazon FSx
+	//
+	//   - Neptune for Amazon Neptune
 	//
 	//   - RDS for Amazon Relational Database Service
 	//
+	//   - Redshift for Amazon Redshift
+	//
+	//   - S3 for Amazon Simple Storage Service (Amazon S3)
+	//
+	//   - SAP HANA on Amazon EC2 for SAP HANA databases on Amazon Elastic Compute
+	//   Cloud instances
+	//
 	//   - Storage Gateway for Storage Gateway
 	//
-	//   - DocDB for Amazon DocumentDB (with MongoDB compatibility)
+	//   - Timestream for Amazon Timestream
 	//
-	//   - Neptune for Amazon Neptune
+	//   - VirtualMachine for VMware virtual machines
 	ResourceTypes []string
 
 	// Metadata pertaining to the operation's result.
@@ -104,6 +117,9 @@ func (c *Client) addOperationGetSupportedResourceTypesMiddlewares(stack *middlew
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -122,6 +138,9 @@ func (c *Client) addOperationGetSupportedResourceTypesMiddlewares(stack *middlew
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opGetSupportedResourceTypes(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -138,6 +157,18 @@ func (c *Client) addOperationGetSupportedResourceTypesMiddlewares(stack *middlew
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

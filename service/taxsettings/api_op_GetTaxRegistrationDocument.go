@@ -30,15 +30,13 @@ func (c *Client) GetTaxRegistrationDocument(ctx context.Context, params *GetTaxR
 
 type GetTaxRegistrationDocumentInput struct {
 
-	// The Amazon S3 bucket that you specify to download your tax documents to.
-	//
-	// This member is required.
-	DestinationS3Location *types.DestinationS3Location
-
 	// The metadata for your tax document.
 	//
 	// This member is required.
 	TaxDocumentMetadata *types.TaxDocumentMetadata
+
+	// The Amazon S3 bucket that you specify to download your tax documents to.
+	DestinationS3Location *types.DestinationS3Location
 
 	noSmithyDocumentSerde
 }
@@ -48,6 +46,9 @@ type GetTaxRegistrationDocumentOutput struct {
 	// The file path of the Amazon S3 bucket where you want to download your tax
 	// document to.
 	DestinationFilePath *string
+
+	// The Amazon S3 presigned URL of the tax registration document.
+	PresignedS3Url *string
 
 	// Metadata pertaining to the operation's result.
 	ResultMetadata middleware.Metadata
@@ -98,6 +99,9 @@ func (c *Client) addOperationGetTaxRegistrationDocumentMiddlewares(stack *middle
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -114,6 +118,9 @@ func (c *Client) addOperationGetTaxRegistrationDocumentMiddlewares(stack *middle
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetTaxRegistrationDocumentValidationMiddleware(stack); err != nil {
@@ -135,6 +142,18 @@ func (c *Client) addOperationGetTaxRegistrationDocumentMiddlewares(stack *middle
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

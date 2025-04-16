@@ -74,6 +74,9 @@ type CreateApiInput struct {
 	// WebSocket APIs.
 	DisableSchemaValidation *bool
 
+	// The IP address types that can invoke the API.
+	IpAddressType types.IpAddressType
+
 	// This property is part of quick create. If you don't specify a routeKey, a
 	// default route of $default is created. The $default route acts as a catch-all
 	// for any request made to your API, for a particular stage. The $default route
@@ -149,6 +152,9 @@ type CreateApiOutput struct {
 	// only for HTTP APIs.
 	ImportInfo []string
 
+	// The IP address types that can invoke the API.
+	IpAddressType types.IpAddressType
+
 	// The name of the API.
 	Name *string
 
@@ -220,6 +226,9 @@ func (c *Client) addOperationCreateApiMiddlewares(stack *middleware.Stack, optio
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -236,6 +245,9 @@ func (c *Client) addOperationCreateApiMiddlewares(stack *middleware.Stack, optio
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateApiValidationMiddleware(stack); err != nil {
@@ -257,6 +269,18 @@ func (c *Client) addOperationCreateApiMiddlewares(stack *middleware.Stack, optio
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

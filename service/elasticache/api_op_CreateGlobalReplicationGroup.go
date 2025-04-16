@@ -11,18 +11,17 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Global Datastore for Redis OSS offers fully managed, fast, reliable and secure
-// cross-region replication. Using Global Datastore for Redis OSS, you can create
-// cross-region read replica clusters for ElastiCache (Redis OSS) to enable
-// low-latency reads and disaster recovery across regions. For more information,
-// see [Replication Across Regions Using Global Datastore].
+// Global Datastore offers fully managed, fast, reliable and secure cross-region
+// replication. Using Global Datastore with Valkey or Redis OSS, you can create
+// cross-region read replica clusters for ElastiCache to enable low-latency reads
+// and disaster recovery across regions. For more information, see [Replication Across Regions Using Global Datastore].
 //
 //   - The GlobalReplicationGroupIdSuffix is the name of the Global datastore.
 //
 //   - The PrimaryReplicationGroupId represents the name of the primary cluster
 //     that accepts writes and will replicate updates to the secondary cluster.
 //
-// [Replication Across Regions Using Global Datastore]: https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Redis-Global-Datastore.html
+// [Replication Across Regions Using Global Datastore]: https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/Redis-Global-Datastore.html
 func (c *Client) CreateGlobalReplicationGroup(ctx context.Context, params *CreateGlobalReplicationGroupInput, optFns ...func(*Options)) (*CreateGlobalReplicationGroupOutput, error) {
 	if params == nil {
 		params = &CreateGlobalReplicationGroupInput{}
@@ -50,7 +49,7 @@ type CreateGlobalReplicationGroupInput struct {
 	// For a full list of Amazon Regions and their respective Global datastore iD
 	// prefixes, see [Using the Amazon CLI with Global datastores].
 	//
-	// [Using the Amazon CLI with Global datastores]: http://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Redis-Global-Datastores-CLI.html
+	// [Using the Amazon CLI with Global datastores]: http://docs.aws.amazon.com/AmazonElastiCache/latest/dg/Redis-Global-Datastores-CLI.html
 	//
 	// This member is required.
 	GlobalReplicationGroupIdSuffix *string
@@ -127,6 +126,9 @@ func (c *Client) addOperationCreateGlobalReplicationGroupMiddlewares(stack *midd
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -143,6 +145,9 @@ func (c *Client) addOperationCreateGlobalReplicationGroupMiddlewares(stack *midd
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateGlobalReplicationGroupValidationMiddleware(stack); err != nil {
@@ -164,6 +169,18 @@ func (c *Client) addOperationCreateGlobalReplicationGroupMiddlewares(stack *midd
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

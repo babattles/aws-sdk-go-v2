@@ -11,7 +11,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Starts a data source packages for the behavior graph.
+// Starts a data source package for the Detective behavior graph.
 func (c *Client) UpdateDatasourcePackages(ctx context.Context, params *UpdateDatasourcePackagesInput, optFns ...func(*Options)) (*UpdateDatasourcePackagesOutput, error) {
 	if params == nil {
 		params = &UpdateDatasourcePackagesInput{}
@@ -29,7 +29,7 @@ func (c *Client) UpdateDatasourcePackages(ctx context.Context, params *UpdateDat
 
 type UpdateDatasourcePackagesInput struct {
 
-	// The data source package start for the behavior graph.
+	// The data source package to start for the behavior graph.
 	//
 	// This member is required.
 	DatasourcePackages []types.DatasourcePackage
@@ -92,6 +92,9 @@ func (c *Client) addOperationUpdateDatasourcePackagesMiddlewares(stack *middlewa
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -108,6 +111,9 @@ func (c *Client) addOperationUpdateDatasourcePackagesMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateDatasourcePackagesValidationMiddleware(stack); err != nil {
@@ -129,6 +135,18 @@ func (c *Client) addOperationUpdateDatasourcePackagesMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

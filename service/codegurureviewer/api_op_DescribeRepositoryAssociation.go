@@ -11,7 +11,6 @@ import (
 	smithytime "github.com/aws/smithy-go/time"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	smithywaiter "github.com/aws/smithy-go/waiter"
-	jmespath "github.com/jmespath/go-jmespath"
 	"time"
 )
 
@@ -113,6 +112,9 @@ func (c *Client) addOperationDescribeRepositoryAssociationMiddlewares(stack *mid
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -129,6 +131,9 @@ func (c *Client) addOperationDescribeRepositoryAssociationMiddlewares(stack *mid
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeRepositoryAssociationValidationMiddleware(stack); err != nil {
@@ -150,6 +155,18 @@ func (c *Client) addOperationDescribeRepositoryAssociationMiddlewares(stack *mid
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -320,56 +337,53 @@ func (w *RepositoryAssociationSucceededWaiter) WaitForOutput(ctx context.Context
 func repositoryAssociationSucceededStateRetryable(ctx context.Context, input *DescribeRepositoryAssociationInput, output *DescribeRepositoryAssociationOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("RepositoryAssociation.State", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.RepositoryAssociation
+		var v2 types.RepositoryAssociationState
+		if v1 != nil {
+			v3 := v1.State
+			v2 = v3
 		}
-
 		expectedValue := "Associated"
-		value, ok := pathValue.(types.RepositoryAssociationState)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.RepositoryAssociationState value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v2)
+		if pathValue == expectedValue {
 			return false, nil
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("RepositoryAssociation.State", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.RepositoryAssociation
+		var v2 types.RepositoryAssociationState
+		if v1 != nil {
+			v3 := v1.State
+			v2 = v3
 		}
-
 		expectedValue := "Failed"
-		value, ok := pathValue.(types.RepositoryAssociationState)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.RepositoryAssociationState value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v2)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("RepositoryAssociation.State", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.RepositoryAssociation
+		var v2 types.RepositoryAssociationState
+		if v1 != nil {
+			v3 := v1.State
+			v2 = v3
 		}
-
 		expectedValue := "Associating"
-		value, ok := pathValue.(types.RepositoryAssociationState)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.RepositoryAssociationState value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v2)
+		if pathValue == expectedValue {
 			return true, nil
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 

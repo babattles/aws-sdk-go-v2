@@ -12,6 +12,13 @@ import (
 )
 
 // Retrieves a list of runs.
+//
+// HealthOmics stores a fixed number of runs that are available to the console and
+// API. If the ListRuns response doesn't include specific runs that you expected,
+// you can find run logs for all runs in the CloudWatch logs. For more information
+// about viewing the run logs, see [CloudWatch logs]in the AWS HealthOmics User Guide.
+//
+// [CloudWatch logs]: https://docs.aws.amazon.com/omics/latest/dev/cloudwatch-logs.html
 func (c *Client) ListRuns(ctx context.Context, params *ListRunsInput, optFns ...func(*Options)) (*ListRunsOutput, error) {
 	if params == nil {
 		params = &ListRunsInput{}
@@ -105,6 +112,9 @@ func (c *Client) addOperationListRunsMiddlewares(stack *middleware.Stack, option
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -121,6 +131,9 @@ func (c *Client) addOperationListRunsMiddlewares(stack *middleware.Stack, option
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addEndpointPrefix_opListRunsMiddleware(stack); err != nil {
@@ -142,6 +155,18 @@ func (c *Client) addOperationListRunsMiddlewares(stack *middleware.Stack, option
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

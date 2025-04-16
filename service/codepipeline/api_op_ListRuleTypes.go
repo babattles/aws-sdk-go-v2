@@ -11,7 +11,12 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Lists the rules for the condition.
+// Lists the rules for the condition. For more information about conditions, see [Stage conditions]
+// and [How do stage conditions work?].For more information about rules, see the [CodePipeline rule reference].
+//
+// [Stage conditions]: https://docs.aws.amazon.com/codepipeline/latest/userguide/stage-conditions.html
+// [How do stage conditions work?]: https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts-how-it-works-conditions.html
+// [CodePipeline rule reference]: https://docs.aws.amazon.com/codepipeline/latest/userguide/rule-reference.html
 func (c *Client) ListRuleTypes(ctx context.Context, params *ListRuleTypesInput, optFns ...func(*Options)) (*ListRuleTypesOutput, error) {
 	if params == nil {
 		params = &ListRuleTypesInput{}
@@ -94,6 +99,9 @@ func (c *Client) addOperationListRuleTypesMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -112,6 +120,9 @@ func (c *Client) addOperationListRuleTypesMiddlewares(stack *middleware.Stack, o
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListRuleTypes(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -128,6 +139,18 @@ func (c *Client) addOperationListRuleTypesMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

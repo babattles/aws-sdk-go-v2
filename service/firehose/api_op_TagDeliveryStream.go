@@ -11,15 +11,15 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Adds or updates tags for the specified delivery stream. A tag is a key-value
+// Adds or updates tags for the specified Firehose stream. A tag is a key-value
 // pair that you can define and assign to Amazon Web Services resources. If you
 // specify a tag that already exists, the tag value is replaced with the value that
 // you specify in the request. Tags are metadata. For example, you can add friendly
 // names and descriptions or other types of information that can help you
-// distinguish the delivery stream. For more information about tags, see [Using Cost Allocation Tags]in the
+// distinguish the Firehose stream. For more information about tags, see [Using Cost Allocation Tags]in the
 // Amazon Web Services Billing and Cost Management User Guide.
 //
-// Each delivery stream can have up to 50 tags.
+// Each Firehose stream can have up to 50 tags.
 //
 // This operation has a limit of five transactions per second per account.
 //
@@ -41,7 +41,7 @@ func (c *Client) TagDeliveryStream(ctx context.Context, params *TagDeliveryStrea
 
 type TagDeliveryStreamInput struct {
 
-	// The name of the delivery stream to which you want to add the tags.
+	// The name of the Firehose stream to which you want to add the tags.
 	//
 	// This member is required.
 	DeliveryStreamName *string
@@ -104,6 +104,9 @@ func (c *Client) addOperationTagDeliveryStreamMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -120,6 +123,9 @@ func (c *Client) addOperationTagDeliveryStreamMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpTagDeliveryStreamValidationMiddleware(stack); err != nil {
@@ -141,6 +147,18 @@ func (c *Client) addOperationTagDeliveryStreamMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

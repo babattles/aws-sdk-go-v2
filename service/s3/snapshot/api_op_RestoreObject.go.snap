@@ -1,12 +1,15 @@
 RestoreObject
 	Initialize stack step
+		spanInitializeStart
 		AWSChecksum:SetupInputContext
 		RegisterServiceMetadata
 		legacyEndpointContextSetter
 		S3Shared:ARNLookup
 		SetLogger
 		OperationInputValidation
+		spanInitializeEnd
 	Serialize stack step
+		spanBuildRequestStart
 		putBucketContext
 		setOperationInput
 		ResolveEndpoint
@@ -20,11 +23,17 @@ RestoreObject
 	Build stack step
 		ClientRequestID
 		ComputeContentLength
+		AWSChecksum:RequestMetricsTracking
+		SetCredentialSourceMiddleware
 		UserAgent
 		AddTimeOffsetMiddleware
 		RecursionDetection
+		spanBuildRequestEnd
 	Finalize stack step
 		DisableAcceptEncodingGzip
+		spanRetryLoop
+		Retry
+		RetryMetricsHeader
 		ResolveAuthScheme
 		GetIdentity
 		ResolveEndpointV2
@@ -32,8 +41,6 @@ RestoreObject
 		AWSChecksum:ComputeInputPayloadChecksum
 		ComputePayloadHash
 		SigV4ContentSHA256Header
-		Retry
-		RetryMetricsHeader
 		setLegacyContextSigningOptions
 		Signing
 	Deserialize stack step

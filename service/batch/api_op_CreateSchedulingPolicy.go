@@ -30,14 +30,14 @@ func (c *Client) CreateSchedulingPolicy(ctx context.Context, params *CreateSched
 // Contains the parameters for CreateSchedulingPolicy .
 type CreateSchedulingPolicyInput struct {
 
-	// The name of the scheduling policy. It can be up to 128 letters long. It can
-	// contain uppercase and lowercase letters, numbers, hyphens (-), and underscores
-	// (_).
+	// The name of the fair-share scheduling policy. It can be up to 128 letters long.
+	// It can contain uppercase and lowercase letters, numbers, hyphens (-), and
+	// underscores (_).
 	//
 	// This member is required.
 	Name *string
 
-	// The fair share policy of the scheduling policy.
+	// The fair-share scheduling policy details.
 	FairsharePolicy *types.FairsharePolicy
 
 	// The tags that you apply to the scheduling policy to help you categorize and
@@ -117,6 +117,9 @@ func (c *Client) addOperationCreateSchedulingPolicyMiddlewares(stack *middleware
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -133,6 +136,9 @@ func (c *Client) addOperationCreateSchedulingPolicyMiddlewares(stack *middleware
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateSchedulingPolicyValidationMiddleware(stack); err != nil {
@@ -154,6 +160,18 @@ func (c *Client) addOperationCreateSchedulingPolicyMiddlewares(stack *middleware
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -34,8 +34,6 @@ type SearchUsersInput struct {
 	// The identifier of the Amazon Connect instance. You can [find the instance ID] in the Amazon Resource
 	// Name (ARN) of the instance.
 	//
-	// InstanceID is a required field. The "Required: No" below is incorrect.
-	//
 	// [find the instance ID]: https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html
 	//
 	// This member is required.
@@ -121,6 +119,9 @@ func (c *Client) addOperationSearchUsersMiddlewares(stack *middleware.Stack, opt
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -137,6 +138,9 @@ func (c *Client) addOperationSearchUsersMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpSearchUsersValidationMiddleware(stack); err != nil {
@@ -158,6 +162,18 @@ func (c *Client) addOperationSearchUsersMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

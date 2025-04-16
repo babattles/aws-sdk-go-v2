@@ -34,6 +34,10 @@ type GetConnectionInput struct {
 	// This member is required.
 	Name *string
 
+	// For connections that may be used in multiple services, specifies returning
+	// properties for the specified compute environment.
+	ApplyOverrideForComputeEnvironment types.ComputeEnvironment
+
 	// The ID of the Data Catalog in which the connection resides. If none is
 	// provided, the Amazon Web Services account ID is used by default.
 	CatalogId *string
@@ -102,6 +106,9 @@ func (c *Client) addOperationGetConnectionMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -118,6 +125,9 @@ func (c *Client) addOperationGetConnectionMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetConnectionValidationMiddleware(stack); err != nil {
@@ -139,6 +149,18 @@ func (c *Client) addOperationGetConnectionMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -170,6 +170,32 @@ func (e *GeneratedTemplateNotFoundException) ErrorFault() smithy.ErrorFault {
 	return smithy.FaultClient
 }
 
+// The specified target doesn't have any requested Hook invocations.
+type HookResultNotFoundException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *HookResultNotFoundException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *HookResultNotFoundException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *HookResultNotFoundException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "HookResultNotFound"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *HookResultNotFoundException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
 // The template contains resources with capabilities that weren't specified in the
 // Capabilities parameter.
 type InsufficientCapabilitiesException struct {
@@ -588,6 +614,32 @@ func (e *StackNotFoundException) ErrorCode() string {
 	return *e.ErrorCodeOverride
 }
 func (e *StackNotFoundException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// The specified stack refactor can't be found.
+type StackRefactorNotFoundException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *StackRefactorNotFoundException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *StackRefactorNotFoundException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *StackRefactorNotFoundException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "StackRefactorNotFoundException"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *StackRefactorNotFoundException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // You can't yet delete this stack set, because it still contains one or more
 // stack instances. Delete all stack instances from the stack set before deleting

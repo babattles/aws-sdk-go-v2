@@ -1,3 +1,141 @@
+# v1.22.2 (2025-04-03)
+
+* No change notes available for this release.
+
+# v1.22.1 (2025-03-04.2)
+
+* **Bug Fix**: Add assurance test for operation order.
+
+# v1.22.0 (2025-02-27)
+
+* **Feature**: Track credential providers via User-Agent Feature ids
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.21.14 (2025-02-18)
+
+* **Bug Fix**: Bump go version to 1.22
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.21.13 (2025-02-05)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.21.12 (2025-02-04)
+
+* No change notes available for this release.
+
+# v1.21.11 (2025-01-31)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.21.10 (2025-01-30)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.21.9 (2025-01-24)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+* **Dependency Update**: Upgrade to smithy-go v1.22.2.
+
+# v1.21.8 (2025-01-17)
+
+* **Bug Fix**: Fix bug where credentials weren't refreshed during retry loop.
+
+# v1.21.7 (2025-01-15)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.21.6 (2025-01-14)
+
+* No change notes available for this release.
+
+# v1.21.5 (2025-01-09)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.21.4 (2025-01-08)
+
+* No change notes available for this release.
+
+# v1.21.3 (2024-12-20)
+
+* No change notes available for this release.
+
+# v1.21.2 (2024-12-19)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.21.1 (2024-12-02)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.21.0 (2024-11-20)
+
+* **Feature**: This release adds support for exclusion tags for Recycle Bin, which allows you to identify resources that are to be excluded, or ignored, by a Region-level retention rule.
+
+# v1.20.6 (2024-11-18)
+
+* **Dependency Update**: Update to smithy-go v1.22.1.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.20.5 (2024-11-07)
+
+* **Bug Fix**: Adds case-insensitive handling of error message fields in service responses
+
+# v1.20.4 (2024-11-06)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.20.3 (2024-10-28)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.20.2 (2024-10-08)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.20.1 (2024-10-07)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.20.0 (2024-10-04)
+
+* **Feature**: Add support for HTTP client metrics.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.19.4 (2024-10-03)
+
+* No change notes available for this release.
+
+# v1.19.3 (2024-09-27)
+
+* No change notes available for this release.
+
+# v1.19.2 (2024-09-25)
+
+* No change notes available for this release.
+
+# v1.19.1 (2024-09-23)
+
+* No change notes available for this release.
+
+# v1.19.0 (2024-09-20)
+
+* **Feature**: Add tracing and metrics support to service clients.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.18.8 (2024-09-17)
+
+* **Bug Fix**: **BREAKFIX**: Only generate AccountIDEndpointMode config for services that use it. This is a compiler break, but removes no actual functionality, as no services currently use the account ID in endpoint resolution.
+
+# v1.18.7 (2024-09-04)
+
+* No change notes available for this release.
+
+# v1.18.6 (2024-09-03)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
 # v1.18.5 (2024-08-22)
 
 * No change notes available for this release.

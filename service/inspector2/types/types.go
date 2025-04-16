@@ -1275,7 +1275,7 @@ type CoverageFilterCriteria struct {
 	ResourceType []CoverageStringFilter
 
 	// The filter to search for Amazon EC2 instance coverage by scan mode. Valid
-	// values are EC2_SSM_AGENT_BASED and EC2_HYBRID .
+	// values are EC2_SSM_AGENT_BASED and EC2_AGENTLESS .
 	ScanMode []CoverageStringFilter
 
 	// The scan status code to filter on. Valid values are: ValidationException ,
@@ -2747,6 +2747,9 @@ type PackageFilter struct {
 	// An object that contains details on the package epoch to filter on.
 	Epoch *NumberFilter
 
+	// An object that contains details on the package file path to filter on.
+	FilePath *StringFilter
+
 	// An object that contains details on the name of the package to filter on.
 	Name *StringFilter
 
@@ -3347,6 +3350,10 @@ type Step struct {
 	//
 	// This member is required.
 	ComponentType *string
+
+	// The component ARN. The ARN can be null and is not displayed in the Amazon Web
+	// Services console.
+	ComponentArn *string
 
 	noSmithyDocumentSerde
 }

@@ -48,8 +48,12 @@ type CreateLocationFsxWindowsInput struct {
 	// This member is required.
 	Password *string
 
-	// Specifies the ARNs of the security groups that provide access to your file
-	// system's preferred subnet.
+	// Specifies the ARNs of the Amazon EC2 security groups that provide access to
+	// your file system's preferred subnet.
+	//
+	// The security groups that you specify must be able to communicate with your file
+	// system's security groups. For information about configuring security groups for
+	// file system access, see the [Amazon FSx for Windows File Server User Guide].
 	//
 	// If you choose a security group that doesn't allow connections from within
 	// itself, do one of the following:
@@ -58,6 +62,8 @@ type CreateLocationFsxWindowsInput struct {
 	//
 	//   - Choose a different security group that can communicate with the mount
 	//   target's security group.
+	//
+	// [Amazon FSx for Windows File Server User Guide]: https://docs.aws.amazon.com/fsx/latest/WindowsGuide/limit-access-security-groups.html
 	//
 	// This member is required.
 	SecurityGroupArns []string
@@ -73,8 +79,8 @@ type CreateLocationFsxWindowsInput struct {
 	// This member is required.
 	User *string
 
-	// Specifies the name of the Microsoft Active Directory domain that the FSx for
-	// Windows File Server file system belongs to.
+	// Specifies the name of the Windows domain that the FSx for Windows File Server
+	// file system belongs to.
 	//
 	// If you have multiple Active Directory domains in your environment, configuring
 	// this parameter makes sure that DataSync connects to the right file system.
@@ -147,6 +153,9 @@ func (c *Client) addOperationCreateLocationFsxWindowsMiddlewares(stack *middlewa
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -163,6 +172,9 @@ func (c *Client) addOperationCreateLocationFsxWindowsMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateLocationFsxWindowsValidationMiddleware(stack); err != nil {
@@ -184,6 +196,18 @@ func (c *Client) addOperationCreateLocationFsxWindowsMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

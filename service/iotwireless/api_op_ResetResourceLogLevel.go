@@ -10,8 +10,8 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Removes the log-level override, if any, for a specific resource-ID and
-// resource-type. It can be used for a wireless device or a wireless gateway.
+// Removes the log-level override, if any, for a specific resource ID and resource
+// type. It can be used for a wireless device, a wireless gateway, or a FUOTA task.
 func (c *Client) ResetResourceLogLevel(ctx context.Context, params *ResetResourceLogLevelInput, optFns ...func(*Options)) (*ResetResourceLogLevelOutput, error) {
 	if params == nil {
 		params = &ResetResourceLogLevelInput{}
@@ -29,13 +29,14 @@ func (c *Client) ResetResourceLogLevel(ctx context.Context, params *ResetResourc
 
 type ResetResourceLogLevelInput struct {
 
-	// The identifier of the resource. For a Wireless Device, it is the wireless
-	// device ID. For a wireless gateway, it is the wireless gateway ID.
+	// The unique identifier of the resource, which can be the wireless gateway ID,
+	// the wireless device ID, or the FUOTA task ID.
 	//
 	// This member is required.
 	ResourceIdentifier *string
 
-	// The type of the resource, which can be WirelessDevice or WirelessGateway .
+	// The type of resource, which can be WirelessDevice , WirelessGateway , or
+	// FuotaTask .
 	//
 	// This member is required.
 	ResourceType *string
@@ -93,6 +94,9 @@ func (c *Client) addOperationResetResourceLogLevelMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -109,6 +113,9 @@ func (c *Client) addOperationResetResourceLogLevelMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpResetResourceLogLevelValidationMiddleware(stack); err != nil {
@@ -130,6 +137,18 @@ func (c *Client) addOperationResetResourceLogLevelMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

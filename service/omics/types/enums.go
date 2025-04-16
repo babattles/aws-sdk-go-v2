@@ -57,6 +57,25 @@ func (AnnotationType) Values() []AnnotationType {
 	}
 }
 
+type CacheBehavior string
+
+// Enum values for CacheBehavior
+const (
+	CacheBehaviorCacheOnFailure CacheBehavior = "CACHE_ON_FAILURE"
+	CacheBehaviorCacheAlways    CacheBehavior = "CACHE_ALWAYS"
+)
+
+// Values returns all known values for CacheBehavior. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CacheBehavior) Values() []CacheBehavior {
+	return []CacheBehavior{
+		"CACHE_ON_FAILURE",
+		"CACHE_ALWAYS",
+	}
+}
+
 type CreationType string
 
 // Enum values for CreationType
@@ -457,6 +476,23 @@ func (ReadSetStatus) Values() []ReadSetStatus {
 	}
 }
 
+type ReferenceCreationType string
+
+// Enum values for ReferenceCreationType
+const (
+	ReferenceCreationTypeImport ReferenceCreationType = "IMPORT"
+)
+
+// Values returns all known values for ReferenceCreationType. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ReferenceCreationType) Values() []ReferenceCreationType {
+	return []ReferenceCreationType{
+		"IMPORT",
+	}
+}
+
 type ReferenceFile string
 
 // Enum values for ReferenceFile
@@ -568,6 +604,27 @@ func (ResourceOwner) Values() []ResourceOwner {
 	return []ResourceOwner{
 		"SELF",
 		"OTHER",
+	}
+}
+
+type RunCacheStatus string
+
+// Enum values for RunCacheStatus
+const (
+	RunCacheStatusActive  RunCacheStatus = "ACTIVE"
+	RunCacheStatusDeleted RunCacheStatus = "DELETED"
+	RunCacheStatusFailed  RunCacheStatus = "FAILED"
+)
+
+// Values returns all known values for RunCacheStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RunCacheStatus) Values() []RunCacheStatus {
+	return []RunCacheStatus{
+		"ACTIVE",
+		"DELETED",
+		"FAILED",
 	}
 }
 
@@ -691,6 +748,31 @@ func (SchemaValueType) Values() []SchemaValueType {
 		"FLOAT",
 		"DOUBLE",
 		"BOOLEAN",
+	}
+}
+
+type SequenceStoreStatus string
+
+// Enum values for SequenceStoreStatus
+const (
+	SequenceStoreStatusCreating SequenceStoreStatus = "CREATING"
+	SequenceStoreStatusActive   SequenceStoreStatus = "ACTIVE"
+	SequenceStoreStatusUpdating SequenceStoreStatus = "UPDATING"
+	SequenceStoreStatusDeleting SequenceStoreStatus = "DELETING"
+	SequenceStoreStatusFailed   SequenceStoreStatus = "FAILED"
+)
+
+// Values returns all known values for SequenceStoreStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (SequenceStoreStatus) Values() []SequenceStoreStatus {
+	return []SequenceStoreStatus{
+		"CREATING",
+		"ACTIVE",
+		"UPDATING",
+		"DELETING",
+		"FAILED",
 	}
 }
 
@@ -821,6 +903,25 @@ func (StoreStatus) Values() []StoreStatus {
 		"DELETING",
 		"ACTIVE",
 		"FAILED",
+	}
+}
+
+type StoreType string
+
+// Enum values for StoreType
+const (
+	StoreTypeSequenceStore  StoreType = "SEQUENCE_STORE"
+	StoreTypeReferenceStore StoreType = "REFERENCE_STORE"
+)
+
+// Values returns all known values for StoreType. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (StoreType) Values() []StoreType {
+	return []StoreType{
+		"SEQUENCE_STORE",
+		"REFERENCE_STORE",
 	}
 }
 

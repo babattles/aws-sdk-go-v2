@@ -31,7 +31,7 @@ func (c *Client) GetServiceNetworkServiceAssociation(ctx context.Context, params
 
 type GetServiceNetworkServiceAssociationInput struct {
 
-	// The ID or Amazon Resource Name (ARN) of the association.
+	// The ID or ARN of the association.
 	//
 	// This member is required.
 	ServiceNetworkServiceAssociationIdentifier *string
@@ -44,8 +44,7 @@ type GetServiceNetworkServiceAssociationOutput struct {
 	// The Amazon Resource Name (ARN) of the association.
 	Arn *string
 
-	// The date and time that the association was created, specified in ISO-8601
-	// format.
+	// The date and time that the association was created, in ISO-8601 format.
 	CreatedAt *time.Time
 
 	// The account that created the association.
@@ -136,6 +135,9 @@ func (c *Client) addOperationGetServiceNetworkServiceAssociationMiddlewares(stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -152,6 +154,9 @@ func (c *Client) addOperationGetServiceNetworkServiceAssociationMiddlewares(stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetServiceNetworkServiceAssociationValidationMiddleware(stack); err != nil {
@@ -173,6 +178,18 @@ func (c *Client) addOperationGetServiceNetworkServiceAssociationMiddlewares(stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

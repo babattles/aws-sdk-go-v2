@@ -11,7 +11,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Lists all access log subscriptions for the specified service network or service.
+// Lists the access log subscriptions for the specified service network or service.
 func (c *Client) ListAccessLogSubscriptions(ctx context.Context, params *ListAccessLogSubscriptionsInput, optFns ...func(*Options)) (*ListAccessLogSubscriptionsOutput, error) {
 	if params == nil {
 		params = &ListAccessLogSubscriptionsInput{}
@@ -29,7 +29,7 @@ func (c *Client) ListAccessLogSubscriptions(ctx context.Context, params *ListAcc
 
 type ListAccessLogSubscriptionsInput struct {
 
-	// The ID or Amazon Resource Name (ARN) of the service network or service.
+	// The ID or ARN of the service network or service.
 	//
 	// This member is required.
 	ResourceIdentifier *string
@@ -102,6 +102,9 @@ func (c *Client) addOperationListAccessLogSubscriptionsMiddlewares(stack *middle
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -118,6 +121,9 @@ func (c *Client) addOperationListAccessLogSubscriptionsMiddlewares(stack *middle
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListAccessLogSubscriptionsValidationMiddleware(stack); err != nil {
@@ -139,6 +145,18 @@ func (c *Client) addOperationListAccessLogSubscriptionsMiddlewares(stack *middle
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

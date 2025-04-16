@@ -7,6 +7,591 @@ import (
 	"time"
 )
 
+// Information about an agent.
+type AgentAttributes struct {
+
+	// The agent’s first name as entered in their Amazon Connect user account.
+	FirstName *string
+
+	// The agent’s last name as entered in their Amazon Connect user account.
+	LastName *string
+
+	noSmithyDocumentSerde
+}
+
+// A typed union that specifies the configuration based on the type of AI Agent.
+//
+// The following types satisfy this interface:
+//
+//	AIAgentConfigurationMemberAnswerRecommendationAIAgentConfiguration
+//	AIAgentConfigurationMemberManualSearchAIAgentConfiguration
+//	AIAgentConfigurationMemberSelfServiceAIAgentConfiguration
+type AIAgentConfiguration interface {
+	isAIAgentConfiguration()
+}
+
+// The configuration for AI Agents of type ANSWER_RECOMMENDATION .
+type AIAgentConfigurationMemberAnswerRecommendationAIAgentConfiguration struct {
+	Value AnswerRecommendationAIAgentConfiguration
+
+	noSmithyDocumentSerde
+}
+
+func (*AIAgentConfigurationMemberAnswerRecommendationAIAgentConfiguration) isAIAgentConfiguration() {}
+
+// The configuration for AI Agents of type MANUAL_SEARCH .
+type AIAgentConfigurationMemberManualSearchAIAgentConfiguration struct {
+	Value ManualSearchAIAgentConfiguration
+
+	noSmithyDocumentSerde
+}
+
+func (*AIAgentConfigurationMemberManualSearchAIAgentConfiguration) isAIAgentConfiguration() {}
+
+// The configuration for AI Agents of type SELF_SERVICE.
+type AIAgentConfigurationMemberSelfServiceAIAgentConfiguration struct {
+	Value SelfServiceAIAgentConfiguration
+
+	noSmithyDocumentSerde
+}
+
+func (*AIAgentConfigurationMemberSelfServiceAIAgentConfiguration) isAIAgentConfiguration() {}
+
+// A type that specifies the AI Agent ID configuration data when mapping an AI
+// Agents to be used for an AI Agent type on a session or assistant.
+type AIAgentConfigurationData struct {
+
+	// The ID of the AI Agent to be configured.
+	//
+	// This member is required.
+	AiAgentId *string
+
+	noSmithyDocumentSerde
+}
+
+// The data for the AI Agent.
+type AIAgentData struct {
+
+	// The Amazon Resource Name (ARN) of the AI agent.
+	//
+	// This member is required.
+	AiAgentArn *string
+
+	// The identifier of the AI Agent.
+	//
+	// This member is required.
+	AiAgentId *string
+
+	// The Amazon Resource Name (ARN) of the Amazon Q in Connect assistant.
+	//
+	// This member is required.
+	AssistantArn *string
+
+	// The identifier of the Amazon Q in Connect assistant. Can be either the ID or
+	// the ARN. URLs cannot contain the ARN.
+	//
+	// This member is required.
+	AssistantId *string
+
+	// Configuration for the AI Agent.
+	//
+	// This member is required.
+	Configuration AIAgentConfiguration
+
+	// The name of the AI Agent.
+	//
+	// This member is required.
+	Name *string
+
+	// The type of the AI Agent.
+	//
+	// This member is required.
+	Type AIAgentType
+
+	// The visibility status of the AI Agent.
+	//
+	// This member is required.
+	VisibilityStatus VisibilityStatus
+
+	// The description of the AI Agent.
+	Description *string
+
+	// The time the AI Agent was last modified.
+	ModifiedTime *time.Time
+
+	// Specifies the origin of the AI Agent. SYSTEM for a default AI Agent created by
+	// Q in Connect or CUSTOMER for an AI Agent created by calling AI Agent creation
+	// APIs.
+	Origin Origin
+
+	// The status of the AI Agent.
+	Status Status
+
+	// The tags used to organize, track, or control access for this resource.
+	Tags map[string]string
+
+	noSmithyDocumentSerde
+}
+
+// The summary of the AI Agent.
+type AIAgentSummary struct {
+
+	// The Amazon Resource Name (ARN) of the AI agent.
+	//
+	// This member is required.
+	AiAgentArn *string
+
+	// The identifier of the AI Agent.
+	//
+	// This member is required.
+	AiAgentId *string
+
+	// The Amazon Resource Name (ARN) of the Amazon Q in Connect assistant.
+	//
+	// This member is required.
+	AssistantArn *string
+
+	// The identifier of the Amazon Q in Connect assistant. Can be either the ID or
+	// the ARN. URLs cannot contain the ARN.
+	//
+	// This member is required.
+	AssistantId *string
+
+	// The name of the AI Agent.
+	//
+	// This member is required.
+	Name *string
+
+	// The type of the AI Agent.
+	//
+	// This member is required.
+	Type AIAgentType
+
+	// The visibility status of the AI Agent.
+	//
+	// This member is required.
+	VisibilityStatus VisibilityStatus
+
+	// The configuration for the AI Agent.
+	Configuration AIAgentConfiguration
+
+	// The description of the AI Agent.
+	Description *string
+
+	// The time the AI Agent was last modified.
+	ModifiedTime *time.Time
+
+	// The origin of the AI Agent. SYSTEM for a default AI Agent created by Q in
+	// Connect or CUSTOMER for an AI Agent created by calling AI Agent creation APIs.
+	Origin Origin
+
+	// The status of the AI Agent.
+	Status Status
+
+	// The tags used to organize, track, or control access for this resource.
+	Tags map[string]string
+
+	noSmithyDocumentSerde
+}
+
+// The summary of the AI Agent version.
+type AIAgentVersionSummary struct {
+
+	// The data for the summary of the AI Agent version.
+	AiAgentSummary *AIAgentSummary
+
+	// The version number for this AI Agent version.
+	VersionNumber *int64
+
+	noSmithyDocumentSerde
+}
+
+// Contains details about how to handle harmful content.
+type AIGuardrailContentPolicyConfig struct {
+
+	// Contains the type of the content filter and how strongly it should apply to
+	// prompts and model responses.
+	//
+	// This member is required.
+	FiltersConfig []GuardrailContentFilterConfig
+
+	noSmithyDocumentSerde
+}
+
+// The policy configuration details for the AI Guardrail's contextual grounding
+// policy.
+type AIGuardrailContextualGroundingPolicyConfig struct {
+
+	// The filter configuration details for the AI Guardrails contextual grounding
+	// policy.
+	//
+	// This member is required.
+	FiltersConfig []GuardrailContextualGroundingFilterConfig
+
+	noSmithyDocumentSerde
+}
+
+// The data for the AI Guardrail
+type AIGuardrailData struct {
+
+	// The Amazon Resource Name (ARN) of the AI Guardrail.
+	//
+	// This member is required.
+	AiGuardrailArn *string
+
+	// The identifier of the Amazon Q in Connect AI Guardrail.
+	//
+	// This member is required.
+	AiGuardrailId *string
+
+	// The Amazon Resource Name (ARN) of the Amazon Q in Connect assistant.
+	//
+	// This member is required.
+	AssistantArn *string
+
+	// The identifier of the Amazon Q in Connect assistant. Can be either the ID or
+	// the ARN. URLs cannot contain the ARN.
+	//
+	// This member is required.
+	AssistantId *string
+
+	// The message to return when the AI Guardrail blocks a prompt.
+	//
+	// This member is required.
+	BlockedInputMessaging *string
+
+	// The message to return when the AI Guardrail blocks a model response.
+	//
+	// This member is required.
+	BlockedOutputsMessaging *string
+
+	// The name of the AI Guardrail.
+	//
+	// This member is required.
+	Name *string
+
+	// The visibility status of the AI Guardrail.
+	//
+	// This member is required.
+	VisibilityStatus VisibilityStatus
+
+	// Contains details about how to handle harmful content.
+	ContentPolicyConfig *AIGuardrailContentPolicyConfig
+
+	// The policy configuration details for the AI Guardrail's contextual grounding
+	// policy.
+	ContextualGroundingPolicyConfig *AIGuardrailContextualGroundingPolicyConfig
+
+	// A description of the AI Guardrail.
+	Description *string
+
+	// The time the AI Guardrail was last modified.
+	ModifiedTime *time.Time
+
+	// Contains details about PII entities and regular expressions to configure for
+	// the AI Guardrail.
+	SensitiveInformationPolicyConfig *AIGuardrailSensitiveInformationPolicyConfig
+
+	// The status of the AI Guardrail.
+	Status Status
+
+	// The tags used to organize, track, or control access for this resource.
+	Tags map[string]string
+
+	// Contains details about topics that the AI Guardrail should identify and deny.
+	TopicPolicyConfig *AIGuardrailTopicPolicyConfig
+
+	// Contains details about the word policy to configured for the AI Guardrail.
+	WordPolicyConfig *AIGuardrailWordPolicyConfig
+
+	noSmithyDocumentSerde
+}
+
+// Contains details about PII entities and regular expressions to configure for
+// the AI Guardrail.
+type AIGuardrailSensitiveInformationPolicyConfig struct {
+
+	// A list of PII entities to configure to the AI Guardrail.
+	PiiEntitiesConfig []GuardrailPiiEntityConfig
+
+	// A list of regular expressions to configure to the AI Guardrail.
+	RegexesConfig []GuardrailRegexConfig
+
+	noSmithyDocumentSerde
+}
+
+// The summary of the AI Guardrail.
+type AIGuardrailSummary struct {
+
+	// The Amazon Resource Name (ARN) of the AI Guardrail.
+	//
+	// This member is required.
+	AiGuardrailArn *string
+
+	// The identifier of the Amazon Q in Connect AI Guardrail.
+	//
+	// This member is required.
+	AiGuardrailId *string
+
+	// The Amazon Resource Name (ARN) of the Amazon Q in Connect assistant.
+	//
+	// This member is required.
+	AssistantArn *string
+
+	// The identifier of the Amazon Q in Connect assistant. Can be either the ID or
+	// the ARN. URLs cannot contain the ARN.
+	//
+	// This member is required.
+	AssistantId *string
+
+	// The name of the AI Guardrail.
+	//
+	// This member is required.
+	Name *string
+
+	// The visibility status of the AI Guardrail.
+	//
+	// This member is required.
+	VisibilityStatus VisibilityStatus
+
+	// A description of the AI Guardrail.
+	Description *string
+
+	// The time the AI Guardrail was last modified.
+	ModifiedTime *time.Time
+
+	// The status of the AI Guardrail.
+	Status Status
+
+	// The tags used to organize, track, or control access for this resource.
+	Tags map[string]string
+
+	noSmithyDocumentSerde
+}
+
+// Contains details about topics that the AI Guardrail should identify and deny.
+type AIGuardrailTopicPolicyConfig struct {
+
+	// A list of policies related to topics that the AI Guardrail should deny.
+	//
+	// This member is required.
+	TopicsConfig []GuardrailTopicConfig
+
+	noSmithyDocumentSerde
+}
+
+// The summary of the AI Guardrail version.
+type AIGuardrailVersionSummary struct {
+
+	// The data for the summary of the AI Guardrail version.
+	AiGuardrailSummary *AIGuardrailSummary
+
+	// The version number for this AI Guardrail version.
+	VersionNumber *int64
+
+	noSmithyDocumentSerde
+}
+
+// Contains details about the word policy to configured for the AI Guardrail.
+type AIGuardrailWordPolicyConfig struct {
+
+	// A list of managed words to configure for the AI Guardrail.
+	ManagedWordListsConfig []GuardrailManagedWordsConfig
+
+	// A list of words to configure for the AI Guardrail.
+	WordsConfig []GuardrailWordConfig
+
+	noSmithyDocumentSerde
+}
+
+// The data for the AI Prompt
+type AIPromptData struct {
+
+	// The Amazon Resource Name (ARN) of the AI Prompt.
+	//
+	// This member is required.
+	AiPromptArn *string
+
+	// The identifier of the Amazon Q in Connect AI prompt.
+	//
+	// This member is required.
+	AiPromptId *string
+
+	// The API format used for this AI Prompt.
+	//
+	// This member is required.
+	ApiFormat AIPromptAPIFormat
+
+	// The Amazon Resource Name (ARN) of the Amazon Q in Connect assistant.
+	//
+	// This member is required.
+	AssistantArn *string
+
+	// The identifier of the Amazon Q in Connect assistant. Can be either the ID or
+	// the ARN. URLs cannot contain the ARN.
+	//
+	// This member is required.
+	AssistantId *string
+
+	// The identifier of the model used for this AI Prompt. Model Ids supported are:
+	// anthropic.claude-3-haiku-20240307-v1:0 .
+	//
+	// This member is required.
+	ModelId *string
+
+	// The name of the AI Prompt
+	//
+	// This member is required.
+	Name *string
+
+	// The configuration of the prompt template for this AI Prompt.
+	//
+	// This member is required.
+	TemplateConfiguration AIPromptTemplateConfiguration
+
+	// The type of the prompt template for this AI Prompt.
+	//
+	// This member is required.
+	TemplateType AIPromptTemplateType
+
+	// The type of this AI Prompt.
+	//
+	// This member is required.
+	Type AIPromptType
+
+	// The visibility status of the AI Prompt.
+	//
+	// This member is required.
+	VisibilityStatus VisibilityStatus
+
+	// The description of the AI Prompt.
+	Description *string
+
+	// The time the AI Prompt was last modified.
+	ModifiedTime *time.Time
+
+	// The origin of the AI Prompt. SYSTEM for a default AI Prompt created by Q in
+	// Connect or CUSTOMER for an AI Prompt created by calling AI Prompt creation
+	// APIs.
+	Origin Origin
+
+	// The status of the AI Prompt.
+	Status Status
+
+	// The tags used to organize, track, or control access for this resource.
+	Tags map[string]string
+
+	noSmithyDocumentSerde
+}
+
+// The summary of the AI Prompt.
+type AIPromptSummary struct {
+
+	// The Amazon Resource Name (ARN) of the AI Prompt.
+	//
+	// This member is required.
+	AiPromptArn *string
+
+	// The identifier of the Amazon Q in Connect AI prompt.
+	//
+	// This member is required.
+	AiPromptId *string
+
+	// The API format used for this AI Prompt.
+	//
+	// This member is required.
+	ApiFormat AIPromptAPIFormat
+
+	// The Amazon Resource Name (ARN) of the Amazon Q in Connect assistant.
+	//
+	// This member is required.
+	AssistantArn *string
+
+	// The identifier of the Amazon Q in Connect assistant. Can be either the ID or
+	// the ARN. URLs cannot contain the ARN.
+	//
+	// This member is required.
+	AssistantId *string
+
+	// The identifier of the model used for this AI Prompt. Model Ids supported are:
+	// anthropic.claude-3-haiku-20240307-v1:0 .
+	//
+	// This member is required.
+	ModelId *string
+
+	// The name of the AI Prompt.
+	//
+	// This member is required.
+	Name *string
+
+	// The type of the prompt template for this AI Prompt.
+	//
+	// This member is required.
+	TemplateType AIPromptTemplateType
+
+	// The type of this AI Prompt.
+	//
+	// This member is required.
+	Type AIPromptType
+
+	// The visibility status of the AI Prompt.
+	//
+	// This member is required.
+	VisibilityStatus VisibilityStatus
+
+	// The description of the AI Prompt.
+	Description *string
+
+	// The time the AI Prompt was last modified.
+	ModifiedTime *time.Time
+
+	// The origin of the AI Prompt. SYSTEM for a default AI Prompt created by Q in
+	// Connect or CUSTOMER for an AI Prompt created by calling AI Prompt creation
+	// APIs.
+	Origin Origin
+
+	// The status of the AI Prompt.
+	Status Status
+
+	// The tags used to organize, track, or control access for this resource.
+	Tags map[string]string
+
+	noSmithyDocumentSerde
+}
+
+// A typed union that specifies the configuration for a prompt template based on
+// its type.
+//
+// The following types satisfy this interface:
+//
+//	AIPromptTemplateConfigurationMemberTextFullAIPromptEditTemplateConfiguration
+type AIPromptTemplateConfiguration interface {
+	isAIPromptTemplateConfiguration()
+}
+
+// The configuration for a prompt template that supports full textual prompt
+// configuration using a YAML prompt.
+type AIPromptTemplateConfigurationMemberTextFullAIPromptEditTemplateConfiguration struct {
+	Value TextFullAIPromptEditTemplateConfiguration
+
+	noSmithyDocumentSerde
+}
+
+func (*AIPromptTemplateConfigurationMemberTextFullAIPromptEditTemplateConfiguration) isAIPromptTemplateConfiguration() {
+}
+
+// The summary of the AI Prompt version.
+type AIPromptVersionSummary struct {
+
+	// The date for the summary of the AI Prompt version.
+	AiPromptSummary *AIPromptSummary
+
+	// The version number for this AI Prompt version.
+	VersionNumber *int64
+
+	noSmithyDocumentSerde
+}
+
 // Content association data for a [step-by-step guide].
 //
 // [step-by-step guide]: https://docs.aws.amazon.com/connect/latest/adminguide/step-by-step-guided-experiences.html
@@ -15,6 +600,41 @@ type AmazonConnectGuideAssociationData struct {
 	//  The Amazon Resource Name (ARN) of an Amazon Connect flow. Step-by-step guides
 	// are a type of flow.
 	FlowId *string
+
+	noSmithyDocumentSerde
+}
+
+// The configuration for the ANSWER_RECOMMENDATION AI Agent type.
+type AnswerRecommendationAIAgentConfiguration struct {
+
+	// The AI Guardrail identifier for the Answer Generation Guardrail used by the
+	// ANSWER_RECOMMENDATION AI Agent.
+	AnswerGenerationAIGuardrailId *string
+
+	// The AI Prompt identifier for the Answer Generation prompt used by the
+	// ANSWER_RECOMMENDATION AI Agent.
+	AnswerGenerationAIPromptId *string
+
+	// The association configurations for overriding behavior on this AI Agent.
+	AssociationConfigurations []AssociationConfiguration
+
+	// The AI Prompt identifier for the Intent Labeling prompt used by the
+	// ANSWER_RECOMMENDATION AI Agent.
+	IntentLabelingGenerationAIPromptId *string
+
+	// The locale to which specifies the language and region settings that determine
+	// the response language for [QueryAssistant].
+	//
+	// Changing this locale to anything other than en_US , en_GB , or en_AU will turn
+	// off recommendations triggered by contact transcripts for agent assistance, as
+	// this feature is not supported in multiple languages.
+	//
+	// [QueryAssistant]: https://docs.aws.amazon.com/connect/latest/APIReference/API_amazon-q-connect_QueryAssistant.html
+	Locale *string
+
+	// The AI Prompt identifier for the Query Reformulation prompt used by the
+	// ANSWER_RECOMMENDATION AI Agent.
+	QueryReformulationAIPromptId *string
 
 	noSmithyDocumentSerde
 }
@@ -51,7 +671,7 @@ type AppIntegrationsConfiguration struct {
 	//   s3:GetObject , and s3:GetBucketLocation against the bucket.
 	//
 	// [ServiceNow]: https://developer.servicenow.com/dev.do#!/reference/api/rome/rest/knowledge-management-api
-	// [Amazon S3]: https://aws.amazon.com/s3/
+	// [Amazon S3]: http://aws.amazon.com/s3/
 	// [Zendesk]: https://developer.zendesk.com/api-reference/help_center/help-center-api/articles/
 	// [SharePoint]: https://learn.microsoft.com/en-us/sharepoint/dev/sp-add-ins/sharepoint-net-server-csom-jsom-and-rest-api-index
 	// [Salesforce]: https://developer.salesforce.com/docs/atlas.en-us.knowledge_dev.meta/knowledge_dev/sforce_api_objects_knowledge__kav.htm
@@ -236,6 +856,10 @@ type AssistantData struct {
 	// This member is required.
 	Type AssistantType
 
+	// The configuration of the AI Agents (mapped by AI Agent Type to AI Agent
+	// version) that is set on the Amazon Q in Connect Assistant.
+	AiAgentConfiguration map[string]AIAgentConfigurationData
+
 	// The configuration information for the Amazon Q in Connect assistant capability.
 	CapabilityConfiguration *AssistantCapabilityConfiguration
 
@@ -303,6 +927,10 @@ type AssistantSummary struct {
 	// This member is required.
 	Type AssistantType
 
+	// The configuration of the AI Agents (mapped by AI Agent Type to AI Agent
+	// version) that is set on the Amazon Q in Connect Assistant.
+	AiAgentConfiguration map[string]AIAgentConfigurationData
+
 	// The configuration information for the Amazon Q in Connect assistant capability.
 	CapabilityConfiguration *AssistantCapabilityConfiguration
 
@@ -328,6 +956,101 @@ type AssistantSummary struct {
 
 	// The tags used to organize, track, or control access for this resource.
 	Tags map[string]string
+
+	noSmithyDocumentSerde
+}
+
+// The configuration for an Amazon Q in Connect Assistant Association.
+type AssociationConfiguration struct {
+
+	// The data of the configuration for an Amazon Q in Connect Assistant Association.
+	AssociationConfigurationData AssociationConfigurationData
+
+	// The identifier of the association for this Association Configuration.
+	AssociationId *string
+
+	// The type of the association for this Association Configuration.
+	AssociationType AIAgentAssociationConfigurationType
+
+	noSmithyDocumentSerde
+}
+
+// A typed union of the data of the configuration for an Amazon Q in Connect
+// Assistant Association.
+//
+// The following types satisfy this interface:
+//
+//	AssociationConfigurationDataMemberKnowledgeBaseAssociationConfigurationData
+type AssociationConfigurationData interface {
+	isAssociationConfigurationData()
+}
+
+// The data of the configuration for a KNOWLEDGE_BASE type Amazon Q in Connect
+// Assistant Association.
+type AssociationConfigurationDataMemberKnowledgeBaseAssociationConfigurationData struct {
+	Value KnowledgeBaseAssociationConfigurationData
+
+	noSmithyDocumentSerde
+}
+
+func (*AssociationConfigurationDataMemberKnowledgeBaseAssociationConfigurationData) isAssociationConfigurationData() {
+}
+
+// Settings for a foundation model used to parse documents for a data source.
+type BedrockFoundationModelConfigurationForParsing struct {
+
+	// The ARN of the foundation model.
+	//
+	// This member is required.
+	ModelArn *string
+
+	// Instructions for interpreting the contents of a document.
+	ParsingPrompt *ParsingPrompt
+
+	noSmithyDocumentSerde
+}
+
+// Details about how to chunk the documents in the data source. A chunk refers to
+// an excerpt from a data source that is returned when the knowledge base that it
+// belongs to is queried.
+type ChunkingConfiguration struct {
+
+	// Knowledge base can split your source data into chunks. A chunk refers to an
+	// excerpt from a data source that is returned when the knowledge base that it
+	// belongs to is queried. You have the following options for chunking your data. If
+	// you opt for NONE , then you may want to pre-process your files by splitting them
+	// up such that each file corresponds to a chunk.
+	//
+	// This member is required.
+	ChunkingStrategy ChunkingStrategy
+
+	// Configurations for when you choose fixed-size chunking. If you set the
+	// chunkingStrategy as NONE , exclude this field.
+	FixedSizeChunkingConfiguration *FixedSizeChunkingConfiguration
+
+	// Settings for hierarchical document chunking for a data source. Hierarchical
+	// chunking splits documents into layers of chunks where the first layer contains
+	// large chunks, and the second layer contains smaller chunks derived from the
+	// first layer.
+	HierarchicalChunkingConfiguration *HierarchicalChunkingConfiguration
+
+	// Settings for semantic document chunking for a data source. Semantic chunking
+	// splits a document into smaller documents based on groups of similar content
+	// derived from the text with natural language processing.
+	SemanticChunkingConfiguration *SemanticChunkingConfiguration
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about where the text with a citation begins and ends in
+// the generated output.
+type CitationSpan struct {
+
+	// Where the text with a citation starts in the generated output.
+	BeginOffsetInclusive int32
+
+	// Where the text with a citation ends in the generated output.
+	EndOffsetExclusive int32
 
 	noSmithyDocumentSerde
 }
@@ -604,6 +1327,12 @@ type ContentReference struct {
 	// knowledge base.
 	KnowledgeBaseId *string
 
+	// The type of reference content.
+	ReferenceType ReferenceType
+
+	// The web URL of the source content.
+	SourceURL *string
+
 	noSmithyDocumentSerde
 }
 
@@ -670,12 +1399,220 @@ type ContentSummary struct {
 	noSmithyDocumentSerde
 }
 
+// The conversation context to include in SendMessage.
+type ConversationContext struct {
+
+	// The self service conversation history before the Amazon Q in Connect session.
+	//
+	// This member is required.
+	SelfServiceConversationHistory []SelfServiceConversationHistory
+
+	noSmithyDocumentSerde
+}
+
+// The conversation state associated to a message.
+type ConversationState struct {
+
+	// The status of the conversation state.
+	//
+	// This member is required.
+	Status ConversationStatus
+
+	// The reason of the conversation state.
+	Reason ConversationStatusReason
+
+	noSmithyDocumentSerde
+}
+
+// The customer profile attributes that are used with the message template.
+type CustomerProfileAttributes struct {
+
+	// A unique account number that you have given to the customer.
+	AccountNumber *string
+
+	// Any additional information relevant to the customer's profile.
+	AdditionalInformation *string
+
+	// The first line of a customer address.
+	Address1 *string
+
+	// The second line of a customer address.
+	Address2 *string
+
+	// The third line of a customer address.
+	Address3 *string
+
+	// The fourth line of a customer address.
+	Address4 *string
+
+	// The first line of a customer’s billing address.
+	BillingAddress1 *string
+
+	// The second line of a customer’s billing address.
+	BillingAddress2 *string
+
+	// The third line of a customer’s billing address.
+	BillingAddress3 *string
+
+	// The fourth line of a customer’s billing address.
+	BillingAddress4 *string
+
+	// The city of a customer’s billing address.
+	BillingCity *string
+
+	// The country of a customer’s billing address.
+	BillingCountry *string
+
+	// The county of a customer’s billing address.
+	BillingCounty *string
+
+	// The postal code of a customer’s billing address.
+	BillingPostalCode *string
+
+	// The province of a customer’s billing address.
+	BillingProvince *string
+
+	// The state of a customer’s billing address.
+	BillingState *string
+
+	// The customer's birth date.
+	BirthDate *string
+
+	// The customer's business email address.
+	BusinessEmailAddress *string
+
+	// The name of the customer's business.
+	BusinessName *string
+
+	// The customer's business phone number.
+	BusinessPhoneNumber *string
+
+	// The city in which a customer lives.
+	City *string
+
+	// The country in which a customer lives.
+	Country *string
+
+	// The county in which a customer lives.
+	County *string
+
+	// The custom attributes in customer profile attributes.
+	Custom map[string]string
+
+	// The customer's email address, which has not been specified as a personal or
+	// business address.
+	EmailAddress *string
+
+	// The customer's first name.
+	FirstName *string
+
+	// The customer's gender.
+	Gender *string
+
+	// The customer's mobile phone number.
+	HomePhoneNumber *string
+
+	// The customer's last name.
+	LastName *string
+
+	// The first line of a customer’s mailing address.
+	MailingAddress1 *string
+
+	// The second line of a customer’s mailing address.
+	MailingAddress2 *string
+
+	// The third line of a customer’s mailing address.
+	MailingAddress3 *string
+
+	// The fourth line of a customer’s mailing address.
+	MailingAddress4 *string
+
+	// The city of a customer’s mailing address.
+	MailingCity *string
+
+	// The country of a customer’s mailing address.
+	MailingCountry *string
+
+	// The county of a customer’s mailing address.
+	MailingCounty *string
+
+	// The postal code of a customer’s mailing address.
+	MailingPostalCode *string
+
+	// The province of a customer’s mailing address.
+	MailingProvince *string
+
+	// The state of a customer’s mailing address.
+	MailingState *string
+
+	// The customer's middle name.
+	MiddleName *string
+
+	// The customer's mobile phone number.
+	MobilePhoneNumber *string
+
+	// The customer's party type.
+	PartyType *string
+
+	// The customer's phone number, which has not been specified as a mobile, home, or
+	// business number.
+	PhoneNumber *string
+
+	// The postal code of a customer address.
+	PostalCode *string
+
+	// The ARN of a customer profile.
+	ProfileARN *string
+
+	// The unique identifier of a customer profile.
+	ProfileId *string
+
+	// The province in which a customer lives.
+	Province *string
+
+	// The first line of a customer’s shipping address.
+	ShippingAddress1 *string
+
+	// The second line of a customer’s shipping address.
+	ShippingAddress2 *string
+
+	// The third line of a customer’s shipping address.
+	ShippingAddress3 *string
+
+	// The fourth line of a customer’s shipping address.
+	ShippingAddress4 *string
+
+	// The city of a customer’s shipping address.
+	ShippingCity *string
+
+	// The country of a customer’s shipping address.
+	ShippingCountry *string
+
+	// The county of a customer’s shipping address.
+	ShippingCounty *string
+
+	// The postal code of a customer’s shipping address.
+	ShippingPostalCode *string
+
+	// The province of a customer’s shipping address.
+	ShippingProvince *string
+
+	// The state of a customer’s shipping address.
+	ShippingState *string
+
+	// The state in which a customer lives.
+	State *string
+
+	noSmithyDocumentSerde
+}
+
 // Details about the data.
 //
 // The following types satisfy this interface:
 //
 //	DataDetailsMemberContentData
 //	DataDetailsMemberGenerativeData
+//	DataDetailsMemberIntentDetectedData
 //	DataDetailsMemberSourceContentData
 type DataDetails interface {
 	isDataDetails()
@@ -698,6 +1635,15 @@ type DataDetailsMemberGenerativeData struct {
 }
 
 func (*DataDetailsMemberGenerativeData) isDataDetails() {}
+
+// Details about the intent data.
+type DataDetailsMemberIntentDetectedData struct {
+	Value IntentDetectedDataDetails
+
+	noSmithyDocumentSerde
+}
+
+func (*DataDetailsMemberIntentDetectedData) isDataDetails() {}
 
 // Details about the content data.
 type DataDetailsMemberSourceContentData struct {
@@ -781,6 +1727,148 @@ type DocumentText struct {
 	noSmithyDocumentSerde
 }
 
+// The email header to include in email messages.
+type EmailHeader struct {
+
+	// The name of the email header.
+	Name *string
+
+	// The value of the email header.
+	Value *string
+
+	noSmithyDocumentSerde
+}
+
+// The content of the message template that applies to the email channel subtype.
+type EmailMessageTemplateContent struct {
+
+	// The body to use in email messages.
+	Body *EmailMessageTemplateContentBody
+
+	// The email headers to include in email messages.
+	Headers []EmailHeader
+
+	// The subject line, or title, to use in email messages.
+	Subject *string
+
+	noSmithyDocumentSerde
+}
+
+// The body to use in email messages.
+type EmailMessageTemplateContentBody struct {
+
+	// The message body, in HTML format, to use in email messages that are based on
+	// the message template. We recommend using HTML format for email clients that
+	// render HTML content. You can include links, formatted text, and more in an HTML
+	// message.
+	Html MessageTemplateBodyContentProvider
+
+	// The message body, in plain text format, to use in email messages that are based
+	// on the message template. We recommend using plain text format for email clients
+	// that don't render HTML content and clients that are connected to high-latency
+	// networks, such as mobile devices.
+	PlainText MessageTemplateBodyContentProvider
+
+	noSmithyDocumentSerde
+}
+
+// The extended data of a message template.
+type ExtendedMessageTemplateData struct {
+
+	// The channel subtype this message template applies to.
+	//
+	// This member is required.
+	ChannelSubtype ChannelSubtype
+
+	// The content of the message template.
+	//
+	// This member is required.
+	Content MessageTemplateContentProvider
+
+	// The timestamp when the message template was created.
+	//
+	// This member is required.
+	CreatedTime *time.Time
+
+	// The Amazon Resource Name (ARN) of the knowledge base.
+	//
+	// This member is required.
+	KnowledgeBaseArn *string
+
+	// The identifier of the knowledge base.
+	//
+	// This member is required.
+	KnowledgeBaseId *string
+
+	// The Amazon Resource Name (ARN) of the user who last updated the message
+	// template data.
+	//
+	// This member is required.
+	LastModifiedBy *string
+
+	// The timestamp when the message template data was last modified.
+	//
+	// This member is required.
+	LastModifiedTime *time.Time
+
+	// The Amazon Resource Name (ARN) of the message template.
+	//
+	// This member is required.
+	MessageTemplateArn *string
+
+	// The checksum value of the message template content that is referenced by the
+	// $LATEST qualifier. It can be returned in MessageTemplateData or
+	// ExtendedMessageTemplateData . It’s calculated by content, language,
+	// defaultAttributes and Attachments of the message template.
+	//
+	// This member is required.
+	MessageTemplateContentSha256 *string
+
+	// The identifier of the message template.
+	//
+	// This member is required.
+	MessageTemplateId *string
+
+	// The name of the message template.
+	//
+	// This member is required.
+	Name *string
+
+	// The message template attachments.
+	Attachments []MessageTemplateAttachment
+
+	// The types of attributes contain the message template.
+	AttributeTypes []MessageTemplateAttributeType
+
+	// An object that specifies the default values to use for variables in the message
+	// template. This object contains different categories of key-value pairs. Each key
+	// defines a variable or placeholder in the message template. The corresponding
+	// value defines the default value for that variable.
+	DefaultAttributes *MessageTemplateAttributes
+
+	// The description of the message template.
+	Description *string
+
+	// The configuration information of the grouping of Amazon Q in Connect users.
+	GroupingConfiguration *GroupingConfiguration
+
+	// Whether the version of the message template is activated.
+	IsActive *bool
+
+	// The language code value for the language in which the quick response is
+	// written. The supported language codes include de_DE , en_US , es_ES , fr_FR ,
+	// id_ID , it_IT , ja_JP , ko_KR , pt_BR , zh_CN , zh_TW
+	Language *string
+
+	// The tags used to organize, track, or control access for this resource.
+	Tags map[string]string
+
+	// The version number of the message template version.
+	VersionNumber *int64
+
+	noSmithyDocumentSerde
+}
+
 // The configuration information of the external data source.
 type ExternalSourceConfiguration struct {
 
@@ -814,6 +1902,23 @@ type Filter struct {
 	//
 	// This member is required.
 	Value *string
+
+	noSmithyDocumentSerde
+}
+
+// Configurations for when you choose fixed-size chunking. If you set the
+// chunkingStrategy as NONE , exclude this field.
+type FixedSizeChunkingConfiguration struct {
+
+	// The maximum number of tokens to include in a chunk.
+	//
+	// This member is required.
+	MaxTokens *int32
+
+	// The percentage of overlap between adjacent chunks of a data source.
+	//
+	// This member is required.
+	OverlapPercentage *int32
 
 	noSmithyDocumentSerde
 }
@@ -884,6 +1989,394 @@ type GroupingConfiguration struct {
 	//
 	// [Amazon Connect routing profiles]: https://docs.aws.amazon.com/connect/latest/APIReference/API_RoutingProfile.html
 	Values []string
+
+	noSmithyDocumentSerde
+}
+
+// Contains filter strengths for harmful content. AI Guardrail's support the
+// following content filters to detect and filter harmful user inputs and
+// FM-generated outputs.
+//
+//   - Hate: Describes input prompts and model responses that discriminate,
+//     criticize, insult, denounce, or dehumanize a person or group on the basis of an
+//     identity (such as race, ethnicity, gender, religion, sexual orientation,
+//     ability, and national origin).
+//
+//   - Insults: Describes input prompts and model responses that includes
+//     demeaning, humiliating, mocking, insulting, or belittling language. This type of
+//     language is also labeled as bullying.
+//
+//   - Sexual: Describes input prompts and model responses that indicates sexual
+//     interest, activity, or arousal using direct or indirect references to body
+//     parts, physical traits, or sex.
+//
+//   - Violence: Describes input prompts and model responses that includes
+//     glorification of, or threats to inflict physical pain, hurt, or injury toward a
+//     person, group, or thing.
+//
+// Content filtering depends on the confidence classification of user inputs and
+// FM responses across each of the four harmful categories. All input and output
+// statements are classified into one of four confidence levels (NONE, LOW, MEDIUM,
+// HIGH) for each harmful category. For example, if a statement is classified as
+// Hate with HIGH confidence, the likelihood of the statement representing hateful
+// content is high. A single statement can be classified across multiple categories
+// with varying confidence levels. For example, a single statement can be
+// classified as Hate with HIGH confidence, Insults with LOW confidence, Sexual
+// with NONE confidence, and Violence with MEDIUM confidence.
+type GuardrailContentFilterConfig struct {
+
+	// The strength of the content filter to apply to prompts. As you increase the
+	// filter strength, the likelihood of filtering harmful content increases and the
+	// probability of seeing harmful content in your application reduces.
+	//
+	// This member is required.
+	InputStrength GuardrailFilterStrength
+
+	// The strength of the content filter to apply to model responses. As you increase
+	// the filter strength, the likelihood of filtering harmful content increases and
+	// the probability of seeing harmful content in your application reduces.
+	//
+	// This member is required.
+	OutputStrength GuardrailFilterStrength
+
+	// The harmful category that the content filter is applied to.
+	//
+	// This member is required.
+	Type GuardrailContentFilterType
+
+	noSmithyDocumentSerde
+}
+
+// The filter configuration details for the AI Guardrail's contextual grounding
+// filter.
+type GuardrailContextualGroundingFilterConfig struct {
+
+	// The threshold details for the AI Guardrail's contextual grounding filter.
+	//
+	// This member is required.
+	Threshold float64
+
+	// The filter type for the AI Guardrail's contextual grounding filter.
+	//
+	// This member is required.
+	Type GuardrailContextualGroundingFilterType
+
+	noSmithyDocumentSerde
+}
+
+// The managed word list to configure for the AI Guardrail.
+type GuardrailManagedWordsConfig struct {
+
+	// The managed word type to configure for the AI Guardrail.
+	//
+	// This member is required.
+	Type GuardrailManagedWordsType
+
+	noSmithyDocumentSerde
+}
+
+// The PII entity to configure for the AI Guardrail.
+type GuardrailPiiEntityConfig struct {
+
+	// Configure AI Guardrail's action when the PII entity is detected.
+	//
+	// This member is required.
+	Action GuardrailSensitiveInformationAction
+
+	// Configure AI Guardrail type when the PII entity is detected.
+	//
+	// The following PIIs are used to block or mask sensitive information:
+	//
+	//   - General
+	//
+	//   - ADDRESS
+	//
+	// A physical address, such as "100 Main Street, Anytown, USA" or "Suite #12,
+	//   Building 123". An address can include information such as the street, building,
+	//   location, city, state, country, county, zip code, precinct, and neighborhood.
+	//
+	//   - AGE
+	//
+	// An individual's age, including the quantity and unit of time. For example, in
+	//   the phrase "I am 40 years old," Guarrails recognizes "40 years" as an age.
+	//
+	//   - NAME
+	//
+	// An individual's name. This entity type does not include titles, such as Dr.,
+	//   Mr., Mrs., or Miss. AI Guardrail doesn't apply this entity type to names that
+	//   are part of organizations or addresses. For example, AI Guardrail recognizes the
+	//   "John Doe Organization" as an organization, and it recognizes "Jane Doe Street"
+	//   as an address.
+	//
+	//   - EMAIL
+	//
+	// An email address, such as marymajor@email.com.
+	//
+	//   - PHONE
+	//
+	// A phone number. This entity type also includes fax and pager numbers.
+	//
+	//   - USERNAME
+	//
+	// A user name that identifies an account, such as a login name, screen name, nick
+	//   name, or handle.
+	//
+	//   - PASSWORD
+	//
+	// An alphanumeric string that is used as a password, such as "*
+	//   very20special#pass*".
+	//
+	//   - DRIVER_ID
+	//
+	// The number assigned to a driver's license, which is an official document
+	//   permitting an individual to operate one or more motorized vehicles on a public
+	//   road. A driver's license number consists of alphanumeric characters.
+	//
+	//   - LICENSE_PLATE
+	//
+	// A license plate for a vehicle is issued by the state or country where the
+	//   vehicle is registered. The format for passenger vehicles is typically five to
+	//   eight digits, consisting of upper-case letters and numbers. The format varies
+	//   depending on the location of the issuing state or country.
+	//
+	//   - VEHICLE_IDENTIFICATION_NUMBER
+	//
+	// A Vehicle Identification Number (VIN) uniquely identifies a vehicle. VIN
+	//   content and format are defined in the ISO 3779 specification. Each country has
+	//   specific codes and formats for VINs.
+	//
+	//   - Finance
+	//
+	//   - CREDIT_DEBIT_CARD_CVV
+	//
+	// A three-digit card verification code (CVV) that is present on VISA, MasterCard,
+	//   and Discover credit and debit cards. For American Express credit or debit cards,
+	//   the CVV is a four-digit numeric code.
+	//
+	//   - CREDIT_DEBIT_CARD_EXPIRY
+	//
+	// The expiration date for a credit or debit card. This number is usually four
+	//   digits long and is often formatted as month/year or MM/YY. AI Guardrail
+	//   recognizes expiration dates such as 01/21, 01/2021, and Jan 2021.
+	//
+	//   - CREDIT_DEBIT_CARD_NUMBER
+	//
+	// The number for a credit or debit card. These numbers can vary from 13 to 16
+	//   digits in length. However, Amazon Comprehend also recognizes credit or debit
+	//   card numbers when only the last four digits are present.
+	//
+	//   - PIN
+	//
+	// A four-digit personal identification number (PIN) with which you can access
+	//   your bank account.
+	//
+	//   - INTERNATIONAL_BANK_ACCOUNT_NUMBER
+	//
+	// An International Bank Account Number has specific formats in each country. For
+	//   more information, see [www.iban.com/structure].
+	//
+	//   - SWIFT_CODE
+	//
+	// A SWIFT code is a standard format of Bank Identifier Code (BIC) used to specify
+	//   a particular bank or branch. Banks use these codes for money transfers such as
+	//   international wire transfers.
+	//
+	// SWIFT codes consist of eight or 11 characters. The 11-digit codes refer to
+	//   specific branches, while eight-digit codes (or 11-digit codes ending in 'XXX')
+	//   refer to the head or primary office.
+	//
+	//   - IT
+	//
+	//   - IP_ADDRESS
+	//
+	// An IPv4 address, such as 198.51.100.0.
+	//
+	//   - MAC_ADDRESS
+	//
+	// A media access control (MAC) address is a unique identifier assigned to a
+	//   network interface controller (NIC).
+	//
+	//   - URL
+	//
+	// A web address, such as www.example.com.
+	//
+	//   - AWS_ACCESS_KEY
+	//
+	// A unique identifier that's associated with a secret access key; you use the
+	//   access key ID and secret access key to sign programmatic Amazon Web Services
+	//   requests cryptographically.
+	//
+	//   - AWS_SECRET_KEY
+	//
+	// A unique identifier that's associated with an access key. You use the access
+	//   key ID and secret access key to sign programmatic Amazon Web Services requests
+	//   cryptographically.
+	//
+	//   - USA specific
+	//
+	//   - US_BANK_ACCOUNT_NUMBER
+	//
+	// A US bank account number, which is typically 10 to 12 digits long.
+	//
+	//   - US_BANK_ROUTING_NUMBER
+	//
+	// A US bank account routing number. These are typically nine digits long,
+	//
+	//   - US_INDIVIDUAL_TAX_IDENTIFICATION_NUMBER
+	//
+	// A US Individual Taxpayer Identification Number (ITIN) is a nine-digit number
+	//   that starts with a "9" and contain a "7" or "8" as the fourth digit. An ITIN can
+	//   be formatted with a space or a dash after the third and forth digits.
+	//
+	//   - US_PASSPORT_NUMBER
+	//
+	// A US passport number. Passport numbers range from six to nine alphanumeric
+	//   characters.
+	//
+	//   - US_SOCIAL_SECURITY_NUMBER
+	//
+	// A US Social Security Number (SSN) is a nine-digit number that is issued to US
+	//   citizens, permanent residents, and temporary working residents.
+	//
+	//   - Canada specific
+	//
+	//   - CA_HEALTH_NUMBER
+	//
+	// A Canadian Health Service Number is a 10-digit unique identifier, required for
+	//   individuals to access healthcare benefits.
+	//
+	//   - CA_SOCIAL_INSURANCE_NUMBER
+	//
+	// A Canadian Social Insurance Number (SIN) is a nine-digit unique identifier,
+	//   required for individuals to access government programs and benefits.
+	//
+	// The SIN is formatted as three groups of three digits, such as 123-456-789. A
+	//   SIN can be validated through a simple check-digit process called the [Luhn algorithm].
+	//
+	//   - UK Specific
+	//
+	//   - UK_NATIONAL_HEALTH_SERVICE_NUMBER
+	//
+	// A UK National Health Service Number is a 10-17 digit number, such as 485 555
+	//   3456. The current system formats the 10-digit number with spaces after the third
+	//   and sixth digits. The final digit is an error-detecting checksum.
+	//
+	//   - UK_NATIONAL_INSURANCE_NUMBER
+	//
+	// A UK National Insurance Number (NINO) provides individuals with access to
+	//   National Insurance (social security) benefits. It is also used for some purposes
+	//   in the UK tax system.
+	//
+	// The number is nine digits long and starts with two letters, followed by six
+	//   numbers and one letter. A NINO can be formatted with a space or a dash after the
+	//   two letters and after the second, forth, and sixth digits.
+	//
+	//   - UK_UNIQUE_TAXPAYER_REFERENCE_NUMBER
+	//
+	// A UK Unique Taxpayer Reference (UTR) is a 10-digit number that identifies a
+	//   taxpayer or a business.
+	//
+	//   - Custom
+	//
+	//   - Regex filter - You can use a regular expressions to define patterns for an
+	//   AI Guardrail to recognize and act upon such as serial number, booking ID etc..
+	//
+	// [Luhn algorithm]: https://www.wikipedia.org/wiki/Luhn_algorithm
+	// [www.iban.com/structure]: https://www.iban.com/structure
+	//
+	// This member is required.
+	Type GuardrailPiiEntityType
+
+	noSmithyDocumentSerde
+}
+
+// The regular expression to configure for the AI Guardrail.
+type GuardrailRegexConfig struct {
+
+	// The AI Guardrail action to configure when matching regular expression is
+	// detected.
+	//
+	// This member is required.
+	Action GuardrailSensitiveInformationAction
+
+	// The name of the regular expression to configure for the AI Guardrail.
+	//
+	// This member is required.
+	Name *string
+
+	// The regular expression pattern to configure for the AI Guardrail.
+	//
+	// This member is required.
+	Pattern *string
+
+	// The description of the regular expression to configure for the AI Guardrail.
+	Description *string
+
+	noSmithyDocumentSerde
+}
+
+// Details about topics for the AI Guardrail to identify and deny.
+type GuardrailTopicConfig struct {
+
+	// A definition of the topic to deny.
+	//
+	// This member is required.
+	Definition *string
+
+	// The name of the topic to deny.
+	//
+	// This member is required.
+	Name *string
+
+	// Specifies to deny the topic.
+	//
+	// This member is required.
+	Type GuardrailTopicType
+
+	// A list of prompts, each of which is an example of a prompt that can be
+	// categorized as belonging to the topic.
+	Examples []string
+
+	noSmithyDocumentSerde
+}
+
+// A word to configure for the AI Guardrail.
+type GuardrailWordConfig struct {
+
+	// Text of the word configured for the AI Guardrail to block.
+	//
+	// This member is required.
+	Text *string
+
+	noSmithyDocumentSerde
+}
+
+// Settings for hierarchical document chunking for a data source. Hierarchical
+// chunking splits documents into layers of chunks where the first layer contains
+// large chunks, and the second layer contains smaller chunks derived from the
+// first layer.
+type HierarchicalChunkingConfiguration struct {
+
+	// Token settings for each layer.
+	//
+	// This member is required.
+	LevelConfigurations []HierarchicalChunkingLevelConfiguration
+
+	// The number of tokens to repeat across chunks in the same layer.
+	//
+	// This member is required.
+	OverlapTokens *int32
+
+	noSmithyDocumentSerde
+}
+
+// Token settings for each layer.
+type HierarchicalChunkingLevelConfiguration struct {
+
+	// The maximum number of tokens that a chunk can contain in this layer.
+	//
+	// This member is required.
+	MaxTokens *int32
 
 	noSmithyDocumentSerde
 }
@@ -1024,6 +2517,51 @@ type ImportJobSummary struct {
 	noSmithyDocumentSerde
 }
 
+// Details about the detected intent.
+type IntentDetectedDataDetails struct {
+
+	// The detected intent.
+	//
+	// This member is required.
+	Intent *string
+
+	// The identifier of the detected intent.
+	//
+	// This member is required.
+	IntentId *string
+
+	noSmithyDocumentSerde
+}
+
+// Information about the Amazon Q intent.
+type IntentInputData struct {
+
+	// The identifier of the Amazon Q intent.
+	//
+	// This member is required.
+	IntentId *string
+
+	noSmithyDocumentSerde
+}
+
+// The data of the configuration for a KNOWLEDGE_BASE type Amazon Q in Connect
+// Assistant Association.
+type KnowledgeBaseAssociationConfigurationData struct {
+
+	// An object that can be used to specify Tag conditions.
+	ContentTagFilter TagFilter
+
+	// The maximum number of results to return per page.
+	MaxResults *int32
+
+	// The search type to be used against the Knowledge Base for this request. The
+	// values can be SEMANTIC which uses vector embeddings or HYBRID which use vector
+	// embeddings and raw text
+	OverrideKnowledgeBaseSearchType KnowledgeBaseSearchType
+
+	noSmithyDocumentSerde
+}
+
 // Association information about the knowledge base.
 type KnowledgeBaseAssociationData struct {
 
@@ -1067,6 +2605,12 @@ type KnowledgeBaseData struct {
 	// The description.
 	Description *string
 
+	// List of failure reasons on ingestion per file.
+	IngestionFailureReasons []string
+
+	// Status of ingestion on data source.
+	IngestionStatus SyncStatus
+
 	// An epoch timestamp indicating the most recent content modification inside the
 	// knowledge base. If no content exists in a knowledge base, this value is unset.
 	LastContentModificationTime *time.Time
@@ -1091,6 +2635,9 @@ type KnowledgeBaseData struct {
 
 	// The tags used to organize, track, or control access for this resource.
 	Tags map[string]string
+
+	// Contains details about how to ingest the documents in a data source.
+	VectorIngestionConfiguration *VectorIngestionConfiguration
 
 	noSmithyDocumentSerde
 }
@@ -1147,6 +2694,605 @@ type KnowledgeBaseSummary struct {
 	// The tags used to organize, track, or control access for this resource.
 	Tags map[string]string
 
+	// Contains details about how to ingest the documents in a data source.
+	VectorIngestionConfiguration *VectorIngestionConfiguration
+
+	noSmithyDocumentSerde
+}
+
+// Source configuration for managed resources.
+//
+// The following types satisfy this interface:
+//
+//	ManagedSourceConfigurationMemberWebCrawlerConfiguration
+type ManagedSourceConfiguration interface {
+	isManagedSourceConfiguration()
+}
+
+// Configuration data for web crawler data source.
+type ManagedSourceConfigurationMemberWebCrawlerConfiguration struct {
+	Value WebCrawlerConfiguration
+
+	noSmithyDocumentSerde
+}
+
+func (*ManagedSourceConfigurationMemberWebCrawlerConfiguration) isManagedSourceConfiguration() {}
+
+// The configuration for the MANUAL_SEARCH AI Agent type.
+type ManualSearchAIAgentConfiguration struct {
+
+	// The AI Guardrail identifier for the Answer Generation guardrail used by the
+	// MANUAL_SEARCH AI Agent.
+	AnswerGenerationAIGuardrailId *string
+
+	// The AI Prompt identifier for the Answer Generation prompt used by the
+	// MANUAL_SEARCH AI Agent.
+	AnswerGenerationAIPromptId *string
+
+	// The association configurations for overriding behavior on this AI Agent.
+	AssociationConfigurations []AssociationConfiguration
+
+	// The locale to which specifies the language and region settings that determine
+	// the response language for [QueryAssistant].
+	//
+	// [QueryAssistant]: https://docs.aws.amazon.com/connect/latest/APIReference/API_amazon-q-connect_QueryAssistant.html
+	Locale *string
+
+	noSmithyDocumentSerde
+}
+
+// The message data.
+//
+// The following types satisfy this interface:
+//
+//	MessageDataMemberText
+type MessageData interface {
+	isMessageData()
+}
+
+// The message data in text type.
+type MessageDataMemberText struct {
+	Value TextMessage
+
+	noSmithyDocumentSerde
+}
+
+func (*MessageDataMemberText) isMessageData() {}
+
+// The message input.
+type MessageInput struct {
+
+	// The message input value.
+	//
+	// This member is required.
+	Value MessageData
+
+	noSmithyDocumentSerde
+}
+
+// The message output.
+type MessageOutput struct {
+
+	// The identifier of a message.
+	//
+	// This member is required.
+	MessageId *string
+
+	// The participant of a message.
+	//
+	// This member is required.
+	Participant Participant
+
+	// The timestamp of a message.
+	//
+	// This member is required.
+	Timestamp *time.Time
+
+	// The value of a message data.
+	//
+	// This member is required.
+	Value MessageData
+
+	noSmithyDocumentSerde
+}
+
+// Information about the message template attachment.
+type MessageTemplateAttachment struct {
+
+	// The identifier of the attachment file.
+	//
+	// This member is required.
+	AttachmentId *string
+
+	// The presentation information for the attachment file.
+	//
+	// This member is required.
+	ContentDisposition ContentDisposition
+
+	// The name of the attachment file being uploaded. The name should include the
+	// file extension.
+	//
+	// This member is required.
+	Name *string
+
+	// The timestamp when the attachment file was uploaded.
+	//
+	// This member is required.
+	UploadedTime *time.Time
+
+	// A pre-signed Amazon S3 URL that can be used to download the attachment file.
+	//
+	// This member is required.
+	Url *string
+
+	// The expiration time of the pre-signed Amazon S3 URL.
+	//
+	// This member is required.
+	UrlExpiry *time.Time
+
+	noSmithyDocumentSerde
+}
+
+// The attributes that are used with the message template.
+type MessageTemplateAttributes struct {
+
+	// The agent attributes that are used with the message template.
+	AgentAttributes *AgentAttributes
+
+	// The custom attributes that are used with the message template.
+	CustomAttributes map[string]string
+
+	// The customer profile attributes that are used with the message template.
+	CustomerProfileAttributes *CustomerProfileAttributes
+
+	// The system attributes that are used with the message template.
+	SystemAttributes *SystemAttributes
+
+	noSmithyDocumentSerde
+}
+
+// The container of the message template body.
+//
+// The following types satisfy this interface:
+//
+//	MessageTemplateBodyContentProviderMemberContent
+type MessageTemplateBodyContentProvider interface {
+	isMessageTemplateBodyContentProvider()
+}
+
+// The content of the message template.
+type MessageTemplateBodyContentProviderMemberContent struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*MessageTemplateBodyContentProviderMemberContent) isMessageTemplateBodyContentProvider() {}
+
+// The container of message template content.
+//
+// The following types satisfy this interface:
+//
+//	MessageTemplateContentProviderMemberEmail
+//	MessageTemplateContentProviderMemberSms
+type MessageTemplateContentProvider interface {
+	isMessageTemplateContentProvider()
+}
+
+// The content of the message template that applies to the email channel subtype.
+type MessageTemplateContentProviderMemberEmail struct {
+	Value EmailMessageTemplateContent
+
+	noSmithyDocumentSerde
+}
+
+func (*MessageTemplateContentProviderMemberEmail) isMessageTemplateContentProvider() {}
+
+// The content of the message template that applies to the SMS channel subtype.
+type MessageTemplateContentProviderMemberSms struct {
+	Value SMSMessageTemplateContent
+
+	noSmithyDocumentSerde
+}
+
+func (*MessageTemplateContentProviderMemberSms) isMessageTemplateContentProvider() {}
+
+// The data of a message template.
+type MessageTemplateData struct {
+
+	// The channel subtype this message template applies to.
+	//
+	// This member is required.
+	ChannelSubtype ChannelSubtype
+
+	// The content of the message template.
+	//
+	// This member is required.
+	Content MessageTemplateContentProvider
+
+	// The timestamp when the message template was created.
+	//
+	// This member is required.
+	CreatedTime *time.Time
+
+	// The Amazon Resource Name (ARN) of the knowledge base.
+	//
+	// This member is required.
+	KnowledgeBaseArn *string
+
+	// The identifier of the knowledge base.
+	//
+	// This member is required.
+	KnowledgeBaseId *string
+
+	// The Amazon Resource Name (ARN) of the user who last updated the message
+	// template data.
+	//
+	// This member is required.
+	LastModifiedBy *string
+
+	// The timestamp when the message template data was last modified.
+	//
+	// This member is required.
+	LastModifiedTime *time.Time
+
+	// The Amazon Resource Name (ARN) of the message template.
+	//
+	// This member is required.
+	MessageTemplateArn *string
+
+	// The checksum value of the message template content that is referenced by the
+	// $LATEST qualifier. It can be returned in MessageTemplateData or
+	// ExtendedMessageTemplateData . It’s calculated by content, language,
+	// defaultAttributes and Attachments of the message template.
+	//
+	// This member is required.
+	MessageTemplateContentSha256 *string
+
+	// The identifier of the message template.
+	//
+	// This member is required.
+	MessageTemplateId *string
+
+	// The name of the message template.
+	//
+	// This member is required.
+	Name *string
+
+	// The types of attributes that the message template contains.
+	AttributeTypes []MessageTemplateAttributeType
+
+	// An object that specifies the default values to use for variables in the message
+	// template. This object contains different categories of key-value pairs. Each key
+	// defines a variable or placeholder in the message template. The corresponding
+	// value defines the default value for that variable.
+	DefaultAttributes *MessageTemplateAttributes
+
+	// The description of the message template.
+	Description *string
+
+	// The configuration information of the grouping of Amazon Q in Connect users.
+	GroupingConfiguration *GroupingConfiguration
+
+	// The language code value for the language in which the quick response is
+	// written. The supported language codes include de_DE , en_US , es_ES , fr_FR ,
+	// id_ID , it_IT , ja_JP , ko_KR , pt_BR , zh_CN , zh_TW
+	Language *string
+
+	// The tags used to organize, track, or control access for this resource.
+	Tags map[string]string
+
+	noSmithyDocumentSerde
+}
+
+// The message template fields to filter the message template query results by.
+// The following is the list of supported field names:
+//
+//   - name
+//
+//   - description
+//
+//   - channel
+//
+//   - channelSubtype
+//
+//   - language
+//
+//   - qualifier
+//
+//   - createdTime
+//
+//   - lastModifiedTime
+//
+//   - lastModifiedBy
+//
+//   - groupingConfiguration.criteria
+//
+//   - groupingConfiguration.values
+type MessageTemplateFilterField struct {
+
+	// The name of the attribute field to filter the message templates by.
+	//
+	// This member is required.
+	Name *string
+
+	// The operator to use for filtering.
+	//
+	// This member is required.
+	Operator MessageTemplateFilterOperator
+
+	// Whether to treat null value as a match for the attribute field.
+	IncludeNoExistence *bool
+
+	// The values of attribute field to filter the message template by.
+	Values []string
+
+	noSmithyDocumentSerde
+}
+
+// The message template fields to order the message template query results by. The
+// following is the list of supported field names:
+//
+//   - name
+//
+//   - description
+//
+//   - channel
+//
+//   - channelSubtype
+//
+//   - language
+//
+//   - qualifier
+//
+//   - createdTime
+//
+//   - lastModifiedTime
+//
+//   - lastModifiedBy
+//
+//   - groupingConfiguration.criteria
+//
+//   - groupingConfiguration.values
+type MessageTemplateOrderField struct {
+
+	// The name of the message template.
+	//
+	// This member is required.
+	Name *string
+
+	// The order at which the message templates are sorted by.
+	Order Order
+
+	noSmithyDocumentSerde
+}
+
+// The message template fields to query message templates by. The following is the
+// list of supported field names:
+//
+//   - name
+//
+//   - description
+type MessageTemplateQueryField struct {
+
+	// The name of the attribute to query the message templates by.
+	//
+	// This member is required.
+	Name *string
+
+	// The operator to use for matching attribute field values in the query.
+	//
+	// This member is required.
+	Operator MessageTemplateQueryOperator
+
+	// The values of the attribute to query the message templates by.
+	//
+	// This member is required.
+	Values []string
+
+	// Whether the query expects only exact matches on the attribute field values. The
+	// results of the query will only include exact matches if this parameter is set to
+	// false.
+	AllowFuzziness *bool
+
+	// The importance of the attribute field when calculating query result relevancy
+	// scores. The value set for this parameter affects the ordering of search results.
+	Priority Priority
+
+	noSmithyDocumentSerde
+}
+
+// The search expression of the message template.
+type MessageTemplateSearchExpression struct {
+
+	// The configuration of filtering rules applied to message template query results.
+	Filters []MessageTemplateFilterField
+
+	// The message template attribute fields on which the query results are ordered.
+	OrderOnField *MessageTemplateOrderField
+
+	// The message template query expressions.
+	Queries []MessageTemplateQueryField
+
+	noSmithyDocumentSerde
+}
+
+// The result of message template search.
+type MessageTemplateSearchResultData struct {
+
+	// The channel subtype this message template applies to.
+	//
+	// This member is required.
+	ChannelSubtype ChannelSubtype
+
+	// The timestamp when the message template was created.
+	//
+	// This member is required.
+	CreatedTime *time.Time
+
+	// The Amazon Resource Name (ARN) of the knowledge base.
+	//
+	// This member is required.
+	KnowledgeBaseArn *string
+
+	// The identifier of the knowledge base.
+	//
+	// This member is required.
+	KnowledgeBaseId *string
+
+	// The Amazon Resource Name (ARN) of the user who last updated the message
+	// template data.
+	//
+	// This member is required.
+	LastModifiedBy *string
+
+	// The timestamp when the message template data was last modified.
+	//
+	// This member is required.
+	LastModifiedTime *time.Time
+
+	// The Amazon Resource Name (ARN) of the message template.
+	//
+	// This member is required.
+	MessageTemplateArn *string
+
+	// The identifier of the message template.
+	//
+	// This member is required.
+	MessageTemplateId *string
+
+	// The name of the message template.
+	//
+	// This member is required.
+	Name *string
+
+	// The description of the message template.
+	Description *string
+
+	// The configuration information of the grouping of Amazon Q in Connect users.
+	GroupingConfiguration *GroupingConfiguration
+
+	// Whether the version of the message template is activated.
+	IsActive *bool
+
+	// The language code value for the language in which the quick response is
+	// written. The supported language codes include de_DE , en_US , es_ES , fr_FR ,
+	// id_ID , it_IT , ja_JP , ko_KR , pt_BR , zh_CN , zh_TW
+	Language *string
+
+	// The tags used to organize, track, or control access for this resource.
+	Tags map[string]string
+
+	// The version number of the message template version.
+	VersionNumber *int64
+
+	noSmithyDocumentSerde
+}
+
+// The summary of the message template.
+type MessageTemplateSummary struct {
+
+	// The channel subtype this message template applies to.
+	//
+	// This member is required.
+	ChannelSubtype ChannelSubtype
+
+	// The timestamp when the message template was created.
+	//
+	// This member is required.
+	CreatedTime *time.Time
+
+	// The Amazon Resource Name (ARN) of the knowledge base.
+	//
+	// This member is required.
+	KnowledgeBaseArn *string
+
+	// The identifier of the knowledge base.
+	//
+	// This member is required.
+	KnowledgeBaseId *string
+
+	// The Amazon Resource Name (ARN) of the user who last updated the message
+	// template data.
+	//
+	// This member is required.
+	LastModifiedBy *string
+
+	// The timestamp when the message template data was last modified.
+	//
+	// This member is required.
+	LastModifiedTime *time.Time
+
+	// The Amazon Resource Name (ARN) of the message template.
+	//
+	// This member is required.
+	MessageTemplateArn *string
+
+	// The identifier of the message template.
+	//
+	// This member is required.
+	MessageTemplateId *string
+
+	// The name of the message template.
+	//
+	// This member is required.
+	Name *string
+
+	// The version number of the message template version that is activated.
+	ActiveVersionNumber *int64
+
+	// The description of the message template.
+	Description *string
+
+	// The tags used to organize, track, or control access for this resource.
+	Tags map[string]string
+
+	noSmithyDocumentSerde
+}
+
+// The summary of the message template version.
+type MessageTemplateVersionSummary struct {
+
+	// The channel subtype this message template applies to.
+	//
+	// This member is required.
+	ChannelSubtype ChannelSubtype
+
+	// Whether the version of the message template is activated.
+	//
+	// This member is required.
+	IsActive *bool
+
+	// The Amazon Resource Name (ARN) of the knowledge base.
+	//
+	// This member is required.
+	KnowledgeBaseArn *string
+
+	// The identifier of the knowledge base.
+	//
+	// This member is required.
+	KnowledgeBaseId *string
+
+	// The Amazon Resource Name (ARN) of the message template.
+	//
+	// This member is required.
+	MessageTemplateArn *string
+
+	// The identifier of the message template.
+	//
+	// This member is required.
+	MessageTemplateId *string
+
+	// The name of the message template.
+	//
+	// This member is required.
+	Name *string
+
+	// The version number of the message template version.
+	//
+	// This member is required.
+	VersionNumber *int64
+
 	noSmithyDocumentSerde
 }
 
@@ -1190,6 +3336,35 @@ type OrConditionMemberTagCondition struct {
 
 func (*OrConditionMemberTagCondition) isOrCondition() {}
 
+// Settings for parsing document contents. By default, the service converts the
+// contents of each document into text before splitting it into chunks. To improve
+// processing of PDF files with tables and images, you can configure the data
+// source to convert the pages of text into images and use a model to describe the
+// contents of each page.
+type ParsingConfiguration struct {
+
+	// The parsing strategy for the data source.
+	//
+	// This member is required.
+	ParsingStrategy ParsingStrategy
+
+	// Settings for a foundation model used to parse documents for a data source.
+	BedrockFoundationModelConfiguration *BedrockFoundationModelConfigurationForParsing
+
+	noSmithyDocumentSerde
+}
+
+// Instructions for interpreting the contents of a document.
+type ParsingPrompt struct {
+
+	// Instructions for interpreting the contents of a document.
+	//
+	// This member is required.
+	ParsingPromptText *string
+
+	noSmithyDocumentSerde
+}
+
 // Information about how to query content.
 //
 // The following types satisfy this interface:
@@ -1229,10 +3404,49 @@ type QueryConditionItem struct {
 	noSmithyDocumentSerde
 }
 
+// Input information for the query.
+//
+// The following types satisfy this interface:
+//
+//	QueryInputDataMemberIntentInputData
+//	QueryInputDataMemberQueryTextInputData
+type QueryInputData interface {
+	isQueryInputData()
+}
+
+// Input information for the intent.
+type QueryInputDataMemberIntentInputData struct {
+	Value IntentInputData
+
+	noSmithyDocumentSerde
+}
+
+func (*QueryInputDataMemberIntentInputData) isQueryInputData() {}
+
+// Input information for the query.
+type QueryInputDataMemberQueryTextInputData struct {
+	Value QueryTextInputData
+
+	noSmithyDocumentSerde
+}
+
+func (*QueryInputDataMemberQueryTextInputData) isQueryInputData() {}
+
 // Data associated with the QUERY RecommendationTriggerType.
 type QueryRecommendationTriggerData struct {
 
 	// The text associated with the recommendation trigger.
+	Text *string
+
+	noSmithyDocumentSerde
+}
+
+// Information about the text to search for.
+type QueryTextInputData struct {
+
+	// The text to search for.
+	//
+	// This member is required.
 	Text *string
 
 	noSmithyDocumentSerde
@@ -1340,7 +3554,9 @@ type QuickResponseData struct {
 	// Whether the quick response is active.
 	IsActive *bool
 
-	// The language code value for the language in which the quick response is written.
+	// The language code value for the language in which the quick response is
+	// written. The supported language codes include de_DE , en_US , es_ES , fr_FR ,
+	// id_ID , it_IT , ja_JP , ko_KR , pt_BR , zh_CN , zh_TW
 	Language *string
 
 	// The Amazon Resource Name (ARN) of the user who last updated the quick response
@@ -1835,6 +4051,40 @@ type ResultData struct {
 	noSmithyDocumentSerde
 }
 
+// The list of key-value pairs that are stored on the session.
+type RuntimeSessionData struct {
+
+	// The key of the data stored on the session.
+	//
+	// This member is required.
+	Key *string
+
+	// The value of the data stored on the session.
+	//
+	// This member is required.
+	Value RuntimeSessionDataValue
+
+	noSmithyDocumentSerde
+}
+
+// A union type that specifies the data stored on the session.
+//
+// The following types satisfy this interface:
+//
+//	RuntimeSessionDataValueMemberStringValue
+type RuntimeSessionDataValue interface {
+	isRuntimeSessionDataValue()
+}
+
+// The string value of the data stored on the session.
+type RuntimeSessionDataValueMemberStringValue struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*RuntimeSessionDataValueMemberStringValue) isRuntimeSessionDataValue() {}
+
 // The search expression.
 type SearchExpression struct {
 
@@ -1842,6 +4092,76 @@ type SearchExpression struct {
 	//
 	// This member is required.
 	Filters []Filter
+
+	noSmithyDocumentSerde
+}
+
+// A URL for crawling.
+type SeedUrl struct {
+
+	// URL for crawling
+	Url *string
+
+	noSmithyDocumentSerde
+}
+
+// The configuration for AI Agents of type SELF_SERVICE.
+type SelfServiceAIAgentConfiguration struct {
+
+	// The association configurations for overriding behavior on this AI Agent.
+	AssociationConfigurations []AssociationConfiguration
+
+	// The AI Guardrail identifier used by the SELF_SERVICE AI Agent.
+	SelfServiceAIGuardrailId *string
+
+	// The AI Prompt identifier for the Self Service Answer Generation prompt used by
+	// the SELF_SERVICE AI Agent
+	SelfServiceAnswerGenerationAIPromptId *string
+
+	// The AI Prompt identifier for the Self Service Pre-Processing prompt used by the
+	// SELF_SERVICE AI Agent
+	SelfServicePreProcessingAIPromptId *string
+
+	noSmithyDocumentSerde
+}
+
+// The conversation history data to included in conversation context data before
+// the Amazon Q in Connect session.
+type SelfServiceConversationHistory struct {
+
+	// The number of turn of the conversation history data.
+	//
+	// This member is required.
+	TurnNumber *int32
+
+	// The bot response of the conversation history data.
+	BotResponse *string
+
+	// The input transcript of the conversation history data.
+	InputTranscript *string
+
+	noSmithyDocumentSerde
+}
+
+// Settings for semantic document chunking for a data source. Semantic chunking
+// splits a document into smaller documents based on groups of similar content
+// derived from the text with natural language processing.
+type SemanticChunkingConfiguration struct {
+
+	// The dissimilarity threshold for splitting chunks.
+	//
+	// This member is required.
+	BreakpointPercentileThreshold *int32
+
+	// The buffer size.
+	//
+	// This member is required.
+	BufferSize *int32
+
+	// The maximum number of tokens that a chunk can contain.
+	//
+	// This member is required.
+	MaxTokens *int32
 
 	noSmithyDocumentSerde
 }
@@ -1877,6 +4197,10 @@ type SessionData struct {
 	//
 	// This member is required.
 	SessionId *string
+
+	// The configuration of the AI Agents (mapped by AI Agent Type to AI Agent
+	// version) that should be used by Amazon Q in Connect for this Session.
+	AiAgentConfiguration map[string]AIAgentConfigurationData
 
 	// The description of the session.
 	Description *string
@@ -1929,11 +4253,30 @@ type SessionSummary struct {
 	noSmithyDocumentSerde
 }
 
+// The content of the message template that applies to the SMS channel subtype.
+type SMSMessageTemplateContent struct {
+
+	// The body to use in SMS messages.
+	Body *SMSMessageTemplateContentBody
+
+	noSmithyDocumentSerde
+}
+
+// The body to use in SMS messages.
+type SMSMessageTemplateContentBody struct {
+
+	// The message body to use in SMS messages.
+	PlainText MessageTemplateBodyContentProvider
+
+	noSmithyDocumentSerde
+}
+
 // Configuration information about the external data source.
 //
 // The following types satisfy this interface:
 //
 //	SourceConfigurationMemberAppIntegrations
+//	SourceConfigurationMemberManagedSourceConfiguration
 type SourceConfiguration interface {
 	isSourceConfiguration()
 }
@@ -1947,6 +4290,15 @@ type SourceConfigurationMemberAppIntegrations struct {
 }
 
 func (*SourceConfigurationMemberAppIntegrations) isSourceConfiguration() {}
+
+// Source configuration for managed resources.
+type SourceConfigurationMemberManagedSourceConfiguration struct {
+	Value ManagedSourceConfiguration
+
+	noSmithyDocumentSerde
+}
+
+func (*SourceConfigurationMemberManagedSourceConfiguration) isSourceConfiguration() {}
 
 // Details about the source content data.
 type SourceContentDataDetails struct {
@@ -1970,6 +4322,35 @@ type SourceContentDataDetails struct {
 	//
 	// This member is required.
 	Type SourceContentType
+
+	// Contains information about where the text with a citation begins and ends in
+	// the generated output.
+	CitationSpan *CitationSpan
+
+	noSmithyDocumentSerde
+}
+
+// The system attributes that are used with the message template.
+type SystemAttributes struct {
+
+	// The CustomerEndpoint attribute.
+	CustomerEndpoint *SystemEndpointAttributes
+
+	// The name of the task.
+	Name *string
+
+	// The SystemEndpoint attribute.
+	SystemEndpoint *SystemEndpointAttributes
+
+	noSmithyDocumentSerde
+}
+
+// The system endpoint attributes that are used with the message template.
+type SystemEndpointAttributes struct {
+
+	// The customer's phone number if used with customerEndpoint , or the number the
+	// customer dialed to call your contact center if used with systemEndpoint .
+	Address *string
 
 	noSmithyDocumentSerde
 }
@@ -2038,6 +4419,96 @@ type TextData struct {
 	noSmithyDocumentSerde
 }
 
+// The configuration for a prompt template that supports full textual prompt
+// configuration using a YAML prompt.
+type TextFullAIPromptEditTemplateConfiguration struct {
+
+	// The YAML text for the AI Prompt template.
+	//
+	// This member is required.
+	Text *string
+
+	noSmithyDocumentSerde
+}
+
+// The message data in text type.
+type TextMessage struct {
+
+	// The value of the message data in text type.
+	Value *string
+
+	noSmithyDocumentSerde
+}
+
+// The configuration of the URL/URLs for the web content that you want to crawl.
+// You should be authorized to crawl the URLs.
+type UrlConfiguration struct {
+
+	// List of URLs for crawling.
+	SeedUrls []SeedUrl
+
+	noSmithyDocumentSerde
+}
+
+// Contains details about how to ingest the documents in a data source.
+type VectorIngestionConfiguration struct {
+
+	// Details about how to chunk the documents in the data source. A chunk refers to
+	// an excerpt from a data source that is returned when the knowledge base that it
+	// belongs to is queried.
+	ChunkingConfiguration *ChunkingConfiguration
+
+	// A custom parser for data source documents.
+	ParsingConfiguration *ParsingConfiguration
+
+	noSmithyDocumentSerde
+}
+
+// The configuration details for the web data source.
+type WebCrawlerConfiguration struct {
+
+	// The configuration of the URL/URLs for the web content that you want to crawl.
+	// You should be authorized to crawl the URLs.
+	//
+	// This member is required.
+	UrlConfiguration *UrlConfiguration
+
+	// The configuration of crawl limits for the web URLs.
+	CrawlerLimits *WebCrawlerLimits
+
+	// A list of one or more exclusion regular expression patterns to exclude certain
+	// URLs. If you specify an inclusion and exclusion filter/pattern and both match a
+	// URL, the exclusion filter takes precedence and the web content of the URL isn’t
+	// crawled.
+	ExclusionFilters []string
+
+	// A list of one or more inclusion regular expression patterns to include certain
+	// URLs. If you specify an inclusion and exclusion filter/pattern and both match a
+	// URL, the exclusion filter takes precedence and the web content of the URL isn’t
+	// crawled.
+	InclusionFilters []string
+
+	// The scope of what is crawled for your URLs. You can choose to crawl only web
+	// pages that belong to the same host or primary domain. For example, only web
+	// pages that contain the seed URL
+	// https://docs.aws.amazon.com/bedrock/latest/userguide/ and no other domains. You
+	// can choose to include sub domains in addition to the host or primary domain. For
+	// example, web pages that contain aws.amazon.com can also include sub domain
+	// docs.aws.amazon.com .
+	Scope WebScopeType
+
+	noSmithyDocumentSerde
+}
+
+// The configuration of crawl limits for the web URLs.
+type WebCrawlerLimits struct {
+
+	// Rate of web URLs retrieved per minute.
+	RateLimit *int32
+
+	noSmithyDocumentSerde
+}
+
 type noSmithyDocumentSerde = smithydocument.NoSerde
 
 // UnknownUnionMember is returned when a union member is returned over the wire,
@@ -2049,17 +4520,26 @@ type UnknownUnionMember struct {
 	noSmithyDocumentSerde
 }
 
-func (*UnknownUnionMember) isAssistantAssociationInputData()  {}
-func (*UnknownUnionMember) isAssistantAssociationOutputData() {}
-func (*UnknownUnionMember) isConfiguration()                  {}
-func (*UnknownUnionMember) isContentAssociationContents()     {}
-func (*UnknownUnionMember) isContentFeedbackData()            {}
-func (*UnknownUnionMember) isDataDetails()                    {}
-func (*UnknownUnionMember) isDataReference()                  {}
-func (*UnknownUnionMember) isOrCondition()                    {}
-func (*UnknownUnionMember) isQueryCondition()                 {}
-func (*UnknownUnionMember) isQuickResponseContentProvider()   {}
-func (*UnknownUnionMember) isQuickResponseDataProvider()      {}
-func (*UnknownUnionMember) isRecommendationTriggerData()      {}
-func (*UnknownUnionMember) isSourceConfiguration()            {}
-func (*UnknownUnionMember) isTagFilter()                      {}
+func (*UnknownUnionMember) isAIAgentConfiguration()               {}
+func (*UnknownUnionMember) isAIPromptTemplateConfiguration()      {}
+func (*UnknownUnionMember) isAssistantAssociationInputData()      {}
+func (*UnknownUnionMember) isAssistantAssociationOutputData()     {}
+func (*UnknownUnionMember) isAssociationConfigurationData()       {}
+func (*UnknownUnionMember) isConfiguration()                      {}
+func (*UnknownUnionMember) isContentAssociationContents()         {}
+func (*UnknownUnionMember) isContentFeedbackData()                {}
+func (*UnknownUnionMember) isDataDetails()                        {}
+func (*UnknownUnionMember) isDataReference()                      {}
+func (*UnknownUnionMember) isManagedSourceConfiguration()         {}
+func (*UnknownUnionMember) isMessageData()                        {}
+func (*UnknownUnionMember) isMessageTemplateBodyContentProvider() {}
+func (*UnknownUnionMember) isMessageTemplateContentProvider()     {}
+func (*UnknownUnionMember) isOrCondition()                        {}
+func (*UnknownUnionMember) isQueryCondition()                     {}
+func (*UnknownUnionMember) isQueryInputData()                     {}
+func (*UnknownUnionMember) isQuickResponseContentProvider()       {}
+func (*UnknownUnionMember) isQuickResponseDataProvider()          {}
+func (*UnknownUnionMember) isRecommendationTriggerData()          {}
+func (*UnknownUnionMember) isRuntimeSessionDataValue()            {}
+func (*UnknownUnionMember) isSourceConfiguration()                {}
+func (*UnknownUnionMember) isTagFilter()                          {}

@@ -81,11 +81,15 @@ type DescribeMaintenanceStartTimeOutput struct {
 
 	// A set of variables indicating the software update preferences for the gateway.
 	//
-	// Includes AutomaticUpdatePolicy field with the following inputs:
+	// Includes AutomaticUpdatePolicy parameter with the following inputs:
 	//
 	// ALL_VERSIONS - Enables regular gateway maintenance updates.
 	//
-	// EMERGENCY_VERSIONS_ONLY - Disables regular gateway maintenance updates.
+	// EMERGENCY_VERSIONS_ONLY - Disables regular gateway maintenance updates. The
+	// gateway will still receive emergency version updates on rare occasions if
+	// necessary to remedy highly critical security or durability issues. You will be
+	// notified before an emergency version update is applied. These updates are
+	// applied during your gateway's scheduled maintenance window.
 	SoftwareUpdatePreferences *types.SoftwareUpdatePreferences
 
 	// A value that indicates the time zone that is set for the gateway. The start
@@ -141,6 +145,9 @@ func (c *Client) addOperationDescribeMaintenanceStartTimeMiddlewares(stack *midd
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -157,6 +164,9 @@ func (c *Client) addOperationDescribeMaintenanceStartTimeMiddlewares(stack *midd
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeMaintenanceStartTimeValidationMiddleware(stack); err != nil {
@@ -178,6 +188,18 @@ func (c *Client) addOperationDescribeMaintenanceStartTimeMiddlewares(stack *midd
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

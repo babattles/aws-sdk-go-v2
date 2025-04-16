@@ -11,13 +11,18 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Declines invitations to become a member account.
+// We recommend using Organizations instead of Security Hub invitations to manage
+// your member accounts. For information, see [Managing Security Hub administrator and member accounts with Organizations]in the Security Hub User Guide.
+//
+// Declines invitations to become a Security Hub member account.
 //
 // A prospective member account uses this operation to decline an invitation to
 // become a member.
 //
-// This operation is only called by member accounts that aren't part of an
-// organization. Organization accounts don't receive invitations.
+// Only member accounts that aren't part of an Amazon Web Services organization
+// should use this operation. Organization accounts don't receive invitations.
+//
+// [Managing Security Hub administrator and member accounts with Organizations]: https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-accounts-orgs.html
 func (c *Client) DeclineInvitations(ctx context.Context, params *DeclineInvitationsInput, optFns ...func(*Options)) (*DeclineInvitationsOutput, error) {
 	if params == nil {
 		params = &DeclineInvitationsInput{}
@@ -98,6 +103,9 @@ func (c *Client) addOperationDeclineInvitationsMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -114,6 +122,9 @@ func (c *Client) addOperationDeclineInvitationsMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeclineInvitationsValidationMiddleware(stack); err != nil {
@@ -135,6 +146,18 @@ func (c *Client) addOperationDeclineInvitationsMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

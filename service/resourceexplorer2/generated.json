@@ -18,9 +18,12 @@
         "api_op_GetAccountLevelServiceConfiguration.go",
         "api_op_GetDefaultView.go",
         "api_op_GetIndex.go",
+        "api_op_GetManagedView.go",
         "api_op_GetView.go",
         "api_op_ListIndexes.go",
         "api_op_ListIndexesForMembers.go",
+        "api_op_ListManagedViews.go",
+        "api_op_ListResources.go",
         "api_op_ListSupportedResourceTypes.go",
         "api_op_ListTagsForResource.go",
         "api_op_ListViews.go",
@@ -46,12 +49,13 @@
         "protocol_test.go",
         "serializers.go",
         "snapshot_test.go",
+        "sra_operation_order_test.go",
         "types/enums.go",
         "types/errors.go",
         "types/types.go",
         "validators.go"
     ],
-    "go": "1.15",
+    "go": "1.22",
     "module": "github.com/aws/aws-sdk-go-v2/service/resourceexplorer2",
     "unstable": false
 }

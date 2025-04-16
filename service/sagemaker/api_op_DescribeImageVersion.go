@@ -13,11 +13,10 @@ import (
 	smithytime "github.com/aws/smithy-go/time"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	smithywaiter "github.com/aws/smithy-go/waiter"
-	jmespath "github.com/jmespath/go-jmespath"
 	"time"
 )
 
-// Describes a version of a SageMaker image.
+// Describes a version of a SageMaker AI image.
 func (c *Client) DescribeImageVersion(ctx context.Context, params *DescribeImageVersionInput, optFns ...func(*Options)) (*DescribeImageVersionOutput, error) {
 	if params == nil {
 		params = &DescribeImageVersionInput{}
@@ -75,13 +74,13 @@ type DescribeImageVersionOutput struct {
 	// The status of the version.
 	ImageVersionStatus types.ImageVersionStatus
 
-	// Indicates SageMaker job type compatibility.
+	// Indicates SageMaker AI job type compatibility.
 	//
-	//   - TRAINING : The image version is compatible with SageMaker training jobs.
+	//   - TRAINING : The image version is compatible with SageMaker AI training jobs.
 	//
-	//   - INFERENCE : The image version is compatible with SageMaker inference jobs.
+	//   - INFERENCE : The image version is compatible with SageMaker AI inference jobs.
 	//
-	//   - NOTEBOOK_KERNEL : The image version is compatible with SageMaker notebook
+	//   - NOTEBOOK_KERNEL : The image version is compatible with SageMaker AI notebook
 	//   kernels.
 	JobType types.JobType
 
@@ -171,6 +170,9 @@ func (c *Client) addOperationDescribeImageVersionMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -187,6 +189,9 @@ func (c *Client) addOperationDescribeImageVersionMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeImageVersionValidationMiddleware(stack); err != nil {
@@ -208,6 +213,18 @@ func (c *Client) addOperationDescribeImageVersionMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -375,35 +392,21 @@ func (w *ImageVersionCreatedWaiter) WaitForOutput(ctx context.Context, params *D
 func imageVersionCreatedStateRetryable(ctx context.Context, input *DescribeImageVersionInput, output *DescribeImageVersionOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("ImageVersionStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.ImageVersionStatus
 		expectedValue := "CREATED"
-		value, ok := pathValue.(types.ImageVersionStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.ImageVersionStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, nil
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("ImageVersionStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.ImageVersionStatus
 		expectedValue := "CREATE_FAILED"
-		value, ok := pathValue.(types.ImageVersionStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.ImageVersionStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
@@ -420,6 +423,9 @@ func imageVersionCreatedStateRetryable(ctx context.Context, input *DescribeImage
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 
@@ -597,18 +603,11 @@ func imageVersionDeletedStateRetryable(ctx context.Context, input *DescribeImage
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("ImageVersionStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.ImageVersionStatus
 		expectedValue := "DELETE_FAILED"
-		value, ok := pathValue.(types.ImageVersionStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.ImageVersionStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
@@ -625,6 +624,9 @@ func imageVersionDeletedStateRetryable(ctx context.Context, input *DescribeImage
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 

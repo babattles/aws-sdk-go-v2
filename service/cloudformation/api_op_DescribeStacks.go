@@ -13,17 +13,16 @@ import (
 	smithytime "github.com/aws/smithy-go/time"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	smithywaiter "github.com/aws/smithy-go/waiter"
-	jmespath "github.com/jmespath/go-jmespath"
 	"time"
 )
 
 // Returns the description for the specified stack; if no stack name was
 // specified, then it returns the description for all the stacks created. For more
-// information about a stack's event history, see [CloudFormation stack creation events]in the CloudFormation User Guide.
+// information about a stack's event history, see [Understand CloudFormation stack creation events]in the CloudFormation User Guide.
 //
 // If the stack doesn't exist, a ValidationError is returned.
 //
-// [CloudFormation stack creation events]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stack-resource-configuration-complete.html
+// [Understand CloudFormation stack creation events]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stack-resource-configuration-complete.html
 func (c *Client) DescribeStacks(ctx context.Context, params *DescribeStacksInput, optFns ...func(*Options)) (*DescribeStacksOutput, error) {
 	if params == nil {
 		params = &DescribeStacksInput{}
@@ -66,8 +65,6 @@ type DescribeStacksInput struct {
 	//   ID.
 	//
 	//   - Deleted stacks: You must specify the unique stack ID.
-	//
-	// Default: There is no default value.
 	StackName *string
 
 	noSmithyDocumentSerde
@@ -132,6 +129,9 @@ func (c *Client) addOperationDescribeStacksMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -150,6 +150,9 @@ func (c *Client) addOperationDescribeStacksMiddlewares(stack *middleware.Stack, 
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeStacks(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -166,6 +169,18 @@ func (c *Client) addOperationDescribeStacksMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -333,29 +348,18 @@ func (w *StackCreateCompleteWaiter) WaitForOutput(ctx context.Context, params *D
 func stackCreateCompleteStateRetryable(ctx context.Context, input *DescribeStacksInput, output *DescribeStacksOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Stacks[].StackStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Stacks
+		var v2 []types.StackStatus
+		for _, v := range v1 {
+			v3 := v.StackStatus
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "CREATE_COMPLETE"
-		var match = true
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
-		}
-
-		if len(listOfValues) == 0 {
-			match = false
-		}
-		for _, v := range listOfValues {
-			value, ok := v.(types.StackStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.StackStatus value, got %T", pathValue)
-			}
-
-			if string(value) != expectedValue {
+		match := len(v2) > 0
+		for _, v := range v2 {
+			if string(v) != expectedValue {
 				match = false
+				break
 			}
 		}
 
@@ -365,29 +369,18 @@ func stackCreateCompleteStateRetryable(ctx context.Context, input *DescribeStack
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Stacks[].StackStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Stacks
+		var v2 []types.StackStatus
+		for _, v := range v1 {
+			v3 := v.StackStatus
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "UPDATE_COMPLETE"
-		var match = true
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
-		}
-
-		if len(listOfValues) == 0 {
-			match = false
-		}
-		for _, v := range listOfValues {
-			value, ok := v.(types.StackStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.StackStatus value, got %T", pathValue)
-			}
-
-			if string(value) != expectedValue {
+		match := len(v2) > 0
+		for _, v := range v2 {
+			if string(v) != expectedValue {
 				match = false
+				break
 			}
 		}
 
@@ -397,29 +390,18 @@ func stackCreateCompleteStateRetryable(ctx context.Context, input *DescribeStack
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Stacks[].StackStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Stacks
+		var v2 []types.StackStatus
+		for _, v := range v1 {
+			v3 := v.StackStatus
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "UPDATE_IN_PROGRESS"
-		var match = true
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
-		}
-
-		if len(listOfValues) == 0 {
-			match = false
-		}
-		for _, v := range listOfValues {
-			value, ok := v.(types.StackStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.StackStatus value, got %T", pathValue)
-			}
-
-			if string(value) != expectedValue {
+		match := len(v2) > 0
+		for _, v := range v2 {
+			if string(v) != expectedValue {
 				match = false
+				break
 			}
 		}
 
@@ -429,29 +411,18 @@ func stackCreateCompleteStateRetryable(ctx context.Context, input *DescribeStack
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Stacks[].StackStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Stacks
+		var v2 []types.StackStatus
+		for _, v := range v1 {
+			v3 := v.StackStatus
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "UPDATE_COMPLETE_CLEANUP_IN_PROGRESS"
-		var match = true
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
-		}
-
-		if len(listOfValues) == 0 {
-			match = false
-		}
-		for _, v := range listOfValues {
-			value, ok := v.(types.StackStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.StackStatus value, got %T", pathValue)
-			}
-
-			if string(value) != expectedValue {
+		match := len(v2) > 0
+		for _, v := range v2 {
+			if string(v) != expectedValue {
 				match = false
+				break
 			}
 		}
 
@@ -461,29 +432,18 @@ func stackCreateCompleteStateRetryable(ctx context.Context, input *DescribeStack
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Stacks[].StackStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Stacks
+		var v2 []types.StackStatus
+		for _, v := range v1 {
+			v3 := v.StackStatus
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "UPDATE_FAILED"
-		var match = true
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
-		}
-
-		if len(listOfValues) == 0 {
-			match = false
-		}
-		for _, v := range listOfValues {
-			value, ok := v.(types.StackStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.StackStatus value, got %T", pathValue)
-			}
-
-			if string(value) != expectedValue {
+		match := len(v2) > 0
+		for _, v := range v2 {
+			if string(v) != expectedValue {
 				match = false
+				break
 			}
 		}
 
@@ -493,29 +453,18 @@ func stackCreateCompleteStateRetryable(ctx context.Context, input *DescribeStack
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Stacks[].StackStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Stacks
+		var v2 []types.StackStatus
+		for _, v := range v1 {
+			v3 := v.StackStatus
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "UPDATE_ROLLBACK_IN_PROGRESS"
-		var match = true
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
-		}
-
-		if len(listOfValues) == 0 {
-			match = false
-		}
-		for _, v := range listOfValues {
-			value, ok := v.(types.StackStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.StackStatus value, got %T", pathValue)
-			}
-
-			if string(value) != expectedValue {
+		match := len(v2) > 0
+		for _, v := range v2 {
+			if string(v) != expectedValue {
 				match = false
+				break
 			}
 		}
 
@@ -525,29 +474,18 @@ func stackCreateCompleteStateRetryable(ctx context.Context, input *DescribeStack
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Stacks[].StackStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Stacks
+		var v2 []types.StackStatus
+		for _, v := range v1 {
+			v3 := v.StackStatus
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "UPDATE_ROLLBACK_FAILED"
-		var match = true
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
-		}
-
-		if len(listOfValues) == 0 {
-			match = false
-		}
-		for _, v := range listOfValues {
-			value, ok := v.(types.StackStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.StackStatus value, got %T", pathValue)
-			}
-
-			if string(value) != expectedValue {
+		match := len(v2) > 0
+		for _, v := range v2 {
+			if string(v) != expectedValue {
 				match = false
+				break
 			}
 		}
 
@@ -557,29 +495,18 @@ func stackCreateCompleteStateRetryable(ctx context.Context, input *DescribeStack
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Stacks[].StackStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Stacks
+		var v2 []types.StackStatus
+		for _, v := range v1 {
+			v3 := v.StackStatus
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "UPDATE_ROLLBACK_COMPLETE_CLEANUP_IN_PROGRESS"
-		var match = true
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
-		}
-
-		if len(listOfValues) == 0 {
-			match = false
-		}
-		for _, v := range listOfValues {
-			value, ok := v.(types.StackStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.StackStatus value, got %T", pathValue)
-			}
-
-			if string(value) != expectedValue {
+		match := len(v2) > 0
+		for _, v := range v2 {
+			if string(v) != expectedValue {
 				match = false
+				break
 			}
 		}
 
@@ -589,29 +516,18 @@ func stackCreateCompleteStateRetryable(ctx context.Context, input *DescribeStack
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Stacks[].StackStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Stacks
+		var v2 []types.StackStatus
+		for _, v := range v1 {
+			v3 := v.StackStatus
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "UPDATE_ROLLBACK_COMPLETE"
-		var match = true
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
-		}
-
-		if len(listOfValues) == 0 {
-			match = false
-		}
-		for _, v := range listOfValues {
-			value, ok := v.(types.StackStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.StackStatus value, got %T", pathValue)
-			}
-
-			if string(value) != expectedValue {
+		match := len(v2) > 0
+		for _, v := range v2 {
+			if string(v) != expectedValue {
 				match = false
+				break
 			}
 		}
 
@@ -621,122 +537,107 @@ func stackCreateCompleteStateRetryable(ctx context.Context, input *DescribeStack
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Stacks[].StackStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Stacks
+		var v2 []types.StackStatus
+		for _, v := range v1 {
+			v3 := v.StackStatus
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "CREATE_FAILED"
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
+		var match bool
+		for _, v := range v2 {
+			if string(v) == expectedValue {
+				match = true
+				break
+			}
 		}
 
-		for _, v := range listOfValues {
-			value, ok := v.(types.StackStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.StackStatus value, got %T", pathValue)
-			}
-
-			if string(value) == expectedValue {
-				return false, fmt.Errorf("waiter state transitioned to Failure")
-			}
+		if match {
+			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Stacks[].StackStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Stacks
+		var v2 []types.StackStatus
+		for _, v := range v1 {
+			v3 := v.StackStatus
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "DELETE_COMPLETE"
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
+		var match bool
+		for _, v := range v2 {
+			if string(v) == expectedValue {
+				match = true
+				break
+			}
 		}
 
-		for _, v := range listOfValues {
-			value, ok := v.(types.StackStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.StackStatus value, got %T", pathValue)
-			}
-
-			if string(value) == expectedValue {
-				return false, fmt.Errorf("waiter state transitioned to Failure")
-			}
+		if match {
+			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Stacks[].StackStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Stacks
+		var v2 []types.StackStatus
+		for _, v := range v1 {
+			v3 := v.StackStatus
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "DELETE_FAILED"
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
+		var match bool
+		for _, v := range v2 {
+			if string(v) == expectedValue {
+				match = true
+				break
+			}
 		}
 
-		for _, v := range listOfValues {
-			value, ok := v.(types.StackStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.StackStatus value, got %T", pathValue)
-			}
-
-			if string(value) == expectedValue {
-				return false, fmt.Errorf("waiter state transitioned to Failure")
-			}
+		if match {
+			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Stacks[].StackStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Stacks
+		var v2 []types.StackStatus
+		for _, v := range v1 {
+			v3 := v.StackStatus
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "ROLLBACK_FAILED"
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
+		var match bool
+		for _, v := range v2 {
+			if string(v) == expectedValue {
+				match = true
+				break
+			}
 		}
 
-		for _, v := range listOfValues {
-			value, ok := v.(types.StackStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.StackStatus value, got %T", pathValue)
-			}
-
-			if string(value) == expectedValue {
-				return false, fmt.Errorf("waiter state transitioned to Failure")
-			}
+		if match {
+			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Stacks[].StackStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Stacks
+		var v2 []types.StackStatus
+		for _, v := range v1 {
+			v3 := v.StackStatus
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "ROLLBACK_COMPLETE"
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
+		var match bool
+		for _, v := range v2 {
+			if string(v) == expectedValue {
+				match = true
+				break
+			}
 		}
 
-		for _, v := range listOfValues {
-			value, ok := v.(types.StackStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.StackStatus value, got %T", pathValue)
-			}
-
-			if string(value) == expectedValue {
-				return false, fmt.Errorf("waiter state transitioned to Failure")
-			}
+		if match {
+			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
@@ -752,6 +653,9 @@ func stackCreateCompleteStateRetryable(ctx context.Context, input *DescribeStack
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 
@@ -917,29 +821,18 @@ func (w *StackDeleteCompleteWaiter) WaitForOutput(ctx context.Context, params *D
 func stackDeleteCompleteStateRetryable(ctx context.Context, input *DescribeStacksInput, output *DescribeStacksOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Stacks[].StackStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Stacks
+		var v2 []types.StackStatus
+		for _, v := range v1 {
+			v3 := v.StackStatus
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "DELETE_COMPLETE"
-		var match = true
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
-		}
-
-		if len(listOfValues) == 0 {
-			match = false
-		}
-		for _, v := range listOfValues {
-			value, ok := v.(types.StackStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.StackStatus value, got %T", pathValue)
-			}
-
-			if string(value) != expectedValue {
+		match := len(v2) > 0
+		for _, v := range v2 {
+			if string(v) != expectedValue {
 				match = false
+				break
 			}
 		}
 
@@ -961,173 +854,155 @@ func stackDeleteCompleteStateRetryable(ctx context.Context, input *DescribeStack
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Stacks[].StackStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Stacks
+		var v2 []types.StackStatus
+		for _, v := range v1 {
+			v3 := v.StackStatus
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "DELETE_FAILED"
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
+		var match bool
+		for _, v := range v2 {
+			if string(v) == expectedValue {
+				match = true
+				break
+			}
 		}
 
-		for _, v := range listOfValues {
-			value, ok := v.(types.StackStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.StackStatus value, got %T", pathValue)
-			}
-
-			if string(value) == expectedValue {
-				return false, fmt.Errorf("waiter state transitioned to Failure")
-			}
+		if match {
+			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Stacks[].StackStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Stacks
+		var v2 []types.StackStatus
+		for _, v := range v1 {
+			v3 := v.StackStatus
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "CREATE_FAILED"
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
+		var match bool
+		for _, v := range v2 {
+			if string(v) == expectedValue {
+				match = true
+				break
+			}
 		}
 
-		for _, v := range listOfValues {
-			value, ok := v.(types.StackStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.StackStatus value, got %T", pathValue)
-			}
-
-			if string(value) == expectedValue {
-				return false, fmt.Errorf("waiter state transitioned to Failure")
-			}
+		if match {
+			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Stacks[].StackStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Stacks
+		var v2 []types.StackStatus
+		for _, v := range v1 {
+			v3 := v.StackStatus
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "ROLLBACK_FAILED"
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
+		var match bool
+		for _, v := range v2 {
+			if string(v) == expectedValue {
+				match = true
+				break
+			}
 		}
 
-		for _, v := range listOfValues {
-			value, ok := v.(types.StackStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.StackStatus value, got %T", pathValue)
-			}
-
-			if string(value) == expectedValue {
-				return false, fmt.Errorf("waiter state transitioned to Failure")
-			}
+		if match {
+			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Stacks[].StackStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Stacks
+		var v2 []types.StackStatus
+		for _, v := range v1 {
+			v3 := v.StackStatus
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "UPDATE_ROLLBACK_IN_PROGRESS"
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
+		var match bool
+		for _, v := range v2 {
+			if string(v) == expectedValue {
+				match = true
+				break
+			}
 		}
 
-		for _, v := range listOfValues {
-			value, ok := v.(types.StackStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.StackStatus value, got %T", pathValue)
-			}
-
-			if string(value) == expectedValue {
-				return false, fmt.Errorf("waiter state transitioned to Failure")
-			}
+		if match {
+			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Stacks[].StackStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Stacks
+		var v2 []types.StackStatus
+		for _, v := range v1 {
+			v3 := v.StackStatus
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "UPDATE_ROLLBACK_FAILED"
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
+		var match bool
+		for _, v := range v2 {
+			if string(v) == expectedValue {
+				match = true
+				break
+			}
 		}
 
-		for _, v := range listOfValues {
-			value, ok := v.(types.StackStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.StackStatus value, got %T", pathValue)
-			}
-
-			if string(value) == expectedValue {
-				return false, fmt.Errorf("waiter state transitioned to Failure")
-			}
+		if match {
+			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Stacks[].StackStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Stacks
+		var v2 []types.StackStatus
+		for _, v := range v1 {
+			v3 := v.StackStatus
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "UPDATE_ROLLBACK_COMPLETE"
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
+		var match bool
+		for _, v := range v2 {
+			if string(v) == expectedValue {
+				match = true
+				break
+			}
 		}
 
-		for _, v := range listOfValues {
-			value, ok := v.(types.StackStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.StackStatus value, got %T", pathValue)
-			}
-
-			if string(value) == expectedValue {
-				return false, fmt.Errorf("waiter state transitioned to Failure")
-			}
+		if match {
+			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Stacks[].StackStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Stacks
+		var v2 []types.StackStatus
+		for _, v := range v1 {
+			v3 := v.StackStatus
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "UPDATE_COMPLETE"
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
+		var match bool
+		for _, v := range v2 {
+			if string(v) == expectedValue {
+				match = true
+				break
+			}
 		}
 
-		for _, v := range listOfValues {
-			value, ok := v.(types.StackStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.StackStatus value, got %T", pathValue)
-			}
-
-			if string(value) == expectedValue {
-				return false, fmt.Errorf("waiter state transitioned to Failure")
-			}
+		if match {
+			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 
@@ -1305,6 +1180,9 @@ func stackExistsStateRetryable(ctx context.Context, input *DescribeStacksInput, 
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 
@@ -1470,29 +1348,18 @@ func (w *StackImportCompleteWaiter) WaitForOutput(ctx context.Context, params *D
 func stackImportCompleteStateRetryable(ctx context.Context, input *DescribeStacksInput, output *DescribeStacksOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Stacks[].StackStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Stacks
+		var v2 []types.StackStatus
+		for _, v := range v1 {
+			v3 := v.StackStatus
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "IMPORT_COMPLETE"
-		var match = true
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
-		}
-
-		if len(listOfValues) == 0 {
-			match = false
-		}
-		for _, v := range listOfValues {
-			value, ok := v.(types.StackStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.StackStatus value, got %T", pathValue)
-			}
-
-			if string(value) != expectedValue {
+		match := len(v2) > 0
+		for _, v := range v2 {
+			if string(v) != expectedValue {
 				match = false
+				break
 			}
 		}
 
@@ -1502,122 +1369,107 @@ func stackImportCompleteStateRetryable(ctx context.Context, input *DescribeStack
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Stacks[].StackStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Stacks
+		var v2 []types.StackStatus
+		for _, v := range v1 {
+			v3 := v.StackStatus
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "ROLLBACK_COMPLETE"
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
+		var match bool
+		for _, v := range v2 {
+			if string(v) == expectedValue {
+				match = true
+				break
+			}
 		}
 
-		for _, v := range listOfValues {
-			value, ok := v.(types.StackStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.StackStatus value, got %T", pathValue)
-			}
-
-			if string(value) == expectedValue {
-				return false, fmt.Errorf("waiter state transitioned to Failure")
-			}
+		if match {
+			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Stacks[].StackStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Stacks
+		var v2 []types.StackStatus
+		for _, v := range v1 {
+			v3 := v.StackStatus
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "ROLLBACK_FAILED"
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
+		var match bool
+		for _, v := range v2 {
+			if string(v) == expectedValue {
+				match = true
+				break
+			}
 		}
 
-		for _, v := range listOfValues {
-			value, ok := v.(types.StackStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.StackStatus value, got %T", pathValue)
-			}
-
-			if string(value) == expectedValue {
-				return false, fmt.Errorf("waiter state transitioned to Failure")
-			}
+		if match {
+			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Stacks[].StackStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Stacks
+		var v2 []types.StackStatus
+		for _, v := range v1 {
+			v3 := v.StackStatus
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "IMPORT_ROLLBACK_IN_PROGRESS"
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
+		var match bool
+		for _, v := range v2 {
+			if string(v) == expectedValue {
+				match = true
+				break
+			}
 		}
 
-		for _, v := range listOfValues {
-			value, ok := v.(types.StackStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.StackStatus value, got %T", pathValue)
-			}
-
-			if string(value) == expectedValue {
-				return false, fmt.Errorf("waiter state transitioned to Failure")
-			}
+		if match {
+			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Stacks[].StackStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Stacks
+		var v2 []types.StackStatus
+		for _, v := range v1 {
+			v3 := v.StackStatus
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "IMPORT_ROLLBACK_FAILED"
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
+		var match bool
+		for _, v := range v2 {
+			if string(v) == expectedValue {
+				match = true
+				break
+			}
 		}
 
-		for _, v := range listOfValues {
-			value, ok := v.(types.StackStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.StackStatus value, got %T", pathValue)
-			}
-
-			if string(value) == expectedValue {
-				return false, fmt.Errorf("waiter state transitioned to Failure")
-			}
+		if match {
+			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Stacks[].StackStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Stacks
+		var v2 []types.StackStatus
+		for _, v := range v1 {
+			v3 := v.StackStatus
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "IMPORT_ROLLBACK_COMPLETE"
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
+		var match bool
+		for _, v := range v2 {
+			if string(v) == expectedValue {
+				match = true
+				break
+			}
 		}
 
-		for _, v := range listOfValues {
-			value, ok := v.(types.StackStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.StackStatus value, got %T", pathValue)
-			}
-
-			if string(value) == expectedValue {
-				return false, fmt.Errorf("waiter state transitioned to Failure")
-			}
+		if match {
+			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
@@ -1633,6 +1485,9 @@ func stackImportCompleteStateRetryable(ctx context.Context, input *DescribeStack
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 
@@ -1798,29 +1653,18 @@ func (w *StackRollbackCompleteWaiter) WaitForOutput(ctx context.Context, params 
 func stackRollbackCompleteStateRetryable(ctx context.Context, input *DescribeStacksInput, output *DescribeStacksOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Stacks[].StackStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Stacks
+		var v2 []types.StackStatus
+		for _, v := range v1 {
+			v3 := v.StackStatus
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "UPDATE_ROLLBACK_COMPLETE"
-		var match = true
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
-		}
-
-		if len(listOfValues) == 0 {
-			match = false
-		}
-		for _, v := range listOfValues {
-			value, ok := v.(types.StackStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.StackStatus value, got %T", pathValue)
-			}
-
-			if string(value) != expectedValue {
+		match := len(v2) > 0
+		for _, v := range v2 {
+			if string(v) != expectedValue {
 				match = false
+				break
 			}
 		}
 
@@ -1830,74 +1674,65 @@ func stackRollbackCompleteStateRetryable(ctx context.Context, input *DescribeSta
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Stacks[].StackStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Stacks
+		var v2 []types.StackStatus
+		for _, v := range v1 {
+			v3 := v.StackStatus
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "UPDATE_FAILED"
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
+		var match bool
+		for _, v := range v2 {
+			if string(v) == expectedValue {
+				match = true
+				break
+			}
 		}
 
-		for _, v := range listOfValues {
-			value, ok := v.(types.StackStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.StackStatus value, got %T", pathValue)
-			}
-
-			if string(value) == expectedValue {
-				return false, fmt.Errorf("waiter state transitioned to Failure")
-			}
+		if match {
+			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Stacks[].StackStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Stacks
+		var v2 []types.StackStatus
+		for _, v := range v1 {
+			v3 := v.StackStatus
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "UPDATE_ROLLBACK_FAILED"
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
+		var match bool
+		for _, v := range v2 {
+			if string(v) == expectedValue {
+				match = true
+				break
+			}
 		}
 
-		for _, v := range listOfValues {
-			value, ok := v.(types.StackStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.StackStatus value, got %T", pathValue)
-			}
-
-			if string(value) == expectedValue {
-				return false, fmt.Errorf("waiter state transitioned to Failure")
-			}
+		if match {
+			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Stacks[].StackStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Stacks
+		var v2 []types.StackStatus
+		for _, v := range v1 {
+			v3 := v.StackStatus
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "DELETE_FAILED"
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
+		var match bool
+		for _, v := range v2 {
+			if string(v) == expectedValue {
+				match = true
+				break
+			}
 		}
 
-		for _, v := range listOfValues {
-			value, ok := v.(types.StackStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.StackStatus value, got %T", pathValue)
-			}
-
-			if string(value) == expectedValue {
-				return false, fmt.Errorf("waiter state transitioned to Failure")
-			}
+		if match {
+			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
@@ -1913,6 +1748,9 @@ func stackRollbackCompleteStateRetryable(ctx context.Context, input *DescribeSta
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 
@@ -2078,29 +1916,18 @@ func (w *StackUpdateCompleteWaiter) WaitForOutput(ctx context.Context, params *D
 func stackUpdateCompleteStateRetryable(ctx context.Context, input *DescribeStacksInput, output *DescribeStacksOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Stacks[].StackStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Stacks
+		var v2 []types.StackStatus
+		for _, v := range v1 {
+			v3 := v.StackStatus
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "UPDATE_COMPLETE"
-		var match = true
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
-		}
-
-		if len(listOfValues) == 0 {
-			match = false
-		}
-		for _, v := range listOfValues {
-			value, ok := v.(types.StackStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.StackStatus value, got %T", pathValue)
-			}
-
-			if string(value) != expectedValue {
+		match := len(v2) > 0
+		for _, v := range v2 {
+			if string(v) != expectedValue {
 				match = false
+				break
 			}
 		}
 
@@ -2110,74 +1937,65 @@ func stackUpdateCompleteStateRetryable(ctx context.Context, input *DescribeStack
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Stacks[].StackStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Stacks
+		var v2 []types.StackStatus
+		for _, v := range v1 {
+			v3 := v.StackStatus
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "UPDATE_FAILED"
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
+		var match bool
+		for _, v := range v2 {
+			if string(v) == expectedValue {
+				match = true
+				break
+			}
 		}
 
-		for _, v := range listOfValues {
-			value, ok := v.(types.StackStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.StackStatus value, got %T", pathValue)
-			}
-
-			if string(value) == expectedValue {
-				return false, fmt.Errorf("waiter state transitioned to Failure")
-			}
+		if match {
+			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Stacks[].StackStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Stacks
+		var v2 []types.StackStatus
+		for _, v := range v1 {
+			v3 := v.StackStatus
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "UPDATE_ROLLBACK_FAILED"
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
+		var match bool
+		for _, v := range v2 {
+			if string(v) == expectedValue {
+				match = true
+				break
+			}
 		}
 
-		for _, v := range listOfValues {
-			value, ok := v.(types.StackStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.StackStatus value, got %T", pathValue)
-			}
-
-			if string(value) == expectedValue {
-				return false, fmt.Errorf("waiter state transitioned to Failure")
-			}
+		if match {
+			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Stacks[].StackStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Stacks
+		var v2 []types.StackStatus
+		for _, v := range v1 {
+			v3 := v.StackStatus
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "UPDATE_ROLLBACK_COMPLETE"
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
+		var match bool
+		for _, v := range v2 {
+			if string(v) == expectedValue {
+				match = true
+				break
+			}
 		}
 
-		for _, v := range listOfValues {
-			value, ok := v.(types.StackStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.StackStatus value, got %T", pathValue)
-			}
-
-			if string(value) == expectedValue {
-				return false, fmt.Errorf("waiter state transitioned to Failure")
-			}
+		if match {
+			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
@@ -2193,6 +2011,9 @@ func stackUpdateCompleteStateRetryable(ctx context.Context, input *DescribeStack
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 

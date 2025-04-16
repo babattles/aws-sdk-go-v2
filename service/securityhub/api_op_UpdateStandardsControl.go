@@ -13,6 +13,10 @@ import (
 
 // Used to control whether an individual security standard control is enabled or
 // disabled.
+//
+// Calls to this operation return a RESOURCE_NOT_FOUND_EXCEPTION error when the
+// standard subscription for the control has StandardsControlsUpdatable value
+// NOT_READY_FOR_UPDATES .
 func (c *Client) UpdateStandardsControl(ctx context.Context, params *UpdateStandardsControlInput, optFns ...func(*Options)) (*UpdateStandardsControlOutput, error) {
 	if params == nil {
 		params = &UpdateStandardsControlInput{}
@@ -95,6 +99,9 @@ func (c *Client) addOperationUpdateStandardsControlMiddlewares(stack *middleware
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -111,6 +118,9 @@ func (c *Client) addOperationUpdateStandardsControlMiddlewares(stack *middleware
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateStandardsControlValidationMiddleware(stack); err != nil {
@@ -132,6 +142,18 @@ func (c *Client) addOperationUpdateStandardsControlMiddlewares(stack *middleware
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

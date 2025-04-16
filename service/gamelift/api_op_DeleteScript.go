@@ -22,13 +22,13 @@ import (
 //
 // # Learn more
 //
-// [Amazon GameLift Realtime Servers]
+// [Amazon GameLift Amazon GameLift Realtime]
 //
 // # Related actions
 //
 // [All APIs by task]
 //
-// [Amazon GameLift Realtime Servers]: https://docs.aws.amazon.com/gamelift/latest/developerguide/realtime-intro.html
+// [Amazon GameLift Amazon GameLift Realtime]: https://docs.aws.amazon.com/gamelift/latest/developerguide/realtime-intro.html
 // [All APIs by task]: https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets
 func (c *Client) DeleteScript(ctx context.Context, params *DeleteScriptInput, optFns ...func(*Options)) (*DeleteScriptOutput, error) {
 	if params == nil {
@@ -106,6 +106,9 @@ func (c *Client) addOperationDeleteScriptMiddlewares(stack *middleware.Stack, op
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -122,6 +125,9 @@ func (c *Client) addOperationDeleteScriptMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteScriptValidationMiddleware(stack); err != nil {
@@ -143,6 +149,18 @@ func (c *Client) addOperationDeleteScriptMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

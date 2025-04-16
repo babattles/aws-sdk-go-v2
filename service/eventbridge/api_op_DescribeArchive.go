@@ -61,6 +61,14 @@ type DescribeArchiveOutput struct {
 	// The ARN of the event source associated with the archive.
 	EventSourceArn *string
 
+	// The identifier of the KMS customer managed key for EventBridge to use to
+	// encrypt this archive, if one has been specified.
+	//
+	// For more information, see [Encrypting archives] in the Amazon EventBridge User Guide.
+	//
+	// [Encrypting archives]: https://docs.aws.amazon.com/eventbridge/latest/userguide/encryption-archives.html
+	KmsKeyIdentifier *string
+
 	// The number of days to retain events for in the archive.
 	RetentionDays *int32
 
@@ -122,6 +130,9 @@ func (c *Client) addOperationDescribeArchiveMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -138,6 +149,9 @@ func (c *Client) addOperationDescribeArchiveMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeArchiveValidationMiddleware(stack); err != nil {
@@ -159,6 +173,18 @@ func (c *Client) addOperationDescribeArchiveMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

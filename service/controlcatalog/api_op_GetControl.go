@@ -67,7 +67,7 @@ type GetControlOutput struct {
 	Arn *string
 
 	// A term that identifies the control's functional behavior. One of Preventive ,
-	// Deteictive , Proactive
+	// Detective , Proactive
 	//
 	// This member is required.
 	Behavior types.ControlBehavior
@@ -84,7 +84,7 @@ type GetControlOutput struct {
 
 	// Returns information about the control, including the scope of the control, if
 	// enabled, and the Regions in which the control currently is available for
-	// deployment.
+	// deployment. For more information about scope, see [Global services].
 	//
 	// If you are applying controls through an Amazon Web Services Control Tower
 	// landing zone environment, remember that the values returned in the
@@ -95,8 +95,19 @@ type GetControlOutput struct {
 	// even though you may not intend to deploy the control in Region D , because you
 	// do not govern it through your landing zone.
 	//
+	// [Global services]: https://docs.aws.amazon.com/whitepapers/latest/aws-fault-isolation-boundaries/global-services.html
+	//
 	// This member is required.
 	RegionConfiguration *types.RegionConfiguration
+
+	// Returns information about the control, as an ImplementationDetails object that
+	// shows the underlying implementation type for a control.
+	Implementation *types.ImplementationDetails
+
+	// Returns an array of ControlParameter objects that specify the parameters a
+	// control supports. An empty list is returned for controls that don’t support
+	// parameters.
+	Parameters []types.ControlParameter
 
 	// Metadata pertaining to the operation's result.
 	ResultMetadata middleware.Metadata
@@ -147,6 +158,9 @@ func (c *Client) addOperationGetControlMiddlewares(stack *middleware.Stack, opti
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -163,6 +177,9 @@ func (c *Client) addOperationGetControlMiddlewares(stack *middleware.Stack, opti
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetControlValidationMiddleware(stack); err != nil {
@@ -184,6 +201,18 @@ func (c *Client) addOperationGetControlMiddlewares(stack *middleware.Stack, opti
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

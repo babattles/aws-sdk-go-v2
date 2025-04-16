@@ -12,7 +12,7 @@ SNAPSHOT_TAGS=-tags "snapshot"
 
 SMITHY_GO_SRC ?= $(shell pwd)/../smithy-go
 
-SDK_MIN_GO_VERSION ?= 1.21
+SDK_MIN_GO_VERSION ?= 1.22
 
 EACHMODULE_FAILFAST ?= true
 EACHMODULE_FAILFAST_FLAG=-fail-fast=${EACHMODULE_FAILFAST}
@@ -86,9 +86,15 @@ generate: smithy-generate update-requires gen-repo-mod-replace update-module-met
 gen-config-asserts gen-internal-codegen copy-attributevalue-feature gen-mod-dropreplace-smithy-. min-go-version-. \
 tidy-modules-. add-module-license-files gen-aws-ptrs format
 
-generate-tmpreplace-smithy: smithy-generate update-requires gen-repo-mod-replace update-module-metadata smithy-annotate-stable \
-gen-config-asserts gen-internal-codegen copy-attributevalue-feature gen-mod-replace-smithy-. min-go-version-. \
+generate-tmpreplace-smithy: smithy-generate update-requires gen-repo-mod-replace gen-mod-replace-smithy-. update-module-metadata smithy-annotate-stable \
+gen-config-asserts gen-internal-codegen copy-attributevalue-feature min-go-version-. \
 tidy-modules-. add-module-license-files gen-aws-ptrs format gen-mod-dropreplace-smithy-. reset-sum
+
+# stripped-down regenerate script that eliminates a lot of the cruft you don't
+# need in development (that takes time)
+# modify this with whatever service you're working on
+generate-dev: smithy-generate update-requires gen-repo-mod-replace gen-mod-replace-smithy-config gen-mod-replace-smithy-aws gen-mod-replace-smithy-service_s3 update-module-metadata smithy-annotate-stable \
+gen-config-asserts gen-internal-codegen tidy-modules-config tidy-modules-aws tidy-modules-service_s3 format-dev
 
 reset-sum:
 	find . -name go.sum -exec git checkout -- {} \;
@@ -122,6 +128,9 @@ smithy-go-publish-local:
 
 format:
 	gofmt -w -s .
+
+format-dev:
+	gofmt -w -s service/s3
 
 gen-config-asserts:
 	@echo "Generating SDK config package implementor assertions"
@@ -206,13 +215,13 @@ sync-api-models:
 
 copy-attributevalue-feature:
 	cd ./feature/dynamodbstreams/attributevalue && \
-	find . -name "*.go" | grep -v "doc.go" | xargs -I % rm % && \
-	find ../../dynamodb/attributevalue -name "*.go" | grep -v "doc.go" | xargs -I % cp % . && \
-	ls *.go | grep -v "convert.go" | grep -v "doc.go" | \
+	find . -name "*.go" | grep -v "doc.go" | grep -v "go_module_metadata.go" | xargs -I % rm % && \
+	find ../../dynamodb/attributevalue -name "*.go" | grep -v "doc.go" | grep -v "go_module_metadata.go" | xargs -I % cp % . && \
+	ls *.go | grep -v "convert.go" | grep -v "doc.go" | grep -v "go_module_metadata.go" | \
 		xargs -I % sed -i.bk -E 's:github.com/aws/aws-sdk-go-v2/(service|feature)/dynamodb:github.com/aws/aws-sdk-go-v2/\1/dynamodbstreams:g' % &&  \
-	ls *.go | grep -v "convert.go" | grep -v "doc.go" | \
+	ls *.go | grep -v "convert.go" | grep -v "doc.go" | grep -v "go_module_metadata.go" | \
 		xargs -I % sed -i.bk 's:DynamoDB:DynamoDBStreams:g' % &&  \
-	ls *.go | grep -v "doc.go" | \
+	ls *.go | grep -v "doc.go" | grep -v "go_module_metadata.go" | \
 		xargs -I % sed -i.bk 's:dynamodb\.:dynamodbstreams.:g' % &&  \
 	sed -i.bk 's:streams\.:ddbtypes.:g' "convert.go" && \
 	sed -i.bk 's:ddb\.:streams.:g' "convert.go" &&  \
@@ -401,7 +410,7 @@ ci-lint-install:
 #######################
 .PHONY: integration integ-modules-% cleanup-integ-buckets
 
-integration: integ-modules-service
+integration: integ-modules-service integ-modules-feature
 
 integ-modules-%:
 	@# integration command that uses the pattern to define the root path that
@@ -474,6 +483,14 @@ set-smithy-go-version:
 		echo "SMITHY_GO_VERSION is required to update SDK's smithy-go module dependency version" && false; \
 	fi
 	go run ${REPOTOOLS_CMD_EDIT_MODULE_DEPENDENCY} -s "github.com/aws/smithy-go" -v "${SMITHY_GO_VERSION}"
+
+external-changelog:
+	mkdir -p .changelog
+	cp changelog-template.json .changelog/00000000-0000-0000-0000-000000000000.json
+	@echo "Generate a new UUID and update the file at .changelog/00000000-0000-0000-0000-000000000000.json"
+	@echo "Make sure to rename the file with your new id, like .changelog/12345678-1234-1234-1234-123456789012.json"
+	@echo "See CONTRIBUTING.md 'Changelog Documents' and an example at https://github.com/aws/aws-sdk-go-v2/pull/2934/files"
+
 
 ##################
 # Linting/Verify #

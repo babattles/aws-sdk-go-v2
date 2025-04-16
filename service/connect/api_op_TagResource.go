@@ -13,8 +13,8 @@ import (
 // Adds the specified tags to the specified resource.
 //
 // Some of the supported resource types are agents, routing profiles, queues,
-// quick connects, contact flows, agent statuses, hours of operation, phone
-// numbers, security profiles, and task templates. For a complete list, see [Tagging resources in Amazon Connect].
+// quick connects, flows, agent statuses, hours of operation, phone numbers,
+// security profiles, and task templates. For a complete list, see [Tagging resources in Amazon Connect].
 //
 // For sample policies that use tags, see [Amazon Connect Identity-Based Policy Examples] in the Amazon Connect Administrator
 // Guide.
@@ -102,6 +102,9 @@ func (c *Client) addOperationTagResourceMiddlewares(stack *middleware.Stack, opt
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -118,6 +121,9 @@ func (c *Client) addOperationTagResourceMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpTagResourceValidationMiddleware(stack); err != nil {
@@ -139,6 +145,18 @@ func (c *Client) addOperationTagResourceMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

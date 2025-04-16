@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
+	"github.com/aws/aws-sdk-go-v2/service/redshiftdata/types"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	"time"
@@ -63,12 +64,6 @@ func (c *Client) BatchExecuteStatement(ctx context.Context, params *BatchExecute
 
 type BatchExecuteStatementInput struct {
 
-	// The name of the database. This parameter is required when authenticating using
-	// either Secrets Manager or temporary credentials.
-	//
-	// This member is required.
-	Database *string
-
 	// One or more SQL statements to run.
 	//
 	// The SQL statements are run as a single transaction. They run serially in the
@@ -87,13 +82,29 @@ type BatchExecuteStatementInput struct {
 	// and authenticating using either Secrets Manager or temporary credentials.
 	ClusterIdentifier *string
 
+	// The name of the database. This parameter is required when authenticating using
+	// either Secrets Manager or temporary credentials.
+	Database *string
+
 	// The database user name. This parameter is required when connecting to a cluster
 	// as a database user and authenticating using temporary credentials.
 	DbUser *string
 
+	// The data format of the result of the SQL statement. If no format is specified,
+	// the default is JSON.
+	ResultFormat types.ResultFormatString
+
 	// The name or ARN of the secret that enables access to the database. This
 	// parameter is required when authenticating using Secrets Manager.
 	SecretArn *string
+
+	// The session identifier of the query.
+	SessionId *string
+
+	// The number of seconds to keep the session alive after the query finishes. The
+	// maximum time a session can keep alive is 24 hours. After 24 hours, the session
+	// is forced closed and the query is terminated.
+	SessionKeepAliveSeconds *int32
 
 	// The name of the SQL statements. You can name the SQL statements when you create
 	// them to identify the query.
@@ -123,6 +134,9 @@ type BatchExecuteStatementOutput struct {
 	// The name of the database.
 	Database *string
 
+	// A list of colon (:) separated names of database groups.
+	DbGroups []string
+
 	// The database user name.
 	DbUser *string
 
@@ -133,6 +147,9 @@ type BatchExecuteStatementOutput struct {
 
 	// The name or ARN of the secret that enables access to the database.
 	SecretArn *string
+
+	// The session identifier of the query.
+	SessionId *string
 
 	// The serverless workgroup name or Amazon Resource Name (ARN). This element is
 	// not returned when connecting to a provisioned cluster.
@@ -187,6 +204,9 @@ func (c *Client) addOperationBatchExecuteStatementMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -203,6 +223,9 @@ func (c *Client) addOperationBatchExecuteStatementMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opBatchExecuteStatementMiddleware(stack, options); err != nil {
@@ -227,6 +250,18 @@ func (c *Client) addOperationBatchExecuteStatementMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

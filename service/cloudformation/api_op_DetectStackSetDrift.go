@@ -13,7 +13,7 @@ import (
 
 // Detect drift on a stack set. When CloudFormation performs drift detection on a
 // stack set, it performs drift detection on the stack associated with each stack
-// instance in the stack set. For more information, see [How CloudFormation performs drift detection on a stack set].
+// instance in the stack set. For more information, see [Performing drift detection on CloudFormation StackSets].
 //
 // DetectStackSetDrift returns the OperationId of the stack set drift detection
 // operation. Use this operation id with DescribeStackSetOperationto monitor the progress of the drift
@@ -34,16 +34,12 @@ import (
 //   - Use DescribeStackInstanceto return detailed information about a specific stack instance,
 //     including its drift status and last drift time checked.
 //
-// For more information about performing a drift detection operation on a stack
-// set, see [Detecting unmanaged changes in stack sets].
-//
 // You can only run a single drift detection operation on a given stack set at one
 // time.
 //
 // To stop a drift detection stack set operation, use StopStackSetOperation.
 //
-// [Detecting unmanaged changes in stack sets]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-drift.html
-// [How CloudFormation performs drift detection on a stack set]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-drift.html
+// [Performing drift detection on CloudFormation StackSets]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-drift.html
 func (c *Client) DetectStackSetDrift(ctx context.Context, params *DetectStackSetDriftInput, optFns ...func(*Options)) (*DetectStackSetDriftOutput, error) {
 	if params == nil {
 		params = &DetectStackSetDriftInput{}
@@ -94,7 +90,7 @@ type DetectStackSetDriftInput struct {
 	// For more information about maximum concurrent accounts and failure tolerance,
 	// see [Stack set operation options].
 	//
-	// [Stack set operation options]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-concepts.html#stackset-ops-options
+	// [Stack set operation options]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/what-is-cfnstacksets.html#stackset-ops-options
 	OperationPreferences *types.StackSetOperationPreferences
 
 	noSmithyDocumentSerde
@@ -157,6 +153,9 @@ func (c *Client) addOperationDetectStackSetDriftMiddlewares(stack *middleware.St
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -173,6 +172,9 @@ func (c *Client) addOperationDetectStackSetDriftMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opDetectStackSetDriftMiddleware(stack, options); err != nil {
@@ -197,6 +199,18 @@ func (c *Client) addOperationDetectStackSetDriftMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

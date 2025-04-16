@@ -42,8 +42,7 @@ type ListBackupJobsInput struct {
 
 	// Returns only backup jobs that will be stored in the specified backup vault.
 	// Backup vaults are identified by names that are unique to the account used to
-	// create them and the Amazon Web Services Region where they are created. They
-	// consist of lowercase letters, numbers, and hyphens.
+	// create them and the Amazon Web Services Region where they are created.
 	ByBackupVaultName *string
 
 	// Returns only backup jobs completed after a date expressed in Unix format and
@@ -103,19 +102,20 @@ type ListBackupJobsInput struct {
 	//
 	//   - Neptune for Amazon Neptune
 	//
-	//   - Redshift for Amazon Redshift
-	//
 	//   - RDS for Amazon Relational Database Service
 	//
-	//   - SAP HANA on Amazon EC2 for SAP HANA databases
+	//   - Redshift for Amazon Redshift
+	//
+	//   - S3 for Amazon Simple Storage Service (Amazon S3)
+	//
+	//   - SAP HANA on Amazon EC2 for SAP HANA databases on Amazon Elastic Compute
+	//   Cloud instances
 	//
 	//   - Storage Gateway for Storage Gateway
 	//
-	//   - S3 for Amazon S3
-	//
 	//   - Timestream for Amazon Timestream
 	//
-	//   - VirtualMachine for virtual machines
+	//   - VirtualMachine for VMware virtual machines
 	ByResourceType *string
 
 	// Returns only backup jobs that are in the specified state.
@@ -206,6 +206,9 @@ func (c *Client) addOperationListBackupJobsMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -224,6 +227,9 @@ func (c *Client) addOperationListBackupJobsMiddlewares(stack *middleware.Stack, 
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListBackupJobs(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -240,6 +246,18 @@ func (c *Client) addOperationListBackupJobsMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

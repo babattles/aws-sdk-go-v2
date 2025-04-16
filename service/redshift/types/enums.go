@@ -155,6 +155,47 @@ func (DataShareStatusForProducer) Values() []DataShareStatusForProducer {
 	}
 }
 
+type DataShareType string
+
+// Enum values for DataShareType
+const (
+	DataShareTypeInternal DataShareType = "INTERNAL"
+)
+
+// Values returns all known values for DataShareType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DataShareType) Values() []DataShareType {
+	return []DataShareType{
+		"INTERNAL",
+	}
+}
+
+type DescribeIntegrationsFilterName string
+
+// Enum values for DescribeIntegrationsFilterName
+const (
+	DescribeIntegrationsFilterNameIntegrationArn DescribeIntegrationsFilterName = "integration-arn"
+	DescribeIntegrationsFilterNameSourceArn      DescribeIntegrationsFilterName = "source-arn"
+	DescribeIntegrationsFilterNameSourceTypes    DescribeIntegrationsFilterName = "source-types"
+	DescribeIntegrationsFilterNameStatus         DescribeIntegrationsFilterName = "status"
+)
+
+// Values returns all known values for DescribeIntegrationsFilterName. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DescribeIntegrationsFilterName) Values() []DescribeIntegrationsFilterName {
+	return []DescribeIntegrationsFilterName{
+		"integration-arn",
+		"source-arn",
+		"source-types",
+		"status",
+	}
+}
+
 type ImpactRankingType string
 
 // Enum values for ImpactRankingType
@@ -211,6 +252,25 @@ func (Mode) Values() []Mode {
 	return []Mode{
 		"standard",
 		"high-performance",
+	}
+}
+
+type NamespaceRegistrationStatus string
+
+// Enum values for NamespaceRegistrationStatus
+const (
+	NamespaceRegistrationStatusRegistering   NamespaceRegistrationStatus = "Registering"
+	NamespaceRegistrationStatusDeregistering NamespaceRegistrationStatus = "Deregistering"
+)
+
+// Values returns all known values for NamespaceRegistrationStatus. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (NamespaceRegistrationStatus) Values() []NamespaceRegistrationStatus {
+	return []NamespaceRegistrationStatus{
+		"Registering",
+		"Deregistering",
 	}
 }
 

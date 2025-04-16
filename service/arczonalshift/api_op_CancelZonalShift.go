@@ -66,9 +66,9 @@ type CancelZonalShiftOutput struct {
 	// However, you can update a zonal shift to set a new expiration at any time.
 	//
 	// When you start a zonal shift, you specify how long you want it to be active,
-	// which Route 53 ARC converts to an expiry time (expiration time). You can cancel
-	// a zonal shift when you're ready to restore traffic to the Availability Zone, or
-	// just wait for it to expire. Or you can update the zonal shift to specify another
+	// which ARC converts to an expiry time (expiration time). You can cancel a zonal
+	// shift when you're ready to restore traffic to the Availability Zone, or just
+	// wait for it to expire. Or you can update the zonal shift to specify another
 	// length of time to expire in.
 	//
 	// This member is required.
@@ -155,6 +155,9 @@ func (c *Client) addOperationCancelZonalShiftMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -171,6 +174,9 @@ func (c *Client) addOperationCancelZonalShiftMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCancelZonalShiftValidationMiddleware(stack); err != nil {
@@ -192,6 +198,18 @@ func (c *Client) addOperationCancelZonalShiftMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

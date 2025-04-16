@@ -56,7 +56,7 @@ type UpdateContainerServiceInput struct {
 	//
 	// For more information, see [Configuring access to an Amazon ECR private repository for an Amazon Lightsail container service] in the Amazon Lightsail Developer Guide.
 	//
-	// [Configuring access to an Amazon ECR private repository for an Amazon Lightsail container service]: https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-container-service-ecr-private-repo-access
+	// [Configuring access to an Amazon ECR private repository for an Amazon Lightsail container service]: https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-container-service-ecr-private-repo-access
 	PrivateRegistryAccess *types.PrivateRegistryAccessRequest
 
 	// The public domain names to use with the container service, such as example.com
@@ -143,6 +143,9 @@ func (c *Client) addOperationUpdateContainerServiceMiddlewares(stack *middleware
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -159,6 +162,9 @@ func (c *Client) addOperationUpdateContainerServiceMiddlewares(stack *middleware
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateContainerServiceValidationMiddleware(stack); err != nil {
@@ -180,6 +186,18 @@ func (c *Client) addOperationUpdateContainerServiceMiddlewares(stack *middleware
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

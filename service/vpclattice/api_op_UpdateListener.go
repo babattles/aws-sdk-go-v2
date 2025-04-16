@@ -34,12 +34,12 @@ type UpdateListenerInput struct {
 	// This member is required.
 	DefaultAction types.RuleAction
 
-	// The ID or Amazon Resource Name (ARN) of the listener.
+	// The ID or ARN of the listener.
 	//
 	// This member is required.
 	ListenerIdentifier *string
 
-	// The ID or Amazon Resource Name (ARN) of the service.
+	// The ID or ARN of the service.
 	//
 	// This member is required.
 	ServiceIdentifier *string
@@ -122,6 +122,9 @@ func (c *Client) addOperationUpdateListenerMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -138,6 +141,9 @@ func (c *Client) addOperationUpdateListenerMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateListenerValidationMiddleware(stack); err != nil {
@@ -159,6 +165,18 @@ func (c *Client) addOperationUpdateListenerMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

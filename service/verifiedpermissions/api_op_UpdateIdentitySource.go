@@ -52,11 +52,6 @@ type UpdateIdentitySourceInput struct {
 	// Specifies the details required to communicate with the identity provider (IdP)
 	// associated with this identity source.
 	//
-	// At this time, the only valid member of this structure is a Amazon Cognito user
-	// pool configuration.
-	//
-	// You must specify a userPoolArn , and optionally, a ClientId .
-	//
 	// This member is required.
 	UpdateConfiguration types.UpdateConfiguration
 
@@ -138,6 +133,9 @@ func (c *Client) addOperationUpdateIdentitySourceMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -154,6 +152,9 @@ func (c *Client) addOperationUpdateIdentitySourceMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateIdentitySourceValidationMiddleware(stack); err != nil {
@@ -175,6 +176,18 @@ func (c *Client) addOperationUpdateIdentitySourceMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

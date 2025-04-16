@@ -11,7 +11,6 @@ import (
 	smithytime "github.com/aws/smithy-go/time"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	smithywaiter "github.com/aws/smithy-go/waiter"
-	jmespath "github.com/jmespath/go-jmespath"
 	"time"
 )
 
@@ -120,6 +119,9 @@ func (c *Client) addOperationDescribeNodeAssociationStatusMiddlewares(stack *mid
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -136,6 +138,9 @@ func (c *Client) addOperationDescribeNodeAssociationStatusMiddlewares(stack *mid
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeNodeAssociationStatusValidationMiddleware(stack); err != nil {
@@ -157,6 +162,18 @@ func (c *Client) addOperationDescribeNodeAssociationStatusMiddlewares(stack *mid
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -322,39 +339,28 @@ func (w *NodeAssociatedWaiter) WaitForOutput(ctx context.Context, params *Descri
 func nodeAssociatedStateRetryable(ctx context.Context, input *DescribeNodeAssociationStatusInput, output *DescribeNodeAssociationStatusOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("NodeAssociationStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.NodeAssociationStatus
 		expectedValue := "SUCCESS"
-		value, ok := pathValue.(types.NodeAssociationStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.NodeAssociationStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, nil
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("NodeAssociationStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.NodeAssociationStatus
 		expectedValue := "FAILED"
-		value, ok := pathValue.(types.NodeAssociationStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.NodeAssociationStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 

@@ -42,6 +42,11 @@ type GetPlaybackConfigurationInput struct {
 
 type GetPlaybackConfigurationOutput struct {
 
+	// The setting that indicates what conditioning MediaTailor will perform on ads
+	// that the ad decision server (ADS) returns, and what priority MediaTailor uses
+	// when inserting ads.
+	AdConditioningConfiguration *types.AdConditioningConfiguration
+
 	// The URL for the ad decision server (ADS). This includes the specification of
 	// static parameters and placeholders for dynamic parameters. AWS Elemental
 	// MediaTailor substitutes player-specific and session-specific parameters as
@@ -69,7 +74,7 @@ type GetPlaybackConfigurationOutput struct {
 	// The player parameters and aliases used as dynamic variables during session
 	// initialization. For more information, see [Domain Variables].
 	//
-	// [Domain Variables]: https://docs.aws.amazon.com/mediatailor/latest/ug/variables-domain.html
+	// [Domain Variables]: https://docs.aws.amazon.com/mediatailor/latest/ug/variables-domains.html
 	ConfigurationAliases map[string]map[string]string
 
 	// The configuration for DASH content.
@@ -88,7 +93,8 @@ type GetPlaybackConfigurationOutput struct {
 	// The configuration for pre-roll ad insertion.
 	LivePreRollConfiguration *types.LivePreRollConfiguration
 
-	// The Amazon CloudWatch log settings for a playback configuration.
+	// The configuration that defines where AWS Elemental MediaTailor sends logs for
+	// the playback configuration.
 	LogConfiguration *types.LogConfiguration
 
 	// The configuration for manifest processing rules. Manifest processing rules
@@ -194,6 +200,9 @@ func (c *Client) addOperationGetPlaybackConfigurationMiddlewares(stack *middlewa
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -210,6 +219,9 @@ func (c *Client) addOperationGetPlaybackConfigurationMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetPlaybackConfigurationValidationMiddleware(stack); err != nil {
@@ -231,6 +243,18 @@ func (c *Client) addOperationGetPlaybackConfigurationMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -11,9 +11,10 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Deregisters an instance. Before you deregister an instance, all bridges running
-// on the instance must be stopped. If you want to deregister an instance without
-// stopping the bridges, you must use the --force option.
+//	Deregisters an instance. Before you deregister an instance, all bridges
+//
+// running on the instance must be stopped. If you want to deregister an instance
+// without stopping the bridges, you must use the --force option.
 func (c *Client) DeregisterGatewayInstance(ctx context.Context, params *DeregisterGatewayInstanceInput, optFns ...func(*Options)) (*DeregisterGatewayInstanceOutput, error) {
 	if params == nil {
 		params = &DeregisterGatewayInstanceInput{}
@@ -31,13 +32,13 @@ func (c *Client) DeregisterGatewayInstance(ctx context.Context, params *Deregist
 
 type DeregisterGatewayInstanceInput struct {
 
-	// The Amazon Resource Name (ARN) of the gateway that contains the instance that
+	//  The Amazon Resource Name (ARN) of the gateway that contains the instance that
 	// you want to deregister.
 	//
 	// This member is required.
 	GatewayInstanceArn *string
 
-	// Force the deregistration of an instance. Force will deregister an instance,
+	//  Force the deregistration of an instance. Force will deregister an instance,
 	// even if there are bridges running on it.
 	Force *bool
 
@@ -46,10 +47,10 @@ type DeregisterGatewayInstanceInput struct {
 
 type DeregisterGatewayInstanceOutput struct {
 
-	// The Amazon Resource Name (ARN) of the instance.
+	//  The ARN of the instance.
 	GatewayInstanceArn *string
 
-	// The status of the instance.
+	//  The status of the instance.
 	InstanceState types.InstanceState
 
 	// Metadata pertaining to the operation's result.
@@ -101,6 +102,9 @@ func (c *Client) addOperationDeregisterGatewayInstanceMiddlewares(stack *middlew
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -117,6 +121,9 @@ func (c *Client) addOperationDeregisterGatewayInstanceMiddlewares(stack *middlew
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeregisterGatewayInstanceValidationMiddleware(stack); err != nil {
@@ -138,6 +145,18 @@ func (c *Client) addOperationDeregisterGatewayInstanceMiddlewares(stack *middlew
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

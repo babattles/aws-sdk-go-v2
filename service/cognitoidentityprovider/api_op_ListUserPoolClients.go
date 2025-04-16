@@ -11,7 +11,9 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Lists the clients that have been created for the specified user pool.
+// Given a user pool ID, lists app clients. App clients are sets of rules for the
+// access that you want a user pool to grant to one application. For more
+// information, see [App clients].
 //
 // Amazon Cognito evaluates Identity and Access Management (IAM) policies in
 // requests for this API operation. For this operation, you must use IAM
@@ -25,6 +27,7 @@ import (
 // [Using the Amazon Cognito user pools API and user pool endpoints]
 //
 // [Using the Amazon Cognito user pools API and user pool endpoints]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html
+// [App clients]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-client-apps.html
 // [Signing Amazon Web Services API Requests]: https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html
 func (c *Client) ListUserPoolClients(ctx context.Context, params *ListUserPoolClientsInput, optFns ...func(*Options)) (*ListUserPoolClientsOutput, error) {
 	if params == nil {
@@ -44,17 +47,21 @@ func (c *Client) ListUserPoolClients(ctx context.Context, params *ListUserPoolCl
 // Represents the request to list the user pool clients.
 type ListUserPoolClientsInput struct {
 
-	// The user pool ID for the user pool where you want to list user pool clients.
+	// The ID of the user pool where you want to list user pool clients.
 	//
 	// This member is required.
 	UserPoolId *string
 
-	// The maximum number of results you want the request to return when listing the
-	// user pool clients.
+	// The maximum number of app clients that you want Amazon Cognito to return in the
+	// response.
 	MaxResults *int32
 
-	// An identifier that was returned from the previous call to this operation, which
-	// can be used to return the next set of items in the list.
+	// This API operation returns a limited number of results. The pagination token is
+	// an identifier that you can present in an additional API request with the same
+	// parameters. When you include the pagination token, Amazon Cognito returns the
+	// next set of items after the current list. Subsequent requests return a new
+	// pagination token. By use of this token, you can paginate through the full list
+	// of items.
 	NextToken *string
 
 	noSmithyDocumentSerde
@@ -63,11 +70,13 @@ type ListUserPoolClientsInput struct {
 // Represents the response from the server that lists user pool clients.
 type ListUserPoolClientsOutput struct {
 
-	// An identifier that was returned from the previous call to this operation, which
-	// can be used to return the next set of items in the list.
+	// The identifier that Amazon Cognito returned with the previous request to this
+	// operation. When you include a pagination token in your request, Amazon Cognito
+	// returns the next set of items in the list. By use of this token, you can
+	// paginate through the full list of items.
 	NextToken *string
 
-	// The user pool clients in the response that lists user pool clients.
+	// An array of app clients and their details. Includes app client ID and name.
 	UserPoolClients []types.UserPoolClientDescription
 
 	// Metadata pertaining to the operation's result.
@@ -119,6 +128,9 @@ func (c *Client) addOperationListUserPoolClientsMiddlewares(stack *middleware.St
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -135,6 +147,9 @@ func (c *Client) addOperationListUserPoolClientsMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListUserPoolClientsValidationMiddleware(stack); err != nil {
@@ -158,14 +173,26 @@ func (c *Client) addOperationListUserPoolClientsMiddlewares(stack *middleware.St
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
+		return err
+	}
 	return nil
 }
 
 // ListUserPoolClientsPaginatorOptions is the paginator options for
 // ListUserPoolClients
 type ListUserPoolClientsPaginatorOptions struct {
-	// The maximum number of results you want the request to return when listing the
-	// user pool clients.
+	// The maximum number of app clients that you want Amazon Cognito to return in the
+	// response.
 	Limit int32
 
 	// Set to true if pagination should stop if the service returns a pagination token

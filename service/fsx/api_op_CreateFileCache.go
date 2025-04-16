@@ -21,7 +21,7 @@ import (
 // IncompatibleParameterError . If a file cache with the specified client request
 // token doesn't exist, CreateFileCache does the following:
 //
-//   - Creates a new, empty Amazon File Cache resourcewith an assigned ID, and an
+//   - Creates a new, empty Amazon File Cache resource with an assigned ID, and an
 //     initial lifecycle state of CREATING .
 //
 //   - Returns the description of the cache in JSON format.
@@ -178,6 +178,9 @@ func (c *Client) addOperationCreateFileCacheMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -194,6 +197,9 @@ func (c *Client) addOperationCreateFileCacheMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateFileCacheMiddleware(stack, options); err != nil {
@@ -218,6 +224,18 @@ func (c *Client) addOperationCreateFileCacheMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -62,6 +62,14 @@ type CreateBranchInput struct {
 	//  The build specification (build spec) for the branch.
 	BuildSpec *string
 
+	// The Amazon Resource Name (ARN) of the IAM role to assign to a branch of an SSR
+	// app. The SSR Compute role allows the Amplify Hosting compute service to securely
+	// access specific Amazon Web Services resources based on the role's permissions.
+	// For more information about the SSR Compute role, see [Adding an SSR Compute role]in the Amplify User Guide.
+	//
+	// [Adding an SSR Compute role]: https://docs.aws.amazon.com/amplify/latest/userguide/amplify-SSR-compute-role.html
+	ComputeRoleArn *string
+
 	// The description for the branch.
 	Description *string
 
@@ -86,6 +94,18 @@ type CreateBranchInput struct {
 
 	//  Enables pull request previews for this branch.
 	EnablePullRequestPreview *bool
+
+	// Specifies whether the skew protection feature is enabled for the branch.
+	//
+	// Deployment skew protection is available to Amplify applications to eliminate
+	// version skew issues between client and servers in web applications. When you
+	// apply skew protection to a branch, you can ensure that your clients always
+	// interact with the correct version of server-side assets, regardless of when a
+	// deployment occurs. For more information about skew protection, see [Skew protection for Amplify deployments]in the
+	// Amplify User Guide.
+	//
+	// [Skew protection for Amplify deployments]: https://docs.aws.amazon.com/amplify/latest/userguide/skew-protection.html
+	EnableSkewProtection *bool
 
 	//  The environment variables for the branch.
 	EnvironmentVariables map[string]string
@@ -166,6 +186,9 @@ func (c *Client) addOperationCreateBranchMiddlewares(stack *middleware.Stack, op
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -182,6 +205,9 @@ func (c *Client) addOperationCreateBranchMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateBranchValidationMiddleware(stack); err != nil {
@@ -203,6 +229,18 @@ func (c *Client) addOperationCreateBranchMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

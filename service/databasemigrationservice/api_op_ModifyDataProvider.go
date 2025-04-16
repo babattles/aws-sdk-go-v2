@@ -47,8 +47,8 @@ type ModifyDataProviderInput struct {
 
 	// The type of database engine for the data provider. Valid values include "aurora"
 	// , "aurora-postgresql" , "mysql" , "oracle" , "postgres" , "sqlserver" , redshift
-	// , mariadb , mongodb , and docdb . A value of "aurora" represents Amazon Aurora
-	// MySQL-Compatible Edition.
+	// , mariadb , mongodb , db2 , db2-zos and docdb . A value of "aurora" represents
+	// Amazon Aurora MySQL-Compatible Edition.
 	Engine *string
 
 	// If this attribute is Y, the current call to ModifyDataProvider replaces all
@@ -123,6 +123,9 @@ func (c *Client) addOperationModifyDataProviderMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -139,6 +142,9 @@ func (c *Client) addOperationModifyDataProviderMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpModifyDataProviderValidationMiddleware(stack); err != nil {
@@ -160,6 +166,18 @@ func (c *Client) addOperationModifyDataProviderMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -63,6 +63,9 @@ type CreateEnvironmentInput struct {
 	// The identifier of a customer managed key.
 	KmsKeyId *string
 
+	// The network type required for the runtime environment.
+	NetworkType types.NetworkType
+
 	// Configures the maintenance window that you want for the runtime environment.
 	// The maintenance window must have the format ddd:hh24:mi-ddd:hh24:mi and must be
 	// less than 24 hours. The following two examples are valid maintenance windows:
@@ -146,6 +149,9 @@ func (c *Client) addOperationCreateEnvironmentMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -162,6 +168,9 @@ func (c *Client) addOperationCreateEnvironmentMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateEnvironmentMiddleware(stack, options); err != nil {
@@ -186,6 +195,18 @@ func (c *Client) addOperationCreateEnvironmentMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

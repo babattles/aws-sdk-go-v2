@@ -30,8 +30,7 @@ func (c *Client) UpdateProject(ctx context.Context, params *UpdateProjectInput, 
 
 type UpdateProjectInput struct {
 
-	// The identifier of the Amazon DataZone domain in which a project is to be
-	// updated.
+	// The ID of the Amazon DataZone domain where a project is being updated.
 	//
 	// This member is required.
 	DomainIdentifier *string
@@ -44,11 +43,21 @@ type UpdateProjectInput struct {
 	// The description to be updated as part of the UpdateProject action.
 	Description *string
 
+	// The environment deployment details of the project.
+	EnvironmentDeploymentDetails *types.EnvironmentDeploymentDetails
+
 	// The glossary terms to be updated as part of the UpdateProject action.
 	GlossaryTerms []string
 
 	// The name to be updated as part of the UpdateProject action.
 	Name *string
+
+	// The project profile version to which the project should be updated. You can
+	// only specify the following string for this parameter: latest .
+	ProjectProfileVersion *string
+
+	// The user parameters of the project.
+	UserParameters []types.EnvironmentConfigurationUserParameter
 
 	noSmithyDocumentSerde
 }
@@ -81,6 +90,12 @@ type UpdateProjectOutput struct {
 	// The description of the project that is to be updated.
 	Description *string
 
+	// The ID of the domain unit.
+	DomainUnitId *string
+
+	// The environment deployment details of the project.
+	EnvironmentDeploymentDetails *types.EnvironmentDeploymentDetails
+
 	// Specifies the error message that is returned if the operation cannot be
 	// successfully completed.
 	FailureReasons []types.ProjectDeletionError
@@ -91,8 +106,14 @@ type UpdateProjectOutput struct {
 	// The timestamp of when the project was last updated.
 	LastUpdatedAt *time.Time
 
+	// The ID of the project profile.
+	ProjectProfileId *string
+
 	// The status of the project.
 	ProjectStatus types.ProjectStatus
+
+	// The user parameters of the project.
+	UserParameters []types.EnvironmentConfigurationUserParameter
 
 	// Metadata pertaining to the operation's result.
 	ResultMetadata middleware.Metadata
@@ -143,6 +164,9 @@ func (c *Client) addOperationUpdateProjectMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -159,6 +183,9 @@ func (c *Client) addOperationUpdateProjectMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateProjectValidationMiddleware(stack); err != nil {
@@ -180,6 +207,18 @@ func (c *Client) addOperationUpdateProjectMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

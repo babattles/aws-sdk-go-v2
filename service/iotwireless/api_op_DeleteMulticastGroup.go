@@ -10,7 +10,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Deletes a multicast group if it is not in use by a fuota task.
+// Deletes a multicast group if it is not in use by a FUOTA task.
 func (c *Client) DeleteMulticastGroup(ctx context.Context, params *DeleteMulticastGroupInput, optFns ...func(*Options)) (*DeleteMulticastGroupOutput, error) {
 	if params == nil {
 		params = &DeleteMulticastGroupInput{}
@@ -86,6 +86,9 @@ func (c *Client) addOperationDeleteMulticastGroupMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -102,6 +105,9 @@ func (c *Client) addOperationDeleteMulticastGroupMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteMulticastGroupValidationMiddleware(stack); err != nil {
@@ -123,6 +129,18 @@ func (c *Client) addOperationDeleteMulticastGroupMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

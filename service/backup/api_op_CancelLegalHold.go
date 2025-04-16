@@ -10,8 +10,8 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// This action removes the specified legal hold on a recovery point. This action
-// can only be performed by a user with sufficient permissions.
+// Removes the specified legal hold on a recovery point. This action can only be
+// performed by a user with sufficient permissions.
 func (c *Client) CancelLegalHold(ctx context.Context, params *CancelLegalHoldInput, optFns ...func(*Options)) (*CancelLegalHoldOutput, error) {
 	if params == nil {
 		params = &CancelLegalHoldInput{}
@@ -29,18 +29,17 @@ func (c *Client) CancelLegalHold(ctx context.Context, params *CancelLegalHoldInp
 
 type CancelLegalHoldInput struct {
 
-	// String describing the reason for removing the legal hold.
+	// A string the describes the reason for removing the legal hold.
 	//
 	// This member is required.
 	CancelDescription *string
 
-	// Legal hold ID required to remove the specified legal hold on a recovery point.
+	// The ID of the legal hold.
 	//
 	// This member is required.
 	LegalHoldId *string
 
-	// The integer amount in days specifying amount of days after this API operation
-	// to remove legal hold.
+	// The integer amount, in days, after which to remove legal hold.
 	RetainRecordInDays *int64
 
 	noSmithyDocumentSerde
@@ -96,6 +95,9 @@ func (c *Client) addOperationCancelLegalHoldMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -112,6 +114,9 @@ func (c *Client) addOperationCancelLegalHoldMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCancelLegalHoldValidationMiddleware(stack); err != nil {
@@ -133,6 +138,18 @@ func (c *Client) addOperationCancelLegalHoldMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

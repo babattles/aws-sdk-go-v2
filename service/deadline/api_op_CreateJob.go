@@ -11,7 +11,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Creates a job. A job is a set of instructions that AWS Deadline Cloud uses to
+// Creates a job. A job is a set of instructions that Deadline Cloud uses to
 // schedule and run work on available workers. For more information, see [Deadline Cloud jobs].
 //
 // [Deadline Cloud jobs]: https://docs.aws.amazon.com/deadline-cloud/latest/userguide/deadline-cloud-jobs.html
@@ -37,9 +37,8 @@ type CreateJobInput struct {
 	// This member is required.
 	FarmId *string
 
-	// The priority of the job on a scale of 0 to 100. The highest priority (first
-	// scheduled) is 100. When two jobs have the same priority, the oldest job is
-	// scheduled first.
+	// The priority of the job. The highest priority (first scheduled) is 100. When
+	// two jobs have the same priority, the oldest job is scheduled first.
 	//
 	// This member is required.
 	Priority *int32
@@ -48,16 +47,6 @@ type CreateJobInput struct {
 	//
 	// This member is required.
 	QueueId *string
-
-	// The job template to use for this job.
-	//
-	// This member is required.
-	Template *string
-
-	// The file type for the job template.
-	//
-	// This member is required.
-	TemplateType types.JobTemplateType
 
 	// The attachments for the job. Attach files required for the job to run to a
 	// render job.
@@ -73,8 +62,22 @@ type CreateJobInput struct {
 	// The maximum number of retries for each task.
 	MaxRetriesPerTask *int32
 
+	// The maximum number of worker hosts that can concurrently process a job. When
+	// the maxWorkerCount is reached, no more workers will be assigned to process the
+	// job, even if the fleets assigned to the job's queue has available workers.
+	//
+	// You can't set the maxWorkerCount to 0. If you set it to -1, there is no maximum
+	// number of workers.
+	//
+	// If you don't specify the maxWorkerCount , Deadline Cloud won't throttle the
+	// number of workers used to process the job.
+	MaxWorkerCount *int32
+
 	// The parameters for the job.
 	Parameters map[string]types.JobParameter
+
+	// The job ID for the source job.
+	SourceJobId *string
 
 	// The storage profile ID for the storage profile to connect to the job.
 	StorageProfileId *string
@@ -82,6 +85,12 @@ type CreateJobInput struct {
 	// The initial job status when it is created. Jobs that are created with a
 	// SUSPENDED status will not run until manually requeued.
 	TargetTaskRunStatus types.CreateJobTargetTaskRunStatus
+
+	// The job template to use for this job.
+	Template *string
+
+	// The file type for the job template.
+	TemplateType types.JobTemplateType
 
 	noSmithyDocumentSerde
 }
@@ -142,6 +151,9 @@ func (c *Client) addOperationCreateJobMiddlewares(stack *middleware.Stack, optio
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -158,6 +170,9 @@ func (c *Client) addOperationCreateJobMiddlewares(stack *middleware.Stack, optio
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addEndpointPrefix_opCreateJobMiddleware(stack); err != nil {
@@ -185,6 +200,18 @@ func (c *Client) addOperationCreateJobMiddlewares(stack *middleware.Stack, optio
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

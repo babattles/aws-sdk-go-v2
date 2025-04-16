@@ -37,7 +37,7 @@ type UpdateDomainInput struct {
 	// Specifies the VPC used for non-EFS traffic.
 	//
 	//   - PublicInternetOnly - Non-EFS traffic is through a VPC managed by Amazon
-	//   SageMaker, which allows direct internet access.
+	//   SageMaker AI, which allows direct internet access.
 	//
 	//   - VpcOnly - All Studio traffic is through the specified VPC and subnets.
 	//
@@ -56,7 +56,7 @@ type UpdateDomainInput struct {
 	// to Service .
 	AppSecurityGroupManagement types.AppSecurityGroupManagement
 
-	// The default settings used to create a space within the domain.
+	// The default settings for shared spaces that users create in the domain.
 	DefaultSpaceSettings *types.DefaultSpaceSettings
 
 	// A collection of settings.
@@ -70,6 +70,10 @@ type UpdateDomainInput struct {
 	// If removing subnets, ensure there are no apps in the InService , Pending , or
 	// Deleting state.
 	SubnetIds []string
+
+	// Indicates whether custom tag propagation is supported for the domain. Defaults
+	// to DISABLED .
+	TagPropagation types.TagPropagation
 
 	noSmithyDocumentSerde
 }
@@ -128,6 +132,9 @@ func (c *Client) addOperationUpdateDomainMiddlewares(stack *middleware.Stack, op
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -144,6 +151,9 @@ func (c *Client) addOperationUpdateDomainMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateDomainValidationMiddleware(stack); err != nil {
@@ -165,6 +175,18 @@ func (c *Client) addOperationUpdateDomainMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

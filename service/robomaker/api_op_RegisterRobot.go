@@ -10,13 +10,23 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
+// End of support notice: On September 10, 2025, Amazon Web Services will
+// discontinue support for Amazon Web Services RoboMaker. After September 10, 2025,
+// you will no longer be able to access the Amazon Web Services RoboMaker console
+// or Amazon Web Services RoboMaker resources. For more information on
+// transitioning to Batch to help run containerized simulations, visit [https://aws.amazon.com/blogs/hpc/run-simulations-using-multiple-containers-in-a-single-aws-batch-job/].
+//
 // Registers a robot with a fleet.
 //
-// This API is no longer supported and will throw an error if used.
+// This API is no longer supported and will throw an error if used. For more
+// information, see the January 31, 2022 update in the [Support policy]page.
 //
 // Deprecated: AWS RoboMaker is unable to process this request as the support for
 // the AWS RoboMaker application deployment feature has ended. For additional
 // information, see https://docs.aws.amazon.com/robomaker/latest/dg/fleets.html.
+//
+// [Support policy]: https://docs.aws.amazon.com/robomaker/latest/dg/chapter-support-policy.html#software-support-policy-january2022
+// [https://aws.amazon.com/blogs/hpc/run-simulations-using-multiple-containers-in-a-single-aws-batch-job/]: https://aws.amazon.com/blogs/hpc/run-simulations-using-multiple-containers-in-a-single-aws-batch-job/
 func (c *Client) RegisterRobot(ctx context.Context, params *RegisterRobotInput, optFns ...func(*Options)) (*RegisterRobotOutput, error) {
 	if params == nil {
 		params = &RegisterRobotInput{}
@@ -104,6 +114,9 @@ func (c *Client) addOperationRegisterRobotMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -120,6 +133,9 @@ func (c *Client) addOperationRegisterRobotMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpRegisterRobotValidationMiddleware(stack); err != nil {
@@ -141,6 +157,18 @@ func (c *Client) addOperationRegisterRobotMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

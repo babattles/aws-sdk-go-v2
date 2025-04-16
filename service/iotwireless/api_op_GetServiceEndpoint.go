@@ -32,7 +32,7 @@ type GetServiceEndpointInput struct {
 
 	// The service type for which to get endpoint information about. Can be CUPS for
 	// the Configuration and Update Server endpoint, or LNS for the LoRaWAN Network
-	// Server endpoint or CLAIM for the global endpoint.
+	// Server endpoint.
 	ServiceType types.WirelessGatewayServiceType
 
 	noSmithyDocumentSerde
@@ -98,6 +98,9 @@ func (c *Client) addOperationGetServiceEndpointMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -116,6 +119,9 @@ func (c *Client) addOperationGetServiceEndpointMiddlewares(stack *middleware.Sta
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opGetServiceEndpoint(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -132,6 +138,18 @@ func (c *Client) addOperationGetServiceEndpointMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

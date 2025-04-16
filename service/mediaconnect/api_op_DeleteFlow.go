@@ -29,7 +29,7 @@ func (c *Client) DeleteFlow(ctx context.Context, params *DeleteFlowInput, optFns
 
 type DeleteFlowInput struct {
 
-	// The ARN of the flow that you want to delete.
+	//  The Amazon Resource Name (ARN) of the flow that you want to delete.
 	//
 	// This member is required.
 	FlowArn *string
@@ -39,10 +39,10 @@ type DeleteFlowInput struct {
 
 type DeleteFlowOutput struct {
 
-	// The ARN of the flow that was deleted.
+	//  The ARN of the flow that was deleted.
 	FlowArn *string
 
-	// The status of the flow when the DeleteFlow process begins.
+	//  The status of the flow when the DeleteFlow process begins.
 	Status types.Status
 
 	// Metadata pertaining to the operation's result.
@@ -94,6 +94,9 @@ func (c *Client) addOperationDeleteFlowMiddlewares(stack *middleware.Stack, opti
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -110,6 +113,9 @@ func (c *Client) addOperationDeleteFlowMiddlewares(stack *middleware.Stack, opti
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteFlowValidationMiddleware(stack); err != nil {
@@ -131,6 +137,18 @@ func (c *Client) addOperationDeleteFlowMiddlewares(stack *middleware.Stack, opti
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

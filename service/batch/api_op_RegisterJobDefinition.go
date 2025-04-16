@@ -52,6 +52,9 @@ type RegisterJobDefinitionInput struct {
 	// This member is required.
 	Type types.JobDefinitionType
 
+	// Contains a list of consumable resources required by the job.
+	ConsumableResourceProperties *types.ConsumableResourceProperties
+
 	// An object with properties specific to Amazon ECS-based single-node
 	// container-based jobs. If the job definition's type parameter is container , then
 	// you must specify either containerProperties or nodeProperties . This must not be
@@ -113,7 +116,7 @@ type RegisterJobDefinitionInput struct {
 	RetryStrategy *types.RetryStrategy
 
 	// The scheduling priority for jobs that are submitted with this job definition.
-	// This only affects jobs in job queues with a fair share policy. Jobs with a
+	// This only affects jobs in job queues with a fair-share policy. Jobs with a
 	// higher scheduling priority are scheduled before jobs with a lower scheduling
 	// priority.
 	//
@@ -206,6 +209,9 @@ func (c *Client) addOperationRegisterJobDefinitionMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -222,6 +228,9 @@ func (c *Client) addOperationRegisterJobDefinitionMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpRegisterJobDefinitionValidationMiddleware(stack); err != nil {
@@ -243,6 +252,18 @@ func (c *Client) addOperationRegisterJobDefinitionMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

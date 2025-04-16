@@ -11,10 +11,10 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-//	Stops the specified WorkSpaces.
+// Stops the specified WorkSpaces.
 //
-// You cannot stop a WorkSpace unless it has a running mode of AutoStop and a
-// state of AVAILABLE , IMPAIRED , UNHEALTHY , or ERROR .
+// You cannot stop a WorkSpace unless it has a running mode of AutoStop or Manual
+// and a state of AVAILABLE , IMPAIRED , UNHEALTHY , or ERROR .
 func (c *Client) StopWorkspaces(ctx context.Context, params *StopWorkspacesInput, optFns ...func(*Options)) (*StopWorkspacesOutput, error) {
 	if params == nil {
 		params = &StopWorkspacesInput{}
@@ -94,6 +94,9 @@ func (c *Client) addOperationStopWorkspacesMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -110,6 +113,9 @@ func (c *Client) addOperationStopWorkspacesMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpStopWorkspacesValidationMiddleware(stack); err != nil {
@@ -131,6 +137,18 @@ func (c *Client) addOperationStopWorkspacesMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

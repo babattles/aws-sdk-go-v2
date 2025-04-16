@@ -82,6 +82,13 @@ type GetCostAndUsageWithResourcesInput struct {
 	// This member is required.
 	TimePeriod *types.DateInterval
 
+	// The Amazon Resource Name (ARN) that uniquely identifies a specific billing
+	// view. The ARN is used to specify which particular billing view you want to
+	// interact with or retrieve information from when making API calls related to
+	// Amazon Web Services Billing and Cost Management features. The BillingViewArn can
+	// be retrieved by calling the ListBillingViews API.
+	BillingViewArn *string
+
 	// You can group Amazon Web Services costs using up to two different groups:
 	// DIMENSION , TAG , COST_CATEGORY .
 	GroupBy []types.GroupDefinition
@@ -179,6 +186,9 @@ func (c *Client) addOperationGetCostAndUsageWithResourcesMiddlewares(stack *midd
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -195,6 +205,9 @@ func (c *Client) addOperationGetCostAndUsageWithResourcesMiddlewares(stack *midd
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetCostAndUsageWithResourcesValidationMiddleware(stack); err != nil {
@@ -216,6 +229,18 @@ func (c *Client) addOperationGetCostAndUsageWithResourcesMiddlewares(stack *midd
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

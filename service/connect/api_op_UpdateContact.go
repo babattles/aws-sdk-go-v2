@@ -49,14 +49,58 @@ type UpdateContactInput struct {
 	// This member is required.
 	InstanceId *string
 
+	// The endpoint of the customer for which the contact was initiated. For external
+	// audio contacts, this is usually the end customer's phone number. This value can
+	// only be updated for external audio contacts. For more information, see [Amazon Connect Contact Lens integration]in the
+	// Amazon Connect Administrator Guide.
+	//
+	// [Amazon Connect Contact Lens integration]: https://docs.aws.amazon.com/connect/latest/adminguide/contact-lens-integration.html
+	CustomerEndpoint *types.Endpoint
+
 	// The description of the contact.
 	Description *string
 
 	// The name of the contact.
 	Name *string
 
+	//  Information about the queue associated with a contact. This parameter can only
+	// be updated for external audio contacts. It is used when you integrate
+	// third-party systems with Contact Lens for analytics. For more information, see [Amazon Connect Contact Lens integration]
+	// in the Amazon Connect Administrator Guide.
+	//
+	// [Amazon Connect Contact Lens integration]: https://docs.aws.amazon.com/connect/latest/adminguide/contact-lens-integration.html
+	QueueInfo *types.QueueInfoInput
+
 	// Well-formed data on contact, shown to agents on Contact Control Panel (CCP).
 	References map[string]types.Reference
+
+	// A set of system defined key-value pairs stored on individual contact segments
+	// (unique contact ID) using an attribute map. The attributes are standard Amazon
+	// Connect attributes. They can be accessed in flows.
+	//
+	// Attribute keys can include only alphanumeric, -, and _.
+	//
+	// This field can be used to show channel subtype, such as connect:Guide .
+	//
+	// Currently Contact Expiry is the only segment attribute which can be updated by
+	// using the UpdateContact API.
+	SegmentAttributes map[string]types.SegmentAttributeValue
+
+	// External system endpoint for the contact was initiated. For external audio
+	// contacts, this is the phone number of the external system such as the contact
+	// center. This value can only be updated for external audio contacts. For more
+	// information, see [Amazon Connect Contact Lens integration]in the Amazon Connect Administrator Guide.
+	//
+	// [Amazon Connect Contact Lens integration]: https://docs.aws.amazon.com/connect/latest/adminguide/contact-lens-integration.html
+	SystemEndpoint *types.Endpoint
+
+	// Information about the agent associated with a contact. This parameter can only
+	// be updated for external audio contacts. It is used when you integrate
+	// third-party systems with Contact Lens for analytics. For more information, see [Amazon Connect Contact Lens integration]
+	// in the Amazon Connect Administrator Guide.
+	//
+	// [Amazon Connect Contact Lens integration]: https://docs.aws.amazon.com/connect/latest/adminguide/contact-lens-integration.html
+	UserInfo *types.UserInfo
 
 	noSmithyDocumentSerde
 }
@@ -111,6 +155,9 @@ func (c *Client) addOperationUpdateContactMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -127,6 +174,9 @@ func (c *Client) addOperationUpdateContactMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateContactValidationMiddleware(stack); err != nil {
@@ -148,6 +198,18 @@ func (c *Client) addOperationUpdateContactMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -31,21 +31,23 @@ func (c *Client) GetOutpostSupportedInstanceTypes(ctx context.Context, params *G
 
 type GetOutpostSupportedInstanceTypesInput struct {
 
-	// The ID for the Amazon Web Services Outposts order.
-	//
-	// This member is required.
-	OrderId *string
-
 	// The ID or ARN of the Outpost.
 	//
 	// This member is required.
 	OutpostIdentifier *string
+
+	// The ID of the Outpost asset. An Outpost asset can be a single server within an
+	// Outposts rack or an Outposts server configuration.
+	AssetId *string
 
 	// The maximum page size.
 	MaxResults *int32
 
 	// The pagination token.
 	NextToken *string
+
+	// The ID for the Amazon Web Services Outposts order.
+	OrderId *string
 
 	noSmithyDocumentSerde
 }
@@ -107,6 +109,9 @@ func (c *Client) addOperationGetOutpostSupportedInstanceTypesMiddlewares(stack *
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -123,6 +128,9 @@ func (c *Client) addOperationGetOutpostSupportedInstanceTypesMiddlewares(stack *
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetOutpostSupportedInstanceTypesValidationMiddleware(stack); err != nil {
@@ -144,6 +152,18 @@ func (c *Client) addOperationGetOutpostSupportedInstanceTypesMiddlewares(stack *
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

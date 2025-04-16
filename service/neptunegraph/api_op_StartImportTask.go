@@ -67,6 +67,9 @@ type StartImportTaskInput struct {
 	// Options for how to perform an import.
 	ImportOptions types.ImportOptions
 
+	// The parquet type of the import task.
+	ParquetType types.ParquetType
+
 	noSmithyDocumentSerde
 }
 
@@ -109,6 +112,9 @@ type StartImportTaskOutput struct {
 
 	// Options for how to perform an import.
 	ImportOptions types.ImportOptions
+
+	// The parquet type of the import task.
+	ParquetType types.ParquetType
 
 	// Metadata pertaining to the operation's result.
 	ResultMetadata middleware.Metadata
@@ -159,6 +165,9 @@ func (c *Client) addOperationStartImportTaskMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -175,6 +184,9 @@ func (c *Client) addOperationStartImportTaskMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpStartImportTaskValidationMiddleware(stack); err != nil {
@@ -196,6 +208,18 @@ func (c *Client) addOperationStartImportTaskMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -115,9 +115,18 @@ type GetSpaceOutput struct {
 	Description *string
 
 	// The list of groups that are administrators of the private re:Post.
+	//
+	// Deprecated: This property has been depracted and will be replaced by the roles
+	// property.
 	GroupAdmins []string
 
+	// A map of accessor identifiers and their roles.
+	Roles map[string][]types.Role
+
 	// The list of users that are administrators of the private re:Post.
+	//
+	// Deprecated: This property has been depracted and will be replaced by the roles
+	// property.
 	UserAdmins []string
 
 	// The number of users that have onboarded to the private re:Post.
@@ -175,6 +184,9 @@ func (c *Client) addOperationGetSpaceMiddlewares(stack *middleware.Stack, option
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -191,6 +203,9 @@ func (c *Client) addOperationGetSpaceMiddlewares(stack *middleware.Stack, option
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetSpaceValidationMiddleware(stack); err != nil {
@@ -212,6 +227,18 @@ func (c *Client) addOperationGetSpaceMiddlewares(stack *middleware.Stack, option
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

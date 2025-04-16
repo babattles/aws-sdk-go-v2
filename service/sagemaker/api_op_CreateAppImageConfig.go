@@ -11,9 +11,9 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Creates a configuration for running a SageMaker image as a KernelGateway app.
-// The configuration specifies the Amazon Elastic File System storage volume on the
-// image, and a list of the kernels in the image.
+// Creates a configuration for running a SageMaker AI image as a KernelGateway
+// app. The configuration specifies the Amazon Elastic File System storage volume
+// on the image, and a list of the kernels in the image.
 func (c *Client) CreateAppImageConfig(ctx context.Context, params *CreateAppImageConfigInput, optFns ...func(*Options)) (*CreateAppImageConfigOutput, error) {
 	if params == nil {
 		params = &CreateAppImageConfigInput{}
@@ -111,6 +111,9 @@ func (c *Client) addOperationCreateAppImageConfigMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -127,6 +130,9 @@ func (c *Client) addOperationCreateAppImageConfigMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateAppImageConfigValidationMiddleware(stack); err != nil {
@@ -148,6 +154,18 @@ func (c *Client) addOperationCreateAppImageConfigMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -10,7 +10,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Changes the password for a specified user in a user pool.
+// Changes the password for the currently signed-in user.
 //
 // Authorize this action with a signed-in user's access token. It must include the
 // scope aws.cognito.signin.user.admin .
@@ -46,15 +46,15 @@ type ChangePasswordInput struct {
 	// This member is required.
 	AccessToken *string
 
-	// The old password.
-	//
-	// This member is required.
-	PreviousPassword *string
-
-	// The new password.
+	// A new password that you prompted the user to enter in your application.
 	//
 	// This member is required.
 	ProposedPassword *string
+
+	// The user's previous password. Required if the user has a password. If the user
+	// has no password and only signs in with passwordless authentication options, you
+	// can omit this parameter.
+	PreviousPassword *string
 
 	noSmithyDocumentSerde
 }
@@ -107,6 +107,9 @@ func (c *Client) addOperationChangePasswordMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -123,6 +126,9 @@ func (c *Client) addOperationChangePasswordMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpChangePasswordValidationMiddleware(stack); err != nil {
@@ -144,6 +150,18 @@ func (c *Client) addOperationChangePasswordMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

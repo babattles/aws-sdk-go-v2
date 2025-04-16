@@ -30,6 +30,9 @@ func (c *Client) CreateChannel(ctx context.Context, params *CreateChannelInput, 
 // A request to create a channel
 type CreateChannelInput struct {
 
+	// The Elemental Anywhere settings for this channel.
+	AnywhereSettings *types.AnywhereSettings
+
 	// Specification of CDI inputs for this channel
 	CdiInputSpecification *types.CdiInputSpecification
 
@@ -37,8 +40,14 @@ type CreateChannelInput struct {
 	// SINGLE_PIPELINE for a channel with one pipeline.
 	ChannelClass types.ChannelClass
 
+	// The desired engine version for this channel.
+	ChannelEngineVersion *types.ChannelEngineVersionRequest
+
 	// Placeholder documentation for __listOfOutputDestination
 	Destinations []types.OutputDestination
+
+	// Placeholder documentation for __boolean
+	DryRun *bool
 
 	// Encoder Settings
 	EncoderSettings *types.EncoderSettings
@@ -135,6 +144,9 @@ func (c *Client) addOperationCreateChannelMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -151,6 +163,9 @@ func (c *Client) addOperationCreateChannelMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateChannelMiddleware(stack, options); err != nil {
@@ -175,6 +190,18 @@ func (c *Client) addOperationCreateChannelMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

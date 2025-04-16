@@ -41,6 +41,21 @@ type StartReplicationInput struct {
 
 	// The replication type.
 	//
+	// When the replication type is full-load or full-load-and-cdc , the only valid
+	// value for the first run of the replication is start-replication . This option
+	// will start the replication.
+	//
+	// You can also use ReloadTables to reload specific tables that failed during replication
+	// instead of restarting the replication.
+	//
+	// The resume-processing option isn't applicable for a full-load replication,
+	// because you can't resume partially loaded tables during the full load phase.
+	//
+	// For a full-load-and-cdc replication, DMS migrates table data, and then applies
+	// data changes that occur on the source. To load all the tables again, and start
+	// capturing source changes, use reload-target . Otherwise use resume-processing ,
+	// to replicate the changes from the last stop position.
+	//
 	// This member is required.
 	StartReplicationType *string
 
@@ -59,6 +74,36 @@ type StartReplicationInput struct {
 	// Indicates when you want a change data capture (CDC) operation to stop. The
 	// value can be either server time or commit time.
 	CdcStopPosition *string
+
+	// User-defined settings for the premigration assessment. The possible values are:
+	//
+	//   - ResultLocationFolder : The folder within an Amazon S3 bucket where you want
+	//   DMS to store the results of this assessment run.
+	//
+	//   - ResultEncryptionMode : The supported values are SSE_KMS and SSE_S3 . If
+	//   these values are not provided, then the files are not encrypted at rest. For
+	//   more information, see [Creating Amazon Web Services KMS keys to encrypt Amazon S3 target objects].
+	//
+	//   - ResultKmsKeyArn : The ARN of a customer KMS encryption key that you specify
+	//   when you set ResultEncryptionMode to SSE_KMS .
+	//
+	//   - IncludeOnly : A space-separated list of names for specific individual
+	//   assessments that you want to include. These names come from the default list of
+	//   individual assessments that Database Migration Service supports for the
+	//   associated migration.
+	//
+	//   - Exclude : A space-separated list of names for specific individual
+	//   assessments that you want to exclude. These names come from the default list of
+	//   individual assessments that Database Migration Service supports for the
+	//   associated migration.
+	//
+	//   - FailOnAssessmentFailure : A configurable setting you can set to true (the
+	//   default setting) or false . Use this setting to to stop the replication from
+	//   starting automatically if the assessment fails. This can help you evaluate the
+	//   issue that is preventing the replication from running successfully.
+	//
+	// [Creating Amazon Web Services KMS keys to encrypt Amazon S3 target objects]: https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Target.S3.html#CHAP_Target.S3.KMSKeys
+	PremigrationAssessmentSettings *string
 
 	noSmithyDocumentSerde
 }
@@ -117,6 +162,9 @@ func (c *Client) addOperationStartReplicationMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -133,6 +181,9 @@ func (c *Client) addOperationStartReplicationMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpStartReplicationValidationMiddleware(stack); err != nil {
@@ -154,6 +205,18 @@ func (c *Client) addOperationStartReplicationMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

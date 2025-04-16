@@ -33,6 +33,34 @@ func (e *AccessDeniedException) ErrorCode() string {
 }
 func (e *AccessDeniedException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
+// Request processing failed because dependent condition failed.
+type ConditionalOperationFailedException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *ConditionalOperationFailedException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *ConditionalOperationFailedException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *ConditionalOperationFailedException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "ConditionalOperationFailedException"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *ConditionalOperationFailedException) ErrorFault() smithy.ErrorFault {
+	return smithy.FaultClient
+}
+
 // Operation cannot be performed at this time as there is a conflict with another
 // operation or contact state.
 type ConflictException struct {
@@ -410,7 +438,7 @@ func (e *OutboundContactNotPermittedException) ErrorFault() smithy.ErrorFault {
 
 // Thrown for analyzed content when requested OutputType was not enabled for a
 // given contact. For example, if an OutputType.Raw was requested for a contact
-// that had `RedactedOnly` Redaction policy set in Contact flow.
+// that had `RedactedOnly` Redaction policy set in the flow.
 type OutputTypeNotFoundException struct {
 	Message *string
 
@@ -576,6 +604,8 @@ type ServiceQuotaExceededException struct {
 	Message *string
 
 	ErrorCodeOverride *string
+
+	Reason ServiceQuotaExceededExceptionReason
 
 	noSmithyDocumentSerde
 }

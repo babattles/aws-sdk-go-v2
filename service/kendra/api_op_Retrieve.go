@@ -43,6 +43,12 @@ import (
 // information on what's included in a single capacity unit and the default base
 // capacity for an index, see [Adjusting capacity].
 //
+// If you're using an Amazon Kendra Gen AI Enterprise Edition index, you can only
+// use ATTRIBUTE_FILTER to filter search results by user context. If you're using
+// an Amazon Kendra Gen AI Enterprise Edition index and you try to use USER_TOKEN
+// to configure user context policy, Amazon Kendra returns a ValidationException
+// error.
+//
 // [Adjusting capacity]: https://docs.aws.amazon.com/kendra/latest/dg/adjusting-capacity.html
 // [Query]: https://docs.aws.amazon.com/kendra/latest/APIReference/API_Query.html
 // [query capacity units]: https://docs.aws.amazon.com/kendra/latest/APIReference/API_CapacityUnitsConfiguration.html
@@ -86,6 +92,10 @@ type RetrieveInput struct {
 	//
 	// The AttributeFilter parameter means you can create a set of filtering rules
 	// that a document must satisfy to be included in the query results.
+	//
+	// For Amazon Kendra Gen AI Enterprise Edition indices use AttributeFilter to
+	// enable document filtering for end users using _email_id or include public
+	// documents ( _email_id=null ).
 	AttributeFilter *types.AttributeFilter
 
 	// Overrides relevance tuning configurations of fields/attributes set at the index
@@ -181,6 +191,9 @@ func (c *Client) addOperationRetrieveMiddlewares(stack *middleware.Stack, option
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -197,6 +210,9 @@ func (c *Client) addOperationRetrieveMiddlewares(stack *middleware.Stack, option
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpRetrieveValidationMiddleware(stack); err != nil {
@@ -218,6 +234,18 @@ func (c *Client) addOperationRetrieveMiddlewares(stack *middleware.Stack, option
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

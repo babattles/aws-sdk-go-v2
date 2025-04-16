@@ -1,3 +1,169 @@
+# v1.107.1 (2025-04-03)
+
+* No change notes available for this release.
+
+# v1.107.0 (2025-03-14)
+
+* **Feature**: This release added AllowFullTableExternalDataAccess to glue catalog resource.
+
+# v1.106.2 (2025-03-13)
+
+* No change notes available for this release.
+
+# v1.106.1 (2025-03-04.2)
+
+* **Bug Fix**: Add assurance test for operation order.
+
+# v1.106.0 (2025-02-27)
+
+* **Feature**: Track credential providers via User-Agent Feature ids
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.105.10 (2025-02-18)
+
+* **Bug Fix**: Bump go version to 1.22
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.105.9 (2025-02-05)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.105.8 (2025-02-04)
+
+* No change notes available for this release.
+
+# v1.105.7 (2025-01-31)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.105.6 (2025-01-30)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.105.5 (2025-01-24)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+* **Dependency Update**: Upgrade to smithy-go v1.22.2.
+
+# v1.105.4 (2025-01-22)
+
+* **Documentation**: Docs Update for timeout changes
+
+# v1.105.3 (2025-01-17)
+
+* **Bug Fix**: Fix bug where credentials weren't refreshed during retry loop.
+
+# v1.105.2 (2025-01-15)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.105.1 (2025-01-09)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.105.0 (2024-12-23)
+
+* **Feature**: Add IncludeRoot parameters to GetCatalogs API to return root catalog.
+
+# v1.104.1 (2024-12-19)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.104.0 (2024-12-12)
+
+* **Feature**: To support customer-managed encryption in Data Quality to allow customers encrypt data with their own KMS key, we will add a DataQualityEncryption field to the SecurityConfiguration API where customers can provide their KMS keys.
+
+# v1.103.0 (2024-12-03.2)
+
+* **Feature**: This release includes(1)Zero-ETL integration to ingest data from 3P SaaS and DynamoDB to Redshift/Redlake (2)new properties on Connections to enable reuse; new connection APIs for retrieve/preview metadata (3)support of CRUD operations for Multi-catalog (4)support of automatic statistics collections
+
+# v1.102.1 (2024-12-02)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.102.0 (2024-11-19)
+
+* **Feature**: AWS Glue Data Catalog now enhances managed table optimizations of Apache Iceberg tables that can be accessed only from a specific Amazon Virtual Private Cloud (VPC) environment.
+
+# v1.101.4 (2024-11-18)
+
+* **Dependency Update**: Update to smithy-go v1.22.1.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.101.3 (2024-11-13)
+
+* No change notes available for this release.
+
+# v1.101.2 (2024-11-07)
+
+* **Bug Fix**: Adds case-insensitive handling of error message fields in service responses
+
+# v1.101.1 (2024-11-06)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.101.0 (2024-10-31)
+
+* **Feature**: Add schedule support for AWS Glue column statistics
+
+# v1.100.3 (2024-10-28)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.100.2 (2024-10-08)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.100.1 (2024-10-07)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.100.0 (2024-10-04)
+
+* **Feature**: Add support for HTTP client metrics.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.99.3 (2024-10-03)
+
+* No change notes available for this release.
+
+# v1.99.2 (2024-09-27)
+
+* No change notes available for this release.
+
+# v1.99.1 (2024-09-25)
+
+* No change notes available for this release.
+
+# v1.99.0 (2024-09-23)
+
+* **Feature**: Added AthenaProperties parameter to Glue Connections, allowing Athena to store service specific properties on Glue Connections.
+
+# v1.98.0 (2024-09-20)
+
+* **Feature**: Add tracing and metrics support to service clients.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.97.0 (2024-09-19)
+
+* **Feature**: This change is for releasing TestConnection api SDK model
+
+# v1.96.1 (2024-09-17)
+
+* **Bug Fix**: **BREAKFIX**: Only generate AccountIDEndpointMode config for services that use it. This is a compiler break, but removes no actual functionality, as no services currently use the account ID in endpoint resolution.
+
+# v1.96.0 (2024-09-12)
+
+* **Feature**: AWS Glue is introducing two new optimizers for Apache Iceberg tables: snapshot retention and orphan file deletion. Customers can enable these optimizers and customize their configurations to perform daily maintenance tasks on their Iceberg tables based on their specific requirements.
+
+# v1.95.2 (2024-09-04)
+
+* No change notes available for this release.
+
+# v1.95.1 (2024-09-03)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
 # v1.95.0 (2024-08-21)
 
 * **Feature**: Add optional field JobRunQueuingEnabled to CreateJob and UpdateJob APIs.

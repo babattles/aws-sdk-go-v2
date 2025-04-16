@@ -10,7 +10,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Deletes Slack Channel Configuration
+// Deletes a Slack channel configuration for AWS Chatbot
 func (c *Client) DeleteSlackChannelConfiguration(ctx context.Context, params *DeleteSlackChannelConfigurationInput, optFns ...func(*Options)) (*DeleteSlackChannelConfigurationOutput, error) {
 	if params == nil {
 		params = &DeleteSlackChannelConfigurationInput{}
@@ -28,7 +28,7 @@ func (c *Client) DeleteSlackChannelConfiguration(ctx context.Context, params *De
 
 type DeleteSlackChannelConfigurationInput struct {
 
-	// The ARN of the SlackChannelConfiguration to delete.
+	// The Amazon Resource Name (ARN) of the SlackChannelConfiguration to delete.
 	//
 	// This member is required.
 	ChatConfigurationArn *string
@@ -86,6 +86,9 @@ func (c *Client) addOperationDeleteSlackChannelConfigurationMiddlewares(stack *m
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -102,6 +105,9 @@ func (c *Client) addOperationDeleteSlackChannelConfigurationMiddlewares(stack *m
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteSlackChannelConfigurationValidationMiddleware(stack); err != nil {
@@ -123,6 +129,18 @@ func (c *Client) addOperationDeleteSlackChannelConfigurationMiddlewares(stack *m
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

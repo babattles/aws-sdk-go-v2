@@ -14,9 +14,7 @@ import (
 // Retrieves a fleet's inbound connection permissions. Connection permissions
 // specify IP addresses and port settings that incoming traffic can use to access
 // server processes in the fleet. Game server processes that are running in the
-// fleet must use a port that falls within this range. To connect to game server
-// processes on a container fleet, the port settings should include one or more of
-// the fleet's connection ports.
+// fleet must use a port that falls within this range.
 //
 // Use this operation in the following ways:
 //
@@ -139,6 +137,9 @@ func (c *Client) addOperationDescribeFleetPortSettingsMiddlewares(stack *middlew
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -155,6 +156,9 @@ func (c *Client) addOperationDescribeFleetPortSettingsMiddlewares(stack *middlew
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeFleetPortSettingsValidationMiddleware(stack); err != nil {
@@ -176,6 +180,18 @@ func (c *Client) addOperationDescribeFleetPortSettingsMiddlewares(stack *middlew
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

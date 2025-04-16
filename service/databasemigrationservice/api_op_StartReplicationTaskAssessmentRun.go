@@ -106,6 +106,10 @@ type StartReplicationTaskAssessmentRunInput struct {
 	// this assessment run.
 	ResultLocationFolder *string
 
+	// One or more tags to be assigned to the premigration assessment run that you
+	// want to start.
+	Tags []types.Tag
+
 	noSmithyDocumentSerde
 }
 
@@ -163,6 +167,9 @@ func (c *Client) addOperationStartReplicationTaskAssessmentRunMiddlewares(stack 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -179,6 +186,9 @@ func (c *Client) addOperationStartReplicationTaskAssessmentRunMiddlewares(stack 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpStartReplicationTaskAssessmentRunValidationMiddleware(stack); err != nil {
@@ -200,6 +210,18 @@ func (c *Client) addOperationStartReplicationTaskAssessmentRunMiddlewares(stack 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

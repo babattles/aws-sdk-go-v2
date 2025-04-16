@@ -10,7 +10,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Deletes an Amazon SageMaker model explainability job definition.
+// Deletes an Amazon SageMaker AI model explainability job definition.
 func (c *Client) DeleteModelExplainabilityJobDefinition(ctx context.Context, params *DeleteModelExplainabilityJobDefinitionInput, optFns ...func(*Options)) (*DeleteModelExplainabilityJobDefinitionOutput, error) {
 	if params == nil {
 		params = &DeleteModelExplainabilityJobDefinitionInput{}
@@ -86,6 +86,9 @@ func (c *Client) addOperationDeleteModelExplainabilityJobDefinitionMiddlewares(s
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -102,6 +105,9 @@ func (c *Client) addOperationDeleteModelExplainabilityJobDefinitionMiddlewares(s
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteModelExplainabilityJobDefinitionValidationMiddleware(stack); err != nil {
@@ -123,6 +129,18 @@ func (c *Client) addOperationDeleteModelExplainabilityJobDefinitionMiddlewares(s
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

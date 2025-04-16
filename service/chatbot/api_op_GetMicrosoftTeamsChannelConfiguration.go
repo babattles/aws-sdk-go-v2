@@ -11,7 +11,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Get a single MS Teams Channel Configurations
+// Returns a Microsoft Teams channel configuration in an AWS account.
 func (c *Client) GetMicrosoftTeamsChannelConfiguration(ctx context.Context, params *GetMicrosoftTeamsChannelConfigurationInput, optFns ...func(*Options)) (*GetMicrosoftTeamsChannelConfigurationOutput, error) {
 	if params == nil {
 		params = &GetMicrosoftTeamsChannelConfigurationInput{}
@@ -29,7 +29,8 @@ func (c *Client) GetMicrosoftTeamsChannelConfiguration(ctx context.Context, para
 
 type GetMicrosoftTeamsChannelConfigurationInput struct {
 
-	// The ARN of the MicrosoftTeamsChannelConfiguration to retrieve.
+	// The Amazon Resource Name (ARN) of the MicrosoftTeamsChannelConfiguration to
+	// retrieve.
 	//
 	// This member is required.
 	ChatConfigurationArn *string
@@ -91,6 +92,9 @@ func (c *Client) addOperationGetMicrosoftTeamsChannelConfigurationMiddlewares(st
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -107,6 +111,9 @@ func (c *Client) addOperationGetMicrosoftTeamsChannelConfigurationMiddlewares(st
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetMicrosoftTeamsChannelConfigurationValidationMiddleware(stack); err != nil {
@@ -128,6 +135,18 @@ func (c *Client) addOperationGetMicrosoftTeamsChannelConfigurationMiddlewares(st
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

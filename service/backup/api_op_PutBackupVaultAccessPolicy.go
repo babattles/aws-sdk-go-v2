@@ -32,8 +32,7 @@ type PutBackupVaultAccessPolicyInput struct {
 
 	// The name of a logical container where backups are stored. Backup vaults are
 	// identified by names that are unique to the account used to create them and the
-	// Amazon Web Services Region where they are created. They consist of lowercase
-	// letters, numbers, and hyphens.
+	// Amazon Web Services Region where they are created.
 	//
 	// This member is required.
 	BackupVaultName *string
@@ -94,6 +93,9 @@ func (c *Client) addOperationPutBackupVaultAccessPolicyMiddlewares(stack *middle
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -110,6 +112,9 @@ func (c *Client) addOperationPutBackupVaultAccessPolicyMiddlewares(stack *middle
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpPutBackupVaultAccessPolicyValidationMiddleware(stack); err != nil {
@@ -131,6 +136,18 @@ func (c *Client) addOperationPutBackupVaultAccessPolicyMiddlewares(stack *middle
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

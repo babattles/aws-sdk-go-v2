@@ -20,10 +20,11 @@ import (
 // If the enabled control shows an EnablementStatus of FAILED, Amazon Web Services
 // Control Tower updates the control to match any valid parameters that you supply.
 //
-// If the DriftSummary status for the control shows as DRIFTED, you cannot call
-// this API. Instead, you can update the control by calling DisableControl and
-// again calling EnableControl , or you can run an extending governance operation.
-// For usage examples, see the [Controls Reference Guide].
+// If the DriftSummary status for the control shows as DRIFTED , you cannot call
+// this API. Instead, you can update the control by calling the ResetEnabledControl
+// API. Alternatively, you can call DisableControl and then call EnableControl
+// again. Also, you can run an extending governance operation to repair drift. For
+// usage examples, see the [Controls Reference Guide].
 //
 // [Controls Reference Guide]: https://docs.aws.amazon.com/controltower/latest/controlreference/control-api-examples-short.html
 func (c *Client) UpdateEnabledControl(ctx context.Context, params *UpdateEnabledControlInput, optFns ...func(*Options)) (*UpdateEnabledControlOutput, error) {
@@ -112,6 +113,9 @@ func (c *Client) addOperationUpdateEnabledControlMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -128,6 +132,9 @@ func (c *Client) addOperationUpdateEnabledControlMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateEnabledControlValidationMiddleware(stack); err != nil {
@@ -149,6 +156,18 @@ func (c *Client) addOperationUpdateEnabledControlMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

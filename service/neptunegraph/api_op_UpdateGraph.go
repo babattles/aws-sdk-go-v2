@@ -43,7 +43,7 @@ type UpdateGraphInput struct {
 	// The provisioned memory-optimized Neptune Capacity Units (m-NCUs) to use for the
 	// graph.
 	//
-	// Min = 128
+	// Min = 16
 	ProvisionedMemory *int32
 
 	// Specifies whether or not the graph can be reachable over the internet. All
@@ -162,6 +162,9 @@ func (c *Client) addOperationUpdateGraphMiddlewares(stack *middleware.Stack, opt
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -178,6 +181,9 @@ func (c *Client) addOperationUpdateGraphMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateGraphValidationMiddleware(stack); err != nil {
@@ -199,6 +205,18 @@ func (c *Client) addOperationUpdateGraphMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -62,6 +62,18 @@ func testSnapshot(stack *middleware.Stack, operation string) error {
 	}
 	return snapshotOK{}
 }
+func TestCheckSnapshot_CancelHarvestJob(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CancelHarvestJob(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "CancelHarvestJob")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_CreateChannel(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.CreateChannel(context.Background(), nil, func(o *Options) {
@@ -79,6 +91,18 @@ func TestCheckSnapshot_CreateChannelGroup(t *testing.T) {
 	_, err := svc.CreateChannelGroup(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "CreateChannelGroup")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_CreateHarvestJob(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateHarvestJob(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "CreateHarvestJob")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -194,6 +218,18 @@ func TestCheckSnapshot_GetChannelPolicy(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_GetHarvestJob(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetHarvestJob(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GetHarvestJob")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_GetOriginEndpoint(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.GetOriginEndpoint(context.Background(), nil, func(o *Options) {
@@ -242,6 +278,18 @@ func TestCheckSnapshot_ListChannels(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_ListHarvestJobs(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListHarvestJobs(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListHarvestJobs")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_ListOriginEndpoints(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ListOriginEndpoints(context.Background(), nil, func(o *Options) {
@@ -283,6 +331,30 @@ func TestCheckSnapshot_PutOriginEndpointPolicy(t *testing.T) {
 	_, err := svc.PutOriginEndpointPolicy(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "PutOriginEndpointPolicy")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_ResetChannelState(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ResetChannelState(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ResetChannelState")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_ResetOriginEndpointState(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ResetOriginEndpointState(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ResetOriginEndpointState")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -349,6 +421,18 @@ func TestCheckSnapshot_UpdateOriginEndpoint(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+func TestUpdateSnapshot_CancelHarvestJob(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CancelHarvestJob(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "CancelHarvestJob")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_CreateChannel(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.CreateChannel(context.Background(), nil, func(o *Options) {
@@ -366,6 +450,18 @@ func TestUpdateSnapshot_CreateChannelGroup(t *testing.T) {
 	_, err := svc.CreateChannelGroup(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "CreateChannelGroup")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_CreateHarvestJob(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateHarvestJob(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "CreateHarvestJob")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -481,6 +577,18 @@ func TestUpdateSnapshot_GetChannelPolicy(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_GetHarvestJob(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetHarvestJob(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GetHarvestJob")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_GetOriginEndpoint(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.GetOriginEndpoint(context.Background(), nil, func(o *Options) {
@@ -529,6 +637,18 @@ func TestUpdateSnapshot_ListChannels(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_ListHarvestJobs(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListHarvestJobs(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListHarvestJobs")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_ListOriginEndpoints(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ListOriginEndpoints(context.Background(), nil, func(o *Options) {
@@ -570,6 +690,30 @@ func TestUpdateSnapshot_PutOriginEndpointPolicy(t *testing.T) {
 	_, err := svc.PutOriginEndpointPolicy(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "PutOriginEndpointPolicy")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_ResetChannelState(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ResetChannelState(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ResetChannelState")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_ResetOriginEndpointState(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ResetOriginEndpointState(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ResetOriginEndpointState")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {

@@ -11,7 +11,8 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Lists all authorized Slack Workspaces for AWS Account
+// List all authorized Slack workspaces connected to the AWS Account onboarded
+// with AWS Chatbot.
 func (c *Client) DescribeSlackWorkspaces(ctx context.Context, params *DescribeSlackWorkspacesInput, optFns ...func(*Options)) (*DescribeSlackWorkspacesOutput, error) {
 	if params == nil {
 		params = &DescribeSlackWorkspacesInput{}
@@ -34,7 +35,7 @@ type DescribeSlackWorkspacesInput struct {
 	// the remaining results can be retrieved.
 	MaxResults *int32
 
-	// An optional token returned from a prior request. Use this token for pagination
+	//  An optional token returned from a prior request. Use this token for pagination
 	// of results from this action. If this parameter is specified, the response
 	// includes only results beyond the token, up to the value specified by MaxResults.
 	NextToken *string
@@ -44,12 +45,12 @@ type DescribeSlackWorkspacesInput struct {
 
 type DescribeSlackWorkspacesOutput struct {
 
-	// An optional token returned from a prior request. Use this token for pagination
+	//  An optional token returned from a prior request. Use this token for pagination
 	// of results from this action. If this parameter is specified, the response
 	// includes only results beyond the token, up to the value specified by MaxResults.
 	NextToken *string
 
-	// A list of Slack Workspaces registered with AWS Chatbot.
+	// A list of Slack workspaces registered with AWS Chatbot.
 	SlackWorkspaces []types.SlackWorkspace
 
 	// Metadata pertaining to the operation's result.
@@ -101,6 +102,9 @@ func (c *Client) addOperationDescribeSlackWorkspacesMiddlewares(stack *middlewar
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -119,6 +123,9 @@ func (c *Client) addOperationDescribeSlackWorkspacesMiddlewares(stack *middlewar
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeSlackWorkspaces(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -135,6 +142,18 @@ func (c *Client) addOperationDescribeSlackWorkspacesMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

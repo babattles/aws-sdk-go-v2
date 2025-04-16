@@ -1,3 +1,151 @@
+# v1.56.2 (2025-04-04)
+
+* **Documentation**: Updated max size of Prefixes parameter of Scope data type.
+
+# v1.56.1 (2025-04-03)
+
+* No change notes available for this release.
+
+# v1.56.0 (2025-03-31)
+
+* **Feature**: Amazon S3 adds support for S3 Access Points for directory buckets in AWS Dedicated Local Zones
+
+# v1.55.0 (2025-03-13)
+
+* **Feature**: Updating GetDataAccess response for S3 Access Grants to include the matched Grantee for the requested prefix
+
+# v1.54.1 (2025-03-04.2)
+
+* **Bug Fix**: Add assurance test for operation order.
+
+# v1.54.0 (2025-02-27)
+
+* **Feature**: Track credential providers via User-Agent Feature ids
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.53.5 (2025-02-18)
+
+* **Bug Fix**: Bump go version to 1.22
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.53.4 (2025-02-05)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.53.3 (2025-02-04)
+
+* No change notes available for this release.
+
+# v1.53.2 (2025-01-31)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.53.1 (2025-01-30)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.53.0 (2025-01-27)
+
+* **Feature**: Minor fix to ARN validation for Lambda functions passed to S3 Batch Operations
+
+# v1.52.7 (2025-01-24)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+* **Dependency Update**: Upgrade to smithy-go v1.22.2.
+
+# v1.52.6 (2025-01-17)
+
+* **Bug Fix**: Fix bug where credentials weren't refreshed during retry loop.
+
+# v1.52.5 (2025-01-15)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.52.4 (2025-01-14)
+
+* No change notes available for this release.
+
+# v1.52.3 (2025-01-09)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.52.2 (2025-01-08)
+
+* No change notes available for this release.
+
+# v1.52.1 (2024-12-19)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.52.0 (2024-12-03)
+
+* **Feature**: It allows customers to pass CRC64NVME as a header in S3 Batch Operations copy requests
+
+# v1.51.0 (2024-12-02)
+
+* **Feature**: Amazon S3 introduces support for AWS Dedicated Local Zones
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.50.1 (2024-11-18)
+
+* **Dependency Update**: Update to smithy-go v1.22.1.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.50.0 (2024-11-06)
+
+* **Feature**: Fix ListStorageLensConfigurations and ListStorageLensGroups deserialization for Smithy SDKs.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.49.3 (2024-10-28)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.49.2 (2024-10-08)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.49.1 (2024-10-07)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.49.0 (2024-10-04)
+
+* **Feature**: Add support for HTTP client metrics.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.48.4 (2024-10-03)
+
+* No change notes available for this release.
+
+# v1.48.3 (2024-09-27)
+
+* No change notes available for this release.
+
+# v1.48.2 (2024-09-25)
+
+* No change notes available for this release.
+
+# v1.48.1 (2024-09-23)
+
+* No change notes available for this release.
+
+# v1.48.0 (2024-09-20)
+
+* **Feature**: Add tracing and metrics support to service clients.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.47.1 (2024-09-17)
+
+* **Bug Fix**: **BREAKFIX**: Only generate AccountIDEndpointMode config for services that use it. This is a compiler break, but removes no actual functionality, as no services currently use the account ID in endpoint resolution.
+
+# v1.47.0 (2024-09-04)
+
+* **Feature**: Amazon Simple Storage Service /S3 Access Grants / Features : This release launches new Access Grants API - ListCallerAccessGrants.
+
+# v1.46.6 (2024-09-03)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
 # v1.46.5 (2024-08-22)
 
 * No change notes available for this release.

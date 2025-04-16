@@ -14,7 +14,7 @@ import (
 // Starts an DataSync transfer task. For each task, you can only run one task
 // execution at a time.
 //
-// There are several phases to a task execution. For more information, see [Task execution statuses].
+// There are several steps to a task execution. For more information, see [Task execution statuses].
 //
 // If you're planning to transfer data to or from an Amazon S3 location, review [how DataSync can affect your S3 request charges]
 // and the [DataSync pricing page]before you begin.
@@ -162,6 +162,9 @@ func (c *Client) addOperationStartTaskExecutionMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -178,6 +181,9 @@ func (c *Client) addOperationStartTaskExecutionMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpStartTaskExecutionValidationMiddleware(stack); err != nil {
@@ -199,6 +205,18 @@ func (c *Client) addOperationStartTaskExecutionMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

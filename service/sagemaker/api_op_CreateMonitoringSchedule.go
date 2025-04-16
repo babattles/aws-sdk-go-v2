@@ -11,8 +11,8 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Creates a schedule that regularly starts Amazon SageMaker Processing Jobs to
-// monitor the data captured for an Amazon SageMaker Endpoint.
+// Creates a schedule that regularly starts Amazon SageMaker AI Processing Jobs to
+// monitor the data captured for an Amazon SageMaker AI Endpoint.
 func (c *Client) CreateMonitoringSchedule(ctx context.Context, params *CreateMonitoringScheduleInput, optFns ...func(*Options)) (*CreateMonitoringScheduleOutput, error) {
 	if params == nil {
 		params = &CreateMonitoringScheduleInput{}
@@ -107,6 +107,9 @@ func (c *Client) addOperationCreateMonitoringScheduleMiddlewares(stack *middlewa
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -123,6 +126,9 @@ func (c *Client) addOperationCreateMonitoringScheduleMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateMonitoringScheduleValidationMiddleware(stack); err != nil {
@@ -144,6 +150,18 @@ func (c *Client) addOperationCreateMonitoringScheduleMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

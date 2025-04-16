@@ -80,6 +80,9 @@ type CreateLibraryItemOutput struct {
 	// This member is required.
 	Status *string
 
+	// Indicates whether the library item has been verified.
+	IsVerified *bool
+
 	// The date and time the library item was last updated.
 	UpdatedAt *time.Time
 
@@ -135,6 +138,9 @@ func (c *Client) addOperationCreateLibraryItemMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -151,6 +157,9 @@ func (c *Client) addOperationCreateLibraryItemMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateLibraryItemValidationMiddleware(stack); err != nil {
@@ -172,6 +181,18 @@ func (c *Client) addOperationCreateLibraryItemMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -94,6 +94,10 @@ type GetApplicationOutput struct {
 	// experience.
 	QAppsConfiguration *types.QAppsConfiguration
 
+	// The Amazon QuickSight authentication configuration for the Amazon Q Business
+	// application.
+	QuickSightConfiguration *types.QuickSightConfiguration
+
 	// The Amazon Resource Name (ARN) of the IAM with permissions to access your
 	// CloudWatch logs and metrics.
 	RoleArn *string
@@ -153,6 +157,9 @@ func (c *Client) addOperationGetApplicationMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -169,6 +176,9 @@ func (c *Client) addOperationGetApplicationMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetApplicationValidationMiddleware(stack); err != nil {
@@ -190,6 +200,18 @@ func (c *Client) addOperationGetApplicationMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

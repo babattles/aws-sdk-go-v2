@@ -10,7 +10,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Lists all available node types that you can scale your Redis OSS cluster's or
+// Lists all available node types that you can scale with your cluster's
 // replication group's current node type.
 //
 // When you use the ModifyCacheCluster or ModifyReplicationGroup operations to
@@ -59,15 +59,16 @@ type ListAllowedNodeTypeModificationsInput struct {
 type ListAllowedNodeTypeModificationsOutput struct {
 
 	// A string list, each element of which specifies a cache node type which you can
-	// use to scale your cluster or replication group. When scaling down a Redis OSS
-	// cluster or replication group using ModifyCacheCluster or ModifyReplicationGroup,
-	// use a value from this list for the CacheNodeType parameter.
+	// use to scale your cluster or replication group. When scaling down a Valkey or
+	// Redis OSS cluster or replication group using ModifyCacheCluster or
+	// ModifyReplicationGroup, use a value from this list for the CacheNodeType
+	// parameter.
 	ScaleDownModifications []string
 
 	// A string list, each element of which specifies a cache node type which you can
 	// use to scale your cluster or replication group.
 	//
-	// When scaling up a Redis OSS cluster or replication group using
+	// When scaling up a Valkey or Redis OSS cluster or replication group using
 	// ModifyCacheCluster or ModifyReplicationGroup , use a value from this list for
 	// the CacheNodeType parameter.
 	ScaleUpModifications []string
@@ -121,6 +122,9 @@ func (c *Client) addOperationListAllowedNodeTypeModificationsMiddlewares(stack *
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -139,6 +143,9 @@ func (c *Client) addOperationListAllowedNodeTypeModificationsMiddlewares(stack *
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListAllowedNodeTypeModifications(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -155,6 +162,18 @@ func (c *Client) addOperationListAllowedNodeTypeModificationsMiddlewares(stack *
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

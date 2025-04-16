@@ -11,7 +11,8 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Displays the details of a reservation. The response includes the reservation
+//	Displays the details of a reservation. The response includes the reservation
+//
 // name, state, start date and time, and the details of the offering that make up
 // the rest of the reservation (such as price, duration, and outbound bandwidth).
 func (c *Client) DescribeReservation(ctx context.Context, params *DescribeReservationInput, optFns ...func(*Options)) (*DescribeReservationOutput, error) {
@@ -31,7 +32,7 @@ func (c *Client) DescribeReservation(ctx context.Context, params *DescribeReserv
 
 type DescribeReservationInput struct {
 
-	// The Amazon Resource Name (ARN) of the reservation.
+	// The Amazon Resource Name (ARN) of the offering.
 	//
 	// This member is required.
 	ReservationArn *string
@@ -41,7 +42,7 @@ type DescribeReservationInput struct {
 
 type DescribeReservationOutput struct {
 
-	// A pricing agreement for a discounted rate for a specific outbound bandwidth
+	//  A pricing agreement for a discounted rate for a specific outbound bandwidth
 	// that your MediaConnect account will use each month over a specific time period.
 	// The discounted rate in the reservation applies to outbound bandwidth for all
 	// flows from your account until your account reaches the amount of bandwidth in
@@ -98,6 +99,9 @@ func (c *Client) addOperationDescribeReservationMiddlewares(stack *middleware.St
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -114,6 +118,9 @@ func (c *Client) addOperationDescribeReservationMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeReservationValidationMiddleware(stack); err != nil {
@@ -135,6 +142,18 @@ func (c *Client) addOperationDescribeReservationMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

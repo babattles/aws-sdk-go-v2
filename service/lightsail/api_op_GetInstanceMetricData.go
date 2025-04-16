@@ -140,7 +140,7 @@ type GetInstanceMetricDataInput struct {
 	//
 	// Unit : The published unit is Count .
 	//
-	// [Viewing instance burst capacity in Amazon Lightsail]: https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-viewing-instance-burst-capacity
+	// [Viewing instance burst capacity in Amazon Lightsail]: https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-viewing-instance-burst-capacity
 	//
 	// This member is required.
 	MetricName types.InstanceMetricName
@@ -252,6 +252,9 @@ func (c *Client) addOperationGetInstanceMetricDataMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -268,6 +271,9 @@ func (c *Client) addOperationGetInstanceMetricDataMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetInstanceMetricDataValidationMiddleware(stack); err != nil {
@@ -289,6 +295,18 @@ func (c *Client) addOperationGetInstanceMetricDataMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

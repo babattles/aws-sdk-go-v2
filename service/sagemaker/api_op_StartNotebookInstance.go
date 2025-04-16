@@ -12,8 +12,9 @@ import (
 
 // Launches an ML compute instance with the latest version of the libraries and
 // attaches your ML storage volume. After configuring the notebook instance,
-// SageMaker sets the notebook instance status to InService . A notebook instance's
-// status must be InService before you can connect to your Jupyter notebook.
+// SageMaker AI sets the notebook instance status to InService . A notebook
+// instance's status must be InService before you can connect to your Jupyter
+// notebook.
 func (c *Client) StartNotebookInstance(ctx context.Context, params *StartNotebookInstanceInput, optFns ...func(*Options)) (*StartNotebookInstanceOutput, error) {
 	if params == nil {
 		params = &StartNotebookInstanceInput{}
@@ -89,6 +90,9 @@ func (c *Client) addOperationStartNotebookInstanceMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -105,6 +109,9 @@ func (c *Client) addOperationStartNotebookInstanceMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpStartNotebookInstanceValidationMiddleware(stack); err != nil {
@@ -126,6 +133,18 @@ func (c *Client) addOperationStartNotebookInstanceMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

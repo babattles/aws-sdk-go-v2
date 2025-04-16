@@ -75,6 +75,9 @@ type GetReadSetMetadataOutput struct {
 	// This member is required.
 	Status types.ReadSetStatus
 
+	// The read set's creation job ID.
+	CreationJobId *string
+
 	//  The creation type of the read set.
 	CreationType types.CreationType
 
@@ -156,6 +159,9 @@ func (c *Client) addOperationGetReadSetMetadataMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -172,6 +178,9 @@ func (c *Client) addOperationGetReadSetMetadataMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addEndpointPrefix_opGetReadSetMetadataMiddleware(stack); err != nil {
@@ -196,6 +205,18 @@ func (c *Client) addOperationGetReadSetMetadataMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -11,11 +11,11 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Returns a list of the conformance packs and their associated compliance status
-// with the count of compliant and noncompliant Config rules within each
-// conformance pack. Also returns the total rule count which includes compliant
-// rules, noncompliant rules, and rules that cannot be evaluated due to
-// insufficient data.
+// Returns a list of the existing and deleted conformance packs and their
+// associated compliance status with the count of compliant and noncompliant Config
+// rules within each conformance pack. Also returns the total rule count which
+// includes compliant rules, noncompliant rules, and rules that cannot be evaluated
+// due to insufficient data.
 //
 // The results can return an empty result page, but if you have a nextToken , the
 // results are displayed on the next page.
@@ -113,6 +113,9 @@ func (c *Client) addOperationDescribeAggregateComplianceByConformancePacksMiddle
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -129,6 +132,9 @@ func (c *Client) addOperationDescribeAggregateComplianceByConformancePacksMiddle
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeAggregateComplianceByConformancePacksValidationMiddleware(stack); err != nil {
@@ -150,6 +156,18 @@ func (c *Client) addOperationDescribeAggregateComplianceByConformancePacksMiddle
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

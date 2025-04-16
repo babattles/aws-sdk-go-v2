@@ -65,9 +65,12 @@ type DescribeAppOutput struct {
 	// The type of app.
 	AppType types.AppType
 
+	// The lifecycle configuration that runs before the default lifecycle configuration
+	BuiltInLifecycleConfigArn *string
+
 	// The creation time of the application.
 	//
-	// After an application has been shut down for 24 hours, SageMaker deletes all
+	// After an application has been shut down for 24 hours, SageMaker AI deletes all
 	// metadata for the application. To be considered an update and retain application
 	// metadata, applications must be restarted within 24 hours after the previous
 	// application has been shut down. After this time window, creation of an
@@ -85,11 +88,14 @@ type DescribeAppOutput struct {
 	LastHealthCheckTimestamp *time.Time
 
 	// The timestamp of the last user's activity. LastUserActivityTimestamp is also
-	// updated when SageMaker performs health checks without user activity. As a
+	// updated when SageMaker AI performs health checks without user activity. As a
 	// result, this value is set to the same value as LastHealthCheckTimestamp .
 	LastUserActivityTimestamp *time.Time
 
-	// The instance type and the Amazon Resource Name (ARN) of the SageMaker image
+	//  Indicates whether the application is launched in recovery mode.
+	RecoveryMode *bool
+
+	// The instance type and the Amazon Resource Name (ARN) of the SageMaker AI image
 	// created on the instance.
 	ResourceSpec *types.ResourceSpec
 
@@ -152,6 +158,9 @@ func (c *Client) addOperationDescribeAppMiddlewares(stack *middleware.Stack, opt
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -168,6 +177,9 @@ func (c *Client) addOperationDescribeAppMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeAppValidationMiddleware(stack); err != nil {
@@ -189,6 +201,18 @@ func (c *Client) addOperationDescribeAppMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

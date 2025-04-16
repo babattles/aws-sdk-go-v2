@@ -35,6 +35,10 @@ type GetBasePathMappingsInput struct {
 	// This member is required.
 	DomainName *string
 
+	//  The identifier for the domain name resource. Supported only for private custom
+	// domain names.
+	DomainNameId *string
+
 	// The maximum number of returned results per page. The default value is 25 and
 	// the maximum value is 500.
 	Limit *int32
@@ -103,6 +107,9 @@ func (c *Client) addOperationGetBasePathMappingsMiddlewares(stack *middleware.St
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -119,6 +126,9 @@ func (c *Client) addOperationGetBasePathMappingsMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetBasePathMappingsValidationMiddleware(stack); err != nil {
@@ -143,6 +153,18 @@ func (c *Client) addOperationGetBasePathMappingsMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -55,7 +55,8 @@ type UpdateLogPatternInput struct {
 	// configure custom log patterns from the console, a Low severity pattern
 	// translates to a 750,000 rank. A Medium severity pattern translates to a 500,000
 	// rank. And a High severity pattern translates to a 250,000 rank. Rank values
-	// less than 1 or greater than 1,000,000 are reserved for AWS-provided patterns.
+	// less than 1 or greater than 1,000,000 are reserved for Amazon Web Services
+	// provided patterns.
 	Rank int32
 
 	noSmithyDocumentSerde
@@ -118,6 +119,9 @@ func (c *Client) addOperationUpdateLogPatternMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -134,6 +138,9 @@ func (c *Client) addOperationUpdateLogPatternMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateLogPatternValidationMiddleware(stack); err != nil {
@@ -155,6 +162,18 @@ func (c *Client) addOperationUpdateLogPatternMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

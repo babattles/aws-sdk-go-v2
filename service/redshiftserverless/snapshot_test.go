@@ -386,6 +386,18 @@ func TestCheckSnapshot_GetTableRestoreStatus(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_GetTrack(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetTrack(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GetTrack")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_GetUsageLimit(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.GetUsageLimit(context.Background(), nil, func(o *Options) {
@@ -427,6 +439,18 @@ func TestCheckSnapshot_ListEndpointAccess(t *testing.T) {
 	_, err := svc.ListEndpointAccess(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "ListEndpointAccess")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_ListManagedWorkgroups(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListManagedWorkgroups(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListManagedWorkgroups")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -511,6 +535,18 @@ func TestCheckSnapshot_ListTagsForResource(t *testing.T) {
 	_, err := svc.ListTagsForResource(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "ListTagsForResource")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_ListTracks(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListTracks(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListTracks")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -1045,6 +1081,18 @@ func TestUpdateSnapshot_GetTableRestoreStatus(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_GetTrack(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetTrack(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GetTrack")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_GetUsageLimit(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.GetUsageLimit(context.Background(), nil, func(o *Options) {
@@ -1086,6 +1134,18 @@ func TestUpdateSnapshot_ListEndpointAccess(t *testing.T) {
 	_, err := svc.ListEndpointAccess(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "ListEndpointAccess")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_ListManagedWorkgroups(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListManagedWorkgroups(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListManagedWorkgroups")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -1170,6 +1230,18 @@ func TestUpdateSnapshot_ListTagsForResource(t *testing.T) {
 	_, err := svc.ListTagsForResource(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "ListTagsForResource")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_ListTracks(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListTracks(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListTracks")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {

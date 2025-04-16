@@ -16,6 +16,7 @@ import (
 	"github.com/aws/smithy-go/middleware"
 	"github.com/aws/smithy-go/ptr"
 	smithytime "github.com/aws/smithy-go/time"
+	"github.com/aws/smithy-go/tracing"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	"io"
 	"strings"
@@ -45,6 +46,10 @@ func (m *awsRestjson1_deserializeOpInvokeEndpoint) HandleDeserialize(ctx context
 		return out, metadata, err
 	}
 
+	_, span := tracing.StartSpan(ctx, "OperationDeserializer")
+	endTimer := startMetricTimer(ctx, "client.call.deserialization_duration")
+	defer endTimer()
+	defer span.End()
 	response, ok := out.RawResponse.(*smithyhttp.Response)
 	if !ok {
 		return out, metadata, &smithy.DeserializationError{Err: fmt.Errorf("unknown transport type %T", out.RawResponse)}
@@ -66,6 +71,7 @@ func (m *awsRestjson1_deserializeOpInvokeEndpoint) HandleDeserialize(ctx context
 		return out, metadata, &smithy.DeserializationError{Err: fmt.Errorf("failed to deserialize response payload, %w", err)}
 	}
 
+	span.End()
 	return out, metadata, err
 }
 
@@ -143,6 +149,11 @@ func awsRestjson1_deserializeOpHttpBindingsInvokeEndpointOutput(v *InvokeEndpoin
 		return fmt.Errorf("unsupported deserialization for nil %T", v)
 	}
 
+	if headerValues := response.Header.Values("X-Amzn-SageMaker-Closed-Session-Id"); len(headerValues) != 0 {
+		headerValues[0] = strings.TrimSpace(headerValues[0])
+		v.ClosedSessionId = ptr.String(headerValues[0])
+	}
+
 	if headerValues := response.Header.Values("Content-Type"); len(headerValues) != 0 {
 		headerValues[0] = strings.TrimSpace(headerValues[0])
 		v.ContentType = ptr.String(headerValues[0])
@@ -156,6 +167,11 @@ func awsRestjson1_deserializeOpHttpBindingsInvokeEndpointOutput(v *InvokeEndpoin
 	if headerValues := response.Header.Values("x-Amzn-Invoked-Production-Variant"); len(headerValues) != 0 {
 		headerValues[0] = strings.TrimSpace(headerValues[0])
 		v.InvokedProductionVariant = ptr.String(headerValues[0])
+	}
+
+	if headerValues := response.Header.Values("X-Amzn-SageMaker-New-Session-Id"); len(headerValues) != 0 {
+		headerValues[0] = strings.TrimSpace(headerValues[0])
+		v.NewSessionId = ptr.String(headerValues[0])
 	}
 
 	return nil
@@ -197,6 +213,10 @@ func (m *awsRestjson1_deserializeOpInvokeEndpointAsync) HandleDeserialize(ctx co
 		return out, metadata, err
 	}
 
+	_, span := tracing.StartSpan(ctx, "OperationDeserializer")
+	endTimer := startMetricTimer(ctx, "client.call.deserialization_duration")
+	defer endTimer()
+	defer span.End()
 	response, ok := out.RawResponse.(*smithyhttp.Response)
 	if !ok {
 		return out, metadata, &smithy.DeserializationError{Err: fmt.Errorf("unknown transport type %T", out.RawResponse)}
@@ -241,6 +261,7 @@ func (m *awsRestjson1_deserializeOpInvokeEndpointAsync) HandleDeserialize(ctx co
 		}
 	}
 
+	span.End()
 	return out, metadata, err
 }
 
@@ -376,6 +397,10 @@ func (m *awsRestjson1_deserializeOpInvokeEndpointWithResponseStream) HandleDeser
 		return out, metadata, err
 	}
 
+	_, span := tracing.StartSpan(ctx, "OperationDeserializer")
+	endTimer := startMetricTimer(ctx, "client.call.deserialization_duration")
+	defer endTimer()
+	defer span.End()
 	response, ok := out.RawResponse.(*smithyhttp.Response)
 	if !ok {
 		return out, metadata, &smithy.DeserializationError{Err: fmt.Errorf("unknown transport type %T", out.RawResponse)}
@@ -392,6 +417,7 @@ func (m *awsRestjson1_deserializeOpInvokeEndpointWithResponseStream) HandleDeser
 		return out, metadata, &smithy.DeserializationError{Err: fmt.Errorf("failed to decode response with invalid Http bindings, %w", err)}
 	}
 
+	span.End()
 	return out, metadata, err
 }
 
@@ -666,7 +692,7 @@ func awsRestjson1_deserializeDocumentInternalStreamFailure(v **types.InternalStr
 
 	for key, value := range shape {
 		switch key {
-		case "Message":
+		case "message", "Message":
 			if value != nil {
 				jtv, ok := value.(string)
 				if !ok {
@@ -715,7 +741,7 @@ func awsRestjson1_deserializeDocumentModelStreamError(v **types.ModelStreamError
 				sv.ErrorCode_ = ptr.String(jtv)
 			}
 
-		case "Message":
+		case "message", "Message":
 			if value != nil {
 				jtv, ok := value.(string)
 				if !ok {
@@ -1043,7 +1069,7 @@ func awsRestjson1_deserializeDocumentInternalDependencyException(v **types.Inter
 
 	for key, value := range shape {
 		switch key {
-		case "Message":
+		case "message", "Message":
 			if value != nil {
 				jtv, ok := value.(string)
 				if !ok {
@@ -1083,7 +1109,7 @@ func awsRestjson1_deserializeDocumentInternalFailure(v **types.InternalFailure, 
 
 	for key, value := range shape {
 		switch key {
-		case "Message":
+		case "message", "Message":
 			if value != nil {
 				jtv, ok := value.(string)
 				if !ok {
@@ -1132,7 +1158,7 @@ func awsRestjson1_deserializeDocumentModelError(v **types.ModelError, value inte
 				sv.LogStreamArn = ptr.String(jtv)
 			}
 
-		case "Message":
+		case "message", "Message":
 			if value != nil {
 				jtv, ok := value.(string)
 				if !ok {
@@ -1194,7 +1220,7 @@ func awsRestjson1_deserializeDocumentModelNotReadyException(v **types.ModelNotRe
 
 	for key, value := range shape {
 		switch key {
-		case "Message":
+		case "message", "Message":
 			if value != nil {
 				jtv, ok := value.(string)
 				if !ok {
@@ -1234,7 +1260,7 @@ func awsRestjson1_deserializeDocumentServiceUnavailable(v **types.ServiceUnavail
 
 	for key, value := range shape {
 		switch key {
-		case "Message":
+		case "message", "Message":
 			if value != nil {
 				jtv, ok := value.(string)
 				if !ok {
@@ -1274,7 +1300,7 @@ func awsRestjson1_deserializeDocumentValidationError(v **types.ValidationError, 
 
 	for key, value := range shape {
 		switch key {
-		case "Message":
+		case "message", "Message":
 			if value != nil {
 				jtv, ok := value.(string)
 				if !ok {

@@ -71,8 +71,8 @@ type EnableSecurityHubInput struct {
 	ControlFindingGenerator types.ControlFindingGenerator
 
 	// Whether to enable the security standards that Security Hub has designated as
-	// automatically enabled. If you do not provide a value for EnableDefaultStandards
-	// , it is set to true . To not enable the automatically enabled standards, set
+	// automatically enabled. If you don't provide a value for EnableDefaultStandards ,
+	// it is set to true . To not enable the automatically enabled standards, set
 	// EnableDefaultStandards to false .
 	EnableDefaultStandards *bool
 
@@ -132,6 +132,9 @@ func (c *Client) addOperationEnableSecurityHubMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -150,6 +153,9 @@ func (c *Client) addOperationEnableSecurityHubMiddlewares(stack *middleware.Stac
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opEnableSecurityHub(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -166,6 +172,18 @@ func (c *Client) addOperationEnableSecurityHubMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

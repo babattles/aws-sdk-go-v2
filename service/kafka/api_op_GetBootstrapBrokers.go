@@ -10,7 +10,12 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// A list of brokers that a client application can use to bootstrap.
+// A list of brokers that a client application can use to bootstrap. This list
+// doesn't necessarily include all of the brokers in the cluster. The following
+// Python 3.6 example shows how you can use the Amazon Resource Name (ARN) of a
+// cluster to get its bootstrap brokers. If you don't know the ARN of your cluster,
+// you can use the ListClusters operation to get the ARNs of all the clusters in
+// this account and Region.
 func (c *Client) GetBootstrapBrokers(ctx context.Context, params *GetBootstrapBrokersInput, optFns ...func(*Options)) (*GetBootstrapBrokersOutput, error) {
 	if params == nil {
 		params = &GetBootstrapBrokersInput{}
@@ -122,6 +127,9 @@ func (c *Client) addOperationGetBootstrapBrokersMiddlewares(stack *middleware.St
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -138,6 +146,9 @@ func (c *Client) addOperationGetBootstrapBrokersMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetBootstrapBrokersValidationMiddleware(stack); err != nil {
@@ -159,6 +170,18 @@ func (c *Client) addOperationGetBootstrapBrokersMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

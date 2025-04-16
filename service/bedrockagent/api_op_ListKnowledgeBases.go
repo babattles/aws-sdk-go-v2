@@ -11,7 +11,8 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Lists the knowledge bases in an account and information about each of them.
+// Lists the knowledge bases in an account. The list also includesinformation
+// about each knowledge base.
 func (c *Client) ListKnowledgeBases(ctx context.Context, params *ListKnowledgeBasesInput, optFns ...func(*Options)) (*ListKnowledgeBasesOutput, error) {
 	if params == nil {
 		params = &ListKnowledgeBasesInput{}
@@ -45,7 +46,7 @@ type ListKnowledgeBasesInput struct {
 
 type ListKnowledgeBasesOutput struct {
 
-	// A list of objects, each of which contains information about a knowledge base.
+	// A list of knowledge bases with information about each knowledge base.
 	//
 	// This member is required.
 	KnowledgeBaseSummaries []types.KnowledgeBaseSummary
@@ -104,6 +105,9 @@ func (c *Client) addOperationListKnowledgeBasesMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -122,6 +126,9 @@ func (c *Client) addOperationListKnowledgeBasesMiddlewares(stack *middleware.Sta
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListKnowledgeBases(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -138,6 +145,18 @@ func (c *Client) addOperationListKnowledgeBasesMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

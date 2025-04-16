@@ -1,3 +1,173 @@
+# v1.72.1 (2025-04-03)
+
+* No change notes available for this release.
+
+# v1.72.0 (2025-04-02)
+
+* **Feature**: Added support for SMPTE 2110 inputs when running a channel in a MediaLive Anywhere cluster. This feature enables ingestion of SMPTE 2110-compliant video, audio, and ancillary streams by reading SDP files that AWS Elemental MediaLive can retrieve from a network source.
+
+# v1.71.0 (2025-03-11)
+
+* **Feature**: Add an enum option DISABLED for Output Locking Mode under Global Configuration.
+
+# v1.70.0 (2025-03-10)
+
+* **Feature**: Adds defaultFontSize and defaultLineHeight as options in the EbuTtDDestinationSettings within the caption descriptions for an output stream.
+
+# v1.69.1 (2025-03-04.2)
+
+* **Bug Fix**: Add assurance test for operation order.
+
+# v1.69.0 (2025-02-27)
+
+* **Feature**: Track credential providers via User-Agent Feature ids
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.68.1 (2025-02-25)
+
+* No change notes available for this release.
+
+# v1.68.0 (2025-02-18)
+
+* **Feature**: Adds support for creating CloudWatchAlarmTemplates for AWS Elemental MediaTailor Playback Configuration resources.
+* **Bug Fix**: Bump go version to 1.22
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.67.0 (2025-02-12)
+
+* **Feature**: Adds a RequestId parameter to all MediaLive Workflow Monitor create operations.  The RequestId parameter allows idempotent operations.
+
+# v1.66.4 (2025-02-05)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.66.3 (2025-01-31)
+
+* **Dependency Update**: Switch to code-generated waiter matchers, removing the dependency on go-jmespath.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.66.2 (2025-01-30)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.66.1 (2025-01-24)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+* **Dependency Update**: Upgrade to smithy-go v1.22.2.
+
+# v1.66.0 (2025-01-22)
+
+* **Feature**: AWS Elemental MediaLive adds a new feature, ID3 segment tagging, in CMAF Ingest output groups. It allows customers to insert ID3 tags into every output segment, controlled by a newly added channel schedule action Id3SegmentTagging.
+
+# v1.65.4 (2025-01-17)
+
+* **Bug Fix**: Fix bug where credentials weren't refreshed during retry loop.
+
+# v1.65.3 (2025-01-15)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.65.2 (2025-01-14)
+
+* **Bug Fix**: Fix issue where waiters were not failing on unmatched errors as they should. This may have breaking behavioral changes for users in fringe cases. See [this announcement](https://github.com/aws/aws-sdk-go-v2/discussions/2954) for more information.
+
+# v1.65.1 (2025-01-09)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.65.0 (2024-12-19)
+
+* **Feature**: MediaLive is releasing ListVersions api
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.64.0 (2024-12-16)
+
+* **Feature**: AWS Elemental MediaLive adds three new features: MediaPackage v2 endpoint support for live stream delivery, KLV metadata passthrough in CMAF Ingest output groups, and Metadata Name Modifier in CMAF Ingest output groups for customizing metadata track names in output streams.
+
+# v1.63.0 (2024-12-09)
+
+* **Feature**: H265 outputs now support disabling the deblocking filter.
+
+# v1.62.7 (2024-12-02)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.62.6 (2024-11-18)
+
+* **Dependency Update**: Update to smithy-go v1.22.1.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.62.5 (2024-11-07)
+
+* **Bug Fix**: Adds case-insensitive handling of error message fields in service responses
+
+# v1.62.4 (2024-11-06)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.62.3 (2024-10-28)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.62.2 (2024-10-08)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.62.1 (2024-10-07)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.62.0 (2024-10-04)
+
+* **Feature**: Add support for HTTP client metrics.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.61.4 (2024-10-03)
+
+* No change notes available for this release.
+
+# v1.61.3 (2024-09-27)
+
+* No change notes available for this release.
+
+# v1.61.2 (2024-09-25)
+
+* No change notes available for this release.
+
+# v1.61.1 (2024-09-23)
+
+* No change notes available for this release.
+
+# v1.61.0 (2024-09-20)
+
+* **Feature**: Add tracing and metrics support to service clients.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.60.0 (2024-09-19)
+
+* **Feature**: Adds Bandwidth Reduction Filtering for HD AVC and HEVC encodes, multiplex container settings.
+
+# v1.59.1 (2024-09-17)
+
+* **Bug Fix**: **BREAKFIX**: Only generate AccountIDEndpointMode config for services that use it. This is a compiler break, but removes no actual functionality, as no services currently use the account ID in endpoint resolution.
+
+# v1.59.0 (2024-09-16)
+
+* **Feature**: Removing the ON_PREMISE enum from the input settings field.
+
+# v1.58.0 (2024-09-11)
+
+* **Feature**: Adds AV1 Codec support, SRT ouputs, and MediaLive Anywhere support.
+
+# v1.57.1 (2024-09-04)
+
+* No change notes available for this release.
+
+# v1.57.0 (2024-09-03)
+
+* **Feature**: Added MinQP as a Rate Control option for H264 and H265 encodes.
+* **Dependency Update**: Updated to the latest SDK module versions
+
 # v1.56.1 (2024-08-15)
 
 * **Dependency Update**: Bump minimum Go version to 1.21.

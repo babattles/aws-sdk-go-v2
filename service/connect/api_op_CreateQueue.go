@@ -11,8 +11,6 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// This API is in preview release for Amazon Connect and is subject to change.
-//
 // Creates a new queue for the specified Amazon Connect instance.
 //
 //   - If the phone number is claimed to a traffic distribution group that was
@@ -78,6 +76,9 @@ type CreateQueueInput struct {
 
 	// The outbound caller ID name, number, and outbound whisper flow.
 	OutboundCallerConfig *types.OutboundCallerConfig
+
+	// The outbound email address ID for a specified queue.
+	OutboundEmailConfig *types.OutboundEmailConfig
 
 	// The quick connects available to agents who are working the queue.
 	QuickConnectIds []string
@@ -146,6 +147,9 @@ func (c *Client) addOperationCreateQueueMiddlewares(stack *middleware.Stack, opt
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -162,6 +166,9 @@ func (c *Client) addOperationCreateQueueMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateQueueValidationMiddleware(stack); err != nil {
@@ -183,6 +190,18 @@ func (c *Client) addOperationCreateQueueMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

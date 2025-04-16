@@ -19,8 +19,6 @@ import (
 // policies in the specified policy store. The result of the decision is either
 // Allow or Deny , along with a list of the policies that resulted in the decision.
 //
-// At this time, Verified Permissions accepts tokens from only Amazon Cognito.
-//
 // Verified Permissions validates each token that is specified in a request by
 // checking its expiration date and its signature.
 //
@@ -175,6 +173,9 @@ func (c *Client) addOperationIsAuthorizedWithTokenMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -191,6 +192,9 @@ func (c *Client) addOperationIsAuthorizedWithTokenMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpIsAuthorizedWithTokenValidationMiddleware(stack); err != nil {
@@ -212,6 +216,18 @@ func (c *Client) addOperationIsAuthorizedWithTokenMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -40,8 +40,9 @@ type CreateIntegrationAssociationInput struct {
 
 	// The Amazon Resource Name (ARN) of the integration.
 	//
-	// When integrating with Amazon Pinpoint, the Amazon Connect and Amazon Pinpoint
-	// instances must be in the same account.
+	// When integrating with Amazon Web Services End User Messaging, the Amazon
+	// Connect and Amazon Web Services End User Messaging instances must be in the same
+	// account.
 	//
 	// This member is required.
 	IntegrationArn *string
@@ -127,6 +128,9 @@ func (c *Client) addOperationCreateIntegrationAssociationMiddlewares(stack *midd
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -143,6 +147,9 @@ func (c *Client) addOperationCreateIntegrationAssociationMiddlewares(stack *midd
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateIntegrationAssociationValidationMiddleware(stack); err != nil {
@@ -164,6 +171,18 @@ func (c *Client) addOperationCreateIntegrationAssociationMiddlewares(stack *midd
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

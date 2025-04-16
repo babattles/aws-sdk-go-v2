@@ -64,24 +64,26 @@ type DeleteRegistrationOutput struct {
 
 	// The status of the registration.
 	//
+	//   - CLOSED : The phone number or sender ID has been deleted and you must also
+	//   delete the registration for the number.
+	//
 	//   - CREATED : Your registration is created but not submitted.
 	//
-	//   - SUBMITTED : Your registration has been submitted and is awaiting review.
+	//   - COMPLETE : Your registration has been approved and your origination identity
+	//   has been created.
 	//
-	//   - REVIEWING : Your registration has been accepted and is being reviewed.
+	//   - DELETED : The registration has been deleted.
 	//
 	//   - PROVISIONING : Your registration has been approved and your origination
 	//   identity is being created.
 	//
-	//   - COMPLETE : Your registration has been approved and and your origination
-	//   identity has been created.
+	//   - REQUIRES_AUTHENTICATION : You need to complete email authentication.
 	//
 	//   - REQUIRES_UPDATES : You must fix your registration and resubmit it.
 	//
-	//   - CLOSED : The phone number or sender ID has been deleted and you must also
-	//   delete the registration for the number.
+	//   - REVIEWING : Your registration has been accepted and is being reviewed.
 	//
-	//   - DELETED : The registration has been deleted.
+	//   - SUBMITTED : Your registration has been submitted and is awaiting review.
 	//
 	// This member is required.
 	RegistrationStatus types.RegistrationStatus
@@ -150,6 +152,9 @@ func (c *Client) addOperationDeleteRegistrationMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -166,6 +171,9 @@ func (c *Client) addOperationDeleteRegistrationMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteRegistrationValidationMiddleware(stack); err != nil {
@@ -187,6 +195,18 @@ func (c *Client) addOperationDeleteRegistrationMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

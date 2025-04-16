@@ -11,7 +11,9 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Describes the user import job.
+// Describes a user import job. For more information about user CSV import, see [Importing users from a CSV file].
+//
+// [Importing users from a CSV file]: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-using-import-tool.html
 func (c *Client) DescribeUserImportJob(ctx context.Context, params *DescribeUserImportJobInput, optFns ...func(*Options)) (*DescribeUserImportJobOutput, error) {
 	if params == nil {
 		params = &DescribeUserImportJobInput{}
@@ -30,12 +32,12 @@ func (c *Client) DescribeUserImportJob(ctx context.Context, params *DescribeUser
 // Represents the request to describe the user import job.
 type DescribeUserImportJobInput struct {
 
-	// The job ID for the user import job.
+	// The Id of the user import job that you want to describe.
 	//
 	// This member is required.
 	JobId *string
 
-	// The user pool ID for the user pool that the users are being imported into.
+	// The ID of the user pool that's associated with the import job.
 	//
 	// This member is required.
 	UserPoolId *string
@@ -47,7 +49,8 @@ type DescribeUserImportJobInput struct {
 // import job.
 type DescribeUserImportJobOutput struct {
 
-	// The job object that represents the user import job.
+	// The details of the user import job. Includes logging destination, status, and
+	// the Amazon S3 pre-signed URL for CSV upload.
 	UserImportJob *types.UserImportJobType
 
 	// Metadata pertaining to the operation's result.
@@ -99,6 +102,9 @@ func (c *Client) addOperationDescribeUserImportJobMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -115,6 +121,9 @@ func (c *Client) addOperationDescribeUserImportJobMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeUserImportJobValidationMiddleware(stack); err != nil {
@@ -136,6 +145,18 @@ func (c *Client) addOperationDescribeUserImportJobMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

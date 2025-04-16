@@ -76,7 +76,7 @@ type CreateJobInput struct {
 	// manifest. For more information about the available actions, see [Operations]in the Amazon
 	// S3 User Guide.
 	//
-	// [Operations]: https://docs.aws.amazon.com/AmazonS3/latest/dev/batch-ops-actions.html
+	// [Operations]: https://docs.aws.amazon.com/AmazonS3/latest/dev/batch-ops-operations.html
 	//
 	// This member is required.
 	Operation *types.JobOperation
@@ -181,6 +181,9 @@ func (c *Client) addOperationCreateJobMiddlewares(stack *middleware.Stack, optio
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -200,6 +203,9 @@ func (c *Client) addOperationCreateJobMiddlewares(stack *middleware.Stack, optio
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addEndpointPrefix_opCreateJobMiddleware(stack); err != nil {
@@ -239,6 +245,18 @@ func (c *Client) addOperationCreateJobMiddlewares(stack *middleware.Stack, optio
 		return err
 	}
 	if err = s3controlcust.AddDisableHostPrefixMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

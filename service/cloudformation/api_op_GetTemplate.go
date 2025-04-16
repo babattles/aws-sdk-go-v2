@@ -48,8 +48,6 @@ type GetTemplateInput struct {
 	//   ID.
 	//
 	//   - Deleted stacks: You must specify the unique stack ID.
-	//
-	// Default: There is no default value.
 	StackName *string
 
 	// For templates that include transforms, the stage of the template that
@@ -73,13 +71,10 @@ type GetTemplateOutput struct {
 	// set, the Processed template becomes available.
 	StagesAvailable []types.TemplateStage
 
-	// Structure containing the template body. (For more information, go to [Template Anatomy] in the
-	// CloudFormation User Guide.)
+	// Structure containing the template body.
 	//
 	// CloudFormation returns the same template that was used when the stack was
 	// created.
-	//
-	// [Template Anatomy]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html
 	TemplateBody *string
 
 	// Metadata pertaining to the operation's result.
@@ -131,6 +126,9 @@ func (c *Client) addOperationGetTemplateMiddlewares(stack *middleware.Stack, opt
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -149,6 +147,9 @@ func (c *Client) addOperationGetTemplateMiddlewares(stack *middleware.Stack, opt
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opGetTemplate(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -165,6 +166,18 @@ func (c *Client) addOperationGetTemplateMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

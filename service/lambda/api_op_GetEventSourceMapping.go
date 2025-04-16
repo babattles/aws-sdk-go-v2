@@ -74,6 +74,9 @@ type GetEventSourceMappingOutput struct {
 	// The Amazon Resource Name (ARN) of the event source.
 	EventSourceArn *string
 
+	// The Amazon Resource Name (ARN) of the event source mapping.
+	EventSourceMappingArn *string
+
 	// An object that defines the filter criteria that determine whether Lambda should
 	// process an event. For more information, see [Lambda event filtering].
 	//
@@ -140,9 +143,20 @@ type GetEventSourceMappingOutput struct {
 	// until the record expires in the event source.
 	MaximumRetryAttempts *int32
 
+	// The metrics configuration for your event source. For more information, see [Event source mapping metrics].
+	//
+	// [Event source mapping metrics]: https://docs.aws.amazon.com/lambda/latest/dg/monitoring-metrics-types.html#event-source-mapping-metrics
+	MetricsConfig *types.EventSourceMappingMetricsConfig
+
 	// (Kinesis and DynamoDB Streams only) The number of batches to process
 	// concurrently from each shard. The default value is 1.
 	ParallelizationFactor *int32
+
+	// (Amazon MSK and self-managed Apache Kafka only) The provisioned mode
+	// configuration for the event source. For more information, see [provisioned mode].
+	//
+	// [provisioned mode]: https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventsourcemapping.html#invocation-eventsourcemapping-provisioned-mode
+	ProvisionedPollerConfig *types.ProvisionedPollerConfig
 
 	//  (Amazon MQ) The name of the Amazon MQ broker destination queue to consume.
 	Queues []string
@@ -241,6 +255,9 @@ func (c *Client) addOperationGetEventSourceMappingMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -257,6 +274,9 @@ func (c *Client) addOperationGetEventSourceMappingMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetEventSourceMappingValidationMiddleware(stack); err != nil {
@@ -278,6 +298,18 @@ func (c *Client) addOperationGetEventSourceMappingMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

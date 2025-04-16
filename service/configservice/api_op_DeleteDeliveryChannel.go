@@ -12,8 +12,9 @@ import (
 
 // Deletes the delivery channel.
 //
-// Before you can delete the delivery channel, you must stop the configuration
-// recorder by using the StopConfigurationRecorderaction.
+// Before you can delete the delivery channel, you must stop the customer managed
+// configuration recorder. You can use the StopConfigurationRecorderoperation to stop the customer managed
+// configuration recorder.
 func (c *Client) DeleteDeliveryChannel(ctx context.Context, params *DeleteDeliveryChannelInput, optFns ...func(*Options)) (*DeleteDeliveryChannelOutput, error) {
 	if params == nil {
 		params = &DeleteDeliveryChannelInput{}
@@ -33,7 +34,7 @@ func (c *Client) DeleteDeliveryChannel(ctx context.Context, params *DeleteDelive
 // format.
 type DeleteDeliveryChannelInput struct {
 
-	// The name of the delivery channel to delete.
+	// The name of the delivery channel that you want to delete.
 	//
 	// This member is required.
 	DeliveryChannelName *string
@@ -91,6 +92,9 @@ func (c *Client) addOperationDeleteDeliveryChannelMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -107,6 +111,9 @@ func (c *Client) addOperationDeleteDeliveryChannelMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteDeliveryChannelValidationMiddleware(stack); err != nil {
@@ -128,6 +135,18 @@ func (c *Client) addOperationDeleteDeliveryChannelMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

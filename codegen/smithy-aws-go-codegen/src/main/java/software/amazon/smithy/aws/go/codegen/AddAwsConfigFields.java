@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.logging.Logger;
 
+import software.amazon.smithy.aws.go.codegen.customization.AccountIDEndpointRouting;
 import software.amazon.smithy.aws.go.codegen.customization.auth.AwsHttpBearerAuthScheme;
 import software.amazon.smithy.codegen.core.Symbol;
 import software.amazon.smithy.codegen.core.SymbolProvider;
@@ -82,6 +83,10 @@ public class AddAwsConfigFields implements GoIntegration {
     private static final String REQUEST_MIN_COMPRESSION_SIZE_BYTES = "RequestMinCompressSizeBytes";
 
     private static final String SDK_ACCOUNTID_ENDPOINT_MODE = "AccountIDEndpointMode";
+
+    private static final String REQUEST_CHECKSUM_CALCULATION = "RequestChecksumCalculation";
+
+    private static final String RESPONSE_CHECKSUM_VALIDATION = "ResponseChecksumValidation";
 
     private static final List<AwsConfigField> AWS_CONFIG_FIELDS = ListUtils.of(
             AwsConfigField.builder()
@@ -242,6 +247,19 @@ public class AddAwsConfigFields implements GoIntegration {
                     .name(SDK_ACCOUNTID_ENDPOINT_MODE)
                     .type(SdkGoTypes.Aws.AccountIDEndpointMode)
                     .documentation("Indicates how aws account ID is applied in endpoint2.0 routing")
+                    .servicePredicate(AccountIDEndpointRouting::hasAccountIdEndpoints)
+                    .build(),
+            AwsConfigField.builder()
+                    .name(REQUEST_CHECKSUM_CALCULATION)
+                    .type(SdkGoTypes.Aws.RequestChecksumCalculation)
+                    .documentation("Indicates how user opt-in/out request checksum calculation")
+                    .servicePredicate(AwsHttpChecksumGenerator::hasInputChecksumTrait)
+                    .build(),
+            AwsConfigField.builder()
+                    .name(RESPONSE_CHECKSUM_VALIDATION)
+                    .type(SdkGoTypes.Aws.ResponseChecksumValidation)
+                    .documentation("Indicates how user opt-in/out response checksum validation")
+                    .servicePredicate(AwsHttpChecksumGenerator::hasOutputChecksumTrait)
                     .build()
     );
 

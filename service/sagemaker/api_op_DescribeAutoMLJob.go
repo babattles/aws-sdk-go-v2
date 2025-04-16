@@ -100,7 +100,7 @@ type DescribeAutoMLJobOutput struct {
 	// Returns the job's objective.
 	AutoMLJobObjective *types.AutoMLJobObjective
 
-	// The best model candidate selected by SageMaker Autopilot using both the best
+	// The best model candidate selected by SageMaker AI Autopilot using both the best
 	// objective metric and lowest [InferenceLatency]for an experiment.
 	//
 	// [InferenceLatency]: https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-metrics-validation.html
@@ -182,6 +182,9 @@ func (c *Client) addOperationDescribeAutoMLJobMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -198,6 +201,9 @@ func (c *Client) addOperationDescribeAutoMLJobMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeAutoMLJobValidationMiddleware(stack); err != nil {
@@ -219,6 +225,18 @@ func (c *Client) addOperationDescribeAutoMLJobMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

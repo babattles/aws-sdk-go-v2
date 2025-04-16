@@ -52,6 +52,15 @@ type DescribeInstanceOutput struct {
 	// The name of the instance.
 	Instance *types.Instance
 
+	// Status information about the replication process. This field is included only
+	// when you are using the [ReplicateInstance]API to replicate an Amazon Connect instance across
+	// Amazon Web Services Regions. For information about replicating Amazon Connect
+	// instances, see [Create a replica of your existing Amazon Connect instance]in the Amazon Connect Administrator Guide.
+	//
+	// [Create a replica of your existing Amazon Connect instance]: https://docs.aws.amazon.com/connect/latest/adminguide/create-replica-connect-instance.html
+	// [ReplicateInstance]: https://docs.aws.amazon.com/connect/latest/APIReference/API_ReplicateInstance.html
+	ReplicationConfiguration *types.ReplicationConfiguration
+
 	// Metadata pertaining to the operation's result.
 	ResultMetadata middleware.Metadata
 
@@ -101,6 +110,9 @@ func (c *Client) addOperationDescribeInstanceMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -117,6 +129,9 @@ func (c *Client) addOperationDescribeInstanceMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeInstanceValidationMiddleware(stack); err != nil {
@@ -138,6 +153,18 @@ func (c *Client) addOperationDescribeInstanceMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

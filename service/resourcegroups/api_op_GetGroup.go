@@ -35,7 +35,7 @@ func (c *Client) GetGroup(ctx context.Context, params *GetGroupInput, optFns ...
 
 type GetGroupInput struct {
 
-	// The name or the ARN of the resource group to retrieve.
+	// The name or the Amazon resource name (ARN) of the resource group to retrieve.
 	Group *string
 
 	// Deprecated - don't use this parameter. Use Group instead.
@@ -101,6 +101,9 @@ func (c *Client) addOperationGetGroupMiddlewares(stack *middleware.Stack, option
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -119,6 +122,9 @@ func (c *Client) addOperationGetGroupMiddlewares(stack *middleware.Stack, option
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opGetGroup(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -135,6 +141,18 @@ func (c *Client) addOperationGetGroupMiddlewares(stack *middleware.Stack, option
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

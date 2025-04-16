@@ -86,7 +86,8 @@ type AnalysisFormat string
 
 // Enum values for AnalysisFormat
 const (
-	AnalysisFormatSql AnalysisFormat = "SQL"
+	AnalysisFormatSql       AnalysisFormat = "SQL"
+	AnalysisFormatPyspark10 AnalysisFormat = "PYSPARK_1_0"
 )
 
 // Values returns all known values for AnalysisFormat. Note that this can be
@@ -96,6 +97,7 @@ const (
 func (AnalysisFormat) Values() []AnalysisFormat {
 	return []AnalysisFormat{
 		"SQL",
+		"PYSPARK_1_0",
 	}
 }
 
@@ -104,6 +106,8 @@ type AnalysisMethod string
 // Enum values for AnalysisMethod
 const (
 	AnalysisMethodDirectQuery AnalysisMethod = "DIRECT_QUERY"
+	AnalysisMethodDirectJob   AnalysisMethod = "DIRECT_JOB"
+	AnalysisMethodMultiple    AnalysisMethod = "MULTIPLE"
 )
 
 // Values returns all known values for AnalysisMethod. Note that this can be
@@ -113,6 +117,8 @@ const (
 func (AnalysisMethod) Values() []AnalysisMethod {
 	return []AnalysisMethod{
 		"DIRECT_QUERY",
+		"DIRECT_JOB",
+		"MULTIPLE",
 	}
 }
 
@@ -198,6 +204,44 @@ func (AnalysisType) Values() []AnalysisType {
 	}
 }
 
+type AnalyticsEngine string
+
+// Enum values for AnalyticsEngine
+const (
+	AnalyticsEngineSpark         AnalyticsEngine = "SPARK"
+	AnalyticsEngineCleanRoomsSql AnalyticsEngine = "CLEAN_ROOMS_SQL"
+)
+
+// Values returns all known values for AnalyticsEngine. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AnalyticsEngine) Values() []AnalyticsEngine {
+	return []AnalyticsEngine{
+		"SPARK",
+		"CLEAN_ROOMS_SQL",
+	}
+}
+
+type CollaborationJobLogStatus string
+
+// Enum values for CollaborationJobLogStatus
+const (
+	CollaborationJobLogStatusEnabled  CollaborationJobLogStatus = "ENABLED"
+	CollaborationJobLogStatusDisabled CollaborationJobLogStatus = "DISABLED"
+)
+
+// Values returns all known values for CollaborationJobLogStatus. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CollaborationJobLogStatus) Values() []CollaborationJobLogStatus {
+	return []CollaborationJobLogStatus{
+		"ENABLED",
+		"DISABLED",
+	}
+}
+
 type CollaborationQueryLogStatus string
 
 // Enum values for CollaborationQueryLogStatus
@@ -279,6 +323,25 @@ func (ConflictExceptionReason) Values() []ConflictExceptionReason {
 		"ALREADY_EXISTS",
 		"SUBRESOURCES_EXIST",
 		"INVALID_STATE",
+	}
+}
+
+type CustomMLMemberAbility string
+
+// Enum values for CustomMLMemberAbility
+const (
+	CustomMLMemberAbilityCanReceiveModelOutput     CustomMLMemberAbility = "CAN_RECEIVE_MODEL_OUTPUT"
+	CustomMLMemberAbilityCanReceiveInferenceOutput CustomMLMemberAbility = "CAN_RECEIVE_INFERENCE_OUTPUT"
+)
+
+// Values returns all known values for CustomMLMemberAbility. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CustomMLMemberAbility) Values() []CustomMLMemberAbility {
+	return []CustomMLMemberAbility{
+		"CAN_RECEIVE_MODEL_OUTPUT",
+		"CAN_RECEIVE_INFERENCE_OUTPUT",
 	}
 }
 
@@ -388,6 +451,7 @@ type MemberAbility string
 const (
 	MemberAbilityCanQuery          MemberAbility = "CAN_QUERY"
 	MemberAbilityCanReceiveResults MemberAbility = "CAN_RECEIVE_RESULTS"
+	MemberAbilityCanRunJob         MemberAbility = "CAN_RUN_JOB"
 )
 
 // Values returns all known values for MemberAbility. Note that this can be
@@ -398,6 +462,26 @@ func (MemberAbility) Values() []MemberAbility {
 	return []MemberAbility{
 		"CAN_QUERY",
 		"CAN_RECEIVE_RESULTS",
+		"CAN_RUN_JOB",
+	}
+}
+
+type MembershipJobLogStatus string
+
+// Enum values for MembershipJobLogStatus
+const (
+	MembershipJobLogStatusEnabled  MembershipJobLogStatus = "ENABLED"
+	MembershipJobLogStatusDisabled MembershipJobLogStatus = "DISABLED"
+)
+
+// Values returns all known values for MembershipJobLogStatus. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (MembershipJobLogStatus) Values() []MembershipJobLogStatus {
+	return []MembershipJobLogStatus{
+		"ENABLED",
+		"DISABLED",
 	}
 }
 
@@ -483,6 +567,19 @@ const (
 	ParameterTypeTime            ParameterType = "TIME"
 	ParameterTypeTimetz          ParameterType = "TIMETZ"
 	ParameterTypeVarbyte         ParameterType = "VARBYTE"
+	ParameterTypeBinary          ParameterType = "BINARY"
+	ParameterTypeByte            ParameterType = "BYTE"
+	ParameterTypeCharacter       ParameterType = "CHARACTER"
+	ParameterTypeDouble          ParameterType = "DOUBLE"
+	ParameterTypeFloat           ParameterType = "FLOAT"
+	ParameterTypeInt             ParameterType = "INT"
+	ParameterTypeLong            ParameterType = "LONG"
+	ParameterTypeNumeric         ParameterType = "NUMERIC"
+	ParameterTypeShort           ParameterType = "SHORT"
+	ParameterTypeString          ParameterType = "STRING"
+	ParameterTypeTimestampLtz    ParameterType = "TIMESTAMP_LTZ"
+	ParameterTypeTimestampNtz    ParameterType = "TIMESTAMP_NTZ"
+	ParameterTypeTinyint         ParameterType = "TINYINT"
 )
 
 // Values returns all known values for ParameterType. Note that this can be
@@ -506,6 +603,19 @@ func (ParameterType) Values() []ParameterType {
 		"TIME",
 		"TIMETZ",
 		"VARBYTE",
+		"BINARY",
+		"BYTE",
+		"CHARACTER",
+		"DOUBLE",
+		"FLOAT",
+		"INT",
+		"LONG",
+		"NUMERIC",
+		"SHORT",
+		"STRING",
+		"TIMESTAMP_LTZ",
+		"TIMESTAMP_NTZ",
+		"TINYINT",
 	}
 }
 
@@ -543,6 +653,67 @@ const (
 func (PrivacyBudgetType) Values() []PrivacyBudgetType {
 	return []PrivacyBudgetType{
 		"DIFFERENTIAL_PRIVACY",
+	}
+}
+
+type ProtectedJobAnalysisType string
+
+// Enum values for ProtectedJobAnalysisType
+const (
+	ProtectedJobAnalysisTypeDirectAnalysis ProtectedJobAnalysisType = "DIRECT_ANALYSIS"
+)
+
+// Values returns all known values for ProtectedJobAnalysisType. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ProtectedJobAnalysisType) Values() []ProtectedJobAnalysisType {
+	return []ProtectedJobAnalysisType{
+		"DIRECT_ANALYSIS",
+	}
+}
+
+type ProtectedJobStatus string
+
+// Enum values for ProtectedJobStatus
+const (
+	ProtectedJobStatusSubmitted  ProtectedJobStatus = "SUBMITTED"
+	ProtectedJobStatusStarted    ProtectedJobStatus = "STARTED"
+	ProtectedJobStatusCancelled  ProtectedJobStatus = "CANCELLED"
+	ProtectedJobStatusCancelling ProtectedJobStatus = "CANCELLING"
+	ProtectedJobStatusFailed     ProtectedJobStatus = "FAILED"
+	ProtectedJobStatusSuccess    ProtectedJobStatus = "SUCCESS"
+)
+
+// Values returns all known values for ProtectedJobStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ProtectedJobStatus) Values() []ProtectedJobStatus {
+	return []ProtectedJobStatus{
+		"SUBMITTED",
+		"STARTED",
+		"CANCELLED",
+		"CANCELLING",
+		"FAILED",
+		"SUCCESS",
+	}
+}
+
+type ProtectedJobType string
+
+// Enum values for ProtectedJobType
+const (
+	ProtectedJobTypePyspark ProtectedJobType = "PYSPARK"
+)
+
+// Values returns all known values for ProtectedJobType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ProtectedJobType) Values() []ProtectedJobType {
+	return []ProtectedJobType{
+		"PYSPARK",
 	}
 }
 
@@ -789,6 +960,42 @@ func (SchemaType) Values() []SchemaType {
 	}
 }
 
+type SelectedAnalysisMethod string
+
+// Enum values for SelectedAnalysisMethod
+const (
+	SelectedAnalysisMethodDirectQuery SelectedAnalysisMethod = "DIRECT_QUERY"
+	SelectedAnalysisMethodDirectJob   SelectedAnalysisMethod = "DIRECT_JOB"
+)
+
+// Values returns all known values for SelectedAnalysisMethod. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (SelectedAnalysisMethod) Values() []SelectedAnalysisMethod {
+	return []SelectedAnalysisMethod{
+		"DIRECT_QUERY",
+		"DIRECT_JOB",
+	}
+}
+
+type TargetProtectedJobStatus string
+
+// Enum values for TargetProtectedJobStatus
+const (
+	TargetProtectedJobStatusCancelled TargetProtectedJobStatus = "CANCELLED"
+)
+
+// Values returns all known values for TargetProtectedJobStatus. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (TargetProtectedJobStatus) Values() []TargetProtectedJobStatus {
+	return []TargetProtectedJobStatus{
+		"CANCELLED",
+	}
+}
+
 type TargetProtectedQueryStatus string
 
 // Enum values for TargetProtectedQueryStatus
@@ -826,5 +1033,24 @@ func (ValidationExceptionReason) Values() []ValidationExceptionReason {
 		"INVALID_CONFIGURATION",
 		"INVALID_QUERY",
 		"IAM_SYNCHRONIZATION_DELAY",
+	}
+}
+
+type WorkerComputeType string
+
+// Enum values for WorkerComputeType
+const (
+	WorkerComputeTypeCr1x WorkerComputeType = "CR.1X"
+	WorkerComputeTypeCr4x WorkerComputeType = "CR.4X"
+)
+
+// Values returns all known values for WorkerComputeType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (WorkerComputeType) Values() []WorkerComputeType {
+	return []WorkerComputeType{
+		"CR.1X",
+		"CR.4X",
 	}
 }

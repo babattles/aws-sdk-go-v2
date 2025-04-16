@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
+	"github.com/aws/aws-sdk-go-v2/service/rds/types"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -28,7 +29,7 @@ func (c *Client) DeleteDBShardGroup(ctx context.Context, params *DeleteDBShardGr
 
 type DeleteDBShardGroupInput struct {
 
-	// Teh name of the DB shard group to delete.
+	// The name of the DB shard group to delete.
 	//
 	// This member is required.
 	DBShardGroupIdentifier *string
@@ -36,23 +37,27 @@ type DeleteDBShardGroupInput struct {
 	noSmithyDocumentSerde
 }
 
+// Contains the details for an Amazon RDS DB shard group.
 type DeleteDBShardGroupOutput struct {
 
-	// Specifies whether to create standby instances for the DB shard group. Valid
-	// values are the following:
+	// Specifies whether to create standby DB shard groups for the DB shard group.
+	// Valid values are the following:
 	//
-	//   - 0 - Creates a single, primary DB instance for each physical shard. This is
-	//   the default value, and the only one supported for the preview.
+	//   - 0 - Creates a DB shard group without a standby DB shard group. This is the
+	//   default value.
 	//
-	//   - 1 - Creates a primary DB instance and a standby instance in a different
-	//   Availability Zone (AZ) for each physical shard.
+	//   - 1 - Creates a DB shard group with a standby DB shard group in a different
+	//   Availability Zone (AZ).
 	//
-	//   - 2 - Creates a primary DB instance and two standby instances in different
-	//   AZs for each physical shard.
+	//   - 2 - Creates a DB shard group with two standby DB shard groups in two
+	//   different AZs.
 	ComputeRedundancy *int32
 
 	// The name of the primary DB cluster for the DB shard group.
 	DBClusterIdentifier *string
+
+	// The Amazon Resource Name (ARN) for the DB shard group.
+	DBShardGroupArn *string
 
 	// The name of the DB shard group.
 	DBShardGroupIdentifier *string
@@ -89,6 +94,15 @@ type DeleteDBShardGroupOutput struct {
 
 	// The status of the DB shard group.
 	Status *string
+
+	// A list of tags.
+	//
+	// For more information, see [Tagging Amazon RDS resources] in the Amazon RDS User Guide or [Tagging Amazon Aurora and Amazon RDS resources] in the Amazon
+	// Aurora User Guide.
+	//
+	// [Tagging Amazon RDS resources]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html
+	// [Tagging Amazon Aurora and Amazon RDS resources]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Tagging.html
+	TagList []types.Tag
 
 	// Metadata pertaining to the operation's result.
 	ResultMetadata middleware.Metadata
@@ -139,6 +153,9 @@ func (c *Client) addOperationDeleteDBShardGroupMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -155,6 +172,9 @@ func (c *Client) addOperationDeleteDBShardGroupMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteDBShardGroupValidationMiddleware(stack); err != nil {
@@ -176,6 +196,18 @@ func (c *Client) addOperationDeleteDBShardGroupMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

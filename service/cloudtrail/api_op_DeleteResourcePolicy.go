@@ -10,7 +10,9 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Deletes the resource-based policy attached to the CloudTrail channel.
+//	Deletes the resource-based policy attached to the CloudTrail event data store,
+//
+// dashboard, or channel.
 func (c *Client) DeleteResourcePolicy(ctx context.Context, params *DeleteResourcePolicyInput, optFns ...func(*Options)) (*DeleteResourcePolicyOutput, error) {
 	if params == nil {
 		params = &DeleteResourcePolicyInput{}
@@ -28,9 +30,17 @@ func (c *Client) DeleteResourcePolicy(ctx context.Context, params *DeleteResourc
 
 type DeleteResourcePolicyInput struct {
 
-	//  The Amazon Resource Name (ARN) of the CloudTrail channel you're deleting the
-	// resource-based policy from. The following is the format of a resource ARN:
-	// arn:aws:cloudtrail:us-east-2:123456789012:channel/MyChannel .
+	//  The Amazon Resource Name (ARN) of the CloudTrail event data store, dashboard,
+	// or channel you're deleting the resource-based policy from.
+	//
+	// Example event data store ARN format:
+	// arn:aws:cloudtrail:us-east-2:123456789012:eventdatastore/EXAMPLE-f852-4e8f-8bd1-bcf6cEXAMPLE
+	//
+	// Example dashboard ARN format:
+	// arn:aws:cloudtrail:us-east-1:123456789012:dashboard/exampleDash
+	//
+	// Example channel ARN format:
+	// arn:aws:cloudtrail:us-east-2:123456789012:channel/01234567890
 	//
 	// This member is required.
 	ResourceArn *string
@@ -88,6 +98,9 @@ func (c *Client) addOperationDeleteResourcePolicyMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -104,6 +117,9 @@ func (c *Client) addOperationDeleteResourcePolicyMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteResourcePolicyValidationMiddleware(stack); err != nil {
@@ -125,6 +141,18 @@ func (c *Client) addOperationDeleteResourcePolicyMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

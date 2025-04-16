@@ -51,6 +51,13 @@ type ListServicesInput struct {
 	// This member is required.
 	StartTime *time.Time
 
+	// Amazon Web Services Account ID.
+	AwsAccountId *string
+
+	// If you are using this operation in a monitoring account, specify true to
+	// include services from source accounts in the returned data.
+	IncludeLinkedAccounts bool
+
 	//  The maximum number of results to return in one operation. If you omit this
 	// parameter, the default of 50 is used.
 	MaxResults *int32
@@ -144,6 +151,9 @@ func (c *Client) addOperationListServicesMiddlewares(stack *middleware.Stack, op
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -160,6 +170,9 @@ func (c *Client) addOperationListServicesMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListServicesValidationMiddleware(stack); err != nil {
@@ -181,6 +194,18 @@ func (c *Client) addOperationListServicesMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

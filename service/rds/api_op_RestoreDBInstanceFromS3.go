@@ -104,6 +104,8 @@ type RestoreDBInstanceFromS3Input struct {
 	// The amount of storage (in gibibytes) to allocate initially for the DB instance.
 	// Follow the allocation rules specified in CreateDBInstance .
 	//
+	// This setting isn't valid for RDS for SQL Server.
+	//
 	// Be sure to allocate enough storage for your new DB instance so that the restore
 	// operation can succeed. You can also allocate additional storage for future
 	// growth.
@@ -171,6 +173,12 @@ type RestoreDBInstanceFromS3Input struct {
 	//
 	// Example: mydbsubnetgroup
 	DBSubnetGroupName *string
+
+	// Specifies the mode of Database Insights to enable for the DB instance.
+	//
+	// Aurora DB instances inherit this value from the DB cluster, so you can't change
+	// this value.
+	DatabaseInsightsMode types.DatabaseInsightsMode
 
 	// Specifies whether to enable a dedicated log volume (DLV) for the DB instance.
 	DedicatedLogVolume *bool
@@ -580,6 +588,9 @@ func (c *Client) addOperationRestoreDBInstanceFromS3Middlewares(stack *middlewar
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -596,6 +607,9 @@ func (c *Client) addOperationRestoreDBInstanceFromS3Middlewares(stack *middlewar
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpRestoreDBInstanceFromS3ValidationMiddleware(stack); err != nil {
@@ -617,6 +631,18 @@ func (c *Client) addOperationRestoreDBInstanceFromS3Middlewares(stack *middlewar
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

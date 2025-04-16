@@ -81,7 +81,7 @@ type CreateConfigurationProfileInput struct {
 	//   secretsmanager ://.
 	//
 	//   - For an Amazon S3 object, specify the URI in the following format: s3:/// .
-	//   Here is an example: s3://my-bucket/my-app/us-east-1/my-config.json
+	//   Here is an example: s3://amzn-s3-demo-bucket/my-app/us-east-1/my-config.json
 	//
 	//   - For an SSM document, specify either the document name in the format
 	//   ssm-document:// or the Amazon Resource Name (ARN).
@@ -230,6 +230,9 @@ func (c *Client) addOperationCreateConfigurationProfileMiddlewares(stack *middle
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -246,6 +249,9 @@ func (c *Client) addOperationCreateConfigurationProfileMiddlewares(stack *middle
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateConfigurationProfileValidationMiddleware(stack); err != nil {
@@ -267,6 +273,18 @@ func (c *Client) addOperationCreateConfigurationProfileMiddlewares(stack *middle
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

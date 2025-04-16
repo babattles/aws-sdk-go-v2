@@ -74,9 +74,17 @@ type UpdateAppMonitorInput struct {
 	// more than 30 days, but it does incur Amazon CloudWatch Logs charges.
 	CwLogEnabled *bool
 
+	//  A structure that contains the configuration for how an app monitor can
+	// deobfuscate stack traces.
+	DeobfuscationConfiguration *types.DeobfuscationConfiguration
+
 	// The top-level internet domain name for which your application has
 	// administrative authority.
 	Domain *string
+
+	//  List the domain names for which your application has administrative authority.
+	// The UpdateAppMonitor allows either the domain or the domain list.
+	DomainList []string
 
 	noSmithyDocumentSerde
 }
@@ -131,6 +139,9 @@ func (c *Client) addOperationUpdateAppMonitorMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -147,6 +158,9 @@ func (c *Client) addOperationUpdateAppMonitorMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateAppMonitorValidationMiddleware(stack); err != nil {
@@ -168,6 +182,18 @@ func (c *Client) addOperationUpdateAppMonitorMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -14,7 +14,7 @@ import (
 // Deletes an automatic snapshot of an instance or disk. For more information, see
 // the [Amazon Lightsail Developer Guide].
 //
-// [Amazon Lightsail Developer Guide]: https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-configuring-automatic-snapshots
+// [Amazon Lightsail Developer Guide]: https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-configuring-automatic-snapshots
 func (c *Client) DeleteAutoSnapshot(ctx context.Context, params *DeleteAutoSnapshotInput, optFns ...func(*Options)) (*DeleteAutoSnapshotOutput, error) {
 	if params == nil {
 		params = &DeleteAutoSnapshotInput{}
@@ -103,6 +103,9 @@ func (c *Client) addOperationDeleteAutoSnapshotMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -119,6 +122,9 @@ func (c *Client) addOperationDeleteAutoSnapshotMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteAutoSnapshotValidationMiddleware(stack); err != nil {
@@ -140,6 +146,18 @@ func (c *Client) addOperationDeleteAutoSnapshotMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

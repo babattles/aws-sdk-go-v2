@@ -526,6 +526,9 @@ type AssetModelProperty struct {
 
 	// The data type of the asset model property.
 	//
+	// If you specify STRUCT , you must also specify dataTypeSpec to identify the type
+	// of the structure for this property.
+	//
 	// This member is required.
 	DataType PropertyDataType
 
@@ -759,6 +762,9 @@ type AssetModelSummary struct {
 	//
 	// [Using external IDs]: https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-ids
 	ExternalId *string
+
+	// The version number of the asset model.
+	Version *string
 
 	noSmithyDocumentSerde
 }
@@ -1498,6 +1504,19 @@ type BatchPutAssetPropertyErrorEntry struct {
 	noSmithyDocumentSerde
 }
 
+// Contains text content to which the SiteWise Assistant refers to, and generate
+// the final response. It also contains information about the source.
+type Citation struct {
+
+	// Contains the cited text from the data source.
+	Content *Content
+
+	// Contains information about the data source.
+	Reference *Reference
+
+	noSmithyDocumentSerde
+}
+
 // A description of the column in the query results.
 type ColumnInfo struct {
 
@@ -1623,6 +1642,15 @@ type ConfigurationStatus struct {
 	noSmithyDocumentSerde
 }
 
+// Contains the cited text from the data source.
+type Content struct {
+
+	// The cited text from the data source.
+	Text *string
+
+	noSmithyDocumentSerde
+}
+
 // A .CSV file.
 type Csv struct {
 
@@ -1678,6 +1706,100 @@ type DashboardSummary struct {
 
 	// The date the dashboard was last updated, in Unix epoch time.
 	LastUpdateDate *time.Time
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about the dataset use and it's source.
+type DataSetReference struct {
+
+	// The [ARN] of the dataset. The format is
+	// arn:${Partition}:iotsitewise:${Region}:${Account}:dataset/${DatasetId} .
+	//
+	// [ARN]: https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html
+	DatasetArn *string
+
+	// The data source for the dataset.
+	Source *Source
+
+	noSmithyDocumentSerde
+}
+
+// The data source for the dataset.
+type DatasetSource struct {
+
+	// The format of the dataset source associated with the dataset.
+	//
+	// This member is required.
+	SourceFormat DatasetSourceFormat
+
+	// The type of data source for the dataset.
+	//
+	// This member is required.
+	SourceType DatasetSourceType
+
+	// The details of the dataset source associated with the dataset.
+	SourceDetail *SourceDetail
+
+	noSmithyDocumentSerde
+}
+
+// The status of the dataset. This contains the state and any error messages. The
+// state is ACTIVE when ready to use.
+type DatasetStatus struct {
+
+	// The current status of the dataset.
+	//
+	// This member is required.
+	State DatasetState
+
+	// Contains the details of an IoT SiteWise error.
+	Error *ErrorDetails
+
+	noSmithyDocumentSerde
+}
+
+// The summary details for the dataset.
+type DatasetSummary struct {
+
+	// The [ARN] of the dataset. The format is
+	// arn:${Partition}:iotsitewise:${Region}:${Account}:dataset/${DatasetId} .
+	//
+	// [ARN]: https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html
+	//
+	// This member is required.
+	Arn *string
+
+	// The dataset creation date, in Unix epoch time.
+	//
+	// This member is required.
+	CreationDate *time.Time
+
+	// A description about the dataset, and its functionality.
+	//
+	// This member is required.
+	Description *string
+
+	// The ID of the dataset.
+	//
+	// This member is required.
+	Id *string
+
+	// The date the dataset was last updated, in Unix epoch time.
+	//
+	// This member is required.
+	LastUpdateDate *time.Time
+
+	// The name of the dataset.
+	//
+	// This member is required.
+	Name *string
+
+	// The status of the dataset. This contains the state and any error messages. The
+	// state is ACTIVE when ready to use.
+	//
+	// This member is required.
+	Status *DatasetStatus
 
 	noSmithyDocumentSerde
 }
@@ -1835,9 +1957,16 @@ type GatewayCapabilitySummary struct {
 	//
 	//   - IN_SYNC – The gateway is running the capability configuration.
 	//
+	//   - NOT_APPLICABLE – Synchronization is not required for this capability
+	//   configuration. This is most common when integrating partner data sources,
+	//   because the data integration is handled externally by the partner.
+	//
 	//   - OUT_OF_SYNC – The gateway hasn't received the capability configuration.
 	//
 	//   - SYNC_FAILED – The gateway rejected the capability configuration.
+	//
+	//   - UNKNOWN – The synchronization status is currently unknown due to an
+	//   undetermined or temporary error.
 	//
 	// This member is required.
 	CapabilitySyncStatus CapabilitySyncStatus
@@ -1893,6 +2022,10 @@ type GatewaySummary struct {
 	// Contains a gateway's platform information.
 	GatewayPlatform *GatewayPlatform
 
+	// The version of the gateway. A value of 3 indicates an MQTT-enabled, V3 gateway,
+	// while 2 indicates a Classic streams, V2 gateway.
+	GatewayVersion *string
+
 	noSmithyDocumentSerde
 }
 
@@ -1931,6 +2064,9 @@ type GreengrassV2 struct {
 	//
 	// This member is required.
 	CoreDeviceThingName *string
+
+	// The operating system of the core device in IoT Greengrass V2.
+	CoreDeviceOperatingSystem CoreDeviceOperatingSystem
 
 	noSmithyDocumentSerde
 }
@@ -2069,6 +2205,19 @@ type InterpolatedAssetPropertyValue struct {
 	noSmithyDocumentSerde
 }
 
+// This contains the SiteWise Assistant's response and the corresponding citation.
+type InvocationOutput struct {
+
+	// A list of citations, and related information for the SiteWise Assistant's
+	// response.
+	Citations []Citation
+
+	// The text message of the SiteWise Assistant's response.
+	Message *string
+
+	noSmithyDocumentSerde
+}
+
 // Contains the configuration information of a job, such as the file format used
 // to save data in Amazon S3.
 type JobConfiguration struct {
@@ -2116,6 +2265,31 @@ type JobSummary struct {
 	//
 	// This member is required.
 	Status JobStatus
+
+	noSmithyDocumentSerde
+}
+
+// The source details for the Kendra dataset source.
+type KendraSourceDetail struct {
+
+	// The knowledgeBaseArn details for the Kendra dataset source.
+	//
+	// This member is required.
+	KnowledgeBaseArn *string
+
+	// The roleARN details for the Kendra dataset source.
+	//
+	// This member is required.
+	RoleArn *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains location information about the cited text and where it's stored.
+type Location struct {
+
+	// The URI of the location.
+	Uri *string
 
 	noSmithyDocumentSerde
 }
@@ -2313,6 +2487,11 @@ type PortalSummary struct {
 	// The date the portal was last updated, in Unix epoch time.
 	LastUpdateDate *time.Time
 
+	// Define the type of portal. The value for IoT SiteWise Monitor (Classic) is
+	// SITEWISE_PORTAL_V1 . The value for IoT SiteWise Monitor (AI-aware) is
+	// SITEWISE_PORTAL_V2 .
+	PortalType PortalType
+
 	// The [ARN] of the service role that allows the portal's users to access your IoT
 	// SiteWise resources on your behalf. For more information, see [Using service roles for IoT SiteWise Monitor]in the IoT
 	// SiteWise User Guide.
@@ -2320,6 +2499,17 @@ type PortalSummary struct {
 	// [Using service roles for IoT SiteWise Monitor]: https://docs.aws.amazon.com/iot-sitewise/latest/userguide/monitor-service-role.html
 	// [ARN]: https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html
 	RoleArn *string
+
+	noSmithyDocumentSerde
+}
+
+// The configuration entry associated with the specific portal type. The
+// portalTypeConfiguration is a map of the portalTypeKey to the PortalTypeEntry .
+type PortalTypeEntry struct {
+
+	// The array of tools associated with the specified portal type. The possible
+	// values are ASSISTANT and DASHBOARD .
+	PortalTools []string
 
 	noSmithyDocumentSerde
 }
@@ -2458,6 +2648,17 @@ type PropertyType struct {
 	noSmithyDocumentSerde
 }
 
+// The value type of null asset property data with BAD and UNCERTAIN qualities.
+type PropertyValueNullValue struct {
+
+	// The type of null asset property data.
+	//
+	// This member is required.
+	ValueType RawValueType
+
+	noSmithyDocumentSerde
+}
+
 // Contains a list of value updates for an asset property in the list of asset
 // entries consumed by the [BatchPutAssetPropertyValue]API operation.
 //
@@ -2492,6 +2693,15 @@ type PutAssetPropertyValueEntry struct {
 	noSmithyDocumentSerde
 }
 
+// Contains the reference information.
+type Reference struct {
+
+	// Contains the dataset reference information.
+	Dataset *DataSetReference
+
+	noSmithyDocumentSerde
+}
+
 // Contains an IoT SiteWise Monitor resource ID for a portal or project.
 type Resource struct {
 
@@ -2503,6 +2713,35 @@ type Resource struct {
 
 	noSmithyDocumentSerde
 }
+
+// Contains the response, citation, and trace from the SiteWise Assistant.
+//
+// The following types satisfy this interface:
+//
+//	ResponseStreamMemberOutput
+//	ResponseStreamMemberTrace
+type ResponseStream interface {
+	isResponseStream()
+}
+
+// Contains the SiteWise Assistant's response.
+type ResponseStreamMemberOutput struct {
+	Value InvocationOutput
+
+	noSmithyDocumentSerde
+}
+
+func (*ResponseStreamMemberOutput) isResponseStream() {}
+
+// Contains tracing information of the SiteWise Assistant's reasoning and data
+// access.
+type ResponseStreamMemberTrace struct {
+	Value Trace
+
+	noSmithyDocumentSerde
+}
+
+func (*ResponseStreamMemberTrace) isResponseStream() {}
 
 // The number of days your data is kept in the hot tier. By default, your data is
 // kept indefinitely in the hot tier.
@@ -2542,6 +2781,30 @@ type SiemensIE struct {
 	//
 	// This member is required.
 	IotCoreThingName *string
+
+	noSmithyDocumentSerde
+}
+
+// The data source for the dataset.
+type Source struct {
+
+	// Contains the ARN of the dataset. If the source is Kendra, it's the ARN of the
+	// Kendra index.
+	Arn *string
+
+	// Contains the location information where the cited text is originally stored.
+	// For example, if the data source is Kendra, and the text synchronized is from an
+	// S3 bucket, then the location refers to an S3 object.
+	Location *Location
+
+	noSmithyDocumentSerde
+}
+
+// The details of the dataset source associated with the dataset.
+type SourceDetail struct {
+
+	// Contains details about the Kendra dataset source.
+	Kendra *KendraSourceDetail
 
 	noSmithyDocumentSerde
 }
@@ -2623,6 +2886,16 @@ type TimeSeriesSummary struct {
 
 	// The ID of the asset property, in UUID format.
 	PropertyId *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains tracing information of the SiteWise Assistant's reasoning and data
+// access.
+type Trace struct {
+
+	// The cited text from the data source.
+	Text *string
 
 	noSmithyDocumentSerde
 }
@@ -2802,13 +3075,18 @@ type Variant struct {
 	// Asset property data of type Boolean (true or false).
 	BooleanValue *bool
 
-	// Asset property data of type double (floating point number).
+	//  Asset property data of type double (floating point number). The min value is
+	// -10^10. The max value is 10^10. Double.NaN is allowed.
 	DoubleValue *float64
 
 	// Asset property data of type integer (whole number).
 	IntegerValue *int32
 
-	// Asset property data of type string (sequence of characters).
+	// The type of null asset property data with BAD and UNCERTAIN qualities.
+	NullValue *PropertyValueNullValue
+
+	//  Asset property data of type string (sequence of characters). The allowed
+	// pattern: "^$|[^\u0000-\u001F\u007F]+". The max length is 1024.
 	StringValue *string
 
 	noSmithyDocumentSerde
@@ -2828,3 +3106,14 @@ type WarmTierRetentionPeriod struct {
 }
 
 type noSmithyDocumentSerde = smithydocument.NoSerde
+
+// UnknownUnionMember is returned when a union member is returned over the wire,
+// but has an unknown tag.
+type UnknownUnionMember struct {
+	Tag   string
+	Value []byte
+
+	noSmithyDocumentSerde
+}
+
+func (*UnknownUnionMember) isResponseStream() {}

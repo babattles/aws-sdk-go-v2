@@ -12,7 +12,20 @@ import (
 	"time"
 )
 
-// Returns the details for the requested template.
+// Returns the details for the requested template. Other template APIs are:
+//
+// [CreateTemplate]
+//
+// [DeleteTemplate]
+//
+// [ListTemplates]
+//
+// [UpdateTemplate]
+//
+// [DeleteTemplate]: https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_DeleteTemplate.html
+// [CreateTemplate]: https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_CreateTemplate.html
+// [ListTemplates]: https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_ListTemplates.html
+// [UpdateTemplate]: https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_UpdateTemplate.html
 func (c *Client) GetTemplate(ctx context.Context, params *GetTemplateInput, optFns ...func(*Options)) (*GetTemplateOutput, error) {
 	if params == nil {
 		params = &GetTemplateInput{}
@@ -84,6 +97,11 @@ type GetTemplateOutput struct {
 	// created with this template.
 	RequiredFields []types.RequiredField
 
+	// A list of case rules (also known as [case field conditions]) on a template.
+	//
+	// [case field conditions]: https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html
+	Rules []types.TemplateRule
+
 	// A map of of key-value pairs that represent tags on a resource. Tags are used to
 	// organize, track, or control access for this resource.
 	Tags map[string]*string
@@ -137,6 +155,9 @@ func (c *Client) addOperationGetTemplateMiddlewares(stack *middleware.Stack, opt
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -153,6 +174,9 @@ func (c *Client) addOperationGetTemplateMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetTemplateValidationMiddleware(stack); err != nil {
@@ -174,6 +198,18 @@ func (c *Client) addOperationGetTemplateMiddlewares(stack *middleware.Stack, opt
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

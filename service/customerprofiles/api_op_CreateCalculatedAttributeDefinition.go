@@ -68,6 +68,10 @@ type CreateCalculatedAttributeDefinitionInput struct {
 	// The display name of the calculated attribute.
 	DisplayName *string
 
+	// Defines how to filter incoming objects to include part of the Calculated
+	// Attribute.
+	Filter *types.Filter
+
 	// The tags used to organize, track, or control access for this resource.
 	Tags map[string]string
 
@@ -95,6 +99,9 @@ type CreateCalculatedAttributeDefinitionOutput struct {
 
 	// The display name of the calculated attribute.
 	DisplayName *string
+
+	// The filter that was used as part of the request.
+	Filter *types.Filter
 
 	// The timestamp of when the calculated attribute definition was most recently
 	// edited.
@@ -155,6 +162,9 @@ func (c *Client) addOperationCreateCalculatedAttributeDefinitionMiddlewares(stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -171,6 +181,9 @@ func (c *Client) addOperationCreateCalculatedAttributeDefinitionMiddlewares(stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateCalculatedAttributeDefinitionValidationMiddleware(stack); err != nil {
@@ -192,6 +205,18 @@ func (c *Client) addOperationCreateCalculatedAttributeDefinitionMiddlewares(stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

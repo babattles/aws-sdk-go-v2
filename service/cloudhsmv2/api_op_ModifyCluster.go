@@ -32,16 +32,17 @@ func (c *Client) ModifyCluster(ctx context.Context, params *ModifyClusterInput, 
 
 type ModifyClusterInput struct {
 
-	// A policy that defines how the service retains backups.
-	//
-	// This member is required.
-	BackupRetentionPolicy *types.BackupRetentionPolicy
-
 	// The identifier (ID) of the cluster that you want to modify. To find the cluster
 	// ID, use DescribeClusters.
 	//
 	// This member is required.
 	ClusterId *string
+
+	// A policy that defines how the service retains backups.
+	BackupRetentionPolicy *types.BackupRetentionPolicy
+
+	// The desired HSM type of the cluster.
+	HsmType *string
 
 	noSmithyDocumentSerde
 }
@@ -100,6 +101,9 @@ func (c *Client) addOperationModifyClusterMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -116,6 +120,9 @@ func (c *Client) addOperationModifyClusterMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpModifyClusterValidationMiddleware(stack); err != nil {
@@ -137,6 +144,18 @@ func (c *Client) addOperationModifyClusterMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

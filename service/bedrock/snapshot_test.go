@@ -110,6 +110,30 @@ func TestCheckSnapshot_CreateGuardrailVersion(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_CreateInferenceProfile(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateInferenceProfile(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "CreateInferenceProfile")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_CreateMarketplaceModelEndpoint(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateMarketplaceModelEndpoint(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "CreateMarketplaceModelEndpoint")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_CreateModelCopyJob(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.CreateModelCopyJob(context.Background(), nil, func(o *Options) {
@@ -151,6 +175,18 @@ func TestCheckSnapshot_CreateModelInvocationJob(t *testing.T) {
 	_, err := svc.CreateModelInvocationJob(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "CreateModelInvocationJob")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_CreatePromptRouter(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreatePromptRouter(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "CreatePromptRouter")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -206,6 +242,30 @@ func TestCheckSnapshot_DeleteImportedModel(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_DeleteInferenceProfile(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteInferenceProfile(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DeleteInferenceProfile")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_DeleteMarketplaceModelEndpoint(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteMarketplaceModelEndpoint(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DeleteMarketplaceModelEndpoint")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_DeleteModelInvocationLoggingConfiguration(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.DeleteModelInvocationLoggingConfiguration(context.Background(), nil, func(o *Options) {
@@ -218,11 +278,35 @@ func TestCheckSnapshot_DeleteModelInvocationLoggingConfiguration(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_DeletePromptRouter(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeletePromptRouter(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DeletePromptRouter")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_DeleteProvisionedModelThroughput(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.DeleteProvisionedModelThroughput(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "DeleteProvisionedModelThroughput")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_DeregisterMarketplaceModelEndpoint(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeregisterMarketplaceModelEndpoint(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "DeregisterMarketplaceModelEndpoint")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -290,6 +374,30 @@ func TestCheckSnapshot_GetImportedModel(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_GetInferenceProfile(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetInferenceProfile(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GetInferenceProfile")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_GetMarketplaceModelEndpoint(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetMarketplaceModelEndpoint(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GetMarketplaceModelEndpoint")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_GetModelCopyJob(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.GetModelCopyJob(context.Background(), nil, func(o *Options) {
@@ -343,6 +451,18 @@ func TestCheckSnapshot_GetModelInvocationLoggingConfiguration(t *testing.T) {
 	_, err := svc.GetModelInvocationLoggingConfiguration(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "GetModelInvocationLoggingConfiguration")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_GetPromptRouter(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetPromptRouter(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "GetPromptRouter")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -422,6 +542,30 @@ func TestCheckSnapshot_ListImportedModels(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_ListInferenceProfiles(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListInferenceProfiles(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListInferenceProfiles")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_ListMarketplaceModelEndpoints(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListMarketplaceModelEndpoints(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListMarketplaceModelEndpoints")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_ListModelCopyJobs(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ListModelCopyJobs(context.Background(), nil, func(o *Options) {
@@ -470,6 +614,18 @@ func TestCheckSnapshot_ListModelInvocationJobs(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_ListPromptRouters(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListPromptRouters(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "ListPromptRouters")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_ListProvisionedModelThroughputs(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ListProvisionedModelThroughputs(context.Background(), nil, func(o *Options) {
@@ -499,6 +655,18 @@ func TestCheckSnapshot_PutModelInvocationLoggingConfiguration(t *testing.T) {
 	_, err := svc.PutModelInvocationLoggingConfiguration(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return testSnapshot(stack, "PutModelInvocationLoggingConfiguration")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckSnapshot_RegisterMarketplaceModelEndpoint(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.RegisterMarketplaceModelEndpoint(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "RegisterMarketplaceModelEndpoint")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -578,6 +746,18 @@ func TestCheckSnapshot_UpdateGuardrail(t *testing.T) {
 	}
 }
 
+func TestCheckSnapshot_UpdateMarketplaceModelEndpoint(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateMarketplaceModelEndpoint(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return testSnapshot(stack, "UpdateMarketplaceModelEndpoint")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCheckSnapshot_UpdateProvisionedModelThroughput(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.UpdateProvisionedModelThroughput(context.Background(), nil, func(o *Options) {
@@ -637,6 +817,30 @@ func TestUpdateSnapshot_CreateGuardrailVersion(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_CreateInferenceProfile(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateInferenceProfile(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "CreateInferenceProfile")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_CreateMarketplaceModelEndpoint(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreateMarketplaceModelEndpoint(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "CreateMarketplaceModelEndpoint")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_CreateModelCopyJob(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.CreateModelCopyJob(context.Background(), nil, func(o *Options) {
@@ -678,6 +882,18 @@ func TestUpdateSnapshot_CreateModelInvocationJob(t *testing.T) {
 	_, err := svc.CreateModelInvocationJob(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "CreateModelInvocationJob")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_CreatePromptRouter(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.CreatePromptRouter(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "CreatePromptRouter")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -733,6 +949,30 @@ func TestUpdateSnapshot_DeleteImportedModel(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_DeleteInferenceProfile(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteInferenceProfile(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DeleteInferenceProfile")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_DeleteMarketplaceModelEndpoint(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeleteMarketplaceModelEndpoint(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DeleteMarketplaceModelEndpoint")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_DeleteModelInvocationLoggingConfiguration(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.DeleteModelInvocationLoggingConfiguration(context.Background(), nil, func(o *Options) {
@@ -745,11 +985,35 @@ func TestUpdateSnapshot_DeleteModelInvocationLoggingConfiguration(t *testing.T) 
 	}
 }
 
+func TestUpdateSnapshot_DeletePromptRouter(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeletePromptRouter(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DeletePromptRouter")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_DeleteProvisionedModelThroughput(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.DeleteProvisionedModelThroughput(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "DeleteProvisionedModelThroughput")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_DeregisterMarketplaceModelEndpoint(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.DeregisterMarketplaceModelEndpoint(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "DeregisterMarketplaceModelEndpoint")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -817,6 +1081,30 @@ func TestUpdateSnapshot_GetImportedModel(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_GetInferenceProfile(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetInferenceProfile(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GetInferenceProfile")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_GetMarketplaceModelEndpoint(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetMarketplaceModelEndpoint(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GetMarketplaceModelEndpoint")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_GetModelCopyJob(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.GetModelCopyJob(context.Background(), nil, func(o *Options) {
@@ -870,6 +1158,18 @@ func TestUpdateSnapshot_GetModelInvocationLoggingConfiguration(t *testing.T) {
 	_, err := svc.GetModelInvocationLoggingConfiguration(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "GetModelInvocationLoggingConfiguration")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_GetPromptRouter(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.GetPromptRouter(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "GetPromptRouter")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -949,6 +1249,30 @@ func TestUpdateSnapshot_ListImportedModels(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_ListInferenceProfiles(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListInferenceProfiles(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListInferenceProfiles")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_ListMarketplaceModelEndpoints(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListMarketplaceModelEndpoints(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListMarketplaceModelEndpoints")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_ListModelCopyJobs(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ListModelCopyJobs(context.Background(), nil, func(o *Options) {
@@ -997,6 +1321,18 @@ func TestUpdateSnapshot_ListModelInvocationJobs(t *testing.T) {
 	}
 }
 
+func TestUpdateSnapshot_ListPromptRouters(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.ListPromptRouters(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "ListPromptRouters")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestUpdateSnapshot_ListProvisionedModelThroughputs(t *testing.T) {
 	svc := New(Options{})
 	_, err := svc.ListProvisionedModelThroughputs(context.Background(), nil, func(o *Options) {
@@ -1026,6 +1362,18 @@ func TestUpdateSnapshot_PutModelInvocationLoggingConfiguration(t *testing.T) {
 	_, err := svc.PutModelInvocationLoggingConfiguration(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "PutModelInvocationLoggingConfiguration")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_RegisterMarketplaceModelEndpoint(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.RegisterMarketplaceModelEndpoint(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "RegisterMarketplaceModelEndpoint")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {
@@ -1098,6 +1446,18 @@ func TestUpdateSnapshot_UpdateGuardrail(t *testing.T) {
 	_, err := svc.UpdateGuardrail(context.Background(), nil, func(o *Options) {
 		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 			return updateSnapshot(stack, "UpdateGuardrail")
+		})
+	})
+	if _, ok := err.(snapshotOK); !ok && err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUpdateSnapshot_UpdateMarketplaceModelEndpoint(t *testing.T) {
+	svc := New(Options{})
+	_, err := svc.UpdateMarketplaceModelEndpoint(context.Background(), nil, func(o *Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			return updateSnapshot(stack, "UpdateMarketplaceModelEndpoint")
 		})
 	})
 	if _, ok := err.(snapshotOK); !ok && err != nil {

@@ -22,9 +22,9 @@ import (
 // an event data store, or the TrailName parameter to the get Insights event
 // selectors for a trail. You cannot specify these parameters together.
 //
-// For more information, see [Logging CloudTrail Insights events] in the CloudTrail User Guide.
+// For more information, see [Working with CloudTrail Insights] in the CloudTrail User Guide.
 //
-// [Logging CloudTrail Insights events]: https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-insights-events-with-cloudtrail.html
+// [Working with CloudTrail Insights]: https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-insights-events-with-cloudtrail.html
 func (c *Client) GetInsightSelectors(ctx context.Context, params *GetInsightSelectorsInput, optFns ...func(*Options)) (*GetInsightSelectorsOutput, error) {
 	if params == nil {
 		params = &GetInsightSelectorsInput{}
@@ -139,6 +139,9 @@ func (c *Client) addOperationGetInsightSelectorsMiddlewares(stack *middleware.St
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -157,6 +160,9 @@ func (c *Client) addOperationGetInsightSelectorsMiddlewares(stack *middleware.St
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opGetInsightSelectors(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -173,6 +179,18 @@ func (c *Client) addOperationGetInsightSelectorsMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

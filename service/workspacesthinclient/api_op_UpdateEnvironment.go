@@ -38,7 +38,7 @@ type UpdateEnvironmentInput struct {
 	DesiredSoftwareSetId *string
 
 	// The Amazon Resource Name (ARN) of the desktop to stream from Amazon WorkSpaces,
-	// WorkSpaces Web, or AppStream 2.0.
+	// WorkSpaces Secure Browser, or AppStream 2.0.
 	DesktopArn *string
 
 	// The URL for the identity provider login (only for environments that use
@@ -119,6 +119,9 @@ func (c *Client) addOperationUpdateEnvironmentMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -135,6 +138,9 @@ func (c *Client) addOperationUpdateEnvironmentMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addEndpointPrefix_opUpdateEnvironmentMiddleware(stack); err != nil {
@@ -159,6 +165,18 @@ func (c *Client) addOperationUpdateEnvironmentMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

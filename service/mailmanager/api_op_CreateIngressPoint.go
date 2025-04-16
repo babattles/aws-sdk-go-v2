@@ -59,6 +59,11 @@ type CreateIngressPointInput struct {
 	// SMTP password or a secret ARN.
 	IngressPointConfiguration types.IngressPointConfiguration
 
+	// Specifies the network configuration for the ingress point. This allows you to
+	// create an IPv4-only, Dual-Stack, or PrivateLink type of ingress point. If not
+	// specified, the default network type is IPv4-only.
+	NetworkConfiguration types.NetworkConfiguration
+
 	// The tags used to organize, track, or control access for the resource. For
 	// example, { "tags": {"key1":"value1", "key2":"value2"} }.
 	Tags []types.Tag
@@ -122,6 +127,9 @@ func (c *Client) addOperationCreateIngressPointMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -138,6 +146,9 @@ func (c *Client) addOperationCreateIngressPointMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateIngressPointMiddleware(stack, options); err != nil {
@@ -162,6 +173,18 @@ func (c *Client) addOperationCreateIngressPointMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

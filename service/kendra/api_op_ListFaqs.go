@@ -11,7 +11,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Gets a list of FAQ lists associated with an index.
+// Gets a list of FAQs associated with an index.
 func (c *Client) ListFaqs(ctx context.Context, params *ListFaqsInput, optFns ...func(*Options)) (*ListFaqsOutput, error) {
 	if params == nil {
 		params = &ListFaqsInput{}
@@ -29,7 +29,7 @@ func (c *Client) ListFaqs(ctx context.Context, params *ListFaqsInput, optFns ...
 
 type ListFaqsInput struct {
 
-	// The index that contains the FAQ lists.
+	// The index for the FAQs.
 	//
 	// This member is required.
 	IndexId *string
@@ -48,7 +48,7 @@ type ListFaqsInput struct {
 
 type ListFaqsOutput struct {
 
-	// information about the FAQs associated with the specified index.
+	// Summary information about the FAQs for a specified index.
 	FaqSummaryItems []types.FaqSummary
 
 	// If the response is truncated, Amazon Kendra returns this token that you can use
@@ -104,6 +104,9 @@ func (c *Client) addOperationListFaqsMiddlewares(stack *middleware.Stack, option
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -120,6 +123,9 @@ func (c *Client) addOperationListFaqsMiddlewares(stack *middleware.Stack, option
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListFaqsValidationMiddleware(stack); err != nil {
@@ -141,6 +147,18 @@ func (c *Client) addOperationListFaqsMiddlewares(stack *middleware.Stack, option
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

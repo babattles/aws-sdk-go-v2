@@ -69,6 +69,9 @@ type GetWebACLForResourceInput struct {
 	//   - For an Amazon Web Services Verified Access instance:
 	//   arn:partition:ec2:region:account-id:verified-access-instance/instance-id
 	//
+	//   - For an Amplify application:
+	//   arn:partition:amplify:region:account-id:apps/app-id
+	//
 	// This member is required.
 	ResourceArn *string
 
@@ -130,6 +133,9 @@ func (c *Client) addOperationGetWebACLForResourceMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -146,6 +152,9 @@ func (c *Client) addOperationGetWebACLForResourceMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetWebACLForResourceValidationMiddleware(stack); err != nil {
@@ -167,6 +176,18 @@ func (c *Client) addOperationGetWebACLForResourceMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

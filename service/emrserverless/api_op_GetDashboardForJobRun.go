@@ -47,6 +47,10 @@ type GetDashboardForJobRunInput struct {
 	// This member is required.
 	JobRunId *string
 
+	// Allows access to system profile logs for Lake Formation-enabled jobs. Default
+	// is false.
+	AccessSystemProfileLogs *bool
+
 	// An optimal parameter that indicates the amount of attempts for the job. If not
 	// specified, this value defaults to the attempt of the latest job.
 	Attempt *int32
@@ -108,6 +112,9 @@ func (c *Client) addOperationGetDashboardForJobRunMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -124,6 +131,9 @@ func (c *Client) addOperationGetDashboardForJobRunMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetDashboardForJobRunValidationMiddleware(stack); err != nil {
@@ -145,6 +155,18 @@ func (c *Client) addOperationGetDashboardForJobRunMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

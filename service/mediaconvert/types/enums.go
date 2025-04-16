@@ -654,6 +654,7 @@ const (
 	AudioDurationCorrectionAuto     AudioDurationCorrection = "AUTO"
 	AudioDurationCorrectionTrack    AudioDurationCorrection = "TRACK"
 	AudioDurationCorrectionFrame    AudioDurationCorrection = "FRAME"
+	AudioDurationCorrectionForce    AudioDurationCorrection = "FORCE"
 )
 
 // Values returns all known values for AudioDurationCorrection. Note that this can
@@ -666,6 +667,7 @@ func (AudioDurationCorrection) Values() []AudioDurationCorrection {
 		"AUTO",
 		"TRACK",
 		"FRAME",
+		"FORCE",
 	}
 }
 
@@ -901,9 +903,10 @@ type Av1FramerateConversionAlgorithm string
 
 // Enum values for Av1FramerateConversionAlgorithm
 const (
-	Av1FramerateConversionAlgorithmDuplicateDrop Av1FramerateConversionAlgorithm = "DUPLICATE_DROP"
-	Av1FramerateConversionAlgorithmInterpolate   Av1FramerateConversionAlgorithm = "INTERPOLATE"
-	Av1FramerateConversionAlgorithmFrameformer   Av1FramerateConversionAlgorithm = "FRAMEFORMER"
+	Av1FramerateConversionAlgorithmDuplicateDrop      Av1FramerateConversionAlgorithm = "DUPLICATE_DROP"
+	Av1FramerateConversionAlgorithmInterpolate        Av1FramerateConversionAlgorithm = "INTERPOLATE"
+	Av1FramerateConversionAlgorithmFrameformer        Av1FramerateConversionAlgorithm = "FRAMEFORMER"
+	Av1FramerateConversionAlgorithmMaintainFrameCount Av1FramerateConversionAlgorithm = "MAINTAIN_FRAME_COUNT"
 )
 
 // Values returns all known values for Av1FramerateConversionAlgorithm. Note that
@@ -916,6 +919,7 @@ func (Av1FramerateConversionAlgorithm) Values() []Av1FramerateConversionAlgorith
 		"DUPLICATE_DROP",
 		"INTERPOLATE",
 		"FRAMEFORMER",
+		"MAINTAIN_FRAME_COUNT",
 	}
 }
 
@@ -1002,9 +1006,10 @@ type AvcIntraFramerateConversionAlgorithm string
 
 // Enum values for AvcIntraFramerateConversionAlgorithm
 const (
-	AvcIntraFramerateConversionAlgorithmDuplicateDrop AvcIntraFramerateConversionAlgorithm = "DUPLICATE_DROP"
-	AvcIntraFramerateConversionAlgorithmInterpolate   AvcIntraFramerateConversionAlgorithm = "INTERPOLATE"
-	AvcIntraFramerateConversionAlgorithmFrameformer   AvcIntraFramerateConversionAlgorithm = "FRAMEFORMER"
+	AvcIntraFramerateConversionAlgorithmDuplicateDrop      AvcIntraFramerateConversionAlgorithm = "DUPLICATE_DROP"
+	AvcIntraFramerateConversionAlgorithmInterpolate        AvcIntraFramerateConversionAlgorithm = "INTERPOLATE"
+	AvcIntraFramerateConversionAlgorithmFrameformer        AvcIntraFramerateConversionAlgorithm = "FRAMEFORMER"
+	AvcIntraFramerateConversionAlgorithmMaintainFrameCount AvcIntraFramerateConversionAlgorithm = "MAINTAIN_FRAME_COUNT"
 )
 
 // Values returns all known values for AvcIntraFramerateConversionAlgorithm. Note
@@ -1017,6 +1022,7 @@ func (AvcIntraFramerateConversionAlgorithm) Values() []AvcIntraFramerateConversi
 		"DUPLICATE_DROP",
 		"INTERPOLATE",
 		"FRAMEFORMER",
+		"MAINTAIN_FRAME_COUNT",
 	}
 }
 
@@ -1450,6 +1456,25 @@ func (CaptionDestinationType) Values() []CaptionDestinationType {
 	}
 }
 
+type CaptionSourceByteRateLimit string
+
+// Enum values for CaptionSourceByteRateLimit
+const (
+	CaptionSourceByteRateLimitEnabled  CaptionSourceByteRateLimit = "ENABLED"
+	CaptionSourceByteRateLimitDisabled CaptionSourceByteRateLimit = "DISABLED"
+)
+
+// Values returns all known values for CaptionSourceByteRateLimit. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CaptionSourceByteRateLimit) Values() []CaptionSourceByteRateLimit {
+	return []CaptionSourceByteRateLimit{
+		"ENABLED",
+		"DISABLED",
+	}
+}
+
 type CaptionSourceConvertPaintOnToPopOn string
 
 // Enum values for CaptionSourceConvertPaintOnToPopOn
@@ -1510,6 +1535,27 @@ func (CaptionSourceType) Values() []CaptionSourceType {
 		"NULL_SOURCE",
 		"IMSC",
 		"WEBVTT",
+	}
+}
+
+type ChromaPositionMode string
+
+// Enum values for ChromaPositionMode
+const (
+	ChromaPositionModeAuto         ChromaPositionMode = "AUTO"
+	ChromaPositionModeForceCenter  ChromaPositionMode = "FORCE_CENTER"
+	ChromaPositionModeForceTopLeft ChromaPositionMode = "FORCE_TOP_LEFT"
+)
+
+// Values returns all known values for ChromaPositionMode. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ChromaPositionMode) Values() []ChromaPositionMode {
+	return []ChromaPositionMode{
+		"AUTO",
+		"FORCE_CENTER",
+		"FORCE_TOP_LEFT",
 	}
 }
 
@@ -1773,6 +1819,7 @@ type CmafSegmentLengthControl string
 const (
 	CmafSegmentLengthControlExact       CmafSegmentLengthControl = "EXACT"
 	CmafSegmentLengthControlGopMultiple CmafSegmentLengthControl = "GOP_MULTIPLE"
+	CmafSegmentLengthControlMatch       CmafSegmentLengthControl = "MATCH"
 )
 
 // Values returns all known values for CmafSegmentLengthControl. Note that this
@@ -1783,6 +1830,7 @@ func (CmafSegmentLengthControl) Values() []CmafSegmentLengthControl {
 	return []CmafSegmentLengthControl{
 		"EXACT",
 		"GOP_MULTIPLE",
+		"MATCH",
 	}
 }
 
@@ -2098,6 +2146,65 @@ func (CmfcTimedMetadataBoxVersion) Values() []CmfcTimedMetadataBoxVersion {
 	}
 }
 
+type Codec string
+
+// Enum values for Codec
+const (
+	CodecUnknown Codec = "UNKNOWN"
+	CodecAac     Codec = "AAC"
+	CodecAc3     Codec = "AC3"
+	CodecEac3    Codec = "EAC3"
+	CodecFlac    Codec = "FLAC"
+	CodecMp3     Codec = "MP3"
+	CodecOpus    Codec = "OPUS"
+	CodecPcm     Codec = "PCM"
+	CodecVorbis  Codec = "VORBIS"
+	CodecAv1     Codec = "AV1"
+	CodecAvc     Codec = "AVC"
+	CodecHevc    Codec = "HEVC"
+	CodecMjpeg   Codec = "MJPEG"
+	CodecMp4v    Codec = "MP4V"
+	CodecMpeg2   Codec = "MPEG2"
+	CodecProres  Codec = "PRORES"
+	CodecTheora  Codec = "THEORA"
+	CodecVp8     Codec = "VP8"
+	CodecVp9     Codec = "VP9"
+	CodecC608    Codec = "C608"
+	CodecC708    Codec = "C708"
+	CodecWebvtt  Codec = "WEBVTT"
+)
+
+// Values returns all known values for Codec. Note that this can be expanded in
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (Codec) Values() []Codec {
+	return []Codec{
+		"UNKNOWN",
+		"AAC",
+		"AC3",
+		"EAC3",
+		"FLAC",
+		"MP3",
+		"OPUS",
+		"PCM",
+		"VORBIS",
+		"AV1",
+		"AVC",
+		"HEVC",
+		"MJPEG",
+		"MP4V",
+		"MPEG2",
+		"PRORES",
+		"THEORA",
+		"VP8",
+		"VP9",
+		"C608",
+		"C708",
+		"WEBVTT",
+	}
+}
+
 type ColorMetadata string
 
 // Enum values for ColorMetadata
@@ -2114,6 +2221,53 @@ func (ColorMetadata) Values() []ColorMetadata {
 	return []ColorMetadata{
 		"IGNORE",
 		"INSERT",
+	}
+}
+
+type ColorPrimaries string
+
+// Enum values for ColorPrimaries
+const (
+	ColorPrimariesItu709       ColorPrimaries = "ITU_709"
+	ColorPrimariesUnspecified  ColorPrimaries = "UNSPECIFIED"
+	ColorPrimariesReserved     ColorPrimaries = "RESERVED"
+	ColorPrimariesItu470m      ColorPrimaries = "ITU_470M"
+	ColorPrimariesItu470bg     ColorPrimaries = "ITU_470BG"
+	ColorPrimariesSmpte170m    ColorPrimaries = "SMPTE_170M"
+	ColorPrimariesSmpte240m    ColorPrimaries = "SMPTE_240M"
+	ColorPrimariesGenericFilm  ColorPrimaries = "GENERIC_FILM"
+	ColorPrimariesItu2020      ColorPrimaries = "ITU_2020"
+	ColorPrimariesSmpte4281    ColorPrimaries = "SMPTE_428_1"
+	ColorPrimariesSmpte4312    ColorPrimaries = "SMPTE_431_2"
+	ColorPrimariesSmpteEg4321  ColorPrimaries = "SMPTE_EG_432_1"
+	ColorPrimariesIpt          ColorPrimaries = "IPT"
+	ColorPrimariesSmpte2067xyz ColorPrimaries = "SMPTE_2067XYZ"
+	ColorPrimariesEbu3213E     ColorPrimaries = "EBU_3213_E"
+	ColorPrimariesLast         ColorPrimaries = "LAST"
+)
+
+// Values returns all known values for ColorPrimaries. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ColorPrimaries) Values() []ColorPrimaries {
+	return []ColorPrimaries{
+		"ITU_709",
+		"UNSPECIFIED",
+		"RESERVED",
+		"ITU_470M",
+		"ITU_470BG",
+		"SMPTE_170M",
+		"SMPTE_240M",
+		"GENERIC_FILM",
+		"ITU_2020",
+		"SMPTE_428_1",
+		"SMPTE_431_2",
+		"SMPTE_EG_432_1",
+		"IPT",
+		"SMPTE_2067XYZ",
+		"EBU_3213_E",
+		"LAST",
 	}
 }
 
@@ -2220,6 +2374,7 @@ type ContainerType string
 // Enum values for ContainerType
 const (
 	ContainerTypeF4v  ContainerType = "F4V"
+	ContainerTypeGif  ContainerType = "GIF"
 	ContainerTypeIsmv ContainerType = "ISMV"
 	ContainerTypeM2ts ContainerType = "M2TS"
 	ContainerTypeM3u8 ContainerType = "M3U8"
@@ -2228,6 +2383,7 @@ const (
 	ContainerTypeMp4  ContainerType = "MP4"
 	ContainerTypeMpd  ContainerType = "MPD"
 	ContainerTypeMxf  ContainerType = "MXF"
+	ContainerTypeOgg  ContainerType = "OGG"
 	ContainerTypeWebm ContainerType = "WEBM"
 	ContainerTypeRaw  ContainerType = "RAW"
 	ContainerTypeY4m  ContainerType = "Y4M"
@@ -2240,6 +2396,7 @@ const (
 func (ContainerType) Values() []ContainerType {
 	return []ContainerType{
 		"F4V",
+		"GIF",
 		"ISMV",
 		"M2TS",
 		"M3U8",
@@ -2248,6 +2405,7 @@ func (ContainerType) Values() []ContainerType {
 		"MP4",
 		"MPD",
 		"MXF",
+		"OGG",
 		"WEBM",
 		"RAW",
 		"Y4M",
@@ -2458,6 +2616,7 @@ type DashIsoSegmentLengthControl string
 const (
 	DashIsoSegmentLengthControlExact       DashIsoSegmentLengthControl = "EXACT"
 	DashIsoSegmentLengthControlGopMultiple DashIsoSegmentLengthControl = "GOP_MULTIPLE"
+	DashIsoSegmentLengthControlMatch       DashIsoSegmentLengthControl = "MATCH"
 )
 
 // Values returns all known values for DashIsoSegmentLengthControl. Note that this
@@ -2468,6 +2627,7 @@ func (DashIsoSegmentLengthControl) Values() []DashIsoSegmentLengthControl {
 	return []DashIsoSegmentLengthControl{
 		"EXACT",
 		"GOP_MULTIPLE",
+		"MATCH",
 	}
 }
 
@@ -2963,6 +3123,25 @@ func (DvbSubtitlingType) Values() []DvbSubtitlingType {
 	return []DvbSubtitlingType{
 		"HEARING_IMPAIRED",
 		"STANDARD",
+	}
+}
+
+type DynamicAudioSelectorType string
+
+// Enum values for DynamicAudioSelectorType
+const (
+	DynamicAudioSelectorTypeAllTracks    DynamicAudioSelectorType = "ALL_TRACKS"
+	DynamicAudioSelectorTypeLanguageCode DynamicAudioSelectorType = "LANGUAGE_CODE"
+)
+
+// Values returns all known values for DynamicAudioSelectorType. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DynamicAudioSelectorType) Values() []DynamicAudioSelectorType {
+	return []DynamicAudioSelectorType{
+		"ALL_TRACKS",
+		"LANGUAGE_CODE",
 	}
 }
 
@@ -3625,6 +3804,68 @@ func (FontScript) Values() []FontScript {
 	}
 }
 
+type Format string
+
+// Enum values for Format
+const (
+	FormatMp4       Format = "mp4"
+	FormatQuicktime Format = "quicktime"
+	FormatMatroska  Format = "matroska"
+	FormatWebm      Format = "webm"
+)
+
+// Values returns all known values for Format. Note that this can be expanded in
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (Format) Values() []Format {
+	return []Format{
+		"mp4",
+		"quicktime",
+		"matroska",
+		"webm",
+	}
+}
+
+type GifFramerateControl string
+
+// Enum values for GifFramerateControl
+const (
+	GifFramerateControlInitializeFromSource GifFramerateControl = "INITIALIZE_FROM_SOURCE"
+	GifFramerateControlSpecified            GifFramerateControl = "SPECIFIED"
+)
+
+// Values returns all known values for GifFramerateControl. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (GifFramerateControl) Values() []GifFramerateControl {
+	return []GifFramerateControl{
+		"INITIALIZE_FROM_SOURCE",
+		"SPECIFIED",
+	}
+}
+
+type GifFramerateConversionAlgorithm string
+
+// Enum values for GifFramerateConversionAlgorithm
+const (
+	GifFramerateConversionAlgorithmDuplicateDrop GifFramerateConversionAlgorithm = "DUPLICATE_DROP"
+	GifFramerateConversionAlgorithmInterpolate   GifFramerateConversionAlgorithm = "INTERPOLATE"
+)
+
+// Values returns all known values for GifFramerateConversionAlgorithm. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (GifFramerateConversionAlgorithm) Values() []GifFramerateConversionAlgorithm {
+	return []GifFramerateConversionAlgorithm{
+		"DUPLICATE_DROP",
+		"INTERPOLATE",
+	}
+}
+
 type H264AdaptiveQuantization string
 
 // Enum values for H264AdaptiveQuantization
@@ -3851,9 +4092,10 @@ type H264FramerateConversionAlgorithm string
 
 // Enum values for H264FramerateConversionAlgorithm
 const (
-	H264FramerateConversionAlgorithmDuplicateDrop H264FramerateConversionAlgorithm = "DUPLICATE_DROP"
-	H264FramerateConversionAlgorithmInterpolate   H264FramerateConversionAlgorithm = "INTERPOLATE"
-	H264FramerateConversionAlgorithmFrameformer   H264FramerateConversionAlgorithm = "FRAMEFORMER"
+	H264FramerateConversionAlgorithmDuplicateDrop      H264FramerateConversionAlgorithm = "DUPLICATE_DROP"
+	H264FramerateConversionAlgorithmInterpolate        H264FramerateConversionAlgorithm = "INTERPOLATE"
+	H264FramerateConversionAlgorithmFrameformer        H264FramerateConversionAlgorithm = "FRAMEFORMER"
+	H264FramerateConversionAlgorithmMaintainFrameCount H264FramerateConversionAlgorithm = "MAINTAIN_FRAME_COUNT"
 )
 
 // Values returns all known values for H264FramerateConversionAlgorithm. Note that
@@ -3866,6 +4108,7 @@ func (H264FramerateConversionAlgorithm) Values() []H264FramerateConversionAlgori
 		"DUPLICATE_DROP",
 		"INTERPOLATE",
 		"FRAMEFORMER",
+		"MAINTAIN_FRAME_COUNT",
 	}
 }
 
@@ -4011,6 +4254,25 @@ func (H264RepeatPps) Values() []H264RepeatPps {
 	return []H264RepeatPps{
 		"DISABLED",
 		"ENABLED",
+	}
+}
+
+type H264SaliencyAwareEncoding string
+
+// Enum values for H264SaliencyAwareEncoding
+const (
+	H264SaliencyAwareEncodingDisabled  H264SaliencyAwareEncoding = "DISABLED"
+	H264SaliencyAwareEncodingPreferred H264SaliencyAwareEncoding = "PREFERRED"
+)
+
+// Values returns all known values for H264SaliencyAwareEncoding. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (H264SaliencyAwareEncoding) Values() []H264SaliencyAwareEncoding {
+	return []H264SaliencyAwareEncoding{
+		"DISABLED",
+		"PREFERRED",
 	}
 }
 
@@ -4172,6 +4434,25 @@ func (H264UnregisteredSeiTimecode) Values() []H264UnregisteredSeiTimecode {
 	}
 }
 
+type H264WriteMp4PackagingType string
+
+// Enum values for H264WriteMp4PackagingType
+const (
+	H264WriteMp4PackagingTypeAvc1 H264WriteMp4PackagingType = "AVC1"
+	H264WriteMp4PackagingTypeAvc3 H264WriteMp4PackagingType = "AVC3"
+)
+
+// Values returns all known values for H264WriteMp4PackagingType. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (H264WriteMp4PackagingType) Values() []H264WriteMp4PackagingType {
+	return []H264WriteMp4PackagingType{
+		"AVC1",
+		"AVC3",
+	}
+}
+
 type H265AdaptiveQuantization string
 
 // Enum values for H265AdaptiveQuantization
@@ -4295,6 +4576,25 @@ func (H265CodecProfile) Values() []H265CodecProfile {
 	}
 }
 
+type H265Deblocking string
+
+// Enum values for H265Deblocking
+const (
+	H265DeblockingEnabled  H265Deblocking = "ENABLED"
+	H265DeblockingDisabled H265Deblocking = "DISABLED"
+)
+
+// Values returns all known values for H265Deblocking. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (H265Deblocking) Values() []H265Deblocking {
+	return []H265Deblocking{
+		"ENABLED",
+		"DISABLED",
+	}
+}
+
 type H265DynamicSubGop string
 
 // Enum values for H265DynamicSubGop
@@ -4376,9 +4676,10 @@ type H265FramerateConversionAlgorithm string
 
 // Enum values for H265FramerateConversionAlgorithm
 const (
-	H265FramerateConversionAlgorithmDuplicateDrop H265FramerateConversionAlgorithm = "DUPLICATE_DROP"
-	H265FramerateConversionAlgorithmInterpolate   H265FramerateConversionAlgorithm = "INTERPOLATE"
-	H265FramerateConversionAlgorithmFrameformer   H265FramerateConversionAlgorithm = "FRAMEFORMER"
+	H265FramerateConversionAlgorithmDuplicateDrop      H265FramerateConversionAlgorithm = "DUPLICATE_DROP"
+	H265FramerateConversionAlgorithmInterpolate        H265FramerateConversionAlgorithm = "INTERPOLATE"
+	H265FramerateConversionAlgorithmFrameformer        H265FramerateConversionAlgorithm = "FRAMEFORMER"
+	H265FramerateConversionAlgorithmMaintainFrameCount H265FramerateConversionAlgorithm = "MAINTAIN_FRAME_COUNT"
 )
 
 // Values returns all known values for H265FramerateConversionAlgorithm. Note that
@@ -4391,6 +4692,7 @@ func (H265FramerateConversionAlgorithm) Values() []H265FramerateConversionAlgori
 		"DUPLICATE_DROP",
 		"INTERPOLATE",
 		"FRAMEFORMER",
+		"MAINTAIN_FRAME_COUNT",
 	}
 }
 
@@ -5214,6 +5516,7 @@ type HlsSegmentLengthControl string
 const (
 	HlsSegmentLengthControlExact       HlsSegmentLengthControl = "EXACT"
 	HlsSegmentLengthControlGopMultiple HlsSegmentLengthControl = "GOP_MULTIPLE"
+	HlsSegmentLengthControlMatch       HlsSegmentLengthControl = "MATCH"
 )
 
 // Values returns all known values for HlsSegmentLengthControl. Note that this can
@@ -5224,6 +5527,7 @@ func (HlsSegmentLengthControl) Values() []HlsSegmentLengthControl {
 	return []HlsSegmentLengthControl{
 		"EXACT",
 		"GOP_MULTIPLE",
+		"MATCH",
 	}
 }
 
@@ -6381,6 +6685,57 @@ func (M3u8Scte35Source) Values() []M3u8Scte35Source {
 	}
 }
 
+type MatrixCoefficients string
+
+// Enum values for MatrixCoefficients
+const (
+	MatrixCoefficientsRgb          MatrixCoefficients = "RGB"
+	MatrixCoefficientsItu709       MatrixCoefficients = "ITU_709"
+	MatrixCoefficientsUnspecified  MatrixCoefficients = "UNSPECIFIED"
+	MatrixCoefficientsReserved     MatrixCoefficients = "RESERVED"
+	MatrixCoefficientsFcc          MatrixCoefficients = "FCC"
+	MatrixCoefficientsItu470bg     MatrixCoefficients = "ITU_470BG"
+	MatrixCoefficientsSmpte170m    MatrixCoefficients = "SMPTE_170M"
+	MatrixCoefficientsSmpte240m    MatrixCoefficients = "SMPTE_240M"
+	MatrixCoefficientsYCgCo        MatrixCoefficients = "YCgCo"
+	MatrixCoefficientsItu2020Ncl   MatrixCoefficients = "ITU_2020_NCL"
+	MatrixCoefficientsItu2020Cl    MatrixCoefficients = "ITU_2020_CL"
+	MatrixCoefficientsSmpte2085    MatrixCoefficients = "SMPTE_2085"
+	MatrixCoefficientsCdNcl        MatrixCoefficients = "CD_NCL"
+	MatrixCoefficientsCdCl         MatrixCoefficients = "CD_CL"
+	MatrixCoefficientsItu2100ICtCp MatrixCoefficients = "ITU_2100ICtCp"
+	MatrixCoefficientsIpt          MatrixCoefficients = "IPT"
+	MatrixCoefficientsEbu3213      MatrixCoefficients = "EBU3213"
+	MatrixCoefficientsLast         MatrixCoefficients = "LAST"
+)
+
+// Values returns all known values for MatrixCoefficients. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (MatrixCoefficients) Values() []MatrixCoefficients {
+	return []MatrixCoefficients{
+		"RGB",
+		"ITU_709",
+		"UNSPECIFIED",
+		"RESERVED",
+		"FCC",
+		"ITU_470BG",
+		"SMPTE_170M",
+		"SMPTE_240M",
+		"YCgCo",
+		"ITU_2020_NCL",
+		"ITU_2020_CL",
+		"SMPTE_2085",
+		"CD_NCL",
+		"CD_CL",
+		"ITU_2100ICtCp",
+		"IPT",
+		"EBU3213",
+		"LAST",
+	}
+}
+
 type MotionImageInsertionMode string
 
 // Enum values for MotionImageInsertionMode
@@ -6872,9 +7227,10 @@ type Mpeg2FramerateConversionAlgorithm string
 
 // Enum values for Mpeg2FramerateConversionAlgorithm
 const (
-	Mpeg2FramerateConversionAlgorithmDuplicateDrop Mpeg2FramerateConversionAlgorithm = "DUPLICATE_DROP"
-	Mpeg2FramerateConversionAlgorithmInterpolate   Mpeg2FramerateConversionAlgorithm = "INTERPOLATE"
-	Mpeg2FramerateConversionAlgorithmFrameformer   Mpeg2FramerateConversionAlgorithm = "FRAMEFORMER"
+	Mpeg2FramerateConversionAlgorithmDuplicateDrop      Mpeg2FramerateConversionAlgorithm = "DUPLICATE_DROP"
+	Mpeg2FramerateConversionAlgorithmInterpolate        Mpeg2FramerateConversionAlgorithm = "INTERPOLATE"
+	Mpeg2FramerateConversionAlgorithmFrameformer        Mpeg2FramerateConversionAlgorithm = "FRAMEFORMER"
+	Mpeg2FramerateConversionAlgorithmMaintainFrameCount Mpeg2FramerateConversionAlgorithm = "MAINTAIN_FRAME_COUNT"
 )
 
 // Values returns all known values for Mpeg2FramerateConversionAlgorithm. Note
@@ -6887,6 +7243,7 @@ func (Mpeg2FramerateConversionAlgorithm) Values() []Mpeg2FramerateConversionAlgo
 		"DUPLICATE_DROP",
 		"INTERPOLATE",
 		"FRAMEFORMER",
+		"MAINTAIN_FRAME_COUNT",
 	}
 }
 
@@ -7518,6 +7875,66 @@ func (PresetListBy) Values() []PresetListBy {
 	}
 }
 
+type PresetSpeke20Audio string
+
+// Enum values for PresetSpeke20Audio
+const (
+	PresetSpeke20AudioPresetAudio1 PresetSpeke20Audio = "PRESET_AUDIO_1"
+	PresetSpeke20AudioPresetAudio2 PresetSpeke20Audio = "PRESET_AUDIO_2"
+	PresetSpeke20AudioPresetAudio3 PresetSpeke20Audio = "PRESET_AUDIO_3"
+	PresetSpeke20AudioShared       PresetSpeke20Audio = "SHARED"
+	PresetSpeke20AudioUnencrypted  PresetSpeke20Audio = "UNENCRYPTED"
+)
+
+// Values returns all known values for PresetSpeke20Audio. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (PresetSpeke20Audio) Values() []PresetSpeke20Audio {
+	return []PresetSpeke20Audio{
+		"PRESET_AUDIO_1",
+		"PRESET_AUDIO_2",
+		"PRESET_AUDIO_3",
+		"SHARED",
+		"UNENCRYPTED",
+	}
+}
+
+type PresetSpeke20Video string
+
+// Enum values for PresetSpeke20Video
+const (
+	PresetSpeke20VideoPresetVideo1 PresetSpeke20Video = "PRESET_VIDEO_1"
+	PresetSpeke20VideoPresetVideo2 PresetSpeke20Video = "PRESET_VIDEO_2"
+	PresetSpeke20VideoPresetVideo3 PresetSpeke20Video = "PRESET_VIDEO_3"
+	PresetSpeke20VideoPresetVideo4 PresetSpeke20Video = "PRESET_VIDEO_4"
+	PresetSpeke20VideoPresetVideo5 PresetSpeke20Video = "PRESET_VIDEO_5"
+	PresetSpeke20VideoPresetVideo6 PresetSpeke20Video = "PRESET_VIDEO_6"
+	PresetSpeke20VideoPresetVideo7 PresetSpeke20Video = "PRESET_VIDEO_7"
+	PresetSpeke20VideoPresetVideo8 PresetSpeke20Video = "PRESET_VIDEO_8"
+	PresetSpeke20VideoShared       PresetSpeke20Video = "SHARED"
+	PresetSpeke20VideoUnencrypted  PresetSpeke20Video = "UNENCRYPTED"
+)
+
+// Values returns all known values for PresetSpeke20Video. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (PresetSpeke20Video) Values() []PresetSpeke20Video {
+	return []PresetSpeke20Video{
+		"PRESET_VIDEO_1",
+		"PRESET_VIDEO_2",
+		"PRESET_VIDEO_3",
+		"PRESET_VIDEO_4",
+		"PRESET_VIDEO_5",
+		"PRESET_VIDEO_6",
+		"PRESET_VIDEO_7",
+		"PRESET_VIDEO_8",
+		"SHARED",
+		"UNENCRYPTED",
+	}
+}
+
 type PricingPlan string
 
 // Enum values for PricingPlan
@@ -7606,9 +8023,10 @@ type ProresFramerateConversionAlgorithm string
 
 // Enum values for ProresFramerateConversionAlgorithm
 const (
-	ProresFramerateConversionAlgorithmDuplicateDrop ProresFramerateConversionAlgorithm = "DUPLICATE_DROP"
-	ProresFramerateConversionAlgorithmInterpolate   ProresFramerateConversionAlgorithm = "INTERPOLATE"
-	ProresFramerateConversionAlgorithmFrameformer   ProresFramerateConversionAlgorithm = "FRAMEFORMER"
+	ProresFramerateConversionAlgorithmDuplicateDrop      ProresFramerateConversionAlgorithm = "DUPLICATE_DROP"
+	ProresFramerateConversionAlgorithmInterpolate        ProresFramerateConversionAlgorithm = "INTERPOLATE"
+	ProresFramerateConversionAlgorithmFrameformer        ProresFramerateConversionAlgorithm = "FRAMEFORMER"
+	ProresFramerateConversionAlgorithmMaintainFrameCount ProresFramerateConversionAlgorithm = "MAINTAIN_FRAME_COUNT"
 )
 
 // Values returns all known values for ProresFramerateConversionAlgorithm. Note
@@ -7621,6 +8039,7 @@ func (ProresFramerateConversionAlgorithm) Values() []ProresFramerateConversionAl
 		"DUPLICATE_DROP",
 		"INTERPOLATE",
 		"FRAMEFORMER",
+		"MAINTAIN_FRAME_COUNT",
 	}
 }
 
@@ -7761,6 +8180,25 @@ func (QueueStatus) Values() []QueueStatus {
 	return []QueueStatus{
 		"ACTIVE",
 		"PAUSED",
+	}
+}
+
+type RemoveRubyReserveAttributes string
+
+// Enum values for RemoveRubyReserveAttributes
+const (
+	RemoveRubyReserveAttributesDisabled RemoveRubyReserveAttributes = "DISABLED"
+	RemoveRubyReserveAttributesEnabled  RemoveRubyReserveAttributes = "ENABLED"
+)
+
+// Values returns all known values for RemoveRubyReserveAttributes. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RemoveRubyReserveAttributes) Values() []RemoveRubyReserveAttributes {
+	return []RemoveRubyReserveAttributes{
+		"DISABLED",
+		"ENABLED",
 	}
 }
 
@@ -8169,6 +8607,25 @@ func (TimecodeSource) Values() []TimecodeSource {
 	}
 }
 
+type TimecodeTrack string
+
+// Enum values for TimecodeTrack
+const (
+	TimecodeTrackDisabled TimecodeTrack = "DISABLED"
+	TimecodeTrackEnabled  TimecodeTrack = "ENABLED"
+)
+
+// Values returns all known values for TimecodeTrack. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (TimecodeTrack) Values() []TimecodeTrack {
+	return []TimecodeTrack{
+		"DISABLED",
+		"ENABLED",
+	}
+}
+
 type TimedMetadata string
 
 // Enum values for TimedMetadata
@@ -8188,12 +8645,87 @@ func (TimedMetadata) Values() []TimedMetadata {
 	}
 }
 
+type TrackType string
+
+// Enum values for TrackType
+const (
+	TrackTypeVideo TrackType = "video"
+	TrackTypeAudio TrackType = "audio"
+	TrackTypeData  TrackType = "data"
+)
+
+// Values returns all known values for TrackType. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (TrackType) Values() []TrackType {
+	return []TrackType{
+		"video",
+		"audio",
+		"data",
+	}
+}
+
+type TransferCharacteristics string
+
+// Enum values for TransferCharacteristics
+const (
+	TransferCharacteristicsItu709       TransferCharacteristics = "ITU_709"
+	TransferCharacteristicsUnspecified  TransferCharacteristics = "UNSPECIFIED"
+	TransferCharacteristicsReserved     TransferCharacteristics = "RESERVED"
+	TransferCharacteristicsItu470m      TransferCharacteristics = "ITU_470M"
+	TransferCharacteristicsItu470bg     TransferCharacteristics = "ITU_470BG"
+	TransferCharacteristicsSmpte170m    TransferCharacteristics = "SMPTE_170M"
+	TransferCharacteristicsSmpte240m    TransferCharacteristics = "SMPTE_240M"
+	TransferCharacteristicsLinear       TransferCharacteristics = "LINEAR"
+	TransferCharacteristicsLog102       TransferCharacteristics = "LOG10_2"
+	TransferCharacteristicsLoc1025      TransferCharacteristics = "LOC10_2_5"
+	TransferCharacteristicsIec6196624   TransferCharacteristics = "IEC_61966_2_4"
+	TransferCharacteristicsItu1361      TransferCharacteristics = "ITU_1361"
+	TransferCharacteristicsIec6196621   TransferCharacteristics = "IEC_61966_2_1"
+	TransferCharacteristicsItu202010bit TransferCharacteristics = "ITU_2020_10bit"
+	TransferCharacteristicsItu202012bit TransferCharacteristics = "ITU_2020_12bit"
+	TransferCharacteristicsSmpte2084    TransferCharacteristics = "SMPTE_2084"
+	TransferCharacteristicsSmpte4281    TransferCharacteristics = "SMPTE_428_1"
+	TransferCharacteristicsAribB67      TransferCharacteristics = "ARIB_B67"
+	TransferCharacteristicsLast         TransferCharacteristics = "LAST"
+)
+
+// Values returns all known values for TransferCharacteristics. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (TransferCharacteristics) Values() []TransferCharacteristics {
+	return []TransferCharacteristics{
+		"ITU_709",
+		"UNSPECIFIED",
+		"RESERVED",
+		"ITU_470M",
+		"ITU_470BG",
+		"SMPTE_170M",
+		"SMPTE_240M",
+		"LINEAR",
+		"LOG10_2",
+		"LOC10_2_5",
+		"IEC_61966_2_4",
+		"ITU_1361",
+		"IEC_61966_2_1",
+		"ITU_2020_10bit",
+		"ITU_2020_12bit",
+		"SMPTE_2084",
+		"SMPTE_428_1",
+		"ARIB_B67",
+		"LAST",
+	}
+}
+
 type TsPtsOffset string
 
 // Enum values for TsPtsOffset
 const (
-	TsPtsOffsetAuto    TsPtsOffset = "AUTO"
-	TsPtsOffsetSeconds TsPtsOffset = "SECONDS"
+	TsPtsOffsetAuto         TsPtsOffset = "AUTO"
+	TsPtsOffsetSeconds      TsPtsOffset = "SECONDS"
+	TsPtsOffsetMilliseconds TsPtsOffset = "MILLISECONDS"
 )
 
 // Values returns all known values for TsPtsOffset. Note that this can be expanded
@@ -8204,6 +8736,7 @@ func (TsPtsOffset) Values() []TsPtsOffset {
 	return []TsPtsOffset{
 		"AUTO",
 		"SECONDS",
+		"MILLISECONDS",
 	}
 }
 
@@ -8290,9 +8823,10 @@ type UncompressedFramerateConversionAlgorithm string
 
 // Enum values for UncompressedFramerateConversionAlgorithm
 const (
-	UncompressedFramerateConversionAlgorithmDuplicateDrop UncompressedFramerateConversionAlgorithm = "DUPLICATE_DROP"
-	UncompressedFramerateConversionAlgorithmInterpolate   UncompressedFramerateConversionAlgorithm = "INTERPOLATE"
-	UncompressedFramerateConversionAlgorithmFrameformer   UncompressedFramerateConversionAlgorithm = "FRAMEFORMER"
+	UncompressedFramerateConversionAlgorithmDuplicateDrop      UncompressedFramerateConversionAlgorithm = "DUPLICATE_DROP"
+	UncompressedFramerateConversionAlgorithmInterpolate        UncompressedFramerateConversionAlgorithm = "INTERPOLATE"
+	UncompressedFramerateConversionAlgorithmFrameformer        UncompressedFramerateConversionAlgorithm = "FRAMEFORMER"
+	UncompressedFramerateConversionAlgorithmMaintainFrameCount UncompressedFramerateConversionAlgorithm = "MAINTAIN_FRAME_COUNT"
 )
 
 // Values returns all known values for UncompressedFramerateConversionAlgorithm.
@@ -8305,6 +8839,7 @@ func (UncompressedFramerateConversionAlgorithm) Values() []UncompressedFramerate
 		"DUPLICATE_DROP",
 		"INTERPOLATE",
 		"FRAMEFORMER",
+		"MAINTAIN_FRAME_COUNT",
 	}
 }
 
@@ -8429,9 +8964,10 @@ type Vc3FramerateConversionAlgorithm string
 
 // Enum values for Vc3FramerateConversionAlgorithm
 const (
-	Vc3FramerateConversionAlgorithmDuplicateDrop Vc3FramerateConversionAlgorithm = "DUPLICATE_DROP"
-	Vc3FramerateConversionAlgorithmInterpolate   Vc3FramerateConversionAlgorithm = "INTERPOLATE"
-	Vc3FramerateConversionAlgorithmFrameformer   Vc3FramerateConversionAlgorithm = "FRAMEFORMER"
+	Vc3FramerateConversionAlgorithmDuplicateDrop      Vc3FramerateConversionAlgorithm = "DUPLICATE_DROP"
+	Vc3FramerateConversionAlgorithmInterpolate        Vc3FramerateConversionAlgorithm = "INTERPOLATE"
+	Vc3FramerateConversionAlgorithmFrameformer        Vc3FramerateConversionAlgorithm = "FRAMEFORMER"
+	Vc3FramerateConversionAlgorithmMaintainFrameCount Vc3FramerateConversionAlgorithm = "MAINTAIN_FRAME_COUNT"
 )
 
 // Values returns all known values for Vc3FramerateConversionAlgorithm. Note that
@@ -8444,6 +8980,7 @@ func (Vc3FramerateConversionAlgorithm) Values() []Vc3FramerateConversionAlgorith
 		"DUPLICATE_DROP",
 		"INTERPOLATE",
 		"FRAMEFORMER",
+		"MAINTAIN_FRAME_COUNT",
 	}
 }
 
@@ -8549,6 +9086,7 @@ const (
 	VideoCodecAv1          VideoCodec = "AV1"
 	VideoCodecAvcIntra     VideoCodec = "AVC_INTRA"
 	VideoCodecFrameCapture VideoCodec = "FRAME_CAPTURE"
+	VideoCodecGif          VideoCodec = "GIF"
 	VideoCodecH264         VideoCodec = "H_264"
 	VideoCodecH265         VideoCodec = "H_265"
 	VideoCodecMpeg2        VideoCodec = "MPEG2"
@@ -8570,6 +9108,7 @@ func (VideoCodec) Values() []VideoCodec {
 		"AV1",
 		"AVC_INTRA",
 		"FRAME_CAPTURE",
+		"GIF",
 		"H_264",
 		"H_265",
 		"MPEG2",
@@ -8580,6 +9119,44 @@ func (VideoCodec) Values() []VideoCodec {
 		"VP8",
 		"VP9",
 		"XAVC",
+	}
+}
+
+type VideoOverlayPlayBackMode string
+
+// Enum values for VideoOverlayPlayBackMode
+const (
+	VideoOverlayPlayBackModeOnce   VideoOverlayPlayBackMode = "ONCE"
+	VideoOverlayPlayBackModeRepeat VideoOverlayPlayBackMode = "REPEAT"
+)
+
+// Values returns all known values for VideoOverlayPlayBackMode. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (VideoOverlayPlayBackMode) Values() []VideoOverlayPlayBackMode {
+	return []VideoOverlayPlayBackMode{
+		"ONCE",
+		"REPEAT",
+	}
+}
+
+type VideoOverlayUnit string
+
+// Enum values for VideoOverlayUnit
+const (
+	VideoOverlayUnitPixels     VideoOverlayUnit = "PIXELS"
+	VideoOverlayUnitPercentage VideoOverlayUnit = "PERCENTAGE"
+)
+
+// Values returns all known values for VideoOverlayUnit. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (VideoOverlayUnit) Values() []VideoOverlayUnit {
+	return []VideoOverlayUnit{
+		"PIXELS",
+		"PERCENTAGE",
 	}
 }
 
@@ -8625,9 +9202,10 @@ type Vp8FramerateConversionAlgorithm string
 
 // Enum values for Vp8FramerateConversionAlgorithm
 const (
-	Vp8FramerateConversionAlgorithmDuplicateDrop Vp8FramerateConversionAlgorithm = "DUPLICATE_DROP"
-	Vp8FramerateConversionAlgorithmInterpolate   Vp8FramerateConversionAlgorithm = "INTERPOLATE"
-	Vp8FramerateConversionAlgorithmFrameformer   Vp8FramerateConversionAlgorithm = "FRAMEFORMER"
+	Vp8FramerateConversionAlgorithmDuplicateDrop      Vp8FramerateConversionAlgorithm = "DUPLICATE_DROP"
+	Vp8FramerateConversionAlgorithmInterpolate        Vp8FramerateConversionAlgorithm = "INTERPOLATE"
+	Vp8FramerateConversionAlgorithmFrameformer        Vp8FramerateConversionAlgorithm = "FRAMEFORMER"
+	Vp8FramerateConversionAlgorithmMaintainFrameCount Vp8FramerateConversionAlgorithm = "MAINTAIN_FRAME_COUNT"
 )
 
 // Values returns all known values for Vp8FramerateConversionAlgorithm. Note that
@@ -8640,6 +9218,7 @@ func (Vp8FramerateConversionAlgorithm) Values() []Vp8FramerateConversionAlgorith
 		"DUPLICATE_DROP",
 		"INTERPOLATE",
 		"FRAMEFORMER",
+		"MAINTAIN_FRAME_COUNT",
 	}
 }
 
@@ -8721,9 +9300,10 @@ type Vp9FramerateConversionAlgorithm string
 
 // Enum values for Vp9FramerateConversionAlgorithm
 const (
-	Vp9FramerateConversionAlgorithmDuplicateDrop Vp9FramerateConversionAlgorithm = "DUPLICATE_DROP"
-	Vp9FramerateConversionAlgorithmInterpolate   Vp9FramerateConversionAlgorithm = "INTERPOLATE"
-	Vp9FramerateConversionAlgorithmFrameformer   Vp9FramerateConversionAlgorithm = "FRAMEFORMER"
+	Vp9FramerateConversionAlgorithmDuplicateDrop      Vp9FramerateConversionAlgorithm = "DUPLICATE_DROP"
+	Vp9FramerateConversionAlgorithmInterpolate        Vp9FramerateConversionAlgorithm = "INTERPOLATE"
+	Vp9FramerateConversionAlgorithmFrameformer        Vp9FramerateConversionAlgorithm = "FRAMEFORMER"
+	Vp9FramerateConversionAlgorithmMaintainFrameCount Vp9FramerateConversionAlgorithm = "MAINTAIN_FRAME_COUNT"
 )
 
 // Values returns all known values for Vp9FramerateConversionAlgorithm. Note that
@@ -8736,6 +9316,7 @@ func (Vp9FramerateConversionAlgorithm) Values() []Vp9FramerateConversionAlgorith
 		"DUPLICATE_DROP",
 		"INTERPOLATE",
 		"FRAMEFORMER",
+		"MAINTAIN_FRAME_COUNT",
 	}
 }
 
@@ -8823,8 +9404,9 @@ type WavFormat string
 
 // Enum values for WavFormat
 const (
-	WavFormatRiff WavFormat = "RIFF"
-	WavFormatRf64 WavFormat = "RF64"
+	WavFormatRiff       WavFormat = "RIFF"
+	WavFormatRf64       WavFormat = "RF64"
+	WavFormatExtensible WavFormat = "EXTENSIBLE"
 )
 
 // Values returns all known values for WavFormat. Note that this can be expanded
@@ -8835,6 +9417,7 @@ func (WavFormat) Values() []WavFormat {
 	return []WavFormat{
 		"RIFF",
 		"RF64",
+		"EXTENSIBLE",
 	}
 }
 
@@ -8864,6 +9447,7 @@ const (
 	WebvttStylePassthroughEnabled  WebvttStylePassthrough = "ENABLED"
 	WebvttStylePassthroughDisabled WebvttStylePassthrough = "DISABLED"
 	WebvttStylePassthroughStrict   WebvttStylePassthrough = "STRICT"
+	WebvttStylePassthroughMerge    WebvttStylePassthrough = "MERGE"
 )
 
 // Values returns all known values for WebvttStylePassthrough. Note that this can
@@ -8875,6 +9459,7 @@ func (WebvttStylePassthrough) Values() []WebvttStylePassthrough {
 		"ENABLED",
 		"DISABLED",
 		"STRICT",
+		"MERGE",
 	}
 }
 
@@ -9075,9 +9660,10 @@ type XavcFramerateConversionAlgorithm string
 
 // Enum values for XavcFramerateConversionAlgorithm
 const (
-	XavcFramerateConversionAlgorithmDuplicateDrop XavcFramerateConversionAlgorithm = "DUPLICATE_DROP"
-	XavcFramerateConversionAlgorithmInterpolate   XavcFramerateConversionAlgorithm = "INTERPOLATE"
-	XavcFramerateConversionAlgorithmFrameformer   XavcFramerateConversionAlgorithm = "FRAMEFORMER"
+	XavcFramerateConversionAlgorithmDuplicateDrop      XavcFramerateConversionAlgorithm = "DUPLICATE_DROP"
+	XavcFramerateConversionAlgorithmInterpolate        XavcFramerateConversionAlgorithm = "INTERPOLATE"
+	XavcFramerateConversionAlgorithmFrameformer        XavcFramerateConversionAlgorithm = "FRAMEFORMER"
+	XavcFramerateConversionAlgorithmMaintainFrameCount XavcFramerateConversionAlgorithm = "MAINTAIN_FRAME_COUNT"
 )
 
 // Values returns all known values for XavcFramerateConversionAlgorithm. Note that
@@ -9090,6 +9676,7 @@ func (XavcFramerateConversionAlgorithm) Values() []XavcFramerateConversionAlgori
 		"DUPLICATE_DROP",
 		"INTERPOLATE",
 		"FRAMEFORMER",
+		"MAINTAIN_FRAME_COUNT",
 	}
 }
 

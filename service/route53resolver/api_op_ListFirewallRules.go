@@ -43,9 +43,11 @@ type ListFirewallRulesInput struct {
 	// Optional additional filter for the rules to retrieve.
 	//
 	// The action that DNS Firewall should take on a DNS query when it matches one of
-	// the domains in the rule's domain list:
+	// the domains in the rule's domain list, or a threat in a DNS Firewall Advanced
+	// rule:
 	//
-	//   - ALLOW - Permit the request to go through.
+	//   - ALLOW - Permit the request to go through. Not availabe for DNS Firewall
+	//   Advanced rules.
 	//
 	//   - ALERT - Permit the request to go through but send an alert to the logs.
 	//
@@ -143,6 +145,9 @@ func (c *Client) addOperationListFirewallRulesMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -159,6 +164,9 @@ func (c *Client) addOperationListFirewallRulesMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListFirewallRulesValidationMiddleware(stack); err != nil {
@@ -180,6 +188,18 @@ func (c *Client) addOperationListFirewallRulesMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

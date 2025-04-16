@@ -35,8 +35,14 @@ type CreateConfiguredTableInput struct {
 	// This member is required.
 	AllowedColumns []string
 
-	// The analysis method for the configured tables. The only valid value is
-	// currently `DIRECT_QUERY`.
+	// The analysis method allowed for the configured tables.
+	//
+	// DIRECT_QUERY allows SQL queries to be run directly on this table.
+	//
+	// DIRECT_JOB allows PySpark jobs to be run directly on this table.
+	//
+	// MULTIPLE allows both SQL queries and PySpark jobs to be run directly on this
+	// table.
 	//
 	// This member is required.
 	AnalysisMethod types.AnalysisMethod
@@ -46,13 +52,17 @@ type CreateConfiguredTableInput struct {
 	// This member is required.
 	Name *string
 
-	// A reference to the Glue table being configured.
+	// A reference to the table being configured.
 	//
 	// This member is required.
 	TableReference types.TableReference
 
 	// A description for the configured table.
 	Description *string
+
+	//  The analysis methods to enable for the configured table. When configured, you
+	// must specify at least two analysis methods.
+	SelectedAnalysisMethods []types.SelectedAnalysisMethod
 
 	// An optional label that you can assign to a resource when you create it. Each
 	// tag consists of a key and an optional value, both of which you define. When you
@@ -119,6 +129,9 @@ func (c *Client) addOperationCreateConfiguredTableMiddlewares(stack *middleware.
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -135,6 +148,9 @@ func (c *Client) addOperationCreateConfiguredTableMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateConfiguredTableValidationMiddleware(stack); err != nil {
@@ -156,6 +172,18 @@ func (c *Client) addOperationCreateConfiguredTableMiddlewares(stack *middleware.
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

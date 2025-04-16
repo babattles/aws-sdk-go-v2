@@ -14,7 +14,7 @@ import (
 // Deletes identities from an identity pool. You can specify a list of 1-60
 // identities that you want to delete.
 //
-// You must use AWS Developer credentials to call this API.
+// You must use Amazon Web Services developer credentials to call this operation.
 func (c *Client) DeleteIdentities(ctx context.Context, params *DeleteIdentitiesInput, optFns ...func(*Options)) (*DeleteIdentitiesOutput, error) {
 	if params == nil {
 		params = &DeleteIdentitiesInput{}
@@ -97,6 +97,9 @@ func (c *Client) addOperationDeleteIdentitiesMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -113,6 +116,9 @@ func (c *Client) addOperationDeleteIdentitiesMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteIdentitiesValidationMiddleware(stack); err != nil {
@@ -134,6 +140,18 @@ func (c *Client) addOperationDeleteIdentitiesMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

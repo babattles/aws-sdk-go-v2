@@ -423,6 +423,49 @@ type FuotaTask struct {
 	noSmithyDocumentSerde
 }
 
+// The log options for a FUOTA task event and can be used to set log levels for a
+// specific FUOTA task event.
+//
+// For a LoRaWAN FUOTA task, the only possible event for a log message is Fuota .
+type FuotaTaskEventLogOption struct {
+
+	// The event for a log message, if the log message is tied to a FUOTA task.
+	//
+	// This member is required.
+	Event FuotaTaskEvent
+
+	// The log level for a log message. The log levels can be disabled, or set to ERROR
+	// to display less verbose logs containing only error information, or to INFO for
+	// more detailed logs.
+	//
+	// This member is required.
+	LogLevel LogLevel
+
+	noSmithyDocumentSerde
+}
+
+// The log options for FUOTA tasks and can be used to set log levels for a
+// specific type of FUOTA task.
+type FuotaTaskLogOption struct {
+
+	// The log level for a log message. The log levels can be disabled, or set to ERROR
+	// to display less verbose logs containing only error information, or to INFO for
+	// more detailed logs.
+	//
+	// This member is required.
+	LogLevel LogLevel
+
+	// The FUOTA task type.
+	//
+	// This member is required.
+	Type FuotaTaskType
+
+	// The list of FUOTA task event log options.
+	Events []FuotaTaskEventLogOption
+
+	noSmithyDocumentSerde
+}
+
 // Gateway list item object that specifies the frequency and list of gateways for
 // which the downlink message should be sent.
 type GatewayListItem struct {
@@ -961,6 +1004,11 @@ type LoRaWANMulticast struct {
 	// DlClass for LoRaWAM, valid values are ClassB and ClassC.
 	DlClass DlClass
 
+	// Specify the list of gateways to which you want to send the multicast downlink
+	// messages. The multicast message will be sent to each gateway in the list, with
+	// the transmission interval as the time interval between each message.
+	ParticipatingGateways *ParticipatingGatewaysMulticast
+
 	// Supported RfRegions
 	RfRegion SupportedRfRegion
 
@@ -979,6 +1027,11 @@ type LoRaWANMulticastGet struct {
 
 	// Number of devices that are requested to be associated with the multicast group.
 	NumberOfDevicesRequested *int32
+
+	// Specify the list of gateways to which you want to send the multicast downlink
+	// messages. The multicast message will be sent to each gateway in the list, with
+	// the transmission interval as the time interval between each message.
+	ParticipatingGateways *ParticipatingGatewaysMulticast
 
 	// Supported RfRegions
 	RfRegion SupportedRfRegion
@@ -1160,16 +1213,14 @@ type LteNmrObj struct {
 	// This member is required.
 	Earfcn *int32
 
-	// E-UTRAN (Evolved Universal Terrestrial Radio Access Network) cell global
-	// identifier (EUTRANCID).
-	//
-	// This member is required.
-	EutranCid *int32
-
 	// Physical cell ID.
 	//
 	// This member is required.
 	Pci *int32
+
+	// E-UTRAN (Evolved Universal Terrestrial Radio Access Network) cell global
+	// identifier (EUTRANCID).
+	EutranCid *int32
 
 	// Signal power of the reference signal received, measured in dBm
 	// (decibel-milliwatts).
@@ -1382,6 +1433,25 @@ type ParticipatingGateways struct {
 	// transmitting the payload to the next gateway.
 	//
 	// This member is required.
+	TransmissionInterval *int32
+
+	noSmithyDocumentSerde
+}
+
+// Specify the list of gateways to which you want to send the multicast downlink
+// messages. The multicast message will be sent to each gateway in the list, with
+// the transmission interval as the time interval between each message.
+type ParticipatingGatewaysMulticast struct {
+
+	// The list of gateways that you want to use for sending the multicast downlink
+	// message. Each downlink message will be sent to all the gateways in the list in
+	// the order that you provided. If the gateway list is empty, then AWS IoT Core for
+	// LoRaWAN chooses the gateways that were most recently used by the devices to send
+	// an uplink message.
+	GatewayList []string
+
+	// The duration of time in milliseconds for which AWS IoT Core for LoRaWAN will
+	// wait before transmitting the multicast payload to the next gateway in the list.
 	TransmissionInterval *int32
 
 	noSmithyDocumentSerde

@@ -47,10 +47,10 @@ type ListReportPlansOutput struct {
 	// can be used to return the next set of items in the list.
 	NextToken *string
 
-	// A list of your report plans with detailed information for each plan. This
-	// information includes the Amazon Resource Name (ARN), report plan name,
-	// description, settings, delivery channel, deployment status, creation time, and
-	// last times the report plan attempted to and successfully ran.
+	// The report plans with detailed information for each plan. This information
+	// includes the Amazon Resource Name (ARN), report plan name, description,
+	// settings, delivery channel, deployment status, creation time, and last times the
+	// report plan attempted to and successfully ran.
 	ReportPlans []types.ReportPlan
 
 	// Metadata pertaining to the operation's result.
@@ -102,6 +102,9 @@ func (c *Client) addOperationListReportPlansMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -120,6 +123,9 @@ func (c *Client) addOperationListReportPlansMiddlewares(stack *middleware.Stack,
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListReportPlans(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -136,6 +142,18 @@ func (c *Client) addOperationListReportPlansMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

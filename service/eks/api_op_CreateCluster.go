@@ -69,7 +69,11 @@ func (c *Client) CreateCluster(ctx context.Context, params *CreateClusterInput, 
 
 type CreateClusterInput struct {
 
-	// The unique name to give to your cluster.
+	// The unique name to give to your cluster. The name can contain only alphanumeric
+	// characters (case-sensitive), hyphens, and underscores. It must start with an
+	// alphanumeric character and can't be longer than 100 characters. The name must be
+	// unique within the Amazon Web Services Region and Amazon Web Services account
+	// that you're creating the cluster in.
 	//
 	// This member is required.
 	Name *string
@@ -111,6 +115,11 @@ type CreateClusterInput struct {
 	// of the request.
 	ClientRequestToken *string
 
+	// Enable or disable the compute capability of EKS Auto Mode when creating your
+	// EKS Auto Mode cluster. If the compute capability is enabled, EKS Auto Mode will
+	// create and delete EC2 Managed Instances in your Amazon Web Services account
+	ComputeConfig *types.ComputeConfigRequest
+
 	// The encryption configuration for the cluster.
 	EncryptionConfig []types.EncryptionConfig
 
@@ -118,8 +127,8 @@ type CreateClusterInput struct {
 	KubernetesNetworkConfig *types.KubernetesNetworkConfigRequest
 
 	// Enable or disable exporting the Kubernetes control plane logs for your cluster
-	// to CloudWatch Logs. By default, cluster control plane logs aren't exported to
-	// CloudWatch Logs. For more information, see [Amazon EKS Cluster control plane logs]in the Amazon EKS User Guide .
+	// to CloudWatch Logs . By default, cluster control plane logs aren't exported to
+	// CloudWatch Logs . For more information, see [Amazon EKS Cluster control plane logs]in the Amazon EKS User Guide .
 	//
 	// CloudWatch Logs ingestion, archive storage, and data scanning rates apply to
 	// exported control plane logs. For more information, see [CloudWatch Pricing].
@@ -136,6 +145,15 @@ type CreateClusterInput struct {
 	// [Local clusters for Amazon EKS on Amazon Web Services Outposts]: https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-local-cluster-overview.html
 	OutpostConfig *types.OutpostConfigRequest
 
+	// The configuration in the cluster for EKS Hybrid Nodes. You can add, change, or
+	// remove this configuration after the cluster is created.
+	RemoteNetworkConfig *types.RemoteNetworkConfigRequest
+
+	// Enable or disable the block storage capability of EKS Auto Mode when creating
+	// your EKS Auto Mode cluster. If the block storage capability is enabled, EKS Auto
+	// Mode will create and delete EBS volumes in your Amazon Web Services account.
+	StorageConfig *types.StorageConfigRequest
+
 	// Metadata that assists with categorization and organization. Each tag consists
 	// of a key and an optional value. You define both. Tags don't propagate to any
 	// other cluster or Amazon Web Services resources.
@@ -150,6 +168,25 @@ type CreateClusterInput struct {
 	//
 	// The default version might not be the latest version available.
 	Version *string
+
+	// Enable or disable ARC zonal shift for the cluster. If zonal shift is enabled,
+	// Amazon Web Services configures zonal autoshift for the cluster.
+	//
+	// Zonal shift is a feature of Amazon Application Recovery Controller (ARC). ARC
+	// zonal shift is designed to be a temporary measure that allows you to move
+	// traffic for a resource away from an impaired AZ until the zonal shift expires or
+	// you cancel it. You can extend the zonal shift if necessary.
+	//
+	// You can start a zonal shift for an Amazon EKS cluster, or you can allow Amazon
+	// Web Services to do it for you by enabling zonal autoshift. This shift updates
+	// the flow of east-to-west network traffic in your cluster to only consider
+	// network endpoints for Pods running on worker nodes in healthy AZs. Additionally,
+	// any ALB or NLB handling ingress traffic for applications in your Amazon EKS
+	// cluster will automatically route traffic to targets in the healthy AZs. For more
+	// information about zonal shift in EKS, see [Learn about Amazon Application Recovery Controller (ARC) Zonal Shift in Amazon EKS]in the Amazon EKS User Guide .
+	//
+	// [Learn about Amazon Application Recovery Controller (ARC) Zonal Shift in Amazon EKS]: https://docs.aws.amazon.com/eks/latest/userguide/zone-shift.html
+	ZonalShiftConfig *types.ZonalShiftConfigRequest
 
 	noSmithyDocumentSerde
 }
@@ -208,6 +245,9 @@ func (c *Client) addOperationCreateClusterMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -224,6 +264,9 @@ func (c *Client) addOperationCreateClusterMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateClusterMiddleware(stack, options); err != nil {
@@ -248,6 +291,18 @@ func (c *Client) addOperationCreateClusterMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

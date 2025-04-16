@@ -35,6 +35,11 @@ type ExecuteQueryInput struct {
 	// This member is required.
 	QueryStatement *string
 
+	// A unique case-sensitive identifier that you can provide to ensure the
+	// idempotency of the request. Don't reuse this client token if a new idempotent
+	// request is required.
+	ClientToken *string
+
 	// The maximum number of results to return at one time. The default is 25.
 	MaxResults *int32
 
@@ -104,6 +109,9 @@ func (c *Client) addOperationExecuteQueryMiddlewares(stack *middleware.Stack, op
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -122,7 +130,13 @@ func (c *Client) addOperationExecuteQueryMiddlewares(stack *middleware.Stack, op
 	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
+	if err = addCredentialSource(stack, options); err != nil {
+		return err
+	}
 	if err = addEndpointPrefix_opExecuteQueryMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addIdempotencyToken_opExecuteQueryMiddleware(stack, options); err != nil {
 		return err
 	}
 	if err = addOpExecuteQueryValidationMiddleware(stack); err != nil {
@@ -144,6 +158,18 @@ func (c *Client) addOperationExecuteQueryMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -267,6 +293,39 @@ type ExecuteQueryAPIClient interface {
 }
 
 var _ ExecuteQueryAPIClient = (*Client)(nil)
+
+type idempotencyToken_initializeOpExecuteQuery struct {
+	tokenProvider IdempotencyTokenProvider
+}
+
+func (*idempotencyToken_initializeOpExecuteQuery) ID() string {
+	return "OperationIdempotencyTokenAutoFill"
+}
+
+func (m *idempotencyToken_initializeOpExecuteQuery) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	if m.tokenProvider == nil {
+		return next.HandleInitialize(ctx, in)
+	}
+
+	input, ok := in.Parameters.(*ExecuteQueryInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("expected middleware input to be of type *ExecuteQueryInput ")
+	}
+
+	if input.ClientToken == nil {
+		t, err := m.tokenProvider.GetIdempotencyToken()
+		if err != nil {
+			return out, metadata, err
+		}
+		input.ClientToken = &t
+	}
+	return next.HandleInitialize(ctx, in)
+}
+func addIdempotencyToken_opExecuteQueryMiddleware(stack *middleware.Stack, cfg Options) error {
+	return stack.Initialize.Add(&idempotencyToken_initializeOpExecuteQuery{tokenProvider: cfg.IdempotencyTokenProvider}, middleware.Before)
+}
 
 func newServiceMetadataMiddleware_opExecuteQuery(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{

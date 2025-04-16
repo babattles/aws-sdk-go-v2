@@ -11,15 +11,19 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Deletes invitations received by the Amazon Web Services account to become a
-// member account.
+// We recommend using Organizations instead of Security Hub invitations to manage
+// your member accounts. For information, see [Managing Security Hub administrator and member accounts with Organizations]in the Security Hub User Guide.
+//
+// Deletes invitations to become a Security Hub member account.
 //
 // A Security Hub administrator account can use this operation to delete
-// invitations sent to one or more member accounts.
+// invitations sent to one or more prospective member accounts.
 //
-// This operation is only used to delete invitations that are sent to member
-// accounts that aren't part of an organization. Organization accounts don't
-// receive invitations.
+// This operation is only used to delete invitations that are sent to prospective
+// member accounts that aren't part of an Amazon Web Services organization.
+// Organization accounts don't receive invitations.
+//
+// [Managing Security Hub administrator and member accounts with Organizations]: https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-accounts-orgs.html
 func (c *Client) DeleteInvitations(ctx context.Context, params *DeleteInvitationsInput, optFns ...func(*Options)) (*DeleteInvitationsOutput, error) {
 	if params == nil {
 		params = &DeleteInvitationsInput{}
@@ -101,6 +105,9 @@ func (c *Client) addOperationDeleteInvitationsMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -117,6 +124,9 @@ func (c *Client) addOperationDeleteInvitationsMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteInvitationsValidationMiddleware(stack); err != nil {
@@ -138,6 +148,18 @@ func (c *Client) addOperationDeleteInvitationsMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

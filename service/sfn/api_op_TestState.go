@@ -85,12 +85,6 @@ type TestStateInput struct {
 	// This member is required.
 	Definition *string
 
-	// The Amazon Resource Name (ARN) of the execution role with the required IAM
-	// permissions for the state.
-	//
-	// This member is required.
-	RoleArn *string
-
 	// A string that contains the JSON input data for the state.
 	Input *string
 
@@ -126,6 +120,14 @@ type TestStateInput struct {
 	//
 	// [IAM permissions to test a state]: https://docs.aws.amazon.com/step-functions/latest/dg/test-state-isolation.html#test-state-permissions
 	RevealSecrets bool
+
+	// The Amazon Resource Name (ARN) of the execution role with the required IAM
+	// permissions for the state.
+	RoleArn *string
+
+	// JSON object literal that sets variables used in the state under test. Object
+	// keys are the variable names and values are the variable values.
+	Variables *string
 
 	noSmithyDocumentSerde
 }
@@ -205,6 +207,9 @@ func (c *Client) addOperationTestStateMiddlewares(stack *middleware.Stack, optio
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -221,6 +226,9 @@ func (c *Client) addOperationTestStateMiddlewares(stack *middleware.Stack, optio
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addEndpointPrefix_opTestStateMiddleware(stack); err != nil {
@@ -245,6 +253,18 @@ func (c *Client) addOperationTestStateMiddlewares(stack *middleware.Stack, optio
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -63,6 +63,10 @@ type UpdateDataSourceInput struct {
 	// [Custom document enrichment]: https://docs.aws.amazon.com/amazonq/latest/business-use-dg/custom-document-enrichment.html
 	DocumentEnrichmentConfiguration *types.DocumentEnrichmentConfiguration
 
+	// The configuration for extracting information from media in documents for your
+	// data source.
+	MediaExtractionConfiguration *types.MediaExtractionConfiguration
+
 	// The Amazon Resource Name (ARN) of an IAM role with permission to access the
 	// data source and required resources.
 	RoleArn *string
@@ -127,6 +131,9 @@ func (c *Client) addOperationUpdateDataSourceMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -143,6 +150,9 @@ func (c *Client) addOperationUpdateDataSourceMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateDataSourceValidationMiddleware(stack); err != nil {
@@ -164,6 +174,18 @@ func (c *Client) addOperationUpdateDataSourceMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
